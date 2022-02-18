@@ -31,7 +31,7 @@ tee_tee_os_framework secondary directory code structure：
 The sample directory contains teeloader and atf_istrusteeed, which are only examples.
 -  teeloader 
 
-    Used to load the security image from the iTrustee TEE side to the RAM (Random Access Memory).
+    Used to load the security image from the TEE side to the RAM (Random Access Memory).
 
 -  atf_teed
 
