@@ -14,6 +14,9 @@
 
 #include <securec.h>
 
+#include <teeos_uuid.h>
+#include <tlv_sharedmem.h>
+
 #define TEEOS_TEXT_OFFSET (0x8000)
 #define ALIGN_SIZE_2M    (0x200000)
 
@@ -159,4 +162,33 @@ uint64_t get_sharedmem_start(void)
 uint64_t get_sharedmem_size(void)
 {
     return g_teeos_cfg.shmem_size;
+}
+
+#define CHIP_TYPE_TAG "chip_type"
+#define CHIP_TYPE_LEN_MAX 32
+int32_t set_chip_type_info(char *chip_type, uint32_t size)
+{
+    TEE_UUID all_service = TEE_SERVICE_ALL;
+    struct tlv_item_data tlv_item_data;
+    char chip_type_tmp[CHIP_TYPE_LEN_MAX] = {0};
+
+    if (memcpy_s(chip_type_tmp, CHIP_TYPE_LEN_MAX,
+                 chip_type, (size > CHIP_TYPE_LEN_MAX) ? CHIP_TYPE_LEN_MAX : size) != EOK ) {
+        teelog("copy to chip_type_tmp failed\n");
+        return -1;
+    }
+
+    tlv_item_data.type = CHIP_TYPE_TAG;
+    tlv_item_data.type_size = strlen(CHIP_TYPE_TAG);
+    tlv_item_data.owner_list = (void *)&all_service;
+    tlv_item_data.owner_len = sizeof(TEE_UUID);
+    tlv_item_data.value = chip_type;
+    tlv_item_data.value_len = size;
+
+    if (put_tlv_shared_mem(tlv_item_data) != 0) {
+        teelog("put chip_type info failed\n");
+        return -1;
+    }
+
+    return 0;
 }

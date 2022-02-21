@@ -48,11 +48,14 @@ static TEE_UUID g_key_perm_uuid[] = {
 
 #define OEMKEY_MAGIC 0x55AA55AA
 #define OEMKEY_TAG   "oemkey"
+#define RES_NUM      52
+
 struct oemkey_info {
     uint32_t  head_magic;
     uint8_t   oemkey[OEMKEY_SIZE];
+    uint8_t   reserved[RES_NUM];
     uint32_t  tail_magic;
-};
+} __attribute__((__packed__));
 
 static int32_t trans_key_info_to_share_mem(struct asym_key_t *asym_key_info,
                                            void *header, struct key_tag_info *tag_info)
