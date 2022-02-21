@@ -47,7 +47,7 @@ static int32_t tlv_start_init()
         return -1;
     }
 
-    g_teeos_share_mem = sharedmem_start + sizeof(tlv_tag);
+    g_teeos_share_mem = sharedmem_start + sizeof(*g_tlv_start);
     struct tlv_tag *tlv = (struct tlv_tag *)(uintptr_t)sharedmem_start;
     tlv->magic = MAGIC_START;
     tlv->tlv_num = 0;
@@ -138,7 +138,7 @@ struct tlv_item_tag* share_mem_tlv_find(uint64_t start_share_mem,
     pos = (struct tlv_item_tag *)(uintptr_t)(start_share_mem + sizeof(struct tlv_tag));
     for (uint32_t i = 0; i < tlv->tlv_num; i++) {
         len = sizeof(struct tlv_item_tag) + pos->length + pos->owner_len;
-        if (memcmp(pos->type, type, strlen(type)) == 0 && strnlen(pos->type, MAX_TAG_LEN) <= type_size)
+        if (memcmp(pos->type, type, type_size) == 0 && strnlen(pos->type, MAX_TAG_LEN) <= type_size)
             return pos;
         if (i < tlv->tlv_num - 1)
             pos = (struct tlv_item_tag *)(uintptr_t)(sharedmem_vaddr + len);
