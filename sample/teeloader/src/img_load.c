@@ -84,7 +84,7 @@ int32_t load_teeos(const char *part_name, uint32_t part_size, ...)
     }
 
     /* 4th step: copy teeos to destination */
-    uint64_t teeos_boot_addr = get_teeos_start();
+    uint64_t teeos_boot_addr = get_teeos_code_start();
     if (teeos_boot_addr == 0) {
         teelog("get teeos start addr error\n");
         return -1;
