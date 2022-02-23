@@ -12,4 +12,3 @@
 
 
 add_subdirectory(ClientAPI)
-add_subdirectory(drv_test_ta)
