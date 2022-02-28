@@ -134,10 +134,8 @@ static void teed_cpu_on_finish_handler(u_register_t unused)
 	if (!condition) {
 		tee_context_t *teed_sp_init_context = get_teed_sp_init_context();
 		assert(teed_sp_init_context != NULL);
-		(void)memcpy_s(&tee_ctx->cpu_context, sizeof(cpu_context_t),
-                   &(teed_sp_init_context->cpu_context), sizeof(cpu_context_t));
-		(void)memset_s(&tee_on_entrypoint, sizeof(tee_on_entrypoint), 0,
-                   sizeof(tee_on_entrypoint));
+		(void)memcpy(&tee_ctx->cpu_context, &(teed_sp_init_context->cpu_context), sizeof(cpu_context_t));
+		(void)memset(&tee_on_entrypoint, 0, sizeof(tee_on_entrypoint));
 		/* Initialise this cpu's secure context */
 		teed_init_tee_ep_state(&tee_on_entrypoint,
 						 TEE_AARCH64,

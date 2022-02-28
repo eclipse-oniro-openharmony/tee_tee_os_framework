@@ -16,7 +16,7 @@ tee_tee_os_framework仓二级目录结构如下：
 
 <tr id="row6978161091412"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.1 "><p id="p64006181102"><a name="p64006181102"></a><a name="p64006181102"></a>sample</p>
 </td>
-<td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.2 "><p id="p7456843192018"><a name="p7456843192018"></a><a name="p7456843192018"></a>实例代码，包括teeloader和atf_teed两部分</p>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.2 "><p id="p7456843192018"><a name="p7456843192018"></a><a name="p7456843192018"></a>实例代码，包括teeloader和teed两部分</p>
 </td>
 </tr>
 
@@ -28,12 +28,12 @@ tee_tee_os_framework仓二级目录结构如下：
 </tbody>
 </table>
 
-sample目录下包括teeloader和atf_teed两部分，仅作示例代码，实际未使用。
--  teeloader 
+sample目录下包括teeloader和teed两部分，仅作示例代码，实际未使用。
+-  teeloader
 
     用于加载TEE侧安全镜像到RAM（Random Access Memory）。
 
--  atf_teed
+-  teed
 
     作为适配在ATF（Arm Trusted Firmware）中的模块，提供可信执行环境（Trusted Execution Environment，TEE）与富执行环境（Rich Execution Environment，REE）切换的服务。
 
@@ -48,7 +48,7 @@ base/tee/tee_os_framework
 │   │  
 │   ├── teeloader                       # teeloader示例代码
 │   │  
-│   └── atf_teed                   # atf_teed示例代码
+│   └── teed                            # teed示例代码
 │ 
 └── test                                # 测试相关代码
 ```
