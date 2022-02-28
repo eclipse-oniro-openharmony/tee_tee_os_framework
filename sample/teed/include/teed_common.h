@@ -22,6 +22,6 @@ void teed_init_tee_ep_state(struct entry_point_info *tee_entry_point,
 
 uint64_t teed_synchronous_sp_entry(tee_context_t *tee_ctx);
 
-void __dead2 teed_synchronous_sp_exit(tee_context_t *tee_ctx, uint64_t ret);
+void __dead2 teed_synchronous_sp_exit(const tee_context_t *tee_ctx, uint64_t ret);
 
 #endif

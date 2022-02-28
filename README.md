@@ -16,7 +16,7 @@ tee_tee_os_framework secondary directory code structure：
 
 <tr id="row6978161091412"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.1 "><p id="p64006181102"><a name="p64006181102"></a><a name="p64006181102"></a>sample</p>
 </td>
-<td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.2 "><p id="p7456843192018"><a name="p7456843192018"></a><a name="p7456843192018"></a>sample code, contain two parts: teeloader and atf_teed</p>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.2 "><p id="p7456843192018"><a name="p7456843192018"></a><a name="p7456843192018"></a>sample code, contain two parts: teeloader and teed</p>
 </td>
 </tr>
 
@@ -28,12 +28,12 @@ tee_tee_os_framework secondary directory code structure：
 </tbody>
 </table>
 
-The sample directory contains teeloader and atf_istrusteeed, which are only examples.
--  teeloader 
+The sample directory contains teeloader and teed, which are only examples.
+-  teeloader
 
     Used to load the security image from the TEE side to the RAM (Random Access Memory).
 
--  atf_teed
+-  teed
 
     As a module adapts to the ATF (Arm Trusted Firmware), provide service for switching between Trusted Execution Environment (TEE) and Rich Execution Environment (REE).
 
@@ -48,7 +48,7 @@ base/tee/tee_os_framework
 │   │  
 │   ├── teeloader                       # sample code for teeloader
 │   │  
-│   └── atf_teed                   # sample code for atf_teed
+│   └── teed                            # sample code for teed
 │ 
 └── test                                # test-related code
 ```

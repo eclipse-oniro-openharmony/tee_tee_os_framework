@@ -64,7 +64,7 @@ void teed_init_tee_ep_state(struct entry_point_info *ep,
 		ep->spsr = SPSR_MODE32(MODE32_svc, pc & SPSR_T_MASK, ee, daif);
 	}
 
-	(void)memset_s(&ep->args, sizeof(ep->args), 0, sizeof(ep->args));
+	memset(&ep->args, 0, sizeof(ep->args));
 }
 
 /*
@@ -113,7 +113,7 @@ void teed_synchronous_sp_exit(const tee_context_t *tee_ctx, uint64_t ret)
 	tee_context_t *tee_context_tmp = get_teed_sp_init_context();
 	assert(tee_context_tmp != NULL);
 	if (init_context_saved == INIT_CONTEXT_NOT_SAVED) {
-		(void)memcpy_s(tee_context_tmp, sizeof(*tee_context_t), tee_ctx, sizeof(*tee_context_tmp));
+		memcpy(tee_context_tmp, tee_ctx, sizeof(*tee_context_tmp));
 		set_tee_init_context_saved(INIT_CONTEXT_SAVED);
 	}
 	assert(tee_ctx->rt_context != INVALID_C_RT_CTX);
