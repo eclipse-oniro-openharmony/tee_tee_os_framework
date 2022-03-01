@@ -165,7 +165,7 @@ static TEE_Result TestAllType(uint32_t paramTypes, TEE_Param params[4])
 
 TEE_Result TA_CreateEntryPoint(void)
 {
-    tlogd("---- TA_CreateEntryPoint -------- \n");
+    tlogd("---- TA_CreateEntryPoint --------- \n");
     TEE_Result ret = AddCaller_CA_exec("/system/bin/tee_test_store", 0);
     if (ret != TEE_SUCCESS) {
         tloge("add caller failed, ret: 0x%x\n", ret);
