@@ -1,0 +1,4 @@
+host/include
+host/lib
+host/src/cc7x_teelib/build-arm-linux-androideabi
+host/src/cc7x_teelib/makelog.txt

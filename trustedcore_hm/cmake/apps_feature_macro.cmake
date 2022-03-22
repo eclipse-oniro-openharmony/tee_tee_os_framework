@@ -1,0 +1,181 @@
+if ("${CONFIG_KEYMASTER_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_KEYMASTER_64BIT
+    )
+elseif ("${CONFIG_KEYMASTER_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_KEYMASTER_32BIT
+    )
+endif()
+
+if ("${CONFIG_SSA_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_SSA_64BIT
+    )
+elseif ("${CONFIG_SSA_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_SSA_32BIT
+    )
+endif()
+
+if ("${CONFIG_RPMB_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_RPMB_64BIT
+    )
+elseif ("${CONFIG_RPMB_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_RPMB_32BIT
+    )
+endif()
+
+if ("${CONFIG_PERMSRV_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_PERM_64BIT
+    )
+elseif ("${CONFIG_PERMSRV_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_PERM_32BIT
+    )
+endif()
+
+if ("${CONFIG_CLOUD_CA_PUB_KEY}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        IT_PRODUCT_CA_PUB_KEY
+    )
+endif()
+
+if ("${CONFIG_CLOUD_SIGN_PUB_KEY}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        CLOUD_SIGN_PUB_KEY
+    )
+endif()
+
+if ("${CONFIG_SEM}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_SEM
+    )
+endif()
+
+if ("${CONFIG_SE_SERVICE_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_SE_SERVICE_64BIT
+    )
+elseif ("${CONFIG_SE_SERVICE_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_SE_SERVICE_32BIT
+    )
+endif()
+
+if ("${CONFIG_HUK_SERVICE_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_HUK_SERVICE_64BIT
+    )
+elseif ("${CONFIG_HUK_SERVICE_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_HUK_SERVICE_32BIT
+    )
+endif()
+
+if ("${CONFIG_HUK_SERVICE_32BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_HUK_SERVICE_32BIT
+    )
+endif()
+
+if ("${CONFIG_MSP}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_MSP
+    )
+endif()
+
+if ("${CONFIG_BIO}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_BIO
+    )
+endif()
+
+if ("${CONFIG_ROT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_ROT
+    )
+endif()
+
+if ("${CONFIG_ART}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_ART
+    )
+endif()
+
+if ("${CONFIG_SEC_FLASH}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_SEC_FLASH
+    )
+endif()
+
+if ("${CONFIG_TUI_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_TUI_64BIT
+    )
+elseif ("${CONFIG_TUI_32BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_TUI_32BIT
+    )
+endif()
+
+if ("${CONFIG_GATEKEEPER_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_GATEKEEPER_64BIT
+    )
+elseif ("${CONFIG_GATEKEEPER_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_GATEKEEPER_32BIT
+    )
+endif()
+
+if ("${CONFIG_ANTIROOT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_ANTIROOT
+    )
+endif()
+
+if ("${CONFIG_HSM}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_HSM
+    )
+endif()
+
+if ("${CONFIG_DX_ENABLE}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        DX_ENABLE
+    )
+endif()
+
+if ("${CONFIG_KMS}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_KMS
+    )
+endif()
+
+if ("${CONFIG_PLATDRV_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_PLATDRV_64BIT
+    )
+endif()
+
+if ("${CONFIG_PLATDRV_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_PLATDRV_32BIT
+    )
+endif()
+
+if ("${CONFIG_TEE_DRV_SERVER_64BIT}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_DRV_SERVER_64BIT
+    )
+endif()
+
+if ("${CONFIG_TEE_DRV_SERVER_64BIT}" STREQUAL "false")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_DRV_SERVER_32BIT
+    )
+endif()

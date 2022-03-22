@@ -1,0 +1,67 @@
+【build】       : 2020-05-26 15:28:49
+【cmd line】    : ./crypto/hisee_seceng/make.sh platform=teeos chip=baltimore chiptype=cs
+【build branch】: 
+On branch hione
+Your branch is ahead of 'kirin/br_hisi_wt_trunk_bsp' by 1 commit.
+【commit info】 : 
+commit 8830fb5ca9c896ea43ed4735b24005fefa41f4ae
+Author: l00370476 <l00370476@notesmail.huawei.com>
+Date:   Fri May 22 10:08:22 2020 +0800
+
+    DTS:DTS2020031808851
+    Description:
+    baltimore mspe video decrypt code
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Feature
+    
+    hisi/confidential/hieps
+    Comments-thread: I22d6255136189bc2f23ff5dfd6606e04120d8346 hisi/confidential/hieps
+    
+    Change-Id: I22d6255136189bc2f23ff5dfd6606e04120d8346
+    Signed-off-by: l00370476 <l00370476@notesmail.huawei.com>
+
+commit d1c4f3d30c92d6de119c985dc52d6d3ccaea6f09
+Author: m00475438 <m00475438@vm100-109-187-14.huawei.com>
+Date:   Tue Apr 21 21:51:28 2020 +0800
+
+    DTS:DTS2020051404196
+    Description: hiai key compute
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Feature
+    Comments-thread: I8185c03337f284d2ee75641be7c93c1ee25a2114 hisi/confidential/hieps
+    
+    Change-Id: I8185c03337f284d2ee75641be7c93c1ee25a2114
+    Signed-off-by: m00475438 <m00475438@notesmail.huawei.com>
+    Signed-off-by: h00401342 <h00401342@notesmail.huawei.com>
+    Signed-off-by: l00370476 <l00370476@notesmail.huawei.com>
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2518202
+    Committer-Review: zhangniangao 00557339 <zhangniangao@hisilicon.com>
+    Committer-Review: liuhailong 00249396 <l00249396@notesmail.huawei.com>
+    Committer-Review: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: zhengjun 00546059 <zhj.zhengjun@huawei.com>
+    Committer-Review: zhengjun 00546059 <zhj.zhengjun@huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+
+commit d6e6e39902b329ba548b8a895d23894ba7d11ae2
+Author: h00401342 <h00401342@notesmail.huawei.com>
+Date:   Mon Apr 20 17:02:20 2020 +0800
+
+    DTS:DTS2020042010373
+    Description:big num fix add sub compare security problem
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Bugfix
+    Comments-thread: Icc67c9acf8b44e53cd45b35ba152dcf5dc8cd7fb hisi/confidential/hieps
+    
+    Change-Id: Icc67c9acf8b44e53cd45b35ba152dcf5dc8cd7fb
+    Signed-off-by: h00401342 <h00401342@notesmail.huawei.com>
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2461540
+    Committer-Review: liuhailong 00249396 <l00249396@notesmail.huawei.com>
+    Committer-Review: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: zhengjun 00546059 <zhj.zhengjun@huawei.com>
+    Committer-Review: zhengjun 00546059 <zhj.zhengjun@huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>

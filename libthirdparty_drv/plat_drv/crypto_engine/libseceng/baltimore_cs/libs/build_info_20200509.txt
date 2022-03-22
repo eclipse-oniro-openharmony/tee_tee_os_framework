@@ -1,0 +1,61 @@
+【build】       : 2020-05-09 15:21:51
+【cmd line】    : ./make.sh platform=teeos chip=baltimore chiptype=cs
+【build branch】: 
+On branch local
+Your branch is ahead of 'kirin/br_hisi_wt_trunk_bsp' by 1 commit.
+【commit info】 : 
+commit fd6fd2d2478cf502858966d36210f2508fbb63df
+Author: h00401342 <h00401342@notesmail.huawei.com>
+Date:   Mon Apr 20 17:02:20 2020 +0800
+
+    DTS:DTS2020042010373
+    Description:big num fix add sub compare security problem
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Bugfix
+    Comments-thread: Icc67c9acf8b44e53cd45b35ba152dcf5dc8cd7fb hisi/confidential/hieps
+    
+    Change-Id: Icc67c9acf8b44e53cd45b35ba152dcf5dc8cd7fb
+    Signed-off-by: h00401342 <h00401342@notesmail.huawei.com>
+
+commit 1bb96c8e77349bd8b1107b199a3ec43a122e078c
+Author: s00294296 <s00294296@notesmail.huawei.com>
+Date:   Mon Mar 30 19:32:34 2020 +0800
+
+    DTS:DTS2020031808851
+    Description:chinaDRM 2.0 iteration2
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Feature
+    Comments-thread: I8ef2d7c59c05ae9631b4a4b511c71bb337b3268f hisi/confidential/hieps
+    
+    Change-Id: I8ef2d7c59c05ae9631b4a4b511c71bb337b3268f
+    Signed-off-by: s00294296 <s00294296@notesmail.huawei.com>
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2406777
+    Committer-Review: liuhailong 00249396 <l00249396@notesmail.huawei.com>
+    Committer-Review: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: zhengjun 00546059 <zhj.zhengjun@huawei.com>
+    Committer-Review: zhengjun 00546059 <zhj.zhengjun@huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+
+commit a32e7de100f9b0c7679a57e1d1dcbe729bf61c9a
+Author: c00445377 <c00445377@notesmail.huawei.com>
+Date:   Mon Apr 13 11:27:08 2020 +0800
+
+    DTS:DTS2019012802325
+    Description:
+    csec forth stage, fix  shell file
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Bugfix
+    
+    Change-Id: I7b5c989880cd61b0a5eece0654201fb533bcc8b5
+    Signed-off-by: c00445377 <c00445377@notesmail.huawei.com>
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2440032
+    Committer-Review: zhangniangao 00557339 <zhangniangao@hisilicon.com>
+    Committer-Review: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+    Reviewed-by: liuyongfu 00286198 <l00286198@notesmail.huawei.com>
+    Committer-Review: liuyongfu 00286198 <l00286198@notesmail.huawei.com>
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>

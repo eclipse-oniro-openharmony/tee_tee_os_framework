@@ -1,0 +1,1 @@
+trustedcore_hm/Android.mk

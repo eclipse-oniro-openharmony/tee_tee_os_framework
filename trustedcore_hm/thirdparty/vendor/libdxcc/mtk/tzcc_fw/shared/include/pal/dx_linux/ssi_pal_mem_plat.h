@@ -1,0 +1,67 @@
+/* ***************************************************************************
+ * This confidential and proprietary software may be used only as authorized *
+ * by a licensing agreement from ARM Israel.                                 *
+ * Copyright (C) 2015 ARM Limited or its affiliates. All rights reserved.    *
+ * The entire notice above must be reproduced on all authorized copies and   *
+ * copies may only be made to the extent permitted by a licensing agreement  *
+ * from ARM Israel.                                                          *
+ * ************************************************************************** */
+
+#ifndef _SSI_PAL_MEM_INT_H
+#define _SSI_PAL_MEM_INT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdlib.h>
+#include <string.h>
+/*
+ * @brief File Description:
+ *        This file contains the implementation for memory operations APIs.
+ *        The functions implementations are generally just wrappers to different operating system calls.
+ */
+
+/* ----------------------------
+      PUBLIC FUNCTIONS
+----------------------------------- */
+
+/*
+ * @brief A wrapper over memcmp functionality. The function compares two given buffers
+ *        according to size.
+ */
+#define _SaSi_PalMemCmp memcmp
+
+/*
+ * @brief A wrapper over memmove functionality, the function copies from one
+ *        buffer to another according to given size
+ *
+ */
+#define _SaSi_PalMemCopy memmove
+
+/*
+ * @brief A wrapper over memset functionality, the function sets a buffer with given value
+ *        according to size
+ *
+ */
+#define _SaSi_PalMemSet(aTarget, aChar, aSize) memset(aTarget, aChar, aSize)
+
+/*
+ * @brief A wrapper over memset functionality, the function sets a buffer with zeroes
+ *        according to size
+ *
+ */
+#define _SaSi_PalMemSetZero(aTarget, aSize) _SaSi_PalMemSet(aTarget, 0x00, aSize)
+
+/*
+ * @brief A wrapper over memmove functionality, the function copies from one
+ *        buffer to another according to given size
+ *
+ */
+#define _SaSi_PalMemMove memmove
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

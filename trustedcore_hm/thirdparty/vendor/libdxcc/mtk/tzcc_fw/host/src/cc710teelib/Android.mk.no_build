@@ -1,0 +1,18 @@
+LOCAL_PATH := $(call my-dir)
+TEE_PATH := $(LOCAL_PATH)
+
+HOST_PROJ_ROOT ?= $(shell pwd)/../../..
+include $(HOST_PROJ_ROOT)/AndroidMk.defs
+
+include $(TEE_PATH)/project_ssi4tz.mk
+
+installed_modules: default
+
+include $(HOST_PROJ_ROOT)/AndroidMk.rules
+
+MY_LOCAL_LIBS := $(TARGET_LIBS)
+$(info Android.mk:$(notdir $(LOCAL_PATH)) MY_LOCAL_LIBS = $(MY_LOCAL_LIBS))
+
+MY_LIBS := $(call build_static_libs,$(MY_LOCAL_LIBS))
+
+

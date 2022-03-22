@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
+ * Description: ae common struct
+ * Author: Yan Ruiqing
+ * Create: 2020-11-27
+ */
+#ifndef _AE_COMMON_H
+#define _AE_COMMON_H
+
+#ifdef BORINGSSL_ENABLE
+#include <openssl/cipher.h>
+#endif
+#include <openssl/evp.h>
+#include <crypto_driver_adaptor.h>
+
+typedef const EVP_CIPHER *(*evp_cipher_func)(void);
+struct aes_init_oper {
+    uint32_t algorithm;
+    uint32_t key_size;
+    evp_cipher_func aes_cipher;
+};
+
+static struct aes_init_oper g_aes_des_init_oeration[] = {
+    { CRYPTO_TYPE_AES_ECB_NOPAD, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_ecb },
+    { CRYPTO_TYPE_AES_ECB_NOPAD, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_ecb },
+    { CRYPTO_TYPE_AES_ECB_NOPAD, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_ecb },
+    { CRYPTO_TYPE_AES_CBC_NOPAD, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_cbc },
+    { CRYPTO_TYPE_AES_CBC_NOPAD, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_cbc },
+    { CRYPTO_TYPE_AES_CBC_NOPAD, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_cbc },
+    { CRYPTO_TYPE_AES_CTR, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_ctr },
+    { CRYPTO_TYPE_AES_CTR, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_ctr },
+    { CRYPTO_TYPE_AES_CTR, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_ctr },
+    { CRYPTO_TYPE_AES_CBC_MAC_NOPAD, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_cbc },
+    { CRYPTO_TYPE_AES_CBC_MAC_NOPAD, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_cbc },
+    { CRYPTO_TYPE_AES_CBC_MAC_NOPAD, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_cbc },
+    { CRYPTO_TYPE_AES_CCM, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_ccm },
+    { CRYPTO_TYPE_AES_CCM, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_ccm },
+    { CRYPTO_TYPE_AES_CCM, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_ccm },
+    { CRYPTO_TYPE_AES_GCM, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_gcm },
+    { CRYPTO_TYPE_AES_GCM, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_gcm },
+    { CRYPTO_TYPE_AES_GCM, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_gcm },
+    { CRYPTO_TYPE_AES_XTS, AES_MAX_KEY_SIZE, EVP_aes_256_xts },
+    { CRYPTO_TYPE_AES_ECB_PKCS5, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_ecb },
+    { CRYPTO_TYPE_AES_ECB_PKCS5, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_ecb },
+    { CRYPTO_TYPE_AES_ECB_PKCS5, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_ecb },
+    { CRYPTO_TYPE_AES_CBC_PKCS5, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_cbc },
+    { CRYPTO_TYPE_AES_CBC_PKCS5, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_cbc },
+    { CRYPTO_TYPE_AES_CBC_PKCS5, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_cbc },
+#ifdef CRYPTO_SSL_SUPPORT_DES
+    { CRYPTO_TYPE_DES_ECB_NOPAD, DES_KEY_SIZE, EVP_des_ecb },
+    { CRYPTO_TYPE_DES_CBC_NOPAD, DES_KEY_SIZE, EVP_des_cbc },
+#endif
+#ifdef CRYPTO_SSL_SUPPORT_3DES
+    { CRYPTO_TYPE_DES3_ECB_NOPAD, DES3_KEY_SIZE, EVP_des_ede3 },
+    { CRYPTO_TYPE_DES3_CBC_NOPAD, DES3_KEY_SIZE, EVP_des_ede3_cbc },
+#endif
+};
+#endif

@@ -1,0 +1,6 @@
+hi_tee_keyslot_init
+hi_tee_keyslot_deinit
+hi_tee_keyslot_create
+hi_tee_keyslot_destroy
+hi_tee_keyslot_set_attr
+hi_tee_keyslot_get_attr

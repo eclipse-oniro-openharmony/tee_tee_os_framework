@@ -1,0 +1,9 @@
+hi_tee_log_set_level
+hi_tee_log_get_level
+hi_log_print
+tee_common_get_version_info
+hi_tee_get_anti_roll_back_version
+hi_tee_get_version_info
+hi_tee_get_manufacture_info
+hi_tee_get_msid_info
+hi_tee_get_chip_type_info

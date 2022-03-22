@@ -1,0 +1,3 @@
+gpd.ta.appID:            00000000-0000-0000-0000-000000000000
+gpd.ta.service_name: platdrv_libsec_modem
+gpd.ta.is_lib:              true

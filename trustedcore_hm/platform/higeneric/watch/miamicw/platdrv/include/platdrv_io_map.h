@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: record the register mmap information.
+ * Create: 2020-03
+ */
+#ifndef PLATDRV_IO_MAP_H
+#define PLATDRV_IO_MAP_H
+
+#include <plat_cfg.h>
+#include <platdrv.h>
+#include "hisi_platform.h"
+
+struct ioaddr_t g_ioaddrs[] = {
+    /* SECBOOT */
+    { HI_SYSCTRL_BASE_ADDR, HI_SYSCTRL_BASE_ADDR_SIZE },    /* HI_SYSCTRL_BASE_ADDR 4K */
+    { HI_WDT_BASE_ADDR_VIRT, HI_WDT_BASE_ADDR_VIRT_SIZE },  /* HI_WDT_BASE_ADDR_VIRT 4K */
+
+    { DX_BASE_ATLANTA, DX_BASE_ATL_SIZE },
+
+    /* HIFI */
+    { HIFI_CFG_BASE_ADDR, HIFI_CFG_BASE_ADDR_SIZE }, /* HIFI_CFG_BASE_ADDR 4K */
+
+    { TZPC, TZPC_SIZE },
+
+    /* PCTRL_BASE, hardware spinlock use it */
+    { PCTRL_BASE, PCTRL_BASE_SIZE },
+
+    /* RTC */
+    { RTC_BASE_ADDR, RTC_BASE_ADDR_SIZE },
+    { SOC_ACPU_SCTRL_BASE_ADDR, SOC_ACPU_SCTRL_BASE_ADDR_SIZE }, /* SOC_ACPU_SCTRL_BASE_ADDR 4K */
+    /* MODEM */
+    { HI_IPCM_REGBASE_ADDR, HI_IPCM_REGBASE_ADDR_SIZE }, /* HI_IPCM_REGBASE_ADDR 4K */
+    { SOC_ACPU_DMSS_BASE_ADDR, SOC_ACPU_DMSS_BASE_ADDR_SIZE },
+    { SOC_ACPU_DMSS_TZMP2_BASE_ADDR, SOC_ACPU_DMSS_TZMP2_BASE_ADDR_SIZE },
+    { SOC_ACPU_PERI_CRG_BASE_ADDR, SOC_ACPU_PERI_CRG_BASE_ADDR_SIZE },
+    /* GPIO */
+    { SOC_ACPU_GPIO0_BASE_ADDR, SOC_ACPU_GPIO0_BASE_ADDR_SIZE },
+    { SOC_ACPU_GPIO1_BASE_ADDR, SOC_ACPU_GPIO1_BASE_ADDR_SIZE },
+    { SOC_ACPU_GPIO4_BASE_ADDR, SOC_ACPU_GPIO4_BASE_ADDR_SIZE },
+    /* SPI */
+    { SOC_ACPU_SPI1_BASE_ADDR, SOC_ACPU_SPI1_BASE_ADDR_SIZE },
+    /* SOC_ACPU_IOC_BASE_ADDR   4K */
+    { SOC_ACPU_IOC_BASE_ADDR, SOC_ACPU_IOC_BASE_ADDR_SIZE },
+};
+
+#endif

@@ -1,0 +1,3 @@
+add_subdirectory(libsec_flash_client)
+add_subdirectory(libvendor_shared)
+add_subdirectory(libvendor_static)

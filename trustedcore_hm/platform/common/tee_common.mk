@@ -1,0 +1,282 @@
+#ta loader and gtask sysmgr core service packages of 64 bit runntime
+#Compile libs for hm-apps
+arm_libs +=
+arm_sys_libs += libteeconfig libtee_shared libbase_shared libgm_shared libtui_internal_shared libdrv_shared libspawn_common libelf_verify_key libtee_cmscbb libteedynsrv
+arm_host_libs += libramfs_host libvfs_host libhwsecurec_host
+arm_pro_libs +=
+arm_chip_libs += ramfsmkimg_host ramfsdump_host
+aarch64_libs += libac_policy libteeagentcommon libteeagentcommon_client libdrv_frame
+aarch64_sys_libs += libccmgr libhmdrv_stub libtimer libswcrypto_engine libcrypto_hal libdynconfmgr libdynconfbuilder libspawn_common libelf_verify_key libtee_cmscbb libteedynsrv
+vendor_libs += libvendor_shared libvendor_static
+hm_kernel    := kernel
+hm_elfloader := elfloader
+#Compile ext_libs for hm-apps
+arm_ext_libs += libbz_hm
+thirdparty_libs += libhwsecurec
+host_tools += scramb_syms_host xom
+ifeq ($(CONFIG_DX_ENABLE), true)
+arm_vendor_ext_libs += libdxcc
+endif
+
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
+arm_open_source_libs +=
+else ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+arm_open_source_libs +=
+else
+arm_open_source_libs +=
+endif
+arm_open_source_libs +=
+aarch64_ext_libs +=
+aarch64_open_source_libs +=
+aarch64_vendor_ext_libs +=
+
+ifeq ($(CONFIG_ARCH_AARCH64),y)
+ifneq ($(CONFIG_FILEMGR_EMBEDDED), y)
+aarch64_frm_drivers += hmsysmgr
+endif
+else
+ifneq ($(CONFIG_FILEMGR_EMBEDDED), y)
+arm_frm_drivers += hmsysmgr
+endif
+endif
+
+ifeq ($(CONFIG_GTASK_64BIT), true)
+aarch64_frm_drivers += gtask
+endif
+ifeq ($(CONFIG_GTASK_64BIT), false)
+arm_frm_drivers += gtask
+endif
+
+ifeq ($(CONFIG_TA_64BIT), true)
+aarch64_frm_drivers += tarunner
+endif
+ifeq ($(CONFIG_TA_64BIT), false)
+arm_frm_drivers += tarunner
+endif
+
+ifdef CONFIG_SSA_64BIT
+ifeq ($(CONFIG_SSA_64BIT), true)
+aarch64_frm_drivers += ssa
+else
+arm_frm_drivers += ssa
+endif
+endif
+
+ifeq ($(CONFIG_RPMB_64BIT), true)
+aarch64_frm_drivers += rpmb
+endif
+ifeq ($(CONFIG_RPMB_64BIT), false)
+arm_frm_drivers += rpmb
+endif
+
+ifdef CONFIG_PERMSRV_64BIT
+ifeq ($(CONFIG_PERMSRV_64BIT), true)
+aarch64_frm_drivers += permission_service
+else
+arm_frm_drivers += permission_service
+endif
+endif
+
+ifeq ($(CONFIG_PLATDRV_64BIT), true)
+aarch64_driver_drivers += platdrv
+endif
+ifeq ($(CONFIG_PLATDRV_64BIT), false)
+arm_driver_drivers += platdrv
+endif
+
+ifneq ($(CONFIG_OFF_DRV_TIMER), y)
+ifeq ($(CONFIG_DRV_TIMER_64BIT), true)
+aarch64_driver_drivers += drv_timer
+endif
+ifeq ($(CONFIG_DRV_TIMER_64BIT), false)
+arm_driver_drivers += drv_timer
+endif
+endif
+
+ifeq ($(CONFIG_TA_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/drivers/tarunner.elf
+ifeq ($(CONFIG_GMLIB_IMPORT), true)
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libgm_shared/libgm_shared.so
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libgm_shared/libgm_shared.so
+endif
+endif
+
+ifeq ($(CONFIG_HUK_SERVICE_64BIT), true)
+aarch64_frm_drivers += huk_service
+product_apps += $(OUTPUTDIR)/aarch64/apps/huk_service.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/apps/huk_service.elf
+endif
+ifeq ($(CONFIG_HUK_SERVICE_32BIT), true)
+arm_frm_drivers += huk_service
+product_apps += $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
+check-syms-y += $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
+$(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf:
+	@mkdir $(OUTPUTDIR)/arm/apps/huk_service_a32
+	@cp $(OUTPUTDIR)/arm/apps/huk_service_a32.elf $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
+endif
+
+ifndef CONFIG_SSA_EMBEDDED
+ifdef CONFIG_SSA_64BIT
+ifeq ($(CONFIG_SSA_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/drivers/ssa.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/ssa.elf
+else
+product_apps += $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf
+$(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf:
+	 @mkdir $(OUTPUTDIR)/arm/drivers/ssa_a32
+	 @cp $(OUTPUTDIR)/arm/drivers/ssa_a32.elf $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf
+endif
+endif
+endif
+
+ifeq ($(CONFIG_RPMB_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/drivers/rpmb.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/rpmb.elf
+endif
+ifeq ($(CONFIG_RPMB_64BIT), false)
+product_apps += $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
+$(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf:
+	 @mkdir $(OUTPUTDIR)/arm/drivers/rpmb_a32
+	 @cp $(OUTPUTDIR)/arm/drivers/rpmb_a32.elf $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
+endif
+
+ifdef CONFIG_PERMSRV_64BIT
+ifeq ($(CONFIG_PERMSRV_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/apps/permission_service.elf
+else
+product_apps += $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf
+$(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf:
+	@mkdir $(OUTPUTDIR)/arm/apps/permission_service_a32
+	@cp $(OUTPUTDIR)/arm/apps/permission_service_a32.elf $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf
+endif
+endif
+
+ifeq ($(CONFIG_TUI_32BIT), true)
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libtui_internal_shared/libtui_internal_shared_a32.so
+check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libtui_internal_shared/libtui_internal_shared_a32.so
+endif
+
+ifeq ($(CONFIG_TUI_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libtui_internal_shared/libtui_internal_shared.so
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libtui_internal_shared/libtui_internal_shared.so
+endif
+
+ifeq ($(CONFIG_TA_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libbase_shared/libbase_shared.so
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libbase_shared/libbase_shared.so
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libvendor_shared/libvendor_shared.so
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libvendor_shared/libvendor_shared.so
+endif
+
+ifeq ($(CONFIG_TA_32BIT), true)
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
+check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libbase_shared/libbase_shared_a32.so
+check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libbase_shared/libbase_shared_a32.so
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libvendor_shared/libvendor_shared_a32.so
+check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libvendor_shared/libvendor_shared_a32.so
+ifeq ($(CONFIG_GMLIB_IMPORT), true)
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libgm_shared/libgm_shared_a32.so
+check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libgm_shared/libgm_shared_a32.so
+endif
+product_apps += $(OUTPUTDIR)/arm/drivers/tarunner_a32.elf
+endif
+
+ifeq ($(CONFIG_GTASK_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/drivers/gtask.elf
+check-a64-syms-y +=  $(OUTPUTDIR)/aarch64/drivers/gtask.elf
+else
+product_apps += $(OUTPUTDIR)/arm/drivers/gtask.elf
+check-syms-y +=  $(OUTPUTDIR)/arm/drivers/gtask.elf
+$(OUTPUTDIR)/arm/drivers/gtask.elf:
+	@cp $(OUTPUTDIR)/arm/drivers/gtask_a32.elf $(OUTPUTDIR)/arm/drivers/gtask.elf
+endif
+
+ifneq ($(CONFIG_OFF_DRV_TIMER), y)
+ifeq ($(CONFIG_DRV_TIMER_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/drivers/drv_timer.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/drv_timer.elf
+endif
+ifeq ($(CONFIG_DRV_TIMER_64BIT), false)
+product_apps += $(OUTPUTDIR)/arm/drivers/drv_timer.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/drv_timer.elf
+endif
+endif
+
+ifeq ($(CONFIG_PLATDRV_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/drivers/platdrv.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/platdrv.elf
+endif
+ifeq ($(CONFIG_PLATDRV_64BIT), false)
+product_apps += $(OUTPUTDIR)/arm/drivers/platdrv.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/platdrv.elf
+endif
+
+ifneq ($(CONFIG_PLATDRV_64BIT),)
+ifeq ($(CONFIG_SUPPORT_64BIT),)
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so
+else
+ifeq ($(CONFIG_SUPPORT_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
+endif
+ifeq ($(CONFIG_SUPPORT_64BIT), false)
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so
+endif
+endif
+else
+ifneq ($(CONFIG_TEE_DRV_SERVER_64BIT),)
+ifeq ($(CONFIG_SUPPORT_64BIT),)
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so
+else
+ifeq ($(CONFIG_SUPPORT_64BIT), true)
+product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
+endif
+ifeq ($(CONFIG_SUPPORT_64BIT), false)
+product_apps += $(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so
+endif
+endif
+endif
+endif
+
+ifeq ($(CONFIG_TEE_DRV_SERVER_64BIT), true)
+aarch64_driver_drivers += tee_drv_server
+product_apps += $(OUTPUTDIR)/aarch64/drivers/tee_drv_server.elf
+check-syms-y += $(OUTPUTDIR)/aarch64/drivers/tee_drv_server.elf
+ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), true)
+aarch64_driver_drivers += /base_mgr/tee_misc_driver
+product_apps += $(OUTPUTDIR)/aarch64/drivers/tee_misc_driver.elf
+check-syms-y += $(OUTPUTDIR)/aarch64/drivers/tee_misc_driver.elf
+endif
+endif
+ifeq ($(CONFIG_TEE_DRV_SERVER_64BIT), false)
+arm_driver_drivers += tee_drv_server
+product_apps += $(OUTPUTDIR)/arm/drivers/tee_drv_server.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/tee_drv_server.elf
+ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), false)
+arm_driver_drivers += /base_mgr/tee_misc_driver
+product_apps += $(OUTPUTDIR)/arm/drivers/tee_misc_driver.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/tee_misc_driver.elf
+endif
+endif
+
+ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
+aarch64_driver_drivers += /base_mgr/crypto_mgr
+product_apps += $(OUTPUTDIR)/aarch64/drivers/crypto_mgr.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/crypto_mgr.elf
+endif
+ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), false)
+arm_driver_drivers += base_mgr/crypto_mgr
+product_apps += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
+endif
+
+ifeq ($(CONFIG_KMS), true)
+aarch64_sys_apps += kms
+product_apps += $(OUTPUTDIR)/aarch64/apps/kms.elf
+endif

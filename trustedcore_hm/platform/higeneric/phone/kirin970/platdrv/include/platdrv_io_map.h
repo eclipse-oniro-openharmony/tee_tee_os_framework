@@ -1,0 +1,102 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: record the register mmap information.
+ * Create: 2020-12-21
+ */
+#ifndef PLATDRV_IO_MAP_H
+#define PLATDRV_IO_MAP_H
+
+#include <plat_cfg.h>
+#include <platdrv.h>
+#include "hisi_platform.h"
+
+struct ioaddr_t g_ioaddrs[] = {
+    { SOC_ACPU_DMSS_TZMP2_BASE_ADDR, SOC_ACPU_DMSS_TZMP2_BASE_ADDR_SIZE },
+
+    { SOC_ACPU_DMSS_BASE_ADDR, SOC_ACPU_DMSS_BASE_ADDR_SIZE }, /* SOC_ACPU_DMSS_BASE_ADDR 32K */
+
+    /* defined in "platform/common/display/hisi_fb_sec.c" */
+    { DSS_BASE, DSS_BASE_SIZE },             /* DSS_BASE */
+    { PCTRL_BASE, PCTRL_BASE_SIZE },         /* PCTRL_BASE */
+    { MMBUF_CFG_BASE, MMBUF_CFG_BASE_SIZE }, /* MMBUF_CFG_BASE */
+    { NOC_DSS_BASE, NOC_DSS_BASE_SIZE },     /* NOC_DSS_BASE */
+    { PMC_BASE, PMC_BASE_SIZE },             /* PMC_BASE */
+
+    /* GPIO28,GPIO1_SE,AO_IOC in "platform/kirin/hi3670/secure_page_table_plat.c" */
+    { GPIO_SPI, GPIO_SPI_SIZE },                                   /* GPIO & SPI */
+    { TZPC, TZPC_SIZE },                                           /* TZPC */
+    { SOC_ACPU_GPIO0_BASE_ADDR, SOC_ACPU_GPIO0_BASE_ADDR_SIZE },   /* SOC_ACPU_GPIO0_BASE_ADDR 4K */
+    { SOC_ACPU_GPIO6_BASE_ADDR, SOC_ACPU_GPIO6_BASE_ADDR_SIZE },   /* SOC_ACPU_GPIO6_BASE_ADDR 4K */
+    { SOC_ACPU_GPIO25_BASE_ADDR, SOC_ACPU_GPIO25_BASE_ADDR_SIZE }, /* SOC_ACPU_GPIO25_BASE_ADDR 4K */
+
+    /* ISP */
+    { CRG_BASE, CRG_BASE_SIZE },                                               /* CRG_BASE 4K */
+    { SOC_ACPU_ISP_CORE_CFG_BASE_ADDR, SOC_ACPU_ISP_CORE_CFG_BASE_ADDR_SIZE }, /* SOC_ACPU_ISP_CORE_CFG_BASE_ADDR 2M */
+    { MEDIA_CRG_BASE_ADDR, MEDIA_CRG_BASE_ADDR_SIZE },                         /* MEDIA_CRG_BASE_ADDR 4K */
+
+    /* HIFI */
+    { HIFI_CFG_BASE_ADDR, HIFI_CFG_BASE_ADDR_SIZE }, /* HIFI_CFG_BASE_ADDR 4K */
+
+    /* MODEM */
+    { HI_IPCM_REGBASE_ADDR, HI_IPCM_REGBASE_ADDR_SIZE }, /* HI_IPCM_REGBASE_ADDR 4K */
+
+    /* SECBOOT */
+    { HI_SYSCTRL_BASE_ADDR, HI_SYSCTRL_BASE_ADDR_SIZE },         /* HI_SYSCTRL_BASE_ADDR 4K */
+    { HI_WDT_BASE_ADDR_VIRT, HI_WDT_BASE_ADDR_VIRT_SIZE },       /* HI_WDT_BASE_ADDR_VIRT 4K */
+    { SOC_ACPU_SCTRL_BASE_ADDR, SOC_ACPU_SCTRL_BASE_ADDR_SIZE }, /* SOC_ACPU_SCTRL_BASE_ADDR 4K */
+
+    { SECBOOT_XX, SECBOOT_XX_SIZE },
+
+    /* Fingerprint */
+    { RESET_PIN_GPIO_ADDR, RESET_PIN_GPIO_ADDR_SIZE },                         /* RESET_PIN_GPIO_ADDR 4K */
+
+    { FINGERPRINT_XX, FINGERPRINT_XX_SIZE },                                   /* SOC_ACPU_SPI4_BASE_ADDR 4K */
+
+    { SOC_ACPU_IOMCU_SPI2_BASE_ADDR, SOC_ACPU_IOMCU_SPI2_BASE_ADDR_SIZE },     /* SOC_ACPU_SPI2_BASE_ADDR 4K */
+    { SOC_ACPU_IOMCU_CONFIG_BASE_ADDR, SOC_ACPU_IOMCU_CONFIG_BASE_ADDR_SIZE }, /* SOC_ACPU_IOMCU_CONFIG_BASE_ADDR 4K */
+    { SOC_ACPU_IOMCU_DMAC_BASE_ADDR, SOC_ACPU_IOMCU_DMAC_BASE_ADDR_SIZE },     /* SOC_ACPU_IOMCU_DMAC_BASE_ADDR 4K */
+
+    { DX_BASE_ATLANTA, DX_BASE_ATL_SIZE },
+
+    /* coresight etf2: for etf0,1 */
+    { SOC_ACPU_CSSYS_APB_BASE_ADDR, SOC_ACPU_CSSYS_APB_BASE_ADDR_SIZE }, /* SOC_ACPU_CSSYS_APB_BASE_ADDR */
+    /* Mate10 Pro THP */
+    { SOC_ACPU_I2C7_BASE_ADDR, SOC_ACPU_I2C7_BASE_ADDR_SIZE }, /* SOC_ACPU_I2C7_BASE_ADDR 4K */
+
+    { SOC_ACPU_SPI1_BASE_ADDR, SOC_ACPU_SPI1_BASE_ADDR_SIZE }, /* SOC_ACPU_SPI1_BASE_ADDR 4K */
+    { SOC_ACPU_GPIO01_DIRECT_BASE_ADDR, SOC_ACPU_GPIO01_DIRECT_BASE_ADDR_SIZE },
+
+    /* Cambricon */
+    { CAMBRICON_X1, CAMBRICON_X1_SIZE },
+    { CAMBRICON_X2, CAMBRICON_X2_SIZE },
+
+#ifdef FEATURE_SE
+    /* hisee ipc&mailbox */
+    { HISEE_IPC_BASE_ADDR, HISEE_IPC_BASE_ADDR_SIZE },
+    { HISEE_MBOX_BASE_ADDR, HISEE_MBOX_BASE_ADDR_SIZE },
+#endif
+
+    /* drm */
+    { SOC_ACPU_VDEC_BASE_ADDR, SOC_ACPU_VDEC_BASE_ADDR_SIZE },
+
+    /* NPU */
+    { SOC_ACPU_VENC_BASE_ADDR, SOC_ACPU_VENC_BASE_ADDR_SIZE }, /* same for SOC_ACPU_MEDIA2_CRG_BASE_ADDR 1M */
+
+    /* file encry */
+#ifdef TEE_SUPPORT_FILE_ENCRY
+    { SOC_ACPU_UFS_CFG_BASE_ADDR, SOC_ACPU_UFS_CFG_BASE_ADDR_SIZE },
+#endif
+    /* RTC */
+    { RTC_BASE_ADDR, RTC_BASE_ADDR_SIZE },
+
+    /* HDCP */
+    { HDCP13_ADDR, HDCP13_ADDR_SIZE },
+    { HDCP22_ADDR, HDCP22_ADDR_SIZE },
+
+    { SOC_ACPU_GPIO4_BASE_ADDR, SOC_ACPU_GPIO4_BASE_ADDR_SIZE },
+
+    /* sensorhub ipc */
+    { SENSORHUB_IPC_BASE_ADDR, SENSORHUB_IPC_BASE_ADDR_SIZE },
+};
+
+#endif

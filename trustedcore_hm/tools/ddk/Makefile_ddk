@@ -1,0 +1,212 @@
+ifneq ($V,)
+VER :=
+else
+VER := @
+endif
+
+export VERSION_DDK := y
+
+## hm-sdk directories:
+export TEE_ARCH := aarch64
+export HM_ARCH := aarch64
+export TOPDIR := $(CURDIR)
+export SCRAMB_SYMS := $(TOPDIR)/prebuild/hm-teeos-release/tools/scramb_syms_host
+export TOOLS      := $(TOPDIR)/tools
+export TOOLS_ROOT := $(TOPDIR)/prebuild/$(HM_SDK_VER)/tools
+export VER
+export PLATFORM_DIR := $(TOPDIR)/platform
+
+
+XOM-TOOL := $(TOPDIR)/tools/xom
+XOM := $(XOM-TOOL)/xom
+XOM_LIB_LDS := $(TOPDIR)/mk/linker.lib.xom.ld
+XOM_LDS := $(TOPDIR)/mk/linker.xom.ld
+export XOM XOM_LIB_LDS XOM_LDS
+ifneq ($(O),)
+export OUTPUTDIR := $(O)
+else
+export OUTPUTDIR := $(TOPDIR)/output
+endif
+
+PHONY += default
+default: all  # make all for compile
+include ddk_config.mk  ## read var config
+
+ARCH = aarch64
+export PLAT_CFG_DIR := $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/plat_cfg
+export PLAT_COMMON_DIR := $(PLATFORM_DIR)/common
+ifeq ($(LIBS_INSTALL_DIR),)
+include $(PLATFORM_DIR)/$(PLATFORM_NAME)/platform.mk
+endif
+include $(TOPDIR)/mk/toolchain.mk
+-include $(PREBUILD_HM_INC)/.config
+
+export CC := $(CROSS_COMPILE)/clang
+export LD := $(CROSS_COMPILE)/ld.lld
+export STRIP   := $(CROSS_COMPILE)/llvm-strip
+
+$(warning "part 1 ok")
+############################ prepare for compile ###########################
+ifeq ($(HDR_INSTALL_DIR),)
+HDR_INSTALL_DIR:=$(HDR_L_DIR)
+$(shell test -d $(HDR_INSTALL_DIR) || mkdir -p $(HDR_INSTALL_DIR))
+endif
+
+# mkdir STAGE_DIR for teehm.img.elf
+$(shell test -d $(STAGE_DIR) || mkdir -p $(STAGE_DIR))
+$(shell test -d $(OUTPUTDIR)/arm/libs || mkdir -p $(OUTPUTDIR)/arm/libs)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/* $(OUTPUTDIR)/)
+$(shell mkdir -p $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared)
+$(shell mkdir -p $(OUTPUTDIR)/aarch64/obj/aarch64/libvendor_shared)
+$(shell mkdir -p $(OUTPUTDIR)/aarch64/obj/aarch64/libtui_internal_shared)
+$(shell mkdir -p $(OUTPUTDIR)/aarch64/obj/aarch64/libgm_shared)
+$(shell mkdir -p $(OUTPUTDIR)/arm/obj/arm/libtee_shared)
+$(shell mkdir -p $(OUTPUTDIR)/arm/obj/arm/libvendor_shared)
+$(shell mkdir -p $(OUTPUTDIR)/arm/obj/arm/libtui_internal_shared)
+$(shell mkdir -p $(OUTPUTDIR)/arm/obj/arm/libgm_shared)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/aarch64/libtee_shared.so $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/aarch64/libvendor_shared.so $(OUTPUTDIR)/aarch64/obj/aarch64/libvendor_shared/)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/aarch64/libtui_internal_shared.so $(OUTPUTDIR)/aarch64/obj/aarch64/libtui_internal_shared/)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/aarch64/libgm_shared.so $(OUTPUTDIR)/aarch64/obj/aarch64/libgm_shared/)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/arm/libvendor_shared_a32.so $(OUTPUTDIR)/arm/obj/arm/libvendor_shared/)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/arm/libtee_shared_a32.so $(OUTPUTDIR)/arm/obj/arm/libtee_shared/)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/arm/libtui_internal_shared_a32.so $(OUTPUTDIR)/arm/obj/arm/libtui_internal_shared/)
+$(shell cp -r $(PREBUILD_ROOT)/hm-apps-release/arm/libgm_shared_a32.so $(OUTPUTDIR)/arm/obj/arm/libgm_shared/)
+
+$(warning "part 2 ok")
+############################ add target for compile ###########################
+driver_build_target := platdrv
+arm_drv_libs :=
+
+$(warning "part 3 ok")
+############################ Compiling logical order ###########################
+PHONY += ext_libs libs drivers apps package open_source_libs
+all: libs drivers package
+drivers: libs ext_libs open_source_libs
+package: hmfilemgr
+
+#compile lib rules
+libs: $(arm_drv_libs)
+$(arm_drv_libs): link_arm_libs link_aarch64_libs
+	@echo "building ARCH=arm lib=$@ target"
+	$(VER) $(MAKE) -C libs/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all
+
+#compile drivers rules
+drivers: $(driver_build_target)
+$(driver_build_target): link_arm_libs link_aarch64_libs $(arm_drv_libs)
+	@echo "building ARCH=arm driver=$@ target"
+	$(VER) $(MAKE) -C drivers/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile_ddk all
+
+#compile link_libs 32&64
+link_libs: link_arm_libs link_aarch64_libs
+link_arm_libs:
+	@echo "[link] libs=$(libs) ext_libs=$(ext_libs) open_source_libs=$(open_source_libs)"
+	$(VER) PBD=$(PREBUILD_LIBS)/arm/ ; \
+	for lib in `ls $$PBD`; do \
+		link=$(OUTPUTDIR)/arm/libs/$$lib ; \
+		f=$$PBD/$$lib ; \
+		if [ ! -L $$link ] && [ ! -e $$link ] ; then \
+			ln -s $$f $$link && \
+			echo "link prebuild library: $$link" ; \
+		fi \
+	done
+link_aarch64_libs: libs ext_libs
+	@echo "[link] aarch libs=$(libs) ext_libs=$(ext_libs)"
+	$(VER) PBD=$(PREBUILD_LIBS)/aarch64/ ; \
+	for lib in `ls $$PBD`; do \
+		link=$(OUTPUTDIR)/aarch64/libs/$$lib ; \
+		f=$$PBD/$$lib ; \
+		if [ ! -L $$link ] && [ ! -e $$link ] ; then \
+			ln -s $$f $$link && \
+			echo "link prebuild library: $$link" ; \
+		fi \
+	done
+
+flags += -DMTK
+
+# export for tools/gen_boot_image.sh
+ifeq (${HM_ARCH}, aarch32)
+	HM_TARGET_ARCH := $(TARGET_ARCH_32)
+	HM_GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A32)
+else
+	HM_TARGET_ARCH := $(TARGET_ARCH_64)
+	HM_GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A64)
+endif
+HM_SYSROOT := $(HM_GCC_TOOLCHAIN)/$(HM_TARGET_ARCH)/libc
+GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -fsigned-char -fno-strict-aliasing \
+                   -pipe -fno-common
+uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
+
+SDK_CPPFLAGS := $(flags) $(c-flags) -I$(PREBUILD_DIR)/headers -I$(PREBUILD_DIR)/headers/ddk/legacy -I$(PREBUILD_DIR)/headers/sys/hmapi -I$(PREBUILD_DIR)/headers/sys/hmapi/kernel -I$(PREBUILD_DIR)/headers/sys/legacy -I$(PREBUILD_DIR)/headers/ddk/hmapi
+SDK_CPPFLAGS := $(filter-out --target=$(TARGET_ARCH), $(SDK_CPPFLAGS))
+SDK_CPPFLAGS := $(filter-out -gcc-toolchain $(GCC_TOOLCHAIN), $(SDK_CPPFLAGS))
+SDK_CPPFLAGS := $(filter-out --sysroot=$(SYSROOT), $(SDK_CPPFLAGS))
+SDK_CPPFLAGS += -gcc-toolchain $(HM_GCC_TOOLCHAIN) --sysroot=$(HM_SYSROOT) --target=$(HM_TARGET_ARCH)
+SDK_CPPFLAGS := $(call uniq, $(SDK_CPPFLAGS) $(GENERAL_OPTIONS))
+SDK_CPPFLAGS := $(filter-out -fsanitize=cfi, $(SDK_CPPFLAGS))
+SDK_CPPFLAGS := $(filter-out -flto, $(SDK_CPPFLAGS))
+export SDK_CPPFLAGS
+$(warning "part 4 ok")
+############################ Image packaging ###########################
+include $(TOPDIR)/mk/bootfs.mk
+
+# default target
+
+############################ Compiling hmfilemgr ###########################
+install_libs:
+	@for l in $(OUTPUTDIR)/arm/libs/* $(OUTPUTDIR)/aarch64/libs/*; do \
+		if [ -e $$l ] && [ ! -L $$l ]; then cp -rf $$l $(LIBS_INSTALL_DIR); fi; \
+	done
+
+PHONY += hmfilemgr
+hmfilemgr: $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
+$(STAGE_DIR)/bootfs.img: drivers
+$(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr: $(STAGE_DIR)/bootfs.img link_libs
+	@echo "Building hmfilemgr"
+	@cd tools/hmfilemgr && make ARCH=$(TEE_ARCH)
+
+############################ Compiling final trustedcore.img ###########################
+COMPARE_IMAGE := 0
+WITH_LOG_ENCODE := false
+boot-apps := $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr $(OUTPUTDIR)/$(TEE_ARCH)/drivers/hmsysmgr
+
+HM_APPS_TOOLS := $(TOPDIR)/tools
+HM_APPS_LIBCPIO := $(TOPDIR)/sys_libs/libcpio
+DDK_FLAG:=true
+$(STAGE_DIR)/teehm.img.elf: apps $(PREBUILD_APPS)/elfloader/elfloader.o hmfilemgr
+	@echo "[GEN_IMAGE] $@"
+	$(VER) $(TOOLS)/smart-strip.sh $(boot-apps)
+	$(VER) DDK_FLAG=$(DDK_FLAG) PREBUILD_DIR=$(PREBUILD_DIR) ELFLOADER_DIR=$(PREBUILD_APPS)/elfloader OUTPUTDIR=$(OUTPUTDIR)\
+		$(TOOLS)/gen_boot_image.sh $(PREBUILD_DIR)/kernel/$(TEE_ARCH)/kernel.elf $(boot-apps) $@ 2>&1 \
+		| while read line; do echo " [GEN_IMAGE] $$line"; done; \
+		exit ${PIPESTATUS[0]}
+
+$(STAGE_DIR)/teehm.img: $(STAGE_DIR)/teehm.img.elf
+	@echo "[OBJCOPY $@]"
+	$(VER) $(OBJCOPY) -O binary $< $@
+
+$(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
+	@echo "[Installing $@]"
+	$(VER) IMAGE_ROOT=$(STAGE_DIR) $(TOOLS)/packimg.sh \
+		$(TRUSTEDCORE_PHY_TEXT_BASE) \
+		$(TRUSTEDCORE_PLATFORM_CHOOSE) \
+		$(COMPARE_IMAGE) \
+		$(TRUSTEDCORE_CHIP_CHOOSE) \
+		$(WITH_TEEOS_ENCRYPT) \
+		$(WITH_LOG_ENCODE) \
+		$(TRUSTEDCORE_PHY_IMAGE_LOAD_BASE)
+
+PHONY += teehm.img trustedcore.img
+package: $(STAGE_DIR)/trustedcore.img
+
+############################ clean ###########################
+
+PHONY += clean
+clean:
+	@rm -rf $(OUTPUTDIR)
+	@rm -rf sec_trustedcore.img
+	@rm -rf tools/linker.lds_pp
+	@rm -rf prebuild/hm-teeos-release/tools/scrambled_syms/scrambled_drv_timer_syms.txt
+	@rm -rf prebuild/hm-teeos-release/tools/scrambled_syms/scrambled_platdrv_syms.txt
+
+.PHONY: $(PHONY)

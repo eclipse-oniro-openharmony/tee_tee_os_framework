@@ -1,0 +1,57 @@
+【build】       : 2019-11-26 22:47:25
+【cmd line】    : ./make.sh platform=teeos chip=baltimore chiptype=cs
+【build branch】: 
+On branch local
+Your branch is ahead of 'kirin/br_hisi_wt_trunk_bsp' by 1 commit.
+【commit info】 : 
+commit 37d0f832b726a0b82edae66be2c2a7afd4274707
+Author: l00370476 <l00370476@notesmail.huawei.com>
+Date:   Tue Oct 29 16:55:49 2019 +0800
+
+    DTS:DTS2019100801513
+    Description:
+    1.baltimore es hieps powertest
+    2.static check
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Feature
+    
+    Change-Id: Iabd53d7181e5225975aa002dd157c8cea4ee1890
+    Signed-off-by: l00370476 <l00370476@notesmail.huawei.com>
+    Signed-off-by: m00475438 <m00475438@notesmail.huawei.com>
+
+commit 5312f0e1caf03ce2938719a1529dc82cc2c42fcc
+Author: h00401342 <h00401342@notesmail.huawei.com>
+Date:   Mon Nov 25 09:45:06 2019 +0800
+
+    DTS:DTS2019112500946
+    Description:ecc drv add  check
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Bugfix
+    
+    Change-Id: Iba4c8b70959e7e48cb3623c8be4afcf672067a48
+    Signed-off-by: h00401342 <h00401342@notesmail.huawei.com>
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2158662
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: zhengjun 00205944 <zhj.zhengjun@huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+
+commit 482c0e89343db07a44f382f3c27df39c3ac5dace
+Author: l00370476 <l00370476@notesmail.huawei.com>
+Date:   Tue Nov 12 16:20:39 2019 +0800
+
+    DTS:DTS2019100801513
+    Description:
+    1.hash ivlen bugfix
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Feature
+    
+    Change-Id: I6c4b1ee59be86f21b283342256b8db8cb2230e81
+    Signed-off-by: l00370476 <l00370476@notesmail.huawei.com>
+    DTS:DTS2019100801513
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2143691
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: zhengjun 00205944 <zhj.zhengjun@huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>

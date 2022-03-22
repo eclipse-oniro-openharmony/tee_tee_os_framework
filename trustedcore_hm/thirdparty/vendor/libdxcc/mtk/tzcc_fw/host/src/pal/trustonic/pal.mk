@@ -1,0 +1,4 @@
+CFLAGS += -DTBASE_API_LEVEL=5
+INCDIRS += ${SHARED_INCDIR}/env
+INCDIRS += ${HOST_PROJ_ROOT}/../../../inc
+INCDIRS += ${HOST_PROJ_ROOT}/../../../public

@@ -1,0 +1,55 @@
+【build】       : 2020-04-08 11:47:21
+【cmd line】    : ./make.sh platform=teeos chip=baltimore chiptype=es
+【build branch】: 
+On branch local
+Your branch is ahead of 'kirin/br_hisi_wt_trunk_bsp' by 1 commit.
+【commit info】 : 
+commit 2f4284e78868cc8dedc858b6e7151ee0c57ac459
+Author: h00401342 <h00401342@notesmail.huawei.com>
+Date:   Thu Feb 27 16:07:48 2020 +0800
+
+    DTS: DTS2020022701608
+    Description:1. SM9 sig
+    2. SM9 decrypt encrypt
+    Team:HISI_DRV
+    Feature or Bugfix:Bugfix
+    
+    Change-Id: I041c2d9803ef59e824941b1d5defce5b228ac5c9
+    Signed-off-by: h00401342 <h00401342@notesmail.huawei.com>
+    Signed-off-by: l00414685 <l00414685@notesmail.huawei.com>
+
+commit 115c8a617674e7c010953cbe05e2c61e518cf5bf
+Author: p00500278 <p00500278@notesmail.huawei.com>
+Date:   Wed Apr 1 10:50:35 2020 +0800
+
+    DTS:DTS2019012802325
+    Description:Clear static check.
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Bugfix
+    
+    Change-Id: I5b66cd308044bc0e2c6fba012e49a2891a088fa6
+    Signed-off-by: p00500278 <p00500278@notesmail.huawei.com>
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2411593
+    Committer-Review: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: liuyongfu 00286198 <l00286198@notesmail.huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+
+commit b270050ff055bbf6c5efe791aaa5fa4212632b18
+Author: l00414685 <l00414685@notesmail.huawei.com>
+Date:   Mon Mar 16 16:08:33 2020 +0800
+
+    DTS:DTS2020021808995
+    Description:MSPEngine CSEC4 python2->3 and build check clean
+    
+    Team:HISI_DRV
+    Feature or Bugfix:Feature
+    
+    Change-Id: I104fbe5597e2a05e4a150c61c67dbf1aaba984e2
+    Signed-off-by: l00414685 <l00414685@notesmail.huawei.com>
+    Reviewed-on: http://rnd-hisi-kirin-origin.huawei.com:8080/2369074
+    Committer-Review: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>
+    Reviewed-by: zhengjun 00546059 <zhj.zhengjun@huawei.com>
+    Tested-by: jenkins_ci <jenkins_ci@notesmail.huawei.com>
+    Reviewed-by: public phisik3jenkins <public_phisik3jenkins@notesmail.huawei.com>

@@ -1,0 +1,349 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2017-2020. All rights reserved.
+ * Description: Implement of TUI core fwk
+ * Author: lijie
+ * Create: 2017-04-02
+ */
+#ifndef _HISI_TUI_TOUCHSCREEN_
+#define _HISI_TUI_TOUCHSCREEN_
+
+#include <platform_touchscreen.h>
+
+struct tp_rect {
+    int left;
+    int top;
+    int right;
+    int bottom;
+    int bpp;
+};
+
+struct emui_tp {
+    int status;
+    int x;
+    int y;
+};
+
+struct tui_tp_t {
+    int secure;
+    unsigned int tp_info_addr;
+    char *notify_addr;
+    int type;
+};
+
+/* LCD module */
+#define IC_SYNATPICS "synaptics"
+#define IC_SYNATPICS_TCM "syna_tcm"
+#define IC_ATMEL "atmel"
+#define IC_ST "st"
+#define IC_ST_NEW "new_st"
+#define IC_NOVATEK "novatek"
+#define IC_NOVATEK_SPI "nova_spi"
+#define IC_PARADE "parade"
+#define IC_SEC "sec"
+#define IC_SEC_Y761 "Y761_sec"
+#define IC_FTS "fts"
+#define IC_FTS_SPI "focal_spi"
+#define IC_GT1X "gt1x"
+#define IC_GTX8 "gtx8"
+#define IC_GTX8_6861 "6861_gtx8"
+#define IC_GTX8_BRL_9886 "brl_gtx8"
+#define IC_THP_JDI_ALPS "ALPS470800"
+#define IC_THP_SHARP_ALPS "ALPS491600"
+#define IC_THP_LG_ALPS "ALPS491000"
+#define IC_THP_JDI_EMLY "EMLY620800"
+#define IC_THP_SHARP_EMLY "EMLY621600"
+#define IC_THP_LGD_EMLY "EMLY651000"
+#define IC_THP_LGD_HMA "HIMA651000"
+#define IC_THP_SHARP_HMA "HIMA621600"
+#define IC_THP_JDI_HMA "HIMA620800"
+#define IC_THP_BOE_HMA "HIMA661300"
+#define IC_THP_TM_HARY_TD4330 "HARY861100"
+#define IC_THP_TM_HARY_SYN "HARY691300"
+#define IC_THP_BOE_HARY_SYN "HARY691100"
+#define IC_THP_MUTTO_HARY_SYN "HARY690300"
+#define IC_THP_BOE_HARY_NOV "HARY771300"
+#define IC_THP_TM_HARY_NOV "HARY771100"
+#define IC_THP_AUO_HARY_NOV "HARY771700"
+#define IC_THP_BOE_POT_TD4330 "POTR861300"
+#define IC_THP_TM_POT_SYN "POTR691300"
+#define IC_THP_BOE_POT_SYN "POTR691100"
+#define IC_THP_MUTTO_POT_SYN "POTR691030"
+#define IC_THP_BOE_POT_NOV "POTR771300"
+#define IC_THP_TM_POT_NOV "POTR771100"
+#define IC_THP_AUO_POT_NOV "POTR771700"
+
+#define IC_THP_SSL_VOG   "P086811000"
+#define IC_THP_ALPS_GTX_VOG "P086781300"
+#define IC_THP_DW_GTX_VOG "P086781310"
+#define IC_THP_SDC_GTX_ELLA "P085780900"
+#define IC_THP_VISI_GTX_ELLA "P085932900"
+#define IC_THP_SDC_TRX_GTX_ELLA "P085780910"
+#define IC_THP_NOP_GTX_ELLA "P085780920"
+#define IC_THP_RCG_GTX_ELLA "P085780930"
+#define IC_THP_TM_TD4330_YAL "B12186110"
+#define IC_THP_TM_TD4320_YAL "B12169110"
+#define IC_THP_TM_TD4320_YAL_N "B12169111"
+#define IC_THP_TM_TD4320_YAL_B "B12169112"
+#define IC_THP_TM_TD4320_YAL_NB "B12169113"
+#define IC_THP_LG_TD4320_YAL "B12169100"
+#define IC_THP_LG_TD4320_YAL_N "B12169101"
+#define IC_THP_LG_TD4320_YAL_B "B12169102"
+#define IC_THP_CTC_NOV_YAL "B12177140"
+#define IC_THP_TM_NOV_YAL "B12177110"
+#define IC_THP_BOE_NOV_YAL "B12177130"
+#define IC_THP_LG_FOCAL_YAL "B12168100"
+#define IC_THP_CTC_FOCAL_YAL "B12168140"
+#define IC_ELAN_SCM_OFILM "SCHU70000"
+#define IC_ELAN_SCM_TOPTOUCH "SCHU70180"
+#define IC_THP_TM_TD4320_SPN "B14669110"
+#define IC_THP_TM_TD4320_SPN_B0 "B14669111"
+#define IC_THP_BOE_NOV_SPN "B14677130"
+#define IC_THP_CTC_NOV_SPN "B14677140"
+#define IC_THP_TM_NOV_SPN "B14677110"
+#define IC_THP_CTC_FOCAL_SPN "B14668140"
+#define IC_THP_SSG_GTX_SEA "B14178090"
+#define IC_THP_LGD_SYNA_LIO "P116921000"
+#define IC_THP_LGD_SYNA_LIO_FN "P116921010"
+#define IC_THP_LGD_GDIX_LIO "P116931000"
+#define IC_THP_SDC_SYNA_LIO "P116920900"
+#define IC_THP_SDC_GDIX_LIO "P116930900"
+#define IC_THP_SDC_GDIX_TAS "P115930900"
+#define IC_THP_SDC_GDIX_TAS_FM "P115930910"
+#define IC_THP_SDC_GDIX_TAS_T "P115932900"
+#define IC_THP_BOE_NOV_WLZ "B16677130"
+#define IC_THP_TCL_NOV_WLZ "B16677270"
+#define IC_THP_TM_NOV_WLZ "B16677110"
+#define IC_THP_AUO_NOV_WLZ "B16677170"
+#define IC_THP_TM_SYNA_WLZ "B16696110"
+#define IC_THP_TCL_SYNA_WLZ "B16696270"
+#define IC_THP_BOE_SYNA_WLZ "B16696130"
+#define IC_THP_BOE_NOV_OXF "B16577130"
+#define IC_THP_TCL_NOV_OXF "B16577270"
+#define IC_THP_TM_NOV_OXF "B16577110"
+#define IC_THP_AUO_NOV_OXF "B16577170"
+#define IC_THP_TM_SYNA_OXF "B16596110"
+#define IC_THP_TCL_SYNA_OXF "B16596270"
+#define IC_THP_BOE_SYNA_OXF "B16596130"
+#define IC_THP_BOE_GDIX_EDIN "B177931300"
+#define IC_THP_BOE_GDIX_EDIN_ALPS "B177931310"
+#define IC_THP_BOE_GDIX_EDIN_OFILM "B177931320"
+#define IC_THP_BOE_GDIX_EDIN_DW "B177931330"
+#define IC_THP_BOE_GDIX_EDIN_ALPS_HZ "B177931340"
+#define IC_THP_BOE_GDIX_EDIN_DW_ES "B177931303"
+#define IC_THP_BOE_GDIX_EDIN_ALPS_ES "B177931313"
+#define IC_THP_VISI_GDIX_EDIN_DW "B177932900"
+#define IC_THP_VISI_GDIX_EDIN_OFILM "B177932910"
+#define IC_THP_VISI_GDIX_EDIN_ONCELL "B177932920"
+#define IC_THP_VISIONOX_SYNA_EDIN "B177922900"
+#define IC_THP_VISI_SYNA_EDIN_OFILM "B177922910"
+#define IC_THP_VISI_SYNA_EDIN_ONCELL "B177922920"
+#define IC_THP_VISI_SYNA_EDIN_DW "B177922930"
+#define IC_THP_VISI_SYNA_EDIN_OFILM_HZ "B177922940"
+#define IC_THP_TM_NOV_CDY "B18377110"
+#define IC_THP_TCL_NOV_CDY "B18377270"
+#define IC_THP_BOE_NOV_CDY "B18377130"
+#define IC_THP_BOE_SYNA_CDY "B18369130"
+
+#define IC_THP_SSG_GDIX_BMH "B179930900"
+#define IC_THP_EDO_GDIX_BMH "B179AD1500"
+#define IC_THP_BOE_GDIX_JER "B196931300"
+#define IC_THP_BOE_GDIX_JER_DW "B196931301"
+#define IC_THP_BOE_GDIX_JER_DW_ES "B196931302"
+#define IC_THP_BOE_GDIX_JER_ALPS "B196931310"
+#define IC_THP_BOE_GDIX_JER_ALPS_NOV "B196931311"
+#define IC_THP_BOE_GDIX_JER_ALPS_ES "B196931312"
+#define IC_THP_BOE_GDIX_JER_OFILM "B196931320"
+#define IC_THP_BOE_GDIX_JER_OFILM_NOV "B196931321"
+#define IC_THP_VISI_GDIX_JER_DW "B196932900"
+#define IC_THP_VISI_GDIX_JER_OFILM "B196932910"
+#define IC_THP_VISI_GDIX_JER_ONCELL "B196932920"
+#define IC_THP_VISI_SYNA_JER_OFILM "B196922910"
+#define IC_THP_VISI_SYNA_JER_ONCELL "B196922920"
+#define IC_THP_VISI_SYNA_JER_ONCELL_60HZ "B19X922921"
+#define IC_THP_VISL_SYNA_JER "B196922900"
+#define IC_THP_SSG_GDIX_JEF "B179930901"
+#define IC_THP_EDO_GDIX_JEF "B179AD1500"
+#define IC_THP_BOE_GDIX_EDIN_DW_90HZ "B17X931330"
+#define IC_THP_BOE_GDIX_EDIN_ALPS_HZ_90HZ "B17X931340"
+#define IC_THP_BOE_SYNA_ANG_DW "B205921300"
+#define IC_THP_BOE_SYNA_ANG_APS "B205921310"
+#define IC_THP_VISI_SYNA_ANG_DW "B205922900"
+#define IC_THP_VISI_SYNA_ANG_OFILM "B205922910"
+#define IC_THP_BOE_SYNA_BRQ_DW "B206921300"
+#define IC_THP_BOE_SYNA_BRQ_APS "B206921310"
+#define IC_THP_VISI_SYNA_BRQ_DW "B206922900"
+#define IC_THP_VISI_SYNA_BRQ_OFILM "B206922910"
+#define IC_THP_BOE_GDIX_ANG "B2059S1300"
+#define IC_THP_VISI_GDIX_ANG "B2059S2900"
+#define IC_THP_VISI_GDIX_ANG_OFILM "B2059S2910"
+#define IC_THP_BOE_GDIX_BRQ "B2069S1300"
+#define IC_THP_VISI_GDIX_BRQ "B2069S2900"
+#define IC_THP_VISI_GDIX_BRQ_OFILM "B2069S2910"
+#define IC_THP_VISI_SYNA_ANG_FPCV2 "B205922911"
+#define IC_THP_BOE_GDIX_ANG_DW "B2059S1301"
+#define IC_THP_VISI_GDIX_ANG_FPCV2 "B2059S2911"
+#define IC_THP_TM_SYNA_BRQ "B206921100"
+#define IC_THP_TM_SYNA_BRQ_DW "B206921110"
+#define IC_THP_BOE_GDIX_BRQ_APS "B2069S1310"
+#define IC_THP_BOE_GDIX_BRQ_DW "B2069S1301"
+#define IC_THP_BOE_GDIX_BRQ_APLS "B2069S1311"
+#define IC_THP_VISI_GDIX_BRQ_DW "B2069S2901"
+#define IC_THP_VISI_GDIX_BRQ_FPCV2 "B2069S2911"
+
+#define IC_THP_BOE_SYNA_DW_ELS "P150921300"
+#define IC_THP_BOE_SYNA_APS_ELS "P150921310"
+#define IC_THP_BOE_GDIX_DW_ELS "P150931300"
+#define IC_THP_BOE_SYNA_APS2_ELS "P150921320"
+#define IC_THP_BOE_SYNA_DW2_ELS "P150921330"
+#define IC_THP_LGD_SYNA_FPCV2_ELS "P150921000"
+#define IC_THP_LGD_GDIX_ELS "P150931000"
+#define IC_THP_LGD_SYNA_FPCV3_ELS "P150921010"
+#define IC_THP_SDC_SYNA_ELS "P150920900"
+#define IC_THP_BOE_GDIX_APS_ELS "P150931310"
+
+#define IC_THP_BOE_GDIX_DW_ANA "P149931300"
+#define IC_THP_BOE_GDIX_APS_ANA "P149931310"
+#define IC_THP_BOE_GDIX_TM1_ANA "P149931320"
+#define IC_THP_BOE_GDIX_APS2_ANA "P149931330"
+#define IC_THP_BOE_GDIX_APS3_ANA "P149931340"
+
+#define IC_THP_BOE_ST_TET "P1679R1300"
+#define IC_THP_BOE_ST_YA2_TET "P1679R1310"
+#define IC_THP_BOE_ST_NEWSENSOR_TET "P1679R1320"
+#define IC_THP_BOE_ST_EMITAP_TET "P1679R1330"
+#define IC_THP_BOE_ST_COF_TET "P1679R1340"
+#define IC_THP_BOE_ST_SW_TET "P1679T1300"
+#define IC_THP_BOE_ST_DDIC_TET "P1679R1351"
+#define IC_THP_BOE_GTX8_DDIC_TET "P1679X1301"
+
+#define IC_THP_SDC_ST_TET "P1679R0900"
+
+#define IC_THP_SDC_GDIX_ELSP "P186920900"
+#define IC_THP_SHB_TUI_COMMON_ID "shb_tui"
+
+/* frame max size */
+#define MAX_FRAME_LEN_JDI_VICTORIA 1060
+#define MAX_FRAME_LEN_JDI_ALPS 1376
+#define MAX_FRAME_LEN_SHRP_ALPS 2472
+#define MAX_FRAME_LEN_SYN_EMLY 1080
+#define MAX_FRAME_LEN_NOVA_EMLY 1534
+#define MAX_FRAME_LEN_NOVA_HMA 1501
+#define MAX_FRAME_LEN_SYN_HMA 1096
+#define MAX_FRAME_LEN_HIMAX_HMA 1408
+#define MAX_FRAME_LEN_SYN_HARY 1096
+#define MAX_FRAME_LEN_NOVA_HARY 1501
+#define MAX_FRAME_LEN_SYN_POT 1096
+#define MAX_FRAME_LEN_NOVA_POT 1501
+#define MAX_FRAME_LEN_SSL_VOG 1505
+#define MAX_FRAME_LEN_GOODIX 1500
+#define MAX_FRAME_LEN_SYN_YAL 1096
+#define MAX_FRAME_LEN_NOVA_YAL 1501
+#define MAX_FRAME_LEN_FOCAL_YAL 1630
+#define MAX_FRAME_LEN_SYN_OW 1096
+#define MAX_FRAME_LEN_NOVA_OW 1501
+#define MAX_FRAME_LEN_GOODIX_EDIN 1500
+#define MAX_FRAME_LEN_SYN_EDIN 1096
+#define MAX_FRAME_LEN_SYN_JER 1096
+#define MAX_FRAME_LEN_SYN_CDY 1096
+#define MAX_FRAME_LEN_NOVA_CDY 1501
+#define MAX_FRAME_LEN_ST_TET 2864
+#define MAX_FRAME_LEN_SYN_ANG 1096
+#define MAX_FRAME_LEN_SYN_BRQ 1096
+#define MAX_FRAME_LEN_GOODIX_BRQ 2500
+
+#define SPI_MAX_SPEED_GTX 7500000
+
+/* TP IC + product */
+enum touch_device_type {
+    SYNATPICS_DEVICE,
+    SYNA_TCM_DEVICE,
+    ATMEL_DEVICE,
+    ST_DEVICE,
+    NOVATEK_DEVICE,
+    PARADE_DEVICE,
+    SEC_DEVICE,
+    FTS_DEVICE,
+    GT1X_DEVICE,
+    GTX8_DEVICE,
+    SEC_DEVICE_RAL,
+    THP_JDI_DEVICE_VICTORIA = 11,
+    THP_JDI_DEVICE_ALPS = 12,
+    THP_NOVA_DEVICE_ALPS = 13,
+    THP_SYN_DEVICE_EMLY = 14,
+    THP_NOVA_DEVICE_EMLY = 15,
+    THP_NOVA_DEVICE_HMA = 16,
+    THP_SYN_DEVICE_HMA = 17,
+    THP_HIMAX_DEVICE_HMA = 18,
+    THP_SYN_DEVICE_HARY = 19,
+    THP_NOVA_DEVICE_HARY = 20,
+    THP_SYN_DEVICE_POT = 21,
+    THP_NOVA_DEVICE_POT = 22,
+    THP_GTX_DEVICE_ELA = 23,
+    THP_GTX_DEVICE_VOG = 24,
+    THP_SSL_DEVICE_VOG = 25,
+    THP_SYN_DEVICE_YAL = 26,
+    THP_NOVA_DEVICE_YAL = 27,
+    THP_FTS_DEVICE_YAL = 28,
+    THP_GTX_DEVICE_SEA = 29,
+    THP_SHB_DEVICE = 30,
+    THP_NOVA_DEVICE_OXF = 31,
+    THP_SYNA_DEVICE_OXF = 32,
+    THP_NOVA_DEVICE_WLZ = 33,
+    THP_SYNA_DEVICE_WLZ = 34,
+    THP_GTX_DEVICE_EDIN = 35,
+    THP_SYN_DEVICE_EDIN = 36,
+    THP_GTX_DEVICE_BMH = 37,
+    THP_GTX_DEVICE_JER = 38,
+    THP_SYNA_DEVICE_JER = 39,
+    THP_GTX_DEVICE_JEF = 40,
+    THP_NOVA_DEVICE_CDY = 41,
+    THP_SYNA_DEVICE_CDY = 42,
+    THP_SYNA_DEVICE_ANG = 43,
+    THP_SYNA_DEVICE_BRQ = 44,
+    THP_GTX_DEVICE_ANG = 45,
+    THP_GTX_DEVICE_BRQ = 46,
+	THP_ST_DEVICE_TET = 47,
+    MAX_THP_DEVICE_NUM = 0xFFFF,
+    ELAN_DEVICE,
+    ST_DEVICE_NEW,
+    GTX8_DEVICE_VRD,
+    GTX8_BRL_DEVICE_TET,
+};
+
+/*
+ * Read/Write interface:
+ *
+ * chip_addr: I2C chip address
+ * buf: Where to read/write the data,
+ * reg should be writen in buf[0]
+ * len: How many bytes to read/write
+ *
+ * Returns: 0 on success, not 0 on failure
+ */
+int hisi_tui_tp_init(int type, void (*handler)(void *), void *data);
+#ifdef CONFIG_HISI_MAILBOX
+int hisi_tui_shb_tp_init(void (*handler)(void *), UINT32 *cur_pid);
+#endif
+int hisi_tui_tp_exit(void);
+int hisi_tui_get_chip_type(void);
+void hisi_tui_tp_irq_thp(const void *arg);
+void hisi_tui_tp_irq(const void *arg);
+int ts_get_frame(void);
+int spi_tui_mutex(void);
+void ts_spi_cs_set(u32 control);
+int elan_get_data(struct ts_tui_fingers *report_data);
+int ts_tui_algo_t1(struct ts_tui_fingers *in_info, struct ts_tui_fingers *out_info);
+int ts_tui_i3c_block_read(unsigned char *buf, unsigned short len, unsigned int slave_addr, u32 bus_num);
+int ts_tui_i3c_block_write(unsigned char *buf, unsigned short len, unsigned int slave_addr, u32 bus_num);
+extern struct tee_thp_frame_buff g_tee_tp_buff;
+extern int g_frame_max_len;
+extern int fts_spi_sync_thp(unsigned short rx_size, unsigned char *txbuf, unsigned char *rxbuf);
+extern int ts_fts_get_frame(struct ts_tui_fingers *report_data);
+extern int ts_ioctl(unsigned int cmd, void *arg);
+int hisi_tui_get_frame_count(void);
+int hisi_tui_get_frame_max_len(void);
+void hisi_tui_set_frame_count(int count);
+int hisi_tui_get_tpdata_read(struct ts_tui_finger *finger_data_buf, struct ts_tui_fingers *report_data);
+bool hisi_tui_set_mxt_data(struct mxt_tui_data *data);
+void hisi_tui_thp_irq_ack(void);
+#endif

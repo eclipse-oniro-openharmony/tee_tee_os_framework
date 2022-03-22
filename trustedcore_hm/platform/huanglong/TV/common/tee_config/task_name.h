@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: task name declare
+ * Create: 2020-02-19
+ */
+#ifndef PRODUCT_TASK_NAME_H
+#define PRODUCT_TASK_NAME_H
+
+#define GATEKEEPER_TASK_NAME     "task_gatekeeper"
+#define KEYMASTER_TASK_NAME      "task_keymaster"
+#define KDS_TASK_NAME            "task_kds"
+#define STORAGE_TASK_NAME        "task_storage"
+#define SECMEM_TASK_NAME         "secmem"
+#define FILE_ENCRY_TASK_NAME     "task_file_encry"
+#define BDKERNEL_TASK_NAME       "task_bdkernel"
+#define ATTESTATION_TA_TASK_NAME "task_attestation_ta"
+
+#endif
