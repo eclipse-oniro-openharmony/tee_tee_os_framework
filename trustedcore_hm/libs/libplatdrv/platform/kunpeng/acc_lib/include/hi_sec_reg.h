@@ -1,0 +1,195 @@
+/*
+ * Copyright (c) 2018-2023 Hisilicon Limited.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
+#ifndef __HI_SEC_REG_H__
+#define __HI_SEC_REG_H__
+
+#include <hi_sec_dlv.h>
+#define AM_CURR_ALL_RET_MASK	GENMASK(1, 0)
+
+#define SC_SEC_ICG_EN_REG	0x390
+#define SC_SEC_ICG_DIS_REG	0x394
+#define SC_SEC_RESET_REQ_REG	0xA28
+#define SC_SEC_RESET_DREQ_REG	0xA2C
+#define SC_SEC_ICG_ST_REG	0x5390
+#define SC_SEC_RESET_ST_REG	0x5A28
+
+#define SEC_RESET_MASK	GENMASK(1, 0)
+
+#define SEC_ACC_COMMON_REG_OFF	0x1000
+
+#define SEC_PF_ABNORMAL_INT_ENABLE_REG	0x000
+#define SEC_PF_INT_MSK	0x1ff
+#define SEC_PF_ABNORMAL_INT_STATUS_REG	0x0008
+#define SEC_PF_ABNORMAL_INT_SOURCE_REG	0x0010
+#define SEC_PF_ABNORMAL_INT_SET_REG	0x0018
+#define SEC_RAS_CE_INT_COUNT_REG	0x0030
+#define SEC_RAS_INT_WIDTH_PLUS_REG	0x0034
+#define SEC_RAS_CE_ENABLE_REG		0x50
+#define SEC_RAS_FE_ENABLE_REG		0x54
+#define SEC_RAS_NFE_ENABLE_REG	0x58
+#define SEC_RAS_CE_ENB_MSK			0x88
+#define SEC_RAS_FE_ENB_MSK			0x0
+#define SEC_RAS_NFE_ENB_MSK		0x177
+#define SEC_MEM_START_INIT_REG	0x0100
+#define SEC_MEM_INIT_DONE_REG	0x0104
+#define SEC_MEM_TIMING_REG	0x0108
+#define SEC_ECC_ENABLE_REG	0x010c
+#define SEC_CNT_CLR_CE_REG	0x0120
+#define SEC_FSM_MAX_CNT_REG	0x0124
+#define SEC_SGL_OFFSET_CONTROL_REG	0x0130
+#define SEC_PAGE_SIZE_CONTROL_REG	0x0134
+#define SEC_DIF_CRC_INIT_REG	0x0138
+
+#define SEC_CONTROL_REG	0x0200
+#define SEC_TRNG_EN_SHIFT	8
+
+#define SEC_AXI_CACHE_CFG_REG	0x0210
+#define SEC_AXI_CACHE_CFG_1_REG	0x0214
+#define SEC_SNPATTR_CFG_REG	0x0218
+#define SEC_INTERFACE_USER_CTRL0_REG	0x0220
+#define SEC_INTERFACE_USER_CTRL1_REG	0x0224
+#define SEC_BD_CS_PACKET_OST_CFG_REG	0x0240
+#define SEC_DATA_OST_CFG_REG	0x0248
+#define SEC_SAA_CLK_EN_REG	0x0260
+#define SEC_SAA_EN_REG	0x0270
+#define SEC_REQ_TRNG_TIME_TH_REG	0x0280
+#define SEC_BD_ERR_CHK_EN_REG(n)	(0x0380 + (n) * 0x04)
+
+#define BD_LATENCY_MIN_REG	0x0600
+#define BD_LATENCY_MAX_REG	0x0608
+#define BD_LATENCY_AVG_REG	0x060C
+#define BD_NUM_IN_SAA_0_REG	0x0670
+#define BD_NUM_IN_SAA_1_REG	0x0674
+#define BD_NUM_IN_SEC_REG		0x0680
+
+#define SEC_PF_FSM_HBEAT_INFO_REG(n)	(0x20 + (n) * 0x4)
+#define SEC_FSM_USE_REG_NUM	2
+#define SEC_BD_M_FSM_REG		0x700
+#define SEC_KEY_FSM_REG			0x704
+#define SEC_IV_FSM_REG			0x708
+#define SEC_IV_KEY_FSM_REG		0x70c
+#define SEC_CLU_ALG_FSM_REG	0x710
+#define SEC_RD_SGE_FSM_REG	0x72c
+#define SEC_RD_HAC_SGE_FSM_REG(n)	(0x730 + (n) * 0x4)
+#define SEC_AW_HAC_FSM_REG(n)	(0x750 + (n) * 0x4)	
+#define SEC_SGE_CBB_NUM		3
+#define SEC_DIF_SHAPE_REG(n)	(0x760 + (n) * 0x4)
+#define SEC_CHANNEL_NUM		9
+#define SEC_BD_TOP_FSM_REG	0x7A0
+
+#define SEC_ECC_1BIT_CNT_REG	0xC00
+#define SEC_ECC_1BIT_INFO_REG	0xC04
+#define SEC_ECC_2BIT_CNT_REG	0xC10
+#define SEC_ECC_2BIT_INFO_REG	0xC14
+
+#define SEC_USER0_SMMU_NORMAL	((1<<23) |(1<<15))
+#define SEC_USER1_SMMU_NORMAL	((1<<31) |1<<(23) |(1<<15) |(1<<7))
+
+#define BD_CIPHER_SHIFT	4
+#define BD_AUTH_SHIFT	6
+#define BD_SCENE_SHIFT	11
+#define BD_A_ALG_SHIFT	11
+#define BD_AKEY_LEN_SHIFT	5
+#define BD_C_WIDTH_SHIFT	6
+#define BD_CKEY_LEN_SHIFT	9
+#define BD_C_MODE_SHIFT	12
+#define BD_C_ALG_SHIFT	16
+#define BD_CIPHER_SRC_OFFSET_SHIFT	16
+
+#define BD_DK_LEN_SHIFT	16
+
+#define BD_PAGE_PAD_TYPE_SHIFT	4
+#define BD_CHK_GRD_CTRL_SHIFT	8
+#define BD_CHK_REF_CTRL_SHIFT	12
+#define BD_BLOCK_SIZE_SHIFT	16
+
+#define BD_TAG_MASK	GENMASK(15, 0)
+#define BD_TYPE_MASK	GENMASK(3, 0)
+
+#define BD_ICV_MASK	GENMASK(3, 1)
+#define BD_ICV_SHIFT	1
+#define BD_ICV_CHECK_FAIL	0x2
+#define BD_ICV_ERROR	0x3
+
+#define BD_CSC_MASK	GENMASK(6, 4)
+#define BD_CSC_SHIFT	4
+#define BD_CSC_CHECK_FAIL	0x2
+
+#define BD_FLAG_MASK	GENMASK(10, 7)
+#define BD_FLAG_SHIFT	7
+
+#define BD_DC_MASK	GENMASK(13, 11)
+#define BD_DC_SHIFT	11
+#define BD_DC_FAIL	0x2
+
+#define BD_ERROR_TYPE_MASK	GENMASK(23, 16)
+#define BD_ERROR_TYPE_SHIFT	16
+
+#define BD_WARNING_TYPE_MASK	GENMASK(31, 24)
+#define BD_WARNING_TYPE_SHIFT	24
+
+#define SEC_NO_SCENE	0x0
+#define SEC_IPSEC_SCENE	0x1
+#define SEC_BASEBAND_SCENE	0x2
+#define SEC_SSLTLS_SCENE	0x3
+#define SEC_DTLS_SCENE	0x4
+#define SEC_STORAGE_ACCESS_DISK_SCENE	0x5
+#define SEC_STORAGE_NAS_SCENE	0x6
+#define SEC_STREAM_DATA_SCENE	0x7
+#define SEC_PBKDF2_SCENE	0x8
+#define SEC_SMB_SCENE	0x9
+
+#define C_ALG_DES	0x0
+#define C_ALG_3DES	0x1
+#define C_ALG_AES	0x2
+#define C_ALG_SM4	0x3
+
+#define C_MODE_ECB	0x0
+#define C_MODE_CBC	0x1
+#define C_MODE_CTR	0x4
+#define C_MODE_CCM	0x5
+#define C_MODE_GCM	0x6
+#define C_MODE_XTS	0x7
+#define C_MODE_CBC_CS	0x9
+
+#define CKEY_LEN_128_BIT	0x0
+#define CKEY_LEN_192_BIT	0x1
+#define CKEY_LEN_256_BIT	0x2
+
+#define C_ICV_LEN_16_BYTE	0x10
+
+#define C_WIDTH_CS1	0x1
+#define C_WIDTH_CS2	0x2
+#define C_WIDTH_CS3	0x3
+
+#define A_ALG_HMAC_SHA1	0x10
+#define A_ALG_HMAC_SHA256	0x11
+#define A_ALG_AES_CMAC	0x21
+#define A_ALG_AES_GMAC	0x22
+
+#define AKEY_LEN_128_BIT	0x4
+
+#define MAC_LEN_96_BIT	0x3
+#define MAC_LEN_128_BIT	0x4
+#define MAC_LEN_256_BIT	0x8
+
+#define SEC_DELAY_10_US   10
+#define SEC_POLL_TIMEOUT_US   1000 /* 1ms */
+
+#define SEC_CHAIN_ABN_RD_ADDR_LOW 0x300
+#define SEC_CHAIN_ABN_RD_ADDR_HIG 0x304
+#define SEC_CHAIN_ABN_RD_LEN 0x308
+#define SEC_CHAIN_ABN_WR_ADDR_LOW 0x310
+#define SEC_CHAIN_ABN_WR_ADDR_HIG 0x314
+#define SEC_CHAIN_ABN_WR_LEN 0x318
+
+#define SEC_CHAIN_ABN_LEN 128UL
+
+#endif

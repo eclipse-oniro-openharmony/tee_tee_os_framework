@@ -1,0 +1,1 @@
+inc-flags += -DCHECK_DDR_SEC_CONFIG

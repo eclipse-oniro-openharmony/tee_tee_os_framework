@@ -1,0 +1,21 @@
+## Hisi drivers from trustedcore
+
+ - platform.h	- trustedcore/platform/platform.h
+ - include	- trustedcore/platform/common/include
+ - ccdriver_lib	- trustedcore/platform/kirin/ccdriver_lib
+ - display  	- trustedcore/platform/common/display
+ - fingerprint	- trustedcore/platform/kirin/fingerprint
+ - gpio		- trustedcore/platform/{common,kirin}/gpio
+ - hifi		- trustedcore/platform/kirin/hifi
+ - modem	- trustedcore/platform/kirin/modem
+ - isp		- trustedcore/platform/kirin/isp
+ - i2c		- trustedcore/platform/{common,kirin}/i2c
+ - seccfg	- trustedcore/platform/kirin/seccfg
+ - secmem	- trustedcore/platform/kirin/secmem
+ - secureboot	- trustedcore/platform/kirin/secureboot
+ - spi		- trustedcore/platform/{common,kirin}/spi
+ - touchscreen	- trustedcore/platform/{common,kirin}/touchscreen
+ - tzpc		- trustedcore/platform/{common,kirin}/tzpc
+ - vsim		- trustedcore/platform/common/vsim
+ - secsvm	- trustedcore/platform/kirin/secsvm
+

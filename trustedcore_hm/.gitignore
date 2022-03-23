@@ -1,0 +1,19 @@
+prebuild/hm-teeos-local-release
+output
+sec_trustedcore.img
+tags
+linker.lds_pp
+output/
+prebuild/hm-teeos-release/tools/scrambled_syms/scrambled_drv_timer_syms.txt
+# csscope
+cscope.*
+ncscope.*
+prebuild/hm-teeos-release/tools/ramfsmkimg
+prebuild/hm-teeos-release/tools/ramfsdump
+libs/libplatdrv/platform/kirin/hieps/autotest/config/hat_pack.c
+# gcov
+**.gcda
+**.gcno
+# libhwsecurec
+thirdparty/huawei/libhwsecurec/
+tools/xom/xom

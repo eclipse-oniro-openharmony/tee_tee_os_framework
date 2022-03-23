@@ -1,0 +1,11 @@
+if ("${CONFIG_M_DRIVER}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_M_DRIVER
+    )
+endif()
+
+if ("${CONFIG_TUI_MTK_DRIVER}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_TUI_MTK_DRIVER
+    )
+endif()

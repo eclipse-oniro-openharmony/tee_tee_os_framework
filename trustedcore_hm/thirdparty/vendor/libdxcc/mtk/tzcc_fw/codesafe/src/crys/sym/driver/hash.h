@@ -1,0 +1,132 @@
+/* ***************************************************************************
+ * This confidential and proprietary software may be used only as authorized *
+ * by a licensing agreement from ARM Israel.                                 *
+ * Copyright (C) 2015 ARM Limited or its affiliates. All rights reserved.    *
+ * The entire notice above must be reproduced on all authorized copies and   *
+ * copies may only be made to the extent permitted by a licensing agreement  *
+ * from ARM Israel.                                                          *
+ * ************************************************************************** */
+
+#ifndef SEP_HASH_H
+#define SEP_HASH_H
+
+#include "cc_plat.h"
+#include "mlli.h"
+#include "ssi_crypto_ctx.h"
+#include "dma_buffer.h"
+#include "hash_defs.h"
+
+/* *****************************************************************************
+ *                DEFINITIONS
+ * *************************************************************************** */
+
+/* *****************************************************************************
+ *                MACROS
+ * *************************************************************************** */
+
+/* *****************************************************************************
+ *                TYPE DEFINITIONS
+ * *************************************************************************** */
+
+/* *****************************************************************************
+ *                FUNCTION PROTOTYPES
+ * *************************************************************************** */
+
+/* !
+ * Get Hash digest size in bytes.
+ *
+ * \param mode Hash mode
+ * \param digestSize [out] A pointer to the digest size return value
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int GetHashDigestSize(const enum sep_hash_mode mode, uint32_t *digestSize);
+
+/* !
+ * Get hardware digest size (HW specific) in bytes.
+ *
+ * \param mode Hash mode
+ * \param hwDigestSize [out] A pointer to the digest size return value
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int GetHashHwDigestSize(const enum sep_hash_mode mode, uint32_t *hwDigestSize);
+
+/* !
+ * Translate Hash mode to hardware specific Hash mode.
+ *
+ * \param mode Hash mode
+ * \param hwMode [out] A pointer to the hash mode return value
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int GetHashHwMode(const enum sep_hash_mode mode, uint32_t *hwMode);
+
+/* !
+ * Get Hash block size in bytes.
+ *
+ * \param mode Hash mode
+ * \param blockSize [out] A pointer to the hash block size return value
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int GetHashBlockSize(const enum sep_hash_mode mode, uint32_t *blockSize);
+
+/* !
+ * Loads the hash digest and hash length to the Hash HW machine.
+ *
+ * \param qid
+ * \param ctxAddr Hash context
+ * \param paddingSelection enable/disable Hash block padding by the Hash machine,
+ *      should be either HASH_PADDING_DISABLED or HASH_PADDING_ENABLED.
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int LoadHashState(int qid, DxSramAddr_t ctxAddr, enum HashConfig1Padding paddingSelection);
+
+/* !
+ * Writes the hash digest and hash length back to the Hash context.
+ *
+ * \param qid
+ * \param ctxAddr Hash context
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int StoreHashState(int qid, DxSramAddr_t ctxAddr);
+
+/* !
+ * This function is used to initialize the HASH machine to perform the
+ * HASH operations. This should be the first function called.
+ *
+ * \param ctxAddr A pointer to the context buffer in SRAM.
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int InitHash(DxSramAddr_t ctxAddr);
+
+/* !
+ * This function is used to process a block(s) of data on HASH machine.
+ * It accepts an input data aligned to hash block size, any reminder which is not
+ * aligned should be passed on calling to "FinalizeHash".
+ *
+ * \param ctxAddr A pointer to the AES context buffer in SRAM.
+ * \param pDmaInputBuffer A structure which represents the DMA input buffer.
+ * \param pDmaOutputBuffer A structure which represents the DMA output buffer.
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int ProcessHash(DxSramAddr_t ctxAddr, DmaBuffer_s *pDmaInputBuffer, DmaBuffer_s *pDmaOutputBuffer);
+
+/* !
+ * This function is used as finish operation of the HASH machine.
+ * The function may either be called after "InitHash" or "ProcessHash".
+ *
+ * \param ctxAddr A pointer to the AES context buffer in SRAM.
+ * \param pDmaInputBuffer A structure which represents the DMA input buffer.
+ * \param pDmaOutputBuffer A structure which represents the DMA output buffer.
+ *
+ * \return int One of DX_SYM_* error codes defined in ssi_error.h.
+ */
+int FinalizeHash(DxSramAddr_t ctxAddr, DmaBuffer_s *pDmaInputBuffer, DmaBuffer_s *pDmaOutputBuffer);
+
+#endif /* SEP_HASH_H */

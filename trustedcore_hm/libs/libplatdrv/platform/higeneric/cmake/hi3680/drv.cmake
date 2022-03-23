@@ -1,0 +1,228 @@
+set(USE_GNU_CXX y)
+list(APPEND PLATDRV_LIBRARIES
+    bz_hm
+)
+
+# oemkey
+include(${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/oemkey/oemkey_driver.cmake)
+
+if ("${CONFIG_DX_ENABLE}" STREQUAL "true")
+    list(APPEND TEE_INCLUDE_PATH
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/ccdriver_lib/include
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/crypto_api
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/crypto_api/cc7x_tee
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/proj/cc7x_tee
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/host/src/cc7x_teelib
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/pal
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/cc_util
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/codesafe/src/crypto_api
+        ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/pal/hmos
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/cc_driver
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/cc_driver/cc712
+    )
+    list(APPEND TEE_C_SOURCES
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/cc_driver/cc712/cc_driver_adapt.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/cc_driver/cc_driver_hal.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/ccdriver_lib/cc_adapt.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/ccdriver_lib/cc_power.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/antiroot/nonsecure_hasher.c
+    )
+endif()
+list(APPEND TEE_INCLUDE_PATH
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/include/platform/kirin980
+    ${PROJECT_SOURCE_DIR}/../../../../vendor/hisi/modem/config/product/${OBB_PRODUCT_NAME}/config
+    ${PROJECT_SOURCE_DIR}/thirdparty/opensource/libbz_hm/src
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/i2c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/spi
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/gpio
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/tzpc
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/tzarch/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/sec
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include/isp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/isp/revisions
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include/ivp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/icc
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include/ivp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/include/bsdiff
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include/hifi
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hdcp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/touchscreen
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/hisee
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/p61
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/file_encry
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/npu
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/video_decrypt
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/include
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/vcodec/hi_vcodec/venc_hivna
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/tee_sharedmem
+)
+if ("${WITH_ENG_VERSION}" STREQUAL "true")
+    list(APPEND TEE_C_SOURCES
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/sion/sion_test.c
+    )
+endif()
+
+if ("${WITH_MODEM}" STREQUAL "true")
+    list(APPEND TEE_C_SOURCES
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/adp/adp_icc.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/adp/bsp_modem_call.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/adp/bsp_param_cfg.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/adp/bsp_secboot_adp.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/icc/ipc_core.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/icc/icc_core.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/icc/icc_debug.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/icc/icc_secos.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/adp/sec_modem_dump.c
+	${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/adp/sec_modem_dump_plat.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/process_modem_info.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/trng/trng_seed.c
+    )
+    list(APPEND TEE_C_DEFINITIONS
+        CONFIG_MODEM_TRNG
+    )
+else()
+    list(APPEND TEE_C_SOURCES
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/modem/adp/bsp_modem_stub.c
+        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/process_modem_info_stub.c
+    )
+endif()
+
+list(APPEND TEE_C_SOURCES
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/i2c/i2c.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/spi/spi.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/gpio/gpio.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/dma/dma.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/tzpc/tzpc_cfg.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/seccfg/hisi_hwspinlock.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/eiius_interface.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/sion/sion.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/iommu/siommu.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/lib/genalloc.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/lib/bitmap.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/sec/kirin980_ddr_autofsgt_proxy_secure_os.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/sec/sec_region.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secmem/driver/sec/tzmp2.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/isp/revisions/hisp.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/ivp/hivp.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/secureboot.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/secboot.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/process_hifi_info.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/process_isp_info.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/zlib/adler32.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/zlib/inffast.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/zlib/inflate.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/zlib/inftrees.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/zlib/uncompr.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/zlib/zutil.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/process_ivp_info.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/hifi/hifi_reload.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hisi_disp.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hisi_fb_sec.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hisi_overlay_utils.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hisi_dss_module_registe.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hdcp_syscall.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_dfc/hisi_dss_dfc_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_dma/hisi_dss_dma_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_ldi/hisi_dss_ldi_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_mctl/hisi_dss_mctl_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_mif/hisi_dss_mif_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_mix/hisi_dss_mix_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_ovl/hisi_dss_ovl_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/reg_smmu/hisi_dss_smmu_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/channel_data/hisi_dss_channel_data_kirin980_base.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hdcp/hisi_hdcp_common.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/display2.0/hdcp/hisi_hdcp_esm.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/hisi_tui_touchscreen.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_amtel.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_jdi.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_novatek.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_himax.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_parade.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_st.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_st_new.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_sec.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_synaptics.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_synaptics_tcm.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_fts.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_gt1x.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_ssl.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_gtx8.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/touchscreen/panel/tui_elan.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/tui_drv/drv_hal.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/tui_drv/mem_cfg.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/tui_drv/tui_drv.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/tui_drv/tui_timer.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/fingerprint/src/tee_fingerprint.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/se_dummy.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/hisee/hisee.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/hisee/ese_data_handle.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/hisee/ipc_a.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/hisee/ipc_msg.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/file_encry/sec_ufs_km.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/file_encry/sec_derive_key.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/file_encry/sec_ufs_key_drv.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/face_recognize/tee_face_recognize.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/npu/npu_main_sec.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/npu/npu_smmu_sec.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/npu/npu_task_sec.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/npu/npu_task_sswq_sec.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/npu/npu_task_wq_sec.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/video_decrypt/vdec_mmap.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/vcodec/hi_vcodec/sec_intf.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/vcodec/hi_vcodec/venc_hivna/venc_tee.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/vcodec/hi_vcodec/venc_hivna/venc_stub.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/eSE/p61/p61.c
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/tee_sharedmem/bl2_sharedmem.c
+)
+list(APPEND TEE_C_DEFINITIONS
+    CONFIG_HISI_EIIUS
+    TEE_SUPPORT_TZMP2
+    CONFIG_HISI_DDR_AUTO_FSGT
+    CONFIG_HISI_DDR_SEC_CFC
+    CONFIG_HISI_DDR_SEC_HIFI_RESET
+    CONFIG_HISI_DDR_SEC_CFG
+    CONFIG_HISI_DDR_SEC_IDENTIFICATION
+    CONFIG_SUPPORT_ISP_LOAD
+    WITH_IMAGE_LOAD_SUPPORT
+    CONFIG_DYNAMIC_MMAP_ADDR
+    CONFIG_CHECK_PTN_NAME
+    BALONG_MODEM_CERT
+    CONFIG_HISI_NVIM_SEC
+    CONFIG_HISI_IVP_SEC_IMAGE
+    CONFIG_COLD_PATCH
+    CONFIG_SUPPORT_HIFI_LOAD
+    CONFIG_DSS_TYPE_KIRIN980
+    CONFIG_MODEM_ASLR
+    SE_VENDOR_HISEE
+    SE_USE_ESE_I2C
+    CONFIG_HISEE_IPC_SUPPORT_BIGDATA
+    CONFIG_HISI_NVIM_SEC
+    TEE_SUPPORT_HIVCODEC
+    SE_VENDOR_NXP
+)
+list(APPEND TEE_CPP_SOURCES
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/bspatch.cpp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/buffer_file.cpp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/extents.cpp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/extents_file.cpp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/file.cpp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/memory_file.cpp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/sink_file.cpp
+    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/secureboot/bspatch/secure_bspatch.cpp
+)

@@ -1,0 +1,12 @@
+libteeconfig_a32.a
+libhmdrv_stub_a32.a
+libtimer_a32.a
+libdx_cc7_a32.a
+libdrv_frame_a32.a
+libhwsecurec_a32.a
+libac_policy_a32.a
+libboringssl_a32.a
+libccmgr_a32.a
+libcrypto_hal_a32.a
+libac_policy.a
+libhwsecurec.a

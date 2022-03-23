@@ -1,0 +1,8 @@
+output/headers/.timestamp:./mtk/.timestamp
+vendor/mtk/libvendor_shared/include/drv_call.h:./mtk/drv_call.h
+libs/libplatdrv/platform/mtk/drv_pal/include/drv_defs.h:./mtk/drv_defs.h
+libs/libplatdrv/platform/mtk/drv_pal/include/drv_error.h:./mtk/drv_error.h
+libs/libplatdrv/platform/mtk/drv_pal/include/drv_fwk.h:./mtk/drv_fwk.h
+libs/libplatdrv/platform/mtk/drv_pal/include/drv_fwk_macro.h:./mtk/drv_fwk_macro.h
+drivers/include/drv_module.h:./mtk/drv_module.h
+drivers/platdrv/include/drv_param_type.h:./mtk/drv_param_type.h

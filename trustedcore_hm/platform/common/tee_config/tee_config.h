@@ -1,0 +1,190 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: some functions declaration in config
+ * Create: 2020-02-19
+ */
+#ifndef PLATFORM_TEE_CONFIG_H
+#define PLATFORM_TEE_CONFIG_H
+
+#include <ta_framework.h>
+
+#define DEFAULT_STACK_SIZE    0x4000
+#define DEFAULT_HEAP_SIZE     0x10000
+
+#define DEFAULT_HIVCODEC_STACK_SIZE 0x800
+#define DEFAULT_HIVCODEC_HEAP_SIZE 0x800
+
+#define INVALID_DIE_ID_SIZE   0U
+#define OTHER_DIE_ID_SIZE     20U
+#define M_DIE_ID_SIZE       32U
+#define DV_DIE_ID_SIZE    32U
+#define DIE_ID_SIZE_MAX       32U /* This value should be equal to the largest DIE_ID_SIZE above */
+
+struct dynamic_mem_uuid_item {
+    uint32_t configid;
+    uint32_t size;
+    TEE_UUID uuid;
+    uint32_t ddr_sec_region;
+};
+
+enum static_mem_tag {
+    MEM_TAG_MIN    = 0,
+    PP_MEM_TAG     = 1,   /* general memory */
+    PRI_PP_MEM_TAG = 2,   /* private memory of ta */
+    PT_MEM_TAG     = 3,   /* private page table of ta */
+    MEM_TAG_MAX,
+};
+
+struct rsv_mem_pool_uuid_item {
+    uint64_t paddr;
+    uint32_t size;
+    TEE_UUID uuid;
+    uint32_t type;
+};
+
+typedef struct rsv_pt_mem_uuid_item rsv_pp_mem_uuid_item;
+
+#define PATH_NAME_MAX (SERVICE_NAME_MAX + 5)
+struct task_info_st {
+    TEE_UUID uuid;
+    char name[SERVICE_NAME_MAX];
+    char path[PATH_NAME_MAX];
+    int priority;
+    bool ta_64bit;
+};
+
+#define MAX_LIB_NAME_LEN   32
+struct drvlib_load_caller_info {
+    TEE_UUID uuid;
+    char name[MAX_LIB_NAME_LEN];
+};
+
+struct drv_frame_info {
+    const char *drv_name;
+    uint64_t sid;
+    uint32_t pid;
+    /*
+     * tbac job type, checked in every ipc call from TA to drv
+     * now we only handle taskmap2tak
+     */
+    uint64_t job_type;
+    size_t stack_size;
+    size_t heap_size;
+    struct tee_uuid uuid;
+    bool is_elf;
+};
+
+#ifdef CONFIG_AUTH_ENHANCE
+struct call_info {
+    char *ca_name;
+    bool mutli_session;
+    int uid;
+    int pid;
+    TEE_UUID uuid;
+};
+
+#define INVALID_PID (-1)
+
+enum {
+    CA_ANTIROOT_IDX = 0,
+    CA_SECBOOT_IDX,
+    CA_SECMEM_IDX,
+    CA_FILEENCRY_IDX,
+    CA_HIVCODEC_IDX,
+};
+#endif
+
+struct ext_agent_uuid_item {
+    TEE_UUID uuid;
+    uint32_t agent_id;
+};
+
+#define ENABLE_TEE_AUDIT_EVENT_ROOTED              0x00000001
+#define ENABLE_TEE_AUDIT_EVENT_MAILBOX_CHECK       0x00000002
+#define ENABLE_TEE_AUDIT_EVENT_TOKEN_VERIFY        0x00000004
+#define ENABLE_TEE_AUDIT_EVENT_CFC_VERIFY          0x00000008
+#define ENABLE_TEE_AUDIT_EVENT_ONCE_REG_RDRMEM     0x00000010
+#define ENABLE_TEE_AUDIT_EVENT_ONCE_REG_NTFMEM     0x00000020
+#define ENABLE_TEE_AUDIT_EVENT_ONCE_REG_REGMAILBOX 0x00000040
+#define ENABLE_TEE_AUDIT_EVENT_AGENT_REGISTERFAIL  0x00000080
+#define ENABLE_TEE_AUDIT_EVENT_CAHASH_VERIFY       0x00000100
+#define ENABLE_TEE_AUDIT_EVENT_CA_OPENAGENT_FAIL   0x00000200
+#define ENABLE_TEE_AUDIT_EVENT_CA2TA_CRASH         0x00000400
+#define ENABLE_TEE_AUDIT_EVENT_TA_LOAD_VERIFY      0x00000800
+#define ENABLE_TEE_AUDIT_EVENT_TA_CHECKCA_FAIL     0x00001000
+#define ENABLE_TEE_AUDIT_EVENT_TA_AGENT_CRASH      0x00002000
+#define ENABLE_TEE_AUDIT_EVENT_TA2TA_CRASH         0x00004000
+#define ENABLE_TEE_AUDIT_EVENT_TA2TA_VERIFY        0x00008000
+#define ENABLE_TEE_AUDIT_EVENT_SYSCALL_PERMVERIFY  0x00010000
+#define ENABLE_TEE_AUDIT_EVENT_SYSCALL_DATAVERIFY  0x00020000
+#define ENABLE_TEE_AUDIT_EVENT_GT_CMDCHECK         0x00040000
+#define ENABLE_TEE_AUDIT_EVENT_GT_CRASH            0x00080000
+#define ENABLE_TEE_AUDIT_EVENT_GT_EXCPTION         0x00100000
+
+
+int get_tee_disable_ca_auth(void);
+uint32_t get_tee_audit_event_enabled(void);
+
+#ifdef CONFIG_AUTH_ENHANCE
+uint32_t get_kernel_ca_whitelist_num(void);
+struct call_info *get_kernel_ca_whitelist(void);
+#endif
+
+/* for spawn whitelist */
+uint32_t get_spawn_list_num(void);
+const char **get_spawn_whitelist(void);
+
+int is_in_spawnlist(const char *name);
+
+uint32_t get_die_id_size_num(void);
+const uint32_t *get_tee_die_id_size(void);
+uint32_t get_platform_die_id_size(void);
+
+/* for builtin task */
+uint32_t get_teeos_builtin_task_nums(void);
+const struct task_info_st *get_teeos_builtin_task_infos(void);
+
+uint32_t get_product_builtin_task_num(void);
+const struct task_info_st *get_product_builtin_task_infos(void);
+
+uint32_t get_builtin_task_nums(void);
+const struct task_info_st *get_builtin_task_info_by_index(uint32_t index);
+bool is_build_in_service(const TEE_UUID *uuid);
+
+/* for service property */
+uint32_t get_teeos_service_property_num(void);
+const struct ta_property *get_teeos_service_property_config(void);
+
+uint32_t get_product_service_property_num(void);
+const struct ta_property *get_product_service_property_config(void);
+
+uint32_t get_build_in_services_property(const TEE_UUID *uuid, struct ta_property *property);
+
+/* for permission config */
+uint32_t get_teeos_ta_permission_num(void);
+const struct ta_permission *get_teeos_ta_permission_config(void);
+
+uint32_t get_product_dynamic_ta_num(void);
+const struct ta_permission *get_product_ta_permission_config(void);
+
+const struct ta_permission *get_permission_config_by_index(uint32_t num);
+uint32_t get_dynamic_ta_num();
+uint32_t get_drv_frame_nums(void);
+struct drv_frame_info *get_drv_frame_infos(void);
+uint32_t get_drvlib_load_caller_nums(void);
+const struct drvlib_load_caller_info *get_drvlib_load_caller_infos(void);
+int32_t get_tbac_info_by_name(const char *name, uint64_t *sid, uint64_t *job_type);
+
+const struct ext_agent_uuid_item *get_ext_agent_whitelist(void);
+uint32_t get_ext_agent_item_num(void);
+bool is_ext_agent(uint32_t agent_id);
+bool check_ext_agent_permission(const TEE_UUID *uuid, uint32_t agent_id);
+
+bool ta_no_uncommit(const TEE_UUID *uuid);
+bool ta_vsroot_flush(const TEE_UUID *uuid);
+uint32_t get_dyn_mem_config_num(void);
+const struct dynamic_mem_uuid_item *get_dyn_mem_config(void);
+const struct dynamic_mem_uuid_item *get_dyn_mem_item_by_configid(uint32_t configid);
+const struct dynamic_mem_uuid_item *get_dyn_mem_item_by_uuid(const TEE_UUID *uuid);
+
+#endif

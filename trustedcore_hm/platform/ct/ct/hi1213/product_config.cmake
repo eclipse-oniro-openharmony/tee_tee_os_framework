@@ -1,0 +1,10 @@
+set(CONFIG_TA_64BIT true)
+set(CONFIG_SSA_64BIT true)
+set(CONFIG_GTASK_64BIT true)
+set(CONFIG_PLATDRV_64BIT false)
+set(CONFIG_DRV_TIMER_64BIT true)
+set(CONFIG_HUK_SERVICE_64BIT true)
+set(ENABLE_TA_LOAD_WHITE_BOX_KEY true)
+set(CONFIG_PERMSRV_64BIT true)
+
+include(${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/modules/modules.cmake)

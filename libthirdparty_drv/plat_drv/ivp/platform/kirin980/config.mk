@@ -1,0 +1,1 @@
+inc-flags += -DCHECK_IVP_SEC_ADDR

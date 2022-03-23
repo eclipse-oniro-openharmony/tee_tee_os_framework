@@ -1,0 +1,277 @@
+# platdrv compile rule
+# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+
+DRIVER := platdrv.elf
+SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
+
+override SOURCE_DIR:=$(TOPDIR)/drivers/platdrv
+
+include $(TOPDIR)/ddk_config.mk
+-include $(PREBUILD_HM_INC)/.config
+
+# platdrv don't support sort objdect file
+# it depends on compile order
+NO_OBJFILE_SORT = y
+
+ifeq ($(CONFIG_SRE_AUDIT),y)
+flags += -DSRE_AUDIT
+endif
+
+ifneq ($(findstring $(CONFIG_EPS_FOR_MSP)$(CONFIG_EPS_FOR_990), true),)
+flags += -DEPS_ENABLE
+endif
+
+ifeq ($(CONFIG_EPS_FOR_990), true)
+flags += -DEPS_FOR_990
+endif
+# Source files required to build the target
+platdrv_c_files := src/main.c           \
+		src/stub.c              \
+		src/drv_pal.c           \
+		src/ccmgr_hm_dispatch.c \
+		src/ccmgr_for_hm.c      \
+		src/sre_dev_relcb.c     \
+		src/sre_hwi_ipc.c       \
+		src/platdrv.c           \
+        src/drv_call_check.c    \
+		src/param_check.c       \
+		src/platform_syscall.c  \
+		src/sys_modem.c         \
+		src/drv_cache_flush.c   \
+		src/io_operations.c      \
+		src/platdrv_hash.c \
+		src/drv_thread.c
+
+ifneq ($(CONFIG_QEMU_PLATFORM),y)
+platdrv_c_files += platform/common/crypto/crypto_syscall.c \
+		platform/common/crypto/crypto_syscall_ae.c \
+		platform/common/crypto/crypto_syscall_cipher.c \
+		platform/common/crypto/crypto_syscall_common.c \
+		platform/common/crypto/crypto_syscall_dh.c \
+		platform/common/crypto/crypto_syscall_ecc.c \
+		platform/common/crypto/crypto_syscall_ecdh.c \
+		platform/common/crypto/crypto_syscall_hash.c \
+		platform/common/crypto/crypto_syscall_hmac.c \
+		platform/common/crypto/crypto_syscall_pbkdf2.c \
+		platform/common/crypto/crypto_syscall_derive_key.c \
+		platform/common/crypto/crypto_syscall_rsa.c
+endif
+
+platdrv_c_files += src/boot_sharedmem.c
+
+ifeq ($(CONFIG_M_DRIVER), true)
+platdrv_c_files += src/vendor_syscall.c
+endif
+
+LIBS :=
+
+############################ others platdrv ###############################
+# ccdriver_lib
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/ccdriver_lib/include
+inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel
+inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
+inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/mtk/tzcc_fw/shared/include/crys/
+inc-flags += -I$(SOURCE_DIR)/platform/common/cc_driver
+inc-flags += -I$(SOURCE_DIR)/platform/common/cc_driver/mtk
+CFILES += platform/common/cc_driver/mtk/cc_driver_adapt.c
+CFILES += platform/mtk/ccdriver_lib/mtk_adapt.c
+CFILES += platform/common/cc_driver/cc_driver_hal.c
+CFILES += platform/mtk/ccdriver_lib/cc_driver_syscall.c
+
+# secboot
+CFILES += platform/mtk/secboot/secureboot.c
+
+# spi
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/spi/inc
+CFILES += platform/mtk/spi/spi_mtk.c
+
+# fignerprint
+CFILES += platform/mtk/fingerprint/src/tee_fingerprint.c
+
+# gpio
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/gpio/inc
+CFILES += platform/mtk/gpio/gpio_mtk.c
+inc-flags += -I$(TOPDIR)/platform/mtk/phone/common/tee_config
+ifeq ($(CONFIG_M_DRIVER), true)
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/drv_pal/include
+CFILES += platform/mtk/drv_pal/src/drv_fwk.c
+CFILES += platform/mtk/drv_pal/src/secmem_core_api.c
+
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/dynion/include
+CFILES += platform/mtk/dynion/src/dynion.c
+CFILES += platform/mtk/dynion/src/dynion_config.c
+endif
+
+# eima2.0+rootscan
+CFILES += platform/mtk/antiroot/nonsecure_hasher.c
+CFILES += platform/mtk/antiroot/sre_rwroot.c
+
+# file based encryption
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/file_encry_v2/
+CFILES += platform/mtk/file_encry_v2/sec_fbe2_km.c \
+          platform/mtk/file_encry_v2/sec_fbe2_ufsc.c
+
+# eSE
+inc-flags += -DMTK_ESE
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/t1
+CFILES += platform/mtk/eSE/se_dummy.c
+ifneq ($(findstring true, $(CONFIG_SE_SERVICE_32BIT)$(CONFIG_SE_SERVICE_64BIT)),)
+CFILES += platform/mtk/eSE/se_syscall.c
+endif
+
+# t1
+inc-flags += -DSE_SUPPORT_ST
+inc-flags += -DSE_VENDOR_NXP
+CFILES += platform/mtk/eSE/atf/atf.c
+CFILES += platform/mtk/eSE/t1/t1.c
+
+#p73
+inc-flags += -DSE_SUPPORT_MULTISE
+inc-flags += -DSE_SUPPORT_SN110
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/spi_common
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73/inc
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73/pal
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73/common
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73/lib
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73/spm
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73/utils
+inc-flags += -I$(SOURCE_DIR)/platform/mtk/eSE/p73/pal/spi
+CFILES += platform/mtk/eSE/spi_common/spi_common.c
+CFILES += platform/mtk/eSE/p73/p73.c
+CFILES += platform/mtk/eSE/p73/pal/spi/phNxpEsePal_spi.c
+CFILES += platform/mtk/eSE/p73/pal/phNxpEsePal.c
+CFILES += platform/mtk/eSE/p73/lib/phNxpEse_Api.c
+CFILES += platform/mtk/eSE/p73/lib/phNxpEse_Api_hisi.c
+CFILES += platform/mtk/eSE/p73/lib/phNxpEse_Apdu_Api.c
+CFILES += platform/mtk/eSE/p73/lib/phNxpEseDataMgr.c
+CFILES += platform/mtk/eSE/p73/lib/phNxpEseProto7816_3.c
+CFILES += platform/mtk/eSE/p73/utils/ese_config_hisi.c
+CFILES += platform/mtk/eSE/p73/utils/ringbuffer.c
+
+platdrv_c_files += $(CFILES)
+
+inc-flags += -I$(TOPDIR)/prebuild/hm-apps-release/headers/mtk
+c-flags += -Wno-implicit-fallthrough
+ifeq ($(CONFIG_PLATDRV_64BIT), true)
+flags += -DPLATDRV_64
+inc-flags += -I$(TOPDIR)/libs/mtk-platdrv/platform/common/include
+endif
+inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
+inc-flags += -I$(TOPDIR)/output/headers/mtk
+c-flags += -I$(SOURCE_DIR)/include
+inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(TOPDIR)/platform/common/tee_config
+inc-flags += -I$(TOPDIR)/drivers/platdrv/platform/common/crypto
+inc-flags += -I$(TOPDIR)/drivers/platdrv/src
+inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
+inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel # sre_rwroot.h
+inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/include
+inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/platdrv/include
+inc-flags += -I$(TOPDIR)/vendor/$(PLATFORM_NAME)/libvendor_shared/include
+
+#fix me not merged to hisi
+inc-flags += -I$(TOPDIR)../../hm-teeos/libs/syslib/libsyscalls/include
+LIBS += agent${TARG} hwi${TARG} c_shared${TARG} agent_base${TARG} crypto${TARG}
+LIBS += timer${TARG} ac${TARG} mmgr${TARG} hongmeng${TARG} syscalls${TARG} ipc${TARG}
+LIBS += teemem${TARG} teeconfig${TARG} teeos${TARG} crypto_hal${TARG}
+ifneq ($(filter $(TARGET_BOARD_PLATFORM), mt6885), )
+LIBS += boringssl${TARG} ccmgr${TARG} hmdrv${TARG}
+endif
+ifeq ($(CONFIG_DX_ENABLE), true)
+flags += -DDX_ENABLE
+LIBS += dx_cc7${TARG}
+endif
+
+# add compile libs in here
+#platdrv_LDFLAGS += -whole-archive -ldrv_lib -no-whole-archive
+
+ifeq ($(CONFIG_CIPHER_ENABLE), true)
+flags += -DDX_ENABLE
+endif
+
+ifeq ($(CONFIG_TRNG_ENABLE), true)
+flags += -DTRNG_ENABLE
+endif
+
+ifeq ($(CONFIG_DRV_SEC_ENABLE), true)
+flags += -DDRV_SEC_ENABLE
+endif
+
+ENTRY_POINT := main
+DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so --dynamic-list=export.txt
+LIBS += hmdrv_stub${TARG}
+LIBS += drv_frame${TARG}
+LIBS += ac_policy${TARG}
+
+# sanitity will disable gc-section, need to add all dependence libs
+ifeq ($(CONFIG_KASAN),y)
+LIBS += ccmgr${TARG} hmdrv${TARG}
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+LIBS += boringssl${TARG}
+else
+LIBS += openssl${TARG}
+endif
+endif
+
+############################ drv-common.mk ###############################
+include $(TOPDIR)/mk/ddk_drv.mk
+
+
+
+# k->u function rename
+flags += -DSRE_HuntByName=ipc_hunt_by_name           \
+	   -DSRE_MsgSnd=ipc_msg_snd                   \
+	   -DSRE_MsgQSend=ipc_msg_qsend               \
+	   -DSRE_MsgQRecv=ipc_msg_q_recv               \
+	   -Dv8_dma_flush_range=__dma_flush_range      \
+	   -Dv7_dma_clean_range=__dma_clean_range      \
+	   -Dv7_flush_kern_cache_all=flush_cache_all   \
+	   -Dunmap=munmap                              \
+	   -Dgic_spi_notify=fake_gic_spi_notify        \
+	   -DSRE_TaskSelf=task_caller
+
+flags += -DTARGET_PRODUCT_VAL=\"$(TARGET_BOARD_PLATFORM)\"  $(TRUSTEDCORE_LOCAL_CFLAGS)
+
+ifeq ($(CONFIG_GCOV),y)
+$(BUILD_DIR)/src/%.o: c-flags += -g --coverage
+endif
+
+# for DECLARE_TC_DRV, prevent ".tc_drv_descs" section from being merged
+ifeq (${TARG},)
+platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker64.ld
+endif
+
+ifeq (${TARG},)
+ifeq (${CONFIG_ENABLE_XOM},y)
+	platdrv_LDFLAGS += -execute-only
+endif
+endif
+
+ifeq (${TARG},_a32)
+ifeq ($(CONFIG_ENABLE_XOM32),y)
+ifeq ($(xom32_enable),y)
+platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker.xom.ld
+else
+platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker.ld
+endif
+else
+platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker.ld
+endif
+endif
+
+
+
+# should set after include platdrv_binary.mk since LIBS_THIRD_VENDOR defined in platdrv_binary.mk
+platdrv_LDFLAGS += --whole-archive $(LIBS_THIRD_VENDOR) -no-whole-archive
+
+# use -L 1 -s 262144 to make sure that xargs will not wrap the arguments
+
+install: $(SCRAMBLED_SYMS)
+	@echo "platdrv strip begin"
+	@$(READELF) -W -s $(INSTALL_FILE) | grep ' FUNC ' | \
+		awk -v path=$(INSTALL_FILE) '{printf " -K "$$8} END {printf(" %s", path)}' | \
+		xargs -L 1 -s 262144 $(STRIP)
+	@echo "platdrv strip end"
+

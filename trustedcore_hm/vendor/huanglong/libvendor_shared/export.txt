@@ -1,0 +1,8 @@
+{
+global:
+__tee_hal_get_dieid;
+TEE_AEDecryptFinal_KDS;
+TEE_AEEncryptFinal_KDS;
+ext_tee_flash_get_rpmb_info;
+local: *;
+};

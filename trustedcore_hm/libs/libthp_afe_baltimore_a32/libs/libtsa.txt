@@ -1,0 +1,11 @@
+2021/3/5
+TL_develop_V1.420.0
+1. 适配teton 汇顶Project id
+2020/12/21
+TL_develop_V1.382.0
+1. 适配更多Project id
+2020/8/14
+1. 修复Teton TUI 内存太小问题
+2. 修复Teton TUI 右半屏不报点问题
+2019/11/13
+support goodix thp for baltimore udp

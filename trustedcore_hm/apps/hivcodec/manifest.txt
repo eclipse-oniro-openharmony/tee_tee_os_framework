@@ -1,0 +1,7 @@
+gpd.ta.appID:   		528822b7-fc78-466b-b57e-62093d6034a7
+gpd.ta.service_name:    hivcodec
+gpd.ta.singleInstance:		true
+gpd.ta.multiSession:        False
+gpd.ta.instanceKeepAlive:   true
+gpd.ta.dataSize:           327680
+gpd.ta.stackSize:          8192

@@ -1,0 +1,254 @@
+EXTERN(
+/* vendor_shared internal */
+__tee_hal_get_dieid
+TEE_inSE_support
+TEE_EXT_Get_Skytone_Version
+__hdcp13_key_all_set
+__hdcp22_key_set
+__hdcp_dp_enable
+__hdcp_get_value
+__hdcp_set_reg
+__hdcp_ioctl
+__hdcp_wfd_handle_map
+__hdcp_wfd_handle_unmap
+__scard_connect
+__scard_disconnect
+__driver_p61_factory_test
+__scard_transmit
+__scard_support_mode
+__scard_send
+__scard_receive
+__scard_get_status
+__inse_connect
+__inse_disconnect
+__ese_transmit_data
+__ese_read_data
+__scard_get_ese_type
+__SE_getflag
+__SE_setflag
+__hisi_secboot_process_soc_addr
+__hisi_secboot_copy_soc_data
+__hisi_secboot_soc_verification
+__hisi_secboot_soc_reset
+__hisi_secboot_soc_set
+__hisi_secboot_get_vrl_addr
+__secboot_get_cuid
+__bsp_modem_call
+__sre_se_channel_info_write
+__sre_se_channel_info_read
+__sre_se_deactive_write
+__sre_se_deactive_read
+__sre_seaid_switch_write
+__sre_seaid_list_len_read
+__sre_seaid_switch_read
+__sre_se_connect_info_write
+__sre_se_connect_info_read
+__hisi_mspc_check_secflash
+__hisi_mspc_fac_mode_enter
+__hisi_mspc_fac_mode_exit
+__hisi_mspc_recovery
+__hisi_mspc_secflash_writelock
+__secflash_chip_reset
+__secflash_power_save
+
+/* seplat */
+seplat_get_dts_status
+seplat_power_ctrl
+
+/* driver_api */
+__file_encry_interface
+__driver_fingerprint_command
+__driver_spi_full_duplex
+__driver_spi_full_duplex_with_speed
+__driver_spi_half_duplex_with_speed
+__driver_spi_dev2_full_duplex
+__driver_spi_dev2_full_duplex_with_speed
+__driver_spi_dev2_half_duplex_with_speed
+__driver_fp_set_spi_mode
+__fr_read_current_time
+__fr_secure_memory_map
+__fr_secure_memory_unmap
+__fr_is_secure_memory
+__fr_flush_cache
+__fr_sion_pool_flag_set
+__fr_sion_pool_flag_unset
+__fr_get_static_phy_addr
+__tee_call_hieps_drivers
+__hisi_secboot_copy_img_from_os
+__eiius_encrypto_ctr
+__eiius_image_verify
+__eiius_get_paddr
+__eiius_secure_memory_map
+__eiius_secure_memory_unmap
+__npu_syscall_ioctl_cmdproc
+__npu_syscall_llseek_cmdproc
+__npu_syscall_open_cmdproc
+__npu_syscall_release_cmdproc
+__npu_syscall_write_cmdproc
+__teesvm_ioctl
+__sion_ioctl
+sion_mmap
+sion_munmap
+sion_create_smmu_domain
+sion_destroy_smmu_domain
+ddr_sec_cfg
+sion_mmap_sfd
+sion_munmap_sfd
+sion_ddr_sec_cfg
+secmem_get_version
+secmem_smmu_domain_init
+secmem_smmu_domain_destroy
+__SECURE_TEE_Mmap
+__SECURE_TEE_Unmap
+__SECURE_FlushCache
+__SECURE_ISSecureMemory
+__ese_proto7816_reset
+__phNxpEse_GetOsMode
+__ese_set_nfc_chiptype
+__mspe_poweron
+__mspe_poweroff
+__mspe_rnd_gen_trnd
+__mspe_sm2_gen_key
+__mspe_sm2_encrypt
+__mspe_sm2_decrypt
+__mspe_sm3_hash_init
+__mspe_sm3_hash_update
+__mspe_sm3_hash_dofinal
+__mspe_sm3_hash_sigle
+__mspe_sm4_set_key
+__mspe_sm4_set_iv
+__mspe_sm4_init
+__mspe_sm4_update
+__mspe_sm4_dofinal
+__mspe_km_derive_kdr
+__mspe_sm9_sign
+__mspe_sm9_verify
+__mspe_sm9_encrypt
+__mspe_sm9_decrypt
+__mspe_sm9_wrap_key
+__mspe_sm9_unwrap_key
+__mspe_sm9_pre_data
+__secisp_mem_end
+#ifdef DEF_ENG
+__tee_call_bus_drivers;
+#endif
+
+#if (defined TEE_SUPPORT_SEM || defined TEE_SUPPORT_SE_SERVICE_32BIT || defined TEE_SUPPORT_SE_SERVICE_64BIT)
+/* msp core start */
+TEE_EXT_MSPLoadSA
+TEE_EXT_MSPInstallSA
+TEE_EXT_MSPGetStatus
+/* msp core end */
+#endif
+
+/* weaver start */
+TEE_EXT_WeaverGetNumSlots
+TEE_EXT_WeaverWrite
+TEE_EXT_WeaverRead
+TEE_EXT_WeaverErase
+TEE_EXT_WeaverEraseAll
+TEE_EXT_WeaverGetStatus
+TEE_EXT_WeaverGetErrorType
+/* weaver end */
+
+/* secflash start */
+TEE_EXT_SecFlashIsAvailable
+TEE_EXT_SecFlashFactoryRecovery
+TEE_EXT_SecFlashPowerSaving
+TEE_EXT_SecFlashReset
+TEE_EXT_SecFlashGetBindingKey
+TEE_EXT_SecFlashWriteLockEnable
+__secflash_chip_reset
+__secflash_power_save
+sf_creat_persistent_object
+sf_open_persistent_object
+sf_read_object_data
+sf_write_object_data
+sf_truncate_object_data
+sf_seek_object_data
+sf_close_and_delete_persistent_object
+sf_info_object_data
+sf_sync_persistent_object
+sf_rename_persistent_object
+sf_close_object
+/* secflash end */
+
+/* mspc start */
+TEE_EXT_MSPIsAvailable
+__hisi_mspc_check_secflash
+TEE_EXT_MSPServiceIsAvailable
+__hisi_mspc_power_on
+__hisi_mspc_power_off
+TEE_EXT_MspcRecovery
+TEE_EXT_MspcPowerOn
+TEE_EXT_MspcPowerOff
+TEE_EXT_MspcIpcTest
+TEE_EXT_MspcDdrRead
+TEE_EXT_MspcDdrWrite
+__mspc_ipc_test
+__mspc_ddr_read
+__mspc_ddr_write
+/* mspc end */
+
+/* root of trust start */
+TEE_EXT_ROTImportKey
+TEE_EXT_ROTExportCert
+TEE_EXT_ROTSign
+TEE_EXT_ROTStoreID
+TEE_EXT_ROTVerifyID
+TEE_EXT_ROTGenerateKey
+TEE_EXT_ROTGenerateAppKey
+TEE_EXT_ROTExportKey
+TEE_EXT_ROTVerify
+TEE_EXT_ROTComputeMAC
+TEE_EXT_ROTCompareMAC
+TEE_EXT_ROTEncrypt
+TEE_EXT_ROTDecrypt
+TEE_EXT_ROTCertExist
+TEE_EXT_ROTAttestKey
+TEE_EXT_ROTGetBlobHandle
+/* root of trust end */
+
+/* art start */
+TEE_EXT_ARTAllocSlot
+TEE_EXT_ARTReadCounter
+TEE_EXT_ARTIncreaseCounter
+/* art end */
+
+/* biometric start */
+TEE_EXT_BioLoadSA
+TEE_EXT_BioInstallSA
+TEE_EXT_BioStartSA
+TEE_EXT_BioSendCommand
+TEE_EXT_BioCloseSA
+TEE_EXT_BioReInit
+/* biometric end */
+
+/* secure memory begin */
+#ifdef TEE_SUPPORT_VLTMM_SRV
+vlt_create_zone
+vlt_destroy_zone
+vlt_malloc
+vlt_free
+vlt_open
+vlt_close
+vlt_map
+vlt_unmap
+vlt_import_fd
+vlt_pool_dump
+vlt_shrinker
+vlt_errno
+vlt_create_siommu_domain
+vlt_destroy_siommu_domain
+#endif
+tee_ese_transmit
+tee_ese_read
+secmem_get_version
+/* secure memory end */
+/* mspe chianDRM api start */
+cdrm_hisee_video_init
+cdrm_hisee_video_update
+cdrm_hisee_video_dofinal
+cdrm_hisee_video_deinit
+/* mspe chianDRM api end */
+)

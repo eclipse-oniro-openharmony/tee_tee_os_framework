@@ -1,0 +1,255 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: tee_drv_server dispatch function define when receive cmd
+ * Create: 2021-03-01
+ */
+#include "drv_dispatch.h"
+#include <stdint.h>
+#include <inttypes.h>
+#include <pthread.h>
+#include <securec.h>
+#include <sys/hm_types.h>
+#include <sys/usrsyscall_ext.h>
+#include <ac.h>
+#include <ipclib.h>
+#include <tee_log.h>
+#include <hmdrv.h>
+#include <tee_drv_internal.h>
+#include "tee_driver_module.h"
+#include "drv_thread.h"
+#include "drv_operations.h"
+#include "tee_drv_entry.h"
+
+static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_req_msg_t *msg,
+                              const struct hmcap_message_info *info)
+{
+    if (msg == NULL || info == NULL) {
+        tloge("invalid parameters\n");
+        return -1;
+    }
+
+    uint32_t cnode_idx = info->src_cnode_idx;
+    if ((cnode_idx == 0) || (info->msg_size < sizeof(struct hm_drv_req_msg_t))) {
+        tloge("invalid cnode or invalid msg size\n");
+        return -1;
+    }
+
+    /* params uuid will set in open/ioctl/close function */
+    params->args = (uintptr_t)msg->args;
+    params->data = (uintptr_t)msg->data;
+    params->caller_pid = hmpid_to_pid(TCBCREF2TID(info->src_tcb_cref), info->src_cred.pid);
+
+    return 0;
+}
+
+static int64_t driver_open_func(const struct tee_drv_param *params)
+{
+    char *indata = (char *)(uintptr_t)params->data;
+    if (indata == NULL) {
+        tloge("invalid input buffer\n");
+        return -1;
+    }
+
+    msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
+    if (pid_to_hmpid(drv_mgr_pid) != (pid_to_hmpid(params->caller_pid))) {
+        tloge("caller pid:0x%x cannot call open\n", params->caller_pid);
+        return -1;
+    }
+
+    const struct tee_driver_module *drv_func = get_drv_func();
+
+    /* open fd and call open_fn */
+    int64_t fd = driver_open(params, drv_func);
+    if (fd <= 0)
+        tloge("drv open fd failed ret:0x%llx\n", fd);
+
+    return fd;
+}
+
+static int64_t driver_close_func(const struct tee_drv_param *params)
+{
+    uint64_t *args = (uint64_t *)(uintptr_t)params->args;
+
+    msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
+    if (pid_to_hmpid(drv_mgr_pid) != (pid_to_hmpid(params->caller_pid))) {
+        tloge("caller pid:0x%x cannot call close\n", params->caller_pid);
+        return -1;
+    }
+
+    return driver_close(args[DRV_CLOSE_FD_INDEX], params);
+}
+
+static int32_t driver_general_handle(struct tee_drv_param *params, int64_t *ret_val)
+{
+    uint64_t *args = (uint64_t *)(uintptr_t)params->args;
+    if (args == NULL) {
+        tloge("args is invalid\n");
+        return -1;
+    }
+
+    uint64_t drv_cmd = args[DRV_FRAM_CMD_INDEX];
+    int64_t ret;
+    int64_t fn_ret = 0;
+
+    if (drv_cmd == CALL_DRV_OPEN) {
+        ret = driver_open_func(params);
+    } else if (drv_cmd == CALL_DRV_IOCTL) {
+        ret = driver_ioctl(args[DRV_IOCTL_FD_INDEX], params, get_drv_func(), &fn_ret);
+    } else if (drv_cmd == CALL_DRV_CLOSE) {
+        ret = driver_close_func(params);
+    } else {
+        printf("drv_cmd:%" PRIx64 " not support\n", drv_cmd);
+        return -1;
+    }
+
+    if (ret == 0)
+        *ret_val = fn_ret;
+    else
+        *ret_val = ret;
+
+    return 0;
+}
+
+#ifdef TEE_SUPPORT_DRV_FD_DUMP
+static int32_t driver_dump_handle(int64_t *ret_val, const struct tee_drv_param *params)
+{
+    msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
+    if (pid_to_hmpid(drv_mgr_pid) != (pid_to_hmpid(params->caller_pid))) {
+        tloge("this task not support dump fd\n");
+        return -1;
+    }
+
+    tloge("========= driver dump begin ===========\n");
+    driver_dump();
+    tloge("========= driver dump end ===========\n");
+
+    *ret_val = 0;
+    return 0;
+}
+#endif
+
+static int32_t driver_syscall_dispatch(int32_t swi_id, struct tee_drv_param *params, int64_t *ret_val)
+{
+    int32_t ret = -1;
+
+    switch (swi_id) {
+    case DRV_GENERAL_CMD_ID:
+        ret = driver_general_handle(params, ret_val);
+        break;
+#ifdef TEE_SUPPORT_DRV_FD_DUMP
+    case DRV_DUMP_CMD_ID:
+        ret = driver_dump_handle(ret_val, params);
+        break;
+#endif
+    case REGISTER_DRV_CMD_PERM:
+        ret = driver_register_cmd_perm(params, ret_val);
+        break;
+    default:
+        tloge("swi_id:0x%x cannot handle\n", swi_id);
+    }
+
+    return ret;
+}
+
+static int32_t driver_syscall(const struct hm_drv_req_msg_t *msg, const struct hmcap_message_info *info,
+                              struct tee_drv_param *params, int32_t swi_id, int64_t *ret_val)
+{
+    int32_t ret;
+    tid_t tid;
+
+    ret = get_drv_params(params, msg, info);
+    if (ret != 0) {
+        tloge("get driver parameters failed\n");
+        return -1;
+    }
+
+    ret = hm_gettid(&tid);
+    if (ret != 0) {
+        tloge("failed to get tid\n");
+        return -1;
+    }
+
+    update_callerpid_by_tid(tid, params->caller_pid);
+    ret = driver_syscall_dispatch(swi_id, params, ret_val);
+    update_callerpid_by_tid(tid, INVALID_CALLER_PID);
+    if (ret != 0)
+        tloge("handle swi 0x%x failed\n", swi_id);
+
+    return ret;
+}
+
+static void driver_reply_error_handle(int32_t swi_id, const struct tee_drv_param *params, int64_t ret_val)
+{
+    uint64_t *args = (uint64_t *)(uintptr_t)params->args;
+    if (args == NULL) {
+        tloge("args is invalid\n");
+        return;
+    }
+
+    if (!((swi_id == DRV_GENERAL_CMD_ID) && (args[DRV_FRAM_CMD_INDEX] == CALL_DRV_OPEN)))
+        return;
+
+    if (ret_val <= 0)
+        return;
+
+    tloge("drv open reply failed, call drv close fd:%"PRIx64"\n", ret_val);
+    uint32_t drv_index = get_drv_index();
+    int64_t close_ret = driver_close((((uint64_t)drv_index << DRV_INDEX_OFFSET) | (uint64_t)ret_val), params);
+    if (close_ret != 0)
+        tloge("close fd:%" PRIx64 " failed in reply error handle\n", ret_val);
+}
+
+static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const struct hmcap_message_info *info,
+                                     struct hm_drv_reply_msg_t *rmsg, const cref_t *msg_hdl)
+{
+    int64_t ret_val = -1;
+    int32_t ret;
+    struct tee_drv_param params = { 0 };
+    int32_t swi_id = msg->header.send.msg_id;
+
+    ret = driver_syscall(msg, info, &params, swi_id, &ret_val);
+    if (ret != 0)
+        tloge("handle driver syscall failed ret:0x%x\n", ret);
+
+    rmsg->header.reply.ret_val = (ret == 0) ? ret_val : (int64_t)ret;
+    ret = hm_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
+    if (ret != 0) {
+        tloge("hm msg reply failed\n");
+        /*
+         * should clear system resource information alloced by this cmd when reply failed,
+         * otherwise it will cause memory leak
+         */
+        driver_reply_error_handle(swi_id, &params, ret_val);
+    }
+
+    return ret;
+}
+
+intptr_t driver_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *info)
+{
+    char *reply_raw_buf = NULL;
+    int32_t ret;
+
+    if ((p_msg_hdl == NULL) || (info == NULL) || (msg == NULL)) {
+        tloge("invalid dispatch param\n");
+        return -1;
+    }
+
+    reply_raw_buf = malloc(REPLY_BUF_LEN);
+    if (reply_raw_buf == NULL) {
+        tloge("alloc reply buf:0x%x failed\n", REPLY_BUF_LEN);
+        return -1;
+    }
+
+    (void)memset_s(reply_raw_buf, REPLY_BUF_LEN, 0, REPLY_BUF_LEN);
+
+    ret = driver_handle_message((struct hm_drv_req_msg_t *)msg, info,
+        (struct hm_drv_reply_msg_t *)reply_raw_buf, p_msg_hdl);
+    if (ret != 0)
+        tloge("driver handle message failed\n");
+
+    (void)memset_s(reply_raw_buf, REPLY_BUF_LEN, 0, REPLY_BUF_LEN);
+    free(reply_raw_buf);
+
+    return ret;
+}
