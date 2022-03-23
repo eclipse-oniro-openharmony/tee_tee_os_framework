@@ -63,9 +63,6 @@ flags += -include$(PREBUILD_DIR)/headers/autoconf.h
 
 cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
 
-# use cpp
-#include $(TOPDIR)/mk/cxx.mk
-
 RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 
 ifeq ($(ARCH),aarch64)

@@ -229,7 +229,6 @@ $(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
 		$(TRUSTEDCORE_PHY_IMAGE_LOAD_BASE)
 ifneq ($(CODE_CHECKER),y)
 	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/syslib/libc/clean_libc.sh  $(TOPDIR)/../../tee_os_kernel
-	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/syslib/libc++/clean_libcxx.sh  $(TOPDIR)/../../tee_os_kernel
 	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/teelib/libcompiler-rt/clean_compiler-rt.sh $(TOPDIR)/../../tee_os_kernel
 	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/teelib/libopenssl/clean_openssl.sh $(TOPDIR)/../../tee_os_kernel
 	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/teelib/libboringssl/clean.sh  $(TOPDIR)/../../tee_os_kernel
