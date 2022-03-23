@@ -42,7 +42,6 @@ INCLUDE_PATH += $(TOPDIR)/tools/
 
 include $(TOPDIR)/mk/toolchain.mk
 include $(TOPDIR)/mk/llvm-apps-xom.mk
-LLVM_INC := $(OUTPUTDIR)/headers/libc++
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
 inc-flags += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/libhwsecurec/
@@ -62,9 +61,6 @@ flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG
 flags += -include$(PREBUILD_DIR)/headers/autoconf.h
 
 cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
-
-# use cpp
-#include $(TOPDIR)/mk/cxx.mk
 
 RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 
