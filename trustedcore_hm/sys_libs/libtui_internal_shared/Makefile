@@ -31,7 +31,7 @@ $(MODULE_FILE): extern.txt
 	@echo "[ LD ] $@"
 	$(VER)$(LD) --shared -X -EL -z text -z now -m aarch64elf -z relro -z noexecstack -z max-page-size=4096 --gc-sections --version-script=export.txt -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) \
-		-lpng${TARG} -lzlib${TARG} -lfreetype $(LIBCOMPILER_RT_BUILTINS) -nostdlib $(LIBTUI_INTERNAL_SHARED_DFLAGS)
+		-lzlib${TARG} $(LIBCOMPILER_RT_BUILTINS) -nostdlib $(LIBTUI_INTERNAL_SHARED_DFLAGS)
 endif
 
 ifeq (${TARG}, _a32)
@@ -41,7 +41,7 @@ $(MODULE_FILE): extern.txt
 	echo "[ LD ] $@"
 	$(VER)$(LD) $(xom32_ldflags) --shared -X -EL -z text -z now -m armelf_linux_eabi -z relro -z noexecstack --gc-sections --version-script=export.txt -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) \
-		-lpng${TARG} -lzlib${TARG} -lfreetype${TARG} $(LIBCOMPILER_RT_BUILTINS) -nostdlib
+		-lzlib${TARG} $(LIBCOMPILER_RT_BUILTINS) -nostdlib
 	$(VER)$(XOM) $@
 	$(VER)$(OBJCOPY) $@ --remove-section ".xomloc"
 else
@@ -50,6 +50,6 @@ $(MODULE_FILE): extern.txt
 	echo "[ LD ] $@"
 	$(VER)$(LD) $(xom32_ldflags) --shared -X -EL -z text -z now -m armelf_linux_eabi -z relro -z noexecstack --gc-sections --version-script=export.txt -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) \
-		-lpng${TARG} -lzlib${TARG} -lfreetype${TARG} $(LIBCOMPILER_RT_BUILTINS) -nostdlib
+		-lzlib${TARG} $(LIBCOMPILER_RT_BUILTINS) -nostdlib
 endif
 endif

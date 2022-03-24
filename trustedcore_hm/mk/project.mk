@@ -5,9 +5,7 @@
 # ramdisk tools, run on host
 # compile libs rules
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-crypto_lib :=
-else ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
 crypto_lib :=
 else
 crypto_lib :=

@@ -18,9 +18,7 @@ ifeq ($(CONFIG_DX_ENABLE), true)
 arm_vendor_ext_libs += libdxcc
 endif
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-arm_open_source_libs +=
-else ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
 arm_open_source_libs +=
 else
 arm_open_source_libs +=

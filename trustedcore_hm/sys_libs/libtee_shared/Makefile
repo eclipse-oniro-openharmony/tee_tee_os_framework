@@ -78,9 +78,7 @@ ld-flags += -lrpmb$(TARG)
 endif
 ld-flags += -lsec_fs_msg$(TARG)
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-ld-flags += -lmbedtls${TARG}
-else ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
 ld-flags += -lboringssl${TARG}
 else
 ld-flags += -lopenssl${TARG}

@@ -15,10 +15,6 @@ inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi # rpmb_fcntl.h
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi
 inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/common/crypto
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), mbedtls)
-inc-flags += -I$(PREBUILD_HEADER)/mbedtls
-endif
-
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), boringssl)
 inc-flags += -I$(PREBUILD_HEADER)/boringssl
 endif
@@ -41,9 +37,7 @@ ifeq ($(CONFIG_CRYPTO_AES_WRAPPER),true)
 c-flags += -DCRYPTO_SUPPORT_AES_WRAPPER
 endif
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-c-flags += -DMBEDTLS_ENABLE
-else ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
 c-flags += -DBORINGSSL_ENABLE
 else
 c-flags += -DOPENSSL_ENABLE
