@@ -124,23 +124,13 @@ endif
 
 ifeq ($(USE_NDK_32), y)
   A32_CFLAGS += -nodefaultlibs -nostartfiles
-  LDFLAGS += -L $(HM_LIBS_PATH)/syslib/libc++/$(ARCH)/libs
-  LDFLAGS += -lc++_static -lc++abi -lunwind
   LDFLAGS += $(ATOMIC_LIB) --eh-frame-hdr --allow-shlib-undefined
-  A32_CXXFLAGS := -nostdinc++ -static-libstdc++
-  A32_CXXFLAGS += -std=gnu++11 -funwind-tables
-  A32_CXXFLAGS += -I$(HM_LIBS_PATH)/syslib/libcxx/c++_sdk/libs/libcxx/libcxx/include
 endif
 
 ifeq ($(USE_NDK_64), y)
   CFLAGS += -nodefaultlibs -nostartfiles
-  LDFLAGS += -L $(HM_LIBS_PATH)/syslib/libc++/$(ARCH)/libs
-  LDFLAGS += -lc++_static -lc++abi
   LDFLAGS += --eh-frame-hdr --allow-shlib-undefined
   CFLAGS := $(filter-out -march=armv8-a+nofp -nostdinc -march=armv8-a, $(CFLAGS)) -march=armv8-a
-  CXXFLAGS := -nostdinc++ -static-libstdc++
-  CXXFLAGS += -std=gnu++11 -funwind-tables
-  CXXFLAGS += -I$(HM_LIBS_PATH)/syslib/libcxx/c++_sdk/libs/libcxx/libcxx/include
 endif
 
 ASFLAGS += $(NK_ASFLAGS)

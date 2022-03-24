@@ -6,7 +6,6 @@ TARGET_IS_DRV := y
 include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
 include $(TOPDIR)/mk/llvm-apps-xom.mk
-LLVM_INC := $(PREBUILD_DIR)/headers/libc++
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
 # use musl lib c headers.
@@ -21,9 +20,6 @@ flags += -nodefaultlibs
 flags += -DARM_PAE=1
 flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG -DHM_DEBUG_KERNEL -DNDEBUG
 flags += -include$(PREBUILD_DIR)/headers/autoconf.h
-
-# use cpp
-include $(TOPDIR)/mk/cxx.mk
 
 RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 

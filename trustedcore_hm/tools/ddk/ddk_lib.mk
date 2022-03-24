@@ -43,7 +43,6 @@ INCLUDE_PATH += $(PREBUILD_INNER_SDK)/teeapi/tui \
 include $(TOPDIR)/mk/toolchain.mk
 include $(TOPDIR)/mk/llvm-apps-xom.mk
 include $(TOPDIR)/mk/llvm-apps-cfi.mk
-LLVM_INC := $(OUTPUTDIR)/headers/libc++
 
 inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/hm -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH) -I$(PREBUILD_HEADER)/gen/arch/$(ARCH)
 inc-flags += $(INCLUDE_PATH:%=-I%)
