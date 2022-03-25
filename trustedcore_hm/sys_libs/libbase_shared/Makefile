@@ -53,9 +53,7 @@ ifeq (${CONFIG_ENABLE_XOM},y)
 endif
 endif
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-ld-flags += -lmbedtls${TARG}
-else ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
 ld-flags += -lboringssl${TARG}
 else
 ld-flags += -lopenssl${TARG}

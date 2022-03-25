@@ -211,7 +211,7 @@ CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/mesp_de
 CHOOSE_OPTIONS_2 := ta_magic.c
 CHOOSE_OPTIONS_2 += $(wildcard $(ROOT_PATH)/sys_libs/libta_magic_a32/src/*.c)
 
-FILTER_MODULE := open_source libgmssl libboringssl openssl libpng libmbedtls austin
+FILTER_MODULE := open_source libgmssl libboringssl openssl austin
 FILTER_MODULE += secisp kds bdkernel task_secboot sre_dev_relcb eSE touchscreen npu_v100 video_decrypt
 
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -Wformat=2 -fsigned-char -fno-strict-aliasing \
