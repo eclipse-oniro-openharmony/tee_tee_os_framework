@@ -46,7 +46,7 @@ MODULE_FOLDER := $(shell basename $(CURDIR))
 
 include $(TOPDIR)/mk/var.mk
 
-CPPFLAGS += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/libhwsecurec
+CPPFLAGS += -I$(THIRD_PARTY_DIR)/bounds_checking_function/include
 CPPFLAGS += -I/usr/local/ssl/include
 LDFLAGS += -L/usr/local/ssl/lib -lcrypto -ldl
 

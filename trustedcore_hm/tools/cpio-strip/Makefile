@@ -15,14 +15,13 @@ endif
 #ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 GENERAL_OPTIONS += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 #endif
-c_files := $(HM_APPS_DIR)/thirdparty/huawei/libhwsecurec/src/memcpy_s.c
-c_files += $(HM_APPS_DIR)/thirdparty/huawei/libhwsecurec/src/memset_s.c
-c_files += $(HM_APPS_DIR)/thirdparty/huawei/libhwsecurec/src/snprintf_s.c
-c_files += $(HM_APPS_DIR)/thirdparty/huawei/libhwsecurec/src/vsnprintf_s.c
-c_files += $(HM_APPS_DIR)/thirdparty/huawei/libhwsecurec/src/secureprintoutput_a.c
+c_files := $(THIRD_PARTY_DIR)/bounds_checking_function/src/memcpy_s.c
+c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/memset_s.c
+c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/snprintf_s.c
+c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/vsnprintf_s.c
+c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/secureprintoutput_a.c
 
-c_files_include += -I$(HM_APPS_DIR)/thirdparty/huawei/libhwsecurec/include/
-c_files_include += -I$(HM_APPS_DIR)/thirdparty/huawei/libhwsecurec/include/libhwsecurec
+c_files_include += -I$(THIRD_PARTY_DIR)/bounds_checking_function/include/
 
 cpio-strip : $(SOURCE_DIR)/cpio_strip.c $(LIBCPIO_BASE)/src/cpio.c $(LIBCPIO_BASE)/include/cpio/cpio.h
 	@echo " [CC] $@"

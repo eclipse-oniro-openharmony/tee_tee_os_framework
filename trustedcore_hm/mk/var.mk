@@ -71,6 +71,6 @@ ifeq ($(RELEASE_SIGN), true)
 	TRUSTEDCORE_PLATFORM_FLAGS += -DRELEASE_SIGN_BUILD_TEE
 endif
 
-SECUREC_LIB := $(TOPDIR)/thirdparty/huawei/libhwsecurec/include/
+SECUREC_LIB := $(THIRD_PARTY_DIR)/bounds_checking_function/include
 SCRAMB_SYMS := $(PREBUILD_TOOLS)/scramb_syms_host
 SCRAMB_SYMSDIR := $(PREBUILD_TOOLS)/scrambled_syms/

@@ -9,8 +9,7 @@ default: all
 
 include $(TOPDIR)/mk/asan.mk
 
-inc-flags += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/libhwsecurec/
-inc-flags += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/
+inc-flags += -I$(THIRD_PARTY_DIR)/bounds_checking_function/include
 INCLUDE_PATH += $(PREBUILD_DIR)/headers/
 INCLUDE_PATH += $(TOPDIR)/tools/
 INCLUDE_PATH += $(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/inse_crypto/

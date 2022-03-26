@@ -37,7 +37,7 @@ endif
 include $(TOPDIR)/mk/var.mk
 
 # Source files required to build the target
-CFILES := $(wildcard src/*.c)
+CFILES := $(wildcard $(THIRD_PARTY_DIR)/bounds_checking_function/src/*.c)
 libhwsecurec_host_c_files := $(CFILES)
 override CC=cc
 override AR=ar

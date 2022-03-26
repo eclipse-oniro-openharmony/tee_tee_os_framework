@@ -44,8 +44,7 @@ include $(TOPDIR)/mk/toolchain.mk
 include $(TOPDIR)/mk/llvm-apps-xom.mk
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
-inc-flags += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/libhwsecurec/
-inc-flags += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/
+inc-flags += -I$(THIRD_PARTY_DIR)/bounds_checking_function/include
 
 # use musl lib c headers.
 c-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH) -I$(PREBUILD_HEADER)/gen/arch/$(ARCH) -I$(PREBUILD_LIBC_INC)/hm
