@@ -15,13 +15,13 @@ endif
 #ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 GENERAL_OPTIONS += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 #endif
-c_files := $(THIRD_PARTY_DIR)/bounds_checking_function/src/memcpy_s.c
-c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/memset_s.c
-c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/snprintf_s.c
-c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/vsnprintf_s.c
-c_files += $(THIRD_PARTY_DIR)/bounds_checking_function/src/secureprintoutput_a.c
+c_files := $(TEE_SECUREC_DIR)/src/memcpy_s.c
+c_files += $(TEE_SECUREC_DIR)/src/memset_s.c
+c_files += $(TEE_SECUREC_DIR)/src/snprintf_s.c
+c_files += $(TEE_SECUREC_DIR)/src/vsnprintf_s.c
+c_files += $(TEE_SECUREC_DIR)/src/secureprintoutput_a.c
 
-c_files_include += -I$(THIRD_PARTY_DIR)/bounds_checking_function/include/
+c_files_include += -I$(TEE_SECUREC_DIR)/include/
 
 cpio-strip : $(SOURCE_DIR)/cpio_strip.c $(LIBCPIO_BASE)/src/cpio.c $(LIBCPIO_BASE)/include/cpio/cpio.h
 	@echo " [CC] $@"

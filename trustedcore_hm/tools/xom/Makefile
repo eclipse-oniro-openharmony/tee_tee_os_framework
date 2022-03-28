@@ -34,7 +34,7 @@ MODULE_FOLDER := $(shell basename $(CURDIR))
 include $(TOPDIR)/mk/var.mk
 
 C_SRCS :=	$(wildcard $(TOPDIR)/tools/xom/*.c)
-CPPFLAGS += -I$(THIRD_PARTY_DIR)/bounds_checking_function/include
+CPPFLAGS += -I$(TEE_SECUREC_DIR)/include
 LDFLAGS += -L$(OUTPUTDIR)/$(ARCH)/libs -lhwsecurec_host
 
 define c_to_o

@@ -12,7 +12,7 @@ $(eval $(call module-init, libcustom_cdrm_video.a, y))
 MODULE_INCLUDES += \
 		   -I$(MODULE_DIR)/../../../../../../../../../../hisi/confidential/hieps/crypto/hisee_seceng/libseceng/hieps/hal/include \
 		   -I$(MODULE_DIR)/../../../../../../../libs/libchinadrm/include \
-		   -I$(THIRD_PARTY_DIR)/bounds_checking_function/include \
+		   -I$(TEE_SECUREC_DIR)/include \
 		   -I$(MODULE_DIR)/../../../../../../../sys_libs/libteeconfig/include \
 		   -I$(MODULE_DIR)/../../../../../../../sys_libs/libhmdrv_stub/include \
 		   -I$(MODULE_DIR)/../../../../../../../sys_libs/libtimer_a32/include

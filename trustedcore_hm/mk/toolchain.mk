@@ -51,7 +51,7 @@ ifeq ($(ARCH), arm)
 	TARGET_ARCH := $(TARGET_ARCH_32)
 	GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_GNUA32)
 ifeq ("$(compiler-rt)", "exist")
-	LIBCOMPILER_RT_BUILTINS := $(COMPILER_RT_DIR)/arm-linux-ohosmusl/libclang_rt.builtins.a
+	LIBCOMPILER_RT_BUILTINS := $(TEE_COMPILER_DIR)/lib/arm-linux-ohosmusl/libclang_rt.builtins.a
 else
 	LIBCOMPILER_RT_BUILTINS := $(PREBUILD_DIR)/libs/arm/libclang_rt.builtins-arm.a
 endif
@@ -68,7 +68,7 @@ else
 	TARGET_ARCH := $(TARGET_ARCH_64)
 	GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A64)
 ifeq ("$(compiler-rt)", "exist")
-	LIBCOMPILER_RT_BUILTINS := $(COMPILER_RT_DIR)/aarch64-linux-ohosmusl/libclang_rt.builtins.a
+	LIBCOMPILER_RT_BUILTINS := $(TEE_COMPILER_DIR)/lib/aarch64-linux-ohosmusl/libclang_rt.builtins.a
 else
 	LIBCOMPILER_RT_BUILTINS := $(PREBUILD_DIR)/libs/aarch64/libclang_rt.builtins-aarch64.a
 endif

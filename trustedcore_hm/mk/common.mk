@@ -9,7 +9,7 @@ default: all
 
 include $(TOPDIR)/mk/asan.mk
 
-inc-flags += -I$(THIRD_PARTY_DIR)/bounds_checking_function/include
+inc-flags += -I$(TEE_SECUREC_DIR)/include
 INCLUDE_PATH += $(PREBUILD_DIR)/headers/
 INCLUDE_PATH += $(TOPDIR)/tools/
 INCLUDE_PATH += $(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/inse_crypto/
