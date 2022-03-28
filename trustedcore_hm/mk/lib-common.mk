@@ -13,8 +13,7 @@ include $(TOPDIR)/mk/common.mk
 # use musl lib c headers.
 inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/hm -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH) -I$(PREBUILD_HEADER)/gen/arch/$(ARCH)
 inc-flags += $(INCLUDE_PATH:%=-I%)
-inc-flags += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/libhwsecurec/
-inc-flags += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/
+inc-flags += -I$(TEE_SECUREC_DIR)/include
 
 # c & cpp flags:
 flags += -fPIC -fdata-sections -ffunction-sections -fstack-protector-strong

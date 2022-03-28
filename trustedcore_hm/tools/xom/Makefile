@@ -34,7 +34,7 @@ MODULE_FOLDER := $(shell basename $(CURDIR))
 include $(TOPDIR)/mk/var.mk
 
 C_SRCS :=	$(wildcard $(TOPDIR)/tools/xom/*.c)
-CPPFLAGS += -I$(TOPDIR)/thirdparty/huawei/libhwsecurec/include/libhwsecurec
+CPPFLAGS += -I$(TEE_SECUREC_DIR)/include
 LDFLAGS += -L$(OUTPUTDIR)/$(ARCH)/libs -lhwsecurec_host
 
 define c_to_o
