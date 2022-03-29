@@ -61,12 +61,6 @@ include $(TOPDIR)/mk/var.mk
 include $(TOPDIR)/mk/rule.mk
 #shoule keep the same value with hm-apps/trustedcore_hm/config.mk
 
-ifeq ($(PLATFORM_NAME), )
-ifeq ($(PRODUCT_NAME), )
-export TARGET_BOARD_PLATFORM ?= kirin990
-endif
-endif
-
 include $(TOPDIR)/mk/plat.mk
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 CFLAGS   += ${TRUSTEDCORE_PLATFORM_FLAGS}
