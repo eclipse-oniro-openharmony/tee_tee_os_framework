@@ -66,7 +66,6 @@ endif
 ifeq ($(CONFIG_CIPHER_ENABLE), true)
 flags += -DDX_ENABLE=1
 inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/austin/host/src/cclib
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/ccdriver_lib/include
 inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/atlanta/shared/include/crypto_api
 inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/atlanta/shared/include/
 inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/atlanta/shared/include/crypto_api/cc7x_tee
@@ -86,10 +85,6 @@ inc-flags += -I$(TOPDIR)/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
 inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/common/crypto
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/libseceng/include/cdrmr
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/libseceng/include/common
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/host/include/pal
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/host/include/adapter
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi # rpmb_fcntl.h
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi/common # tee_property_inner.h
 

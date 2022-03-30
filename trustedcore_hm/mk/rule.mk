@@ -126,7 +126,6 @@ CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/drivers/platdrv/platform/kirin/hdcp_wf
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/tee_sharedmem/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/crypto/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/ccdriver_lib/*.c)
-CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/libthirdparty_drv/include/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/framework/gtask/src/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/tui_drv/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/include/*.c)

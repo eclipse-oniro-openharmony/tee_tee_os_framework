@@ -7,7 +7,6 @@ c-flags += -fno-builtin
 
 c-flags += -I$(TOPDIR)/vendor/higeneric/libseplat/include
 c-flags += -I$(TOPDIR)/vendor/higeneric/libvendor_shared/src
-c-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/seplat
 ifeq ($(chip_type),es)
 c-flags += -I$(TOPDIR)/../../../../../vendor/hisi/ap/platform/$(TARGET_BOARD_PLATFORM)_es
 else
