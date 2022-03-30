@@ -1,7 +1,0 @@
-gpd.ta.appID:   		f8028dca-aba0-11e6-80f5-76304dec7eb7
-gpd.ta.service_name:    secmem
-gpd.ta.singleInstance:		true
-gpd.ta.multiSession:        False
-gpd.ta.instanceKeepAlive:   true
-gpd.ta.dataSize:           327680
-gpd.ta.stackSize:          8192
