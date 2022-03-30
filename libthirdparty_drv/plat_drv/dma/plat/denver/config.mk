@@ -1,2 +1,0 @@
-
-inc-flags += -DCONFIG_SUPPORT_DMA_STATIC_ADDR
