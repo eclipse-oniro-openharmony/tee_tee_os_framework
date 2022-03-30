@@ -1,7 +1,0 @@
-hi_tee_mutex_init
-hi_tee_mutex_lock
-hi_tee_mutex_lock_wait
-hi_tee_mutex_unlock
-hi_tee_mutex_release
-hi_tee_printf
-hi_tee_hisilicon_ioctl

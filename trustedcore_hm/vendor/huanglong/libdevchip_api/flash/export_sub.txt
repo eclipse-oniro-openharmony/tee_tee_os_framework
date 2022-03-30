@@ -1,3 +1,0 @@
-ext_tee_flash_get_rpmb_info
-ext_tee_flash_get_rpmb_key
-ext_tee_flash_check_rpmb_key_status

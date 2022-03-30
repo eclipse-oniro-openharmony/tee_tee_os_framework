@@ -1,9 +1,0 @@
-hi_tee_ssm_create
-hi_tee_ssm_destroy
-hi_tee_ssm_add_resource
-hi_tee_ssm_attach_buffer
-hi_tee_ssm_get_intent
-hi_tee_ssm_set_uuid
-hi_tee_ssm_check_uuid
-hi_tee_ssm_check_buf
-hi_tee_ssm_init

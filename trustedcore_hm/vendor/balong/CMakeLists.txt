@@ -1,2 +1,0 @@
-add_subdirectory(libvendor_shared)
-add_subdirectory(libvendor_static)

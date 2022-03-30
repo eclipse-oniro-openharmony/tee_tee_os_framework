@@ -1,6 +1,0 @@
-add_subdirectory(libvendor_shared)
-add_subdirectory(libvendor_static)
-if ("${TARGET_BOARD_PLATFORM}" STREQUAL "shaolingun")
-    add_subdirectory(devchip_apps)
-    add_subdirectory(libdevchip_api)
-endif()
