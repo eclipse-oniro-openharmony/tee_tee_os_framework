@@ -15,5 +15,5 @@ libs/libplatdrv/platform/kirin/hieps/autotest/config/hat_pack.c
 **.gcda
 **.gcno
 # libhwsecurec
-thirdparty/huawei/libhwsecurec/
+# thirdparty/huawei/libhwsecurec/
 tools/xom/xom
