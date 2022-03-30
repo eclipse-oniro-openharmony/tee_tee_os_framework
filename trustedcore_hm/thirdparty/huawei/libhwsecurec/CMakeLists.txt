@@ -1,0 +1,134 @@
+include(apps_svc_common)
+set(SUPPORTED_ARCHS
+    aarch64
+    arm
+)
+
+set(HWSECUREC_CFLAGS
+    ${HWSECUREC_CFLAGS}
+    -Oz
+    -Wall
+    -Wextra
+    -Werror
+    -Wdate-time
+    -Wfloat-equal
+    -Wshadow
+    -Wformat=2
+    -DSECUREC_MEMSET_INDIRECT_USE=0
+    -fstack-protector-strong
+    -fPIC
+    -fno-common
+    -flto
+    -fsplit-lto-unit
+    -fsigned-char
+    -fno-strict-aliasing
+    -fno-short-enums
+    -fno-builtin
+    -pipe
+    -DARCH_ARM
+    -DAARCH64
+    -D__KERNEL_64__
+    -DARMV8_A
+    -DARM_CORTEX_A53
+    -DKIRIN
+    -DARM_PAE=1
+    -DHAVE_AUTOCONF
+    -DCC_IDENTIFICATION
+    -nodefaultlibs
+    -nostdinc
+    -fno-omit-frame-pointer
+    -fno-builtin-aligned_alloc
+    -fno-builtin-alloca
+    -fno-builtin-calloc
+    -fno-builtin-fwrite
+    -fno-builtin-fread
+    -fno-builtin-fseek
+    -fno-builtin-fclose
+    -fno-builtin-malloc
+    -fno-builtin-memcpy
+    -fno-builtin-memcmp
+    -fno-builtin-memset
+    -fno-builtin-memmove
+    -fno-builtin-realloc
+    -fno-builtin-strncmp
+    -fno-builtin-strlen
+    -fno-builtin-strncpy
+    -fno-builtin-strncat
+    -fno-builtin-posix_memalign
+    -fno-builtin-printf
+    -fno-builtin-snprintf
+    -fno-builtin-vsnprintf
+    -fno-builtin-fwrite_unlocked
+    -fno-builtin-memchr
+    -fno-builtin-strcspn
+    -fno-builtin-strspn
+    -fno-builtin-bcmp
+    -fno-builtin-bcopy
+    -fno-builtin-bzero
+    -fno-builtin-strncasecmp
+    -fno-builtin-stpncpy
+    -fno-builtin-strndup
+    -fno-builtin-strlcat
+    -fno-builtin-strlcat
+    -fno-builtin-strlcpy
+    -fno-builtin-strxfrm
+    -fno-builtin-strlcat
+    -fno-builtin-strlcpy
+    -fno-builtin-strxfrm
+    -fno-builtin-strlcat
+    -fno-builtin-strlcpy
+    -fno-builtin-strxfrm
+    -fno-builtin-strlcat
+    -fno-builtin-strlcpy
+)
+
+set(HWSECUREC_INCLUDES
+    ${HWSECUREC_INCLUDES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../thirdparty/huawei/libhwsecurec/include/libhwsecurec
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../thirdparty/huawei/libhwsecurec/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../open_source/musl/musl-1.2.0/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../open_source/musl/musl-1.2.0/arch/${ARCH}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../open_source/musl/musl-1.2.0/arch/generic
+)
+
+string(FIND ${PROJECT_SOURCE_DIR} "hm-teeos" IS_TEEOS)
+if (IS_TEEOS GREATER 0)
+    set(HWSECUREC_INCLUDES
+        ${COMMON_LIBC_INCLUDES}
+        ${HWSECUREC_INCLUDES}
+    )
+else()
+    set(HWSECUREC_INCLUDES
+        ${TEE_INCLUDE_PATH}
+        ${HWSECUREC_INCLUDES}
+    )
+endif()
+
+if (ARCH IN_LIST SUPPORTED_ARCHS)
+tee_add_library(hwsecurec STATIC
+    SOURCES
+    src/memcpy_s.c
+    src/memmove_s.c
+    src/memset_s.c
+    src/securecutil.c
+    src/snprintf_s.c
+    src/strcat_s.c
+    src/strcpy_s.c
+    src/strncat_s.c
+    src/strncpy_s.c
+    src/strtok_s.c
+    src/vsnprintf_s.c
+    src/secureprintoutput_a.c
+
+    COMPILE_TOOL
+    clang
+
+    PRIVATE_INCLUDES
+    ${HWSECUREC_INCLUDES}
+
+    COMPILER_FLAGS
+    ${HWSECUREC_CFLAGS}
+
+    NO_INSTALL
+)
+endif()
