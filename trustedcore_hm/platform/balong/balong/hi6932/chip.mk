@@ -1,5 +1,0 @@
-# hi6932 chip compile rules
-# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
-TRUSTEDCORE_CHIP_CHOOSE := WITH_CHIP_HI6932
-TRUSTEDCORE_PHY_TEXT_BASE := 0xA0408000
-TRUSTEDCORE_PHY_IMAGE_LOAD_BASE := 0xA0C00000
