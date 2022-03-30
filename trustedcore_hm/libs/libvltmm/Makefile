@@ -17,21 +17,14 @@ c-flags += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/src
 c-flags += -I$(TOPDIR)/prebuild/hm-teeos-release/headers/libc_32/hm
 
 ifneq ($(filter $(TARGET_BOARD_PLATFORM), baltimore), )
-ifeq ($(chip_type), es)
-	c-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include/platform/baltimore_es
-else
-	c-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include/platform/baltimore
-endif
 	c-flags += -DTEE_SUPPORT_VLTMM_SRV
 endif
 
 ifneq ($(filter $(TARGET_BOARD_PLATFORM), laguna), )
-	c-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include/platform/laguna
 	c-flags += -DTEE_SUPPORT_VLTMM_SRV
 endif
 
 ifneq ($(filter $(TARGET_BOARD_PLATFORM), burbank), )
-	c-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include/platform/burbank
 	c-flags += -DTEE_SUPPORT_VLTMM_SRV
 endif
 

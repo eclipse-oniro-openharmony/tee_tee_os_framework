@@ -10,8 +10,7 @@ INCDIRS_EXTRA:= $(INCLUDE_PATH) \
     $(PREBUILD_HEADER)/libc_32 \
     $(PREBUILD_HEADER)/libc_32/arch/$(ARCH) \
     $(PREBUILD_HEADER)/libc_32/arch/generic \
-    $(PREBUILD_HEADER)/gen/arch/$(ARCH) \
-	$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include
+    $(PREBUILD_HEADER)/gen/arch/$(ARCH)
 
 ifeq ($(chip_type), cs2)
 INCDIRS_EXTRA += $(TOPDIR)/../../../../hisi/ap/platform/$(TARGET_BOARD_PLATFORM)_cs2
