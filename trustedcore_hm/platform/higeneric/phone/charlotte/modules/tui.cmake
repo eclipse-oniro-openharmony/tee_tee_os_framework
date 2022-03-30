@@ -1,1 +1,0 @@
-list(APPEND PRODUCT_RELEASE_32 libthp_afe_charlotte)
