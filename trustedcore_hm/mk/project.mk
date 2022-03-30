@@ -111,7 +111,7 @@ $(thirdparty_libs):
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C thirdparty/huawei/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	echo "thirdparty_libs"
 
-apps: $(arm_sys_apps) $(arm_ext_apps) $(arm_chip_apps) $(aarch64_apps) $(aarch64_sys_apps)
+apps: $(arm_sys_apps) $(aarch64_sys_apps)
 $(arm_sys_apps): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs
 	@echo "building ARCH=arm app=$@ target"
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_apps/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all)
@@ -119,17 +119,6 @@ $(arm_sys_apps): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs
 $(aarch64_sys_apps): $(aarch64_sys_libs)  $(aarch64_pro_libs) $(aarch64_arm_chip_libs) link_aarch64_libs
 	@echo "building ARCH=aarch64 app=$@ target"
 	$(VER) $(MAKE) -C sys_apps/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-$(arm_ext_apps): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs
-	@echo "building ARCH=arm app=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C apps/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring sem,$@)$(findstring bdkernel,$@)$(findstring kds,$@)$(findstring vltmm_service,$@)$(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C apps/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-$(arm_chip_apps): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs
-	@echo "building ARCH=arm app=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C apps/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C apps/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-$(aarch64_apps): $(aarch64_libs) link_aarch64_libs
-	@echo "building ARCH=aarch64 app=$@ target"
-	$(VER) $(MAKE) -C apps/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 
 # compile drivers rules
 
