@@ -1,5 +1,0 @@
-hi_tee_mmz_alloc_and_map
-hi_tee_mmz_unmap_and_free
-hi_tee_mmz_alloc_and_mapall
-hi_tee_mmz_unmap_and_freeall
-hi_tee_mmz_issmmz

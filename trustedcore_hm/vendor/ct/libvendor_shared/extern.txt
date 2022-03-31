@@ -1,4 +1,0 @@
-EXTERN(
-/* vendor_shared internal */
-__tee_hal_get_dieid
-)
