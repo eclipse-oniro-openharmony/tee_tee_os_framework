@@ -1,8 +1,0 @@
-add_subdirectory(attestation_ta)
-add_subdirectory(gatekeeper)
-add_subdirectory(keymaster)
-add_subdirectory(kms)
-add_subdirectory(storage)
-if ("${CONFIG_TUI_32BIT}" STREQUAL "true")
-    add_subdirectory(tui)
-endif()
