@@ -24,11 +24,6 @@ inc-flags += -I$(LOCAL_HM_INC)/kernel
 inc-flags += -I$(SECURE_OS_DIR)/sys_libs/libteeconfig/include/TEE_ext
 inc-flags += -I$(SECURE_OS_DIR)/sys_libs/libteeconfig/include/kernel
 inc-flags += -I$(SECURE_OS_DIR)/sys_libs/libhmdrv_stub/include
-ifeq ($(CONFIG_DX_ENABLE), true)
-inc-flags += -I$(SECURE_OS_DIR)/thirdparty/vendor/libdxcc/pal/include/
-inc-flags += -I$(SECURE_OS_DIR)/thirdparty/vendor/libdxcc/austin/shared/include/crys
-inc-flags += -I$(SECURE_OS_DIR)/thirdparty/vendor/libdxcc/austin/shared/include/pal
-endif
 inc-flags += -I$(SECURE_OS_DIR)/libs/libplatdrv/platform/kirin/secureboot
 inc-flags += -I$(SECURE_OS_DIR)/libs/libplatdrv/platform/kirin/secureboot/bspatch
 inc-flags += -I$(SECURE_OS_DIR)/drivers/platdrv/include
