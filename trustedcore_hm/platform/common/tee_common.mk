@@ -11,12 +11,9 @@ vendor_libs += libvendor_shared libvendor_static
 hm_kernel    := kernel
 hm_elfloader := elfloader
 #Compile ext_libs for hm-apps
-arm_ext_libs += libbz_hm
+arm_ext_libs +=
 thirdparty_libs += libhwsecurec
 host_tools += scramb_syms_host xom
-ifeq ($(CONFIG_DX_ENABLE), true)
-arm_vendor_ext_libs += libdxcc
-endif
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
 arm_open_source_libs +=
