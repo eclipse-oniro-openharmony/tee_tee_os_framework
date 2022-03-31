@@ -1,5 +1,0 @@
-CFLAGS+=-DAARCH64
-INCDIRS += ${SHARED_INCDIR}/env/
-INCDIRS += ${SHARED_INCDIR}/env/lib/stdlib/
-INCDIRS += ${SHARED_INCDIR}/env/lib/stdlib/sys/
-INCDIRS += ${HOST_PROJ_ROOT}/../../
