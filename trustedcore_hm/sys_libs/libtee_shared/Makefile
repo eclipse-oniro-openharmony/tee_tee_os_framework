@@ -32,7 +32,6 @@ $(INSTALL_FILE): $(MODULE_FILE)
 
 ifeq ($(findstring true, $(CONFIG_GATEKEEPER_32BIT) $(CONFIG_GATEKEEPER_64BIT)), true)
 flags += -DSUPPORT_GATEKEEPER_TA
-inc-flags += -I$(TOPDIR)/sys_apps/gatekeeper/src/task_gatekeeper
 endif
 
 ifeq ($(strip $(TARGET_BUILD_VARIANT)), user)

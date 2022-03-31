@@ -271,7 +271,3 @@ product_apps += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 endif
 
-ifeq ($(CONFIG_KMS), true)
-aarch64_sys_apps += kms
-product_apps += $(OUTPUTDIR)/aarch64/apps/kms.elf
-endif

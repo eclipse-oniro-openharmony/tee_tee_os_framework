@@ -131,7 +131,6 @@ CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/tui_dr
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/include/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/crypto/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/seccfg/*.c)
-CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/sys_apps/storage/src/task_storage/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/drivers/platdrv/src/drm/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/gatekeeper/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/sys_libs/libta_magic_a32/src/*.c)
