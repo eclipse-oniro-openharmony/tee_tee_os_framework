@@ -111,15 +111,6 @@ $(thirdparty_libs):
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C thirdparty/huawei/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	echo "thirdparty_libs"
 
-apps: $(arm_sys_apps) $(aarch64_sys_apps)
-$(arm_sys_apps): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs
-	@echo "building ARCH=arm app=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_apps/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring tui,$@)$(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_apps/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-$(aarch64_sys_apps): $(aarch64_sys_libs)  $(aarch64_pro_libs) $(aarch64_arm_chip_libs) link_aarch64_libs
-	@echo "building ARCH=aarch64 app=$@ target"
-	$(VER) $(MAKE) -C sys_apps/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-
 # compile drivers rules
 
 drivers: $(arm_frm_drivers) $(arm_driver_drivers) $(aarch64_frm_drivers) $(aarch64_driver_drivers) $(arm_test_drivers) $(aarch64_test_drivers)
