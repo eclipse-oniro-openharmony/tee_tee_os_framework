@@ -1,5 +1,0 @@
-compile in mtk dir:
-1.cp independet_make Makefile
-2.change ssi_hal.c
-    define DX_BASE_CC
-    define DX_CLOCK_BASE
