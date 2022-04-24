@@ -1,0 +1,84 @@
+/*
+ * Copyright (C) 2022 Huawei Technologies Co., Ltd.
+ * Licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *     http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
+#ifndef TEESMCMGR_H
+#define TEESMCMGR_H
+
+#include <stdint.h>
+#include <hmlog.h>
+#include <stdbool.h>
+#include <sys/hmapi.h>
+#ifdef CONFIG_USER_PRINTING
+#define SMCMGR_STACK_SIZE  0x8000
+#else
+#define SMCMGR_STACK_SIZE  0x2000
+#endif
+
+#ifdef CONFIG_TEST_SMP
+#define NR_CORES 1
+#else
+#define NR_CORES CONFIG_MAX_NUM_NODES
+#endif
+
+#define PAY_LOAD_SIZE 24
+#define MAGIC_MSG "IDLE_0xDEADBEEF"
+
+#define panic(fmt...)                             \
+    do {                                          \
+        hm_panic("*PANIC* teesmcmgr: " fmt); \
+    } while (0)
+#define fatal(fmt...)                             \
+    do {                                          \
+        hm_fatal("*FATAL* teesmcmgr: " fmt); \
+        if (hmapi_proc_exit((uint32_t)-1))        \
+            hm_panic("*PANIC* teesmcmgr error");  \
+    } while (0)
+#define error(fmt...)                             \
+    do {                                          \
+        hm_error("*ERROR* teesmcmgr: " fmt); \
+    } while (0)
+#define info(fmt...)                             \
+    do {                                         \
+        hm_info("*INFO* teesmcmgr: " fmt); \
+    } while (0)
+#define debug(fmt...)                             \
+    do {                                          \
+        hm_debug("*DEBUG* teesmcmgr: " fmt); \
+    } while (0)
+
+struct idle_thread_params {
+    uint32_t startup_core;
+    uint32_t idle_core;
+};
+
+void *tee_idle_thread(void *arg);
+void *tee_smc_thread(void *arg);
+
+rref_t acquire_sysctrl_local_irq_hdlr(void);
+cref_t acquire_teesmc_hdlr(void);
+rref_t acquire_gtask_channel(void);
+
+void set_teesmc_hdlr(cref_t value);
+void set_sysctrl_hdlr(rref_t value);
+void set_gtask_channel_hdlr(rref_t value);
+void set_is_gtask_alive(bool value);
+
+cref_t get_teesmc_hdlr(void);
+rref_t get_sysctrl_hdlr(void);
+rref_t get_gtask_channel_hdlr(void);
+bool   get_is_gtask_alive(void);
+
+#ifdef CONFIG_SMCMGR_EMBEDDED
+int smcmgr_main(void);
+#endif
+
+#endif
