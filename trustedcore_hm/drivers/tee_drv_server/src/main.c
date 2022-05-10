@@ -20,6 +20,12 @@
 
 const char *g_debug_prefix = "tee_drv_server";
 
+int32_t drv_framework_init(const struct drv_frame_t *drv_frame)
+{
+    (void)drv_frame;
+    return 0;
+}
+
 __attribute__((visibility("default"))) \
 int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 {

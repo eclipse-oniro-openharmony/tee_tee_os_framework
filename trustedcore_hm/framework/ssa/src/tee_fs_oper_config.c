@@ -7,7 +7,6 @@
 #include "tee_fs_oper_config.h"
 #include <string.h>
 #include <securec.h>
-#include <product_uuid.h>
 #include "product_uuid_public.h"
 #include <tee_mem_mgmt_api.h>
 #include <tee_log.h>
@@ -19,7 +18,7 @@ struct ta_file_list {
     char file_list[MAX_FILE_COUNT][HASH_NAME_BUFF_LEN];
 };
 
-#ifdef CONFIG_LIBFUZZER
+#if (defined TEE_SUPPORT_LIBFUZZER)
 #define DEFAULT_PROFILE_NAME "default.profraw"
 #endif
 
@@ -122,7 +121,7 @@ static const uint32_t g_ta_file_table_num = sizeof(g_ta_file_table) / sizeof(g_t
 
 bool check_ta_access(const TEE_UUID *uuid)
 {
-#ifndef CONFIG_LIBFUZZER
+#if (!defined TEE_SUPPORT_LIBFUZZER)
     uint32_t i;
     bool find_uuid = false;
 
@@ -180,18 +179,35 @@ bool check_ta_access_file_permission(const TEE_UUID *uuid, const char *file_name
     if (strnlen(file_name, HASH_NAME_BUFF_LEN) >= HASH_NAME_BUFF_LEN)
         return false;
 
-#ifdef CONFIG_LIBFUZZER
+#if (defined TEE_SUPPORT_LIBFUZZER)
     if (strncmp(file_name, DEFAULT_PROFILE_NAME, strlen(DEFAULT_PROFILE_NAME)) == 0)
         return true;
 #endif
 
     for (uint32_t i = 0; i < g_ta_file_table_num; i++) {
         if (TEE_MemCompare(uuid, &g_ta_file_table[i].uuid, sizeof(*uuid)) == 0) {
-            uint32_t file_list_num = sizeof(g_ta_file_table[i].file_list) / sizeof(g_ta_file_table[i].file_list[0]);
+            uint32_t file_list_num = (uint32_t)sizeof(g_ta_file_table[i].file_list) /
+                (uint32_t)sizeof(g_ta_file_table[i].file_list[0]);
             return file_access_check(file_name, g_ta_file_table[i].file_list, file_list_num);
         }
     }
 
     return false;
 }
+
+#else
+
+bool check_ta_access(const TEE_UUID *uuid)
+{
+    (void)uuid;
+    return false;
+}
+
+bool check_ta_access_file_permission(const TEE_UUID *uuid, const char *file_name)
+{
+    (void)uuid;
+    (void)file_name;
+    return false;
+}
+
 #endif

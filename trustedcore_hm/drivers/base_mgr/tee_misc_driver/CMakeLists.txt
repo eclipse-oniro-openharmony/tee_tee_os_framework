@@ -25,7 +25,13 @@ endif()
 
 if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
     list(APPEND TEE_MISC_DRIVER_LDFLAGS
-        -execute-only
+        -Wl,--execute-only
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND TEE_MISC_DRIVER_LDFLAGS
+        -Wl,-z,separate-loadable-segments
     )
 endif()
 
@@ -58,6 +64,7 @@ list(APPEND TEE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/drivers/tee_drv_server/src
     ${PROJECT_SOURCE_DIR}/drivers/base_mgr/tee_misc_driver/src
+    ${PROJECT_SOURCE_DIR}/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
     ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_frame/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libdynconfmgr/include

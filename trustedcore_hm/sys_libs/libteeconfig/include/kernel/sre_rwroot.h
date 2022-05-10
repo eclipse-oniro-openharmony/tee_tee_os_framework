@@ -5,10 +5,10 @@
  */
 #ifndef __SRE_RWROOT_H
 #define __SRE_RWROOT_H
-#include <sre_typedef.h> /* UINT32 */
+#include <stdint.h>
 
-UINT32 SRE_ReadRootStatus(VOID);
-UINT32 SRE_WriteRootStatus(UINT32 status);
+uint32_t SRE_ReadRootStatus(void);
+uint32_t SRE_WriteRootStatus(uint32_t status);
 
 /*
  *  mask the enabled BIT.
@@ -81,15 +81,13 @@ struct verify_boot_mem_struct {
     char lock_state[COLOR_LOCK_STATE_SIZE];
     char lock_color[COLOR_LOCK_COLOR_SIZE];
     char pub_key[PUBLIC_KEY_SIZE];
-    UINT32 os_version_info;
-};
-
-struct verify_boot_info_struct {
-    enum lock_state lstate;
-    enum lock_color color;
-    char pub_key[PUBLIC_KEY_SIZE];
-    UINT32 os_version;
-    UINT32 patch_level;
+    /* operating system version and security patch level; for
+     * version "A.B.C" and patch level "Y-M-D":
+     * rule1: ver = A << 14 | B << 7 | C         (7 bits for each of A, B, C)
+     * rule2: lvl = ((Y - 2000) & 127) << 4 | M  (7 bits for Y, 4 bits for M)
+     * rule3: os_version = ver << 11 | lvl
+     */
+    uint32_t os_version_info;
 };
 /* Copy from keymaster1_util.h --end */
 #endif

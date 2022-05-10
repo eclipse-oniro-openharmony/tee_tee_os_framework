@@ -8,7 +8,7 @@
 #define DYN_CONF_MGR_DYN_CONF_DISPATCH_INF_H
 
 #include <stdint.h>
-#include <list.h>
+#include <dlist.h>
 #include <tee_defines.h>
 #include <api/tee_common.h>
 
@@ -68,7 +68,7 @@ enum dyn_conf_data_nums {
 
 /* the struct we use in queue */
 struct conf_node_t {
-    struct list_head head;
+    struct dlist_node head;
     uint32_t tag;
     uint32_t type;
     uint32_t size;
@@ -76,7 +76,7 @@ struct conf_node_t {
 };
 
 struct conf_queue_t {
-    struct list_head queue;
+    struct dlist_node queue;
 };
 
 /* load the dyn conf from mani_ext section in sec file */
@@ -85,17 +85,17 @@ struct dyn_conf_t {
     char *dyn_conf_buffer;
 };
 
-typedef int32_t (*handler_conf_to_obj)(struct list_head **, const struct conf_node_t *, void *, uint32_t);
+typedef int32_t (*handler_conf_to_obj)(struct dlist_node **, const struct conf_node_t *, void *, uint32_t);
 typedef int32_t (*handler_install_obj)(void *, uint32_t, const struct conf_queue_t *);
 typedef void (*handler_uninstall_obj)(const void *, uint32_t);
 typedef int32_t (*handler_check_obj)(const void *);
 
 int32_t register_conf(const struct dyn_conf_t *dyn_conf, handler_install_obj handle, void *obj, uint32_t obj_size);
 void unregister_conf(handler_uninstall_obj uninstall_obj_func, void *obj, uint32_t obj_size);
-uint32_t get_num_of_tag(const struct conf_queue_t *conf_queue, uint32_t tag);
-int32_t handle_conf_node_to_obj(struct list_head **pos, handler_conf_to_obj handle, void *obj, uint32_t obj_size);
+uint16_t get_num_of_tag(const struct conf_queue_t *conf_queue, uint32_t tag);
+int32_t handle_conf_node_to_obj(struct dlist_node **pos, handler_conf_to_obj handle, void *obj, uint32_t obj_size);
 int32_t trans_str_to_int(const char *buff, uint32_t len, uint32_t base, uint64_t *num);
-int32_t check_item_chip_type(const struct list_head *now, uint32_t chip_type_tag);
+int32_t check_item_chip_type(const struct dlist_node *now, uint32_t chip_type_tag);
 int32_t tlv_to_uuid(const char *uuid_buff, uint32_t size, struct tee_uuid *uuid);
 
 struct dyn_conf_build_func {

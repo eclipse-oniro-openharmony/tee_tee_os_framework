@@ -9,7 +9,7 @@
 #include <securec.h>
 #include <hmlog.h>
 #include <cs.h>
-#include <list.h>
+#include <dlist.h>
 #include <hmdrv.h>
 #include <mem_ops_ext.h>
 #include <tee_drv_internal.h>
@@ -104,12 +104,12 @@ static int32_t init_drv_conf_mani(const struct drv_mani_t *mani, struct drv_conf
 static int32_t init_drv_conf_filter_chip_type(const struct conf_queue_t *conf_queue, struct tag_crew tags,
                                               void **list, uint16_t *list_size, uint32_t size)
 {
-    struct list_head *pos = NULL;
+    struct dlist_node *pos = NULL;
     uint32_t count = 0;
     uint8_t flag = 0;
 
-    list_for_each(pos, &conf_queue->queue) {
-        struct conf_node_t *conf_node = list_entry(pos, struct conf_node_t, head);
+    dlist_for_each(pos, &conf_queue->queue) {
+        struct conf_node_t *conf_node = dlist_entry(pos, struct conf_node_t, head);
         if (conf_node->tag != tags.item_tag && conf_node->tag != tags.data_tag)
             continue;
 
@@ -316,7 +316,8 @@ static int32_t handle_drv_basic_info_thread_limit(uint32_t *thread_limit, uint32
     }
 
     if (tmp_limit > THREAD_LIMIT_MAX) {
-        hm_info("get thread limit %u larger than THREAD_LIMIT_MAX %u\n", tmp_limit, THREAD_LIMIT_MAX);
+        hm_info("get thread limit %llu larger than THREAD_LIMIT_MAX %u\n",
+                (unsigned long long)tmp_limit, THREAD_LIMIT_MAX);
         *thread_limit = THREAD_LIMIT_MAX;
         return TEE_SUCCESS;
     }
@@ -363,7 +364,7 @@ static int32_t handle_drv_basic_info_exception_mode(uint8_t *exception_mode, uin
     return TEE_ERROR_GENERIC;
 }
 
-static int32_t build_drv_basic_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_basic_info(struct dlist_node **pos, const struct conf_node_t *node,
                                     void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -519,7 +520,7 @@ static int32_t handle_drv_io_map_item_iomap(struct drv_conf_t *drv_conf, uint32_
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_io_map_item(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_io_map_item(struct dlist_node **pos, const struct conf_node_t *node,
                                      void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -546,7 +547,7 @@ static int32_t build_drv_io_map_item(struct list_head **pos, const struct conf_n
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_io_map(struct list_head **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
+static int32_t build_drv_io_map(struct dlist_node **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
 
@@ -635,7 +636,7 @@ out:
     return ret;
 }
 
-static int32_t build_drv_irq_item(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_irq_item(struct dlist_node **pos, const struct conf_node_t *node,
                                   void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -676,7 +677,7 @@ static int32_t check_drv_irq_invalid(const void *obj)
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_irq(struct list_head **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
+static int32_t build_drv_irq(struct dlist_node **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
 
@@ -870,7 +871,7 @@ out:
     return ret;
 }
 
-static int32_t build_drv_map_secure_item(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_map_secure_item(struct dlist_node **pos, const struct conf_node_t *node,
                                          void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -929,7 +930,7 @@ static int32_t check_drv_map_secure_invalid(const void *obj)
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_map_secure(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_map_secure(struct dlist_node **pos, const struct conf_node_t *node,
                                     void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
@@ -1024,7 +1025,7 @@ out:
     return ret;
 }
 
-static int32_t build_drv_map_nosecure_item(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_map_nosecure_item(struct dlist_node **pos, const struct conf_node_t *node,
                                            void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -1051,7 +1052,7 @@ static int32_t build_drv_map_nosecure_item(struct list_head **pos, const struct 
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_map_nosecure(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_map_nosecure(struct dlist_node **pos, const struct conf_node_t *node,
                                       void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
@@ -1141,7 +1142,7 @@ static int32_t handle_drv_mac_info_item_uuid(struct drv_conf_t *drv_conf, uint32
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_mac_info_item(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_mac_info_item(struct dlist_node **pos, const struct conf_node_t *node,
                                        void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -1173,7 +1174,7 @@ static int32_t build_drv_mac_info_item(struct list_head **pos, const struct conf
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_mac_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_mac_info(struct dlist_node **pos, const struct conf_node_t *node,
                                   void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
@@ -1298,7 +1299,7 @@ static int32_t handle_drv_cmd_perm_info_item_permission(struct drv_conf_t *drv_c
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_cmd_perm_info_item(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_cmd_perm_info_item(struct dlist_node **pos, const struct conf_node_t *node,
                                             void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -1330,7 +1331,7 @@ static int32_t build_drv_cmd_perm_info_item(struct list_head **pos, const struct
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_cmd_perm_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_cmd_perm_info(struct dlist_node **pos, const struct conf_node_t *node,
                                        void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
@@ -1362,7 +1363,7 @@ static int32_t build_drv_cmd_perm_info(struct list_head **pos, const struct conf
     return TEE_SUCCESS;
 }
 
-static int32_t build_drv_drvcall_conf(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drv_drvcall_conf(struct dlist_node **pos, const struct conf_node_t *node,
                                       void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
@@ -1395,7 +1396,7 @@ static struct dyn_conf_build_func dyn_conf_funcs[] = {
 };
 
 /* build drv conf */
-static int32_t build_drv_conf(struct list_head **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
+static int32_t build_drv_conf(struct dlist_node **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
 {
     struct drv_tlv *drv = NULL;
 
@@ -1528,8 +1529,8 @@ int32_t install_drv_permission(void *obj, uint32_t obj_size, const struct conf_q
         goto out;
 
     /* 5.handle new obj */
-    if (!list_empty(&conf_queue->queue)) {
-        struct list_head *pos = list_next(&conf_queue->queue);
+    if (!dlist_empty(&conf_queue->queue)) {
+        struct dlist_node *pos = dlist_get_next(&conf_queue->queue);
         ret = handle_conf_node_to_obj(&pos, build_drv_conf, drv, sizeof(*drv));
         if (ret != TEE_SUCCESS) {
             hm_error("handle drv conf failed\n");

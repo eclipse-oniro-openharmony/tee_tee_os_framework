@@ -251,13 +251,14 @@ static uint32_t syscall_common(int32_t swi_id, const struct drv_param *params, u
 {
     uint32_t ret;
     struct call_params map_param = {0};
-    uint64_t *args = (uint64_t *)(uintptr_t)params->args;
+    uint64_t *args = NULL;
 
-    if (params == NULL || func == NULL) {
+    if (params == NULL || params->args == NULL || func == NULL) {
         hm_error("invalid input param\n");
         return TMR_DRV_ERROR;
     }
 
+    args = (uint64_t *)(uintptr_t)params->args;
     ret = check_call_permission(permissions, expect_perm);
     if (ret != TMR_DRV_SUCCESS) {
         hm_error("permission denied to access swi_id 0x%x\n", swi_id);
@@ -283,13 +284,14 @@ int32_t rtc_timer_syscall(int32_t swi_id, struct drv_param *params, uint64_t per
 {
     uint32_t ret;
     uint32_t idx;
-    uint64_t *args = (uint64_t *)(uintptr_t)params->args;
+    uint64_t *args = NULL;
 
-    if (params == NULL) {
+    if (params == NULL || params->args == NULL) {
         hm_error("invalid input param\n");
         return TMR_DRV_ERROR;
     }
 
+    args = (uint64_t *)(uintptr_t)params->args;
     if (swi_id <= SW_SYSCALL_TIMER_BASE || swi_id >= (SW_SYSCALL_TIMER_MAX))
         return TMR_DRV_ERROR;
 

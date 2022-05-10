@@ -42,20 +42,16 @@ if ("${ARCH}" STREQUAL "aarch64")
         hwi
         c_shared
         teemem
-        ipc
-        mmgr
-        syscalls
-        hongmeng
+        io
+        teeconfig
     )
 else()
     list(APPEND TEE_SHARED_LIBS
         hwi_a32
         c_shared_a32
         teemem_a32
-        ipc_a32
-        mmgr_a32
-        syscalls_a32
-        hongmeng_a32
+        io_a32
+        teeconfig
     )
 endif()
 
@@ -107,7 +103,13 @@ endif()
 
 if ("${ARCH}" STREQUAL "aarch64" AND "${CONFIG_ENABLE_XOM}" STREQUAL "y")
     list(APPEND TEE_SHARED_LINKER_FLAGS
-        -Wl,-execute-only
+        -Wl,--execute-only
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND TEE_SHARED_LINKER_FLAGS
+        -Wl,-z,separate-loadable-segments
     )
 endif()
 
@@ -177,6 +179,7 @@ tee_add_library(drv_shared SHARED
 
     ${IF_INSTALL}
 )
+
 if ("${ARCH}" STREQUAL "arm")
     set_target_properties(drv_shared PROPERTIES OUTPUT_NAME "drv_shared_a32")
 endif()

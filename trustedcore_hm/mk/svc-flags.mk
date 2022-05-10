@@ -41,8 +41,12 @@ endif
 
 ifeq (${CONFIG_ENABLE_XOM},y)
 ifeq ($(ARCH),aarch64)
-	DRV_LDFLAGS += -execute-only
+	DRV_LDFLAGS += --execute-only
 endif
+endif
+
+ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
+DRV_LDFLAGS += -z separate-loadable-segments
 endif
 
 ifeq ($(SVC_PARTITIAL_LINK), y)

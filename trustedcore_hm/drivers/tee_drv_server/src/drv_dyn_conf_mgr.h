@@ -10,7 +10,7 @@
 #include <arch/types.h>
 #include <hm_msg_type.h>
 #include <pthread.h>
-#include <list.h>
+#include <dlist.h>
 #include <tee_defines.h>
 #include <tee_drv_internal.h>
 #include "dyn_conf_common.h"
@@ -99,7 +99,7 @@ struct drv_conf_t {
 };
 
 struct drv_conf_list_t {
-    struct list_head list;
+    struct dlist_node list;
     pthread_mutex_t lock;
 };
 

@@ -13,7 +13,6 @@
 #include <hm_msg_type.h>
 #include <hm_mman_ext.h>
 #include <hmlog.h>
-#include <hongmeng.h>
 #include <sys/usrsyscall_ext.h>
 #include <irqmgr.h>
 #include <procmgr_ext.h>
@@ -115,7 +114,7 @@ uint32_t get_mix_seed(void)
 
     while (count < MAX_TIMES_GENERATE_SEED) { /* test MAX_TIMES_GENERATE_SEED times, in case of seed = 0 */
         count++;
-        ret = tee_crypto_generate_random((uint8_t *)&seed, sizeof(seed));
+        ret = (uint32_t)tee_crypto_generate_random((uint8_t *)&seed, sizeof(seed), true);
         if ((ret != TMR_DRV_SUCCESS) || (seed == 0))
             continue;
 
@@ -746,7 +745,7 @@ static int32_t timer_handle_message(const struct timer_req_msg_t *msg, struct ti
     uint64_t permissions;
     uint32_t ret;
     struct call_params param = {0};
-    rmsg->header.reply.msg_size = TIMER_REP_MSG_SIZE;
+    rmsg->header.reply.msg_size = (uint32_t) TIMER_REP_MSG_SIZE;
 
     ret = get_timer_permission(rmsg, msginfo, &permissions);
     if (ret != TMR_DRV_SUCCESS) {
@@ -901,7 +900,7 @@ intptr_t timer_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info 
     return ret;
 }
 
-static uint32_t timer_address_map(void)
+static int32_t timer_address_map(void)
 {
     uint32_t i;
     void *ptr = NULL;
@@ -945,8 +944,8 @@ int32_t timer_init(cref_t chnl_cref)
     uint32_t ret;
     int32_t drv_ret;
 
-    ret = timer_address_map();
-    if (ret != TMR_DRV_SUCCESS) {
+    drv_ret = timer_address_map();
+    if (drv_ret != TMR_DRV_SUCCESS) {
         hm_error("timer IO address mapping failed\n");
         goto error_handler;
     }

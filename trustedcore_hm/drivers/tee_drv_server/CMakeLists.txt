@@ -81,10 +81,6 @@ if ("${ARCH}" STREQUAL "aarch64")
         c_shared
         timer
         ac
-        mmgr
-        hongmeng
-        syscalls
-        ipc
         teemem
         teeos
         hmdrv
@@ -96,10 +92,6 @@ else()
         c_shared_a32
         timer
         ac_a32
-        mmgr_a32
-        hongmeng_a32
-        syscalls_a32
-        ipc_a32
         teemem_a32
         teeos_a32
         hmdrv_a32
@@ -122,7 +114,6 @@ else()
 endif()
 
 list(APPEND TEE_DRV_SERVER_LIBRARIES
-    hmdrv_stub
     drv_frame
     ac_policy
     drv_shared
@@ -139,6 +130,12 @@ if ("${CONFIG_KASAN}" STREQUAL "y")
     )
 endif()
 
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND TEE_DRV_SERVER_LDFLAGS
+        -Wl,-z,separate-loadable-segments
+    )
+endif()
+
 if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     list(APPEND TEE_DRV_SERVER_LDFLAGS
         -Wl,-T${XOM_LDS}
@@ -147,7 +144,7 @@ endif()
 
 if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
     list(APPEND TEE_DRV_SERVER_LDFLAGS
-        -execute-only
+        -Wl,--execute-only
     )
 endif()
 

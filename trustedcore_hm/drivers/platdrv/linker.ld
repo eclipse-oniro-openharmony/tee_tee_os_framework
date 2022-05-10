@@ -88,6 +88,27 @@ SECTIONS
   {
     *(.rela.plt)
   }
+
+  .rodata         :
+  {
+    *(.rodata .rodata.* .gnu.linkonce.r.*)
+  }
+  .rodata1        :
+  {
+    *(.rodata1)
+  }
+  .ARM.extab      :
+  {
+    *(.ARM.extab* .gnu.linkonce.armextab.*)
+  }
+
+  PROVIDE_HIDDEN (__exidx_start = .);
+  .ARM.exidx      :
+  {
+    *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+  }
+  PROVIDE_HIDDEN (__exidx_end = .);
+  . = ALIGN(0x1000);
   .init           :
   {
     KEEP (*(SORT_NONE(.init)))
@@ -118,26 +139,6 @@ SECTIONS
   PROVIDE (__etext = .);
   PROVIDE (_etext = .);
   PROVIDE (etext = .);
-
-  .rodata         :
-  {
-    *(.rodata .rodata.* .gnu.linkonce.r.*)
-  }
-  .rodata1        :
-  {
-    *(.rodata1)
-  }
-  .ARM.extab      :
-  {
-    *(.ARM.extab* .gnu.linkonce.armextab.*)
-  }
-
-  PROVIDE_HIDDEN (__exidx_start = .);
-  .ARM.exidx      :
-  {
-    *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-  }
-  PROVIDE_HIDDEN (__exidx_end = .);
 
   .eh_frame_hdr   :
   {

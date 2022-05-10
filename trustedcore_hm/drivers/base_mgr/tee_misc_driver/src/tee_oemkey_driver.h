@@ -11,21 +11,9 @@
 #define OEMKEY_MAGIC_NUM        0x55AA55AA
 #define RES_NUM                 52
 #define OEMKEY_SIZE             16
-#define SHARED_MEM_SECBOOT      "tasksecboot"
+#define SHARED_MEM_OEMKEY       "oemkey"
 
-struct crypto_ioctl {
-    uint64_t buf;
-    uint32_t buf_len;
-    uint32_t total_nums;
-    uint32_t arg1;
-    uint32_t arg2;
-    uint32_t arg3;
-    uint32_t arg4;
-    uint32_t arg5;
-    uint32_t arg6;
-    uint32_t arg7;
-    uint32_t arg8;
-};
+#define DATA_SIZE_MAX           512
 
 int32_t get_oemkey_info(unsigned long args, uint32_t args_len);
 

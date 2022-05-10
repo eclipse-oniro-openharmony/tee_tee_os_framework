@@ -19,7 +19,7 @@ static int32_t get_drv_param(const struct tee_drv_param *params, char **param, u
     uint64_t param_offset = args[DRV_PARAM_INDEX];
 
     if (param_len == 0) {
-        tloge("input null param\n");
+        tlogd("input null param\n");
         *param = NULL;
         *len = 0;
         return 0;

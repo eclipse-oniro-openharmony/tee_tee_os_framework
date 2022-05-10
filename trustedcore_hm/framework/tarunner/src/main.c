@@ -356,7 +356,7 @@ static void send_load_fail_msg(uint32_t target_type)
          * uwMsgID is 0 means we don't care about the context
          * ucDstID is 1 means the recevier's channel ID is 1
          */
-        if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
+        if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != 0)
             hm_error("failed to reply GTASK for MT ta\n");
     }
 }
@@ -387,11 +387,9 @@ static int32_t get_routine_info(void *handle, uint32_t size, struct ta_routine_i
     routine->info[CLOSE_SESSION_INDEX] = dlsym(handle, "TA_CloseSessionEntryPoint");
     routine->info[DESTROY_ENTRY_INDEX] = dlsym(handle, "TA_DestroyEntryPoint");
 
-#ifdef CONFIG_LIBFUZZER
+#if (defined TEE_SUPPORT_LIBFUZZER)
     routine->info[LIBFUZZER_CALLBACK] = dlsym(handle, "OutPutInformation");
 #endif
-    routine->info[BSS_START_INDEX] = dlsym(handle, "TA_BSS_START");
-    routine->info[BSS_END_INDEX] = dlsym(handle, "TA_BSS_END");
     /* should check caller info when open session */
     routine->addcaller_flag = true;
 
@@ -444,7 +442,7 @@ err_out:
 
 static void ta_tee_task_entry(ta_entry_type ta_entry, uint32_t ca_pid, int32_t priority, const char *task_name)
 {
-    hm_error("ta link elf_main_entry\n");
+    hm_info("ta link elf_main_entry\n");
 
     tee_task_entry_mt(ta_entry, ca_pid, priority, task_name, NULL);
 
@@ -578,8 +576,6 @@ __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * c
     struct env_param param = { 0 };
     void *libtee = NULL;
     cref_t drv_channel = 0;
-
-    init0();
 
     if (param_check(argc, argv, &free_uncommit) != HM_OK) {
         hm_error("param check failed\n");

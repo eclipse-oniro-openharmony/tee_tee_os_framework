@@ -29,7 +29,6 @@
 #define TIMER_CTRL_PERIODIC (1U << 6)
 #define TIMER_CTRL_ENABLE   (1U << 7)
 
-#define TIMER_INTCLR 0x0c
 #define TIMER_MIS    0x14
 
 #endif /* DRV_TIMER_PLATFORM_TIMER_H */

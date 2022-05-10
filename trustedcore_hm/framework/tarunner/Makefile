@@ -25,7 +25,7 @@ tarunner_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.s
 
 ifeq (${CONFIG_ENABLE_XOM},y)
 ifeq ($(ARCH),aarch64)
-tarunner_LDFLAGS += -execute-only
+tarunner_LDFLAGS += --execute-only
 endif
 endif
 
@@ -33,6 +33,6 @@ ifeq ($(xom32_enable),y)
 tarunner_LDFLAGS += -T $(XOM_LDS)
 endif
 
-ifneq (, $(filter $(TRUSTEDCORE_CHIP_CHOOSE), WITH_CHIP_HI1951 WITH_CHIP_HI1981))
+ifneq (, $(filter $(TRUSTEDCORE_CHIP_CHOOSE), WITH_CHIP_TDA4 WITH_CHIP_HI1951 WITH_CHIP_HI1981 WITH_CHIP_HI1911))
 tarunner_LDFLAGS += -E
 endif

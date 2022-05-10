@@ -65,7 +65,7 @@
 #define SASI_OK (0)
 
 #ifndef align_up_size
-#define align_up_size(x, alignment) ((sizeof(x) + ((alignment) - 1)) / alignment)
+#define align_up_size(x, alignment) ((sizeof(x) + ((alignment) - 1)) / (alignment))
 #endif
 
 enum sasi_ecpki_hash_opmode {

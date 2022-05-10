@@ -16,6 +16,7 @@ copy_from_client;
 copy_to_client;
 tee_map_secure;
 tee_map_nonsecure;
+get_tlv_sharedmem;
 register_crypto_rand_driver;
 local: *;
 };

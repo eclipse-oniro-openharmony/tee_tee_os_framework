@@ -8,7 +8,7 @@ inc-flags += -I$(TOPDIR)/sys_libs/libac_policy/include
 inc-flags += -I$(TOPDIR)/sys_libs/libac_policy/src/
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/hm_policy
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext
-inc-flags += -I$(PLATFORM_DIR)/common/tee_config
+inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(PLATFORM_DIR)/common/hm_policy
 

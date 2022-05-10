@@ -22,6 +22,14 @@ static int32_t generate_random(void *rnd, size_t rnd_len)
     return CRYPTO_SUCCESS;
 }
 
+static int32_t get_entropy(void *rnd, size_t rnd_len)
+{
+    int32_t ret = trng_get_random(rnd, (uint32_t)rnd_len);
+    if (ret != 0)
+        return CRYPTO_BAD_PARAMETERS;
+    return CRYPTO_SUCCESS;
+}
+
 static int32_t derive_root_key(uint32_t derive_type, const struct memref_t *data_in, struct memref_t *data_out)
 {
     int32_t ret;
@@ -40,6 +48,7 @@ static int32_t derive_root_key(uint32_t derive_type, const struct memref_t *data
 const static struct crypto_ops_t g_crypto_ops = {
     .generate_random = generate_random,
     .derive_root_key = derive_root_key,
+    .get_entropy = get_entropy,
 };
 
 static int32_t qemu_adapt_init(void)

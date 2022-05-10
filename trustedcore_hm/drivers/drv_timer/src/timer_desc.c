@@ -5,7 +5,6 @@
  */
 #include "timer_desc.h"
 #include <hmlog.h>
-#include <hongmeng.h>
 #include <drv_module.h>
 #include "timer_types.h"
 #include "timer_pm.h"
@@ -32,7 +31,7 @@ int32_t tc_drv_init(void)
 
     hm_debug("initialize drivers:\n");
 
-    for (i = 0; i < ARRAY_SIZE(g_tc_drv); i++) {
+    for (i = 0; i < (sizeof(g_tc_drv) / sizeof(g_tc_drv[0])); i++) {
         hm_debug("\t%s\n", g_tc_drv[i]->name);
         if (g_tc_drv[i]->init != NULL) {
             ret = g_tc_drv[i]->init();
@@ -48,7 +47,7 @@ void tc_drv_sp(uint32_t flag)
 {
     uint32_t i;
 
-    for (i = 0; i < ARRAY_SIZE(g_tc_drv); i++) {
+    for (i = 0; i < (sizeof(g_tc_drv) / sizeof(g_tc_drv[0])); i++) {
         if (g_tc_drv[i]->suspend == NULL)
             continue;
 
@@ -62,7 +61,7 @@ void tc_drv_sr(uint32_t flag)
     uint32_t i;
     int32_t ret;
 
-    for (i = 0; i < ARRAY_SIZE(g_tc_drv); i++) {
+    for (i = 0; i < (sizeof(g_tc_drv) / sizeof(g_tc_drv[0])); i++) {
         if (g_tc_drv[i]->resume == NULL)
             continue;
 

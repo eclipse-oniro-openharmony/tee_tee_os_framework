@@ -83,6 +83,8 @@ struct crypto_drv_ops_t {
     int32_t (*pbkdf2)(const struct memref_t *password, const struct memref_t *salt, uint32_t iterations,
         uint32_t digest_type, struct memref_t *data_out);
     int32_t (*get_oemkey)(void *buffer, size_t size);
+    int32_t (*suspend)(void);
+    int32_t (*resume)(void);
 };
 
 #define crypto_driver_declare(init, is_alg_support, power_on, power_off, get_ctx_size, ctx_copy, get_driver_ability, \
@@ -90,13 +92,13 @@ struct crypto_drv_ops_t {
     cipher_update, cipher_dofinal, cipher, ae_init, ae_update_aad, ae_update, ae_enc_final, ae_dec_final, \
     rsa_generate_keypair, rsa_encrypt, rsa_decrypt, rsa_sign_digest, rsa_verify_digest, ecc_generate_keypair, \
     ecc_encrypt, ecc_decrypt, ecc_sign_digest, ecc_verify_digest, ecdh_derive_key, dh_generate_key, dh_derive_key, \
-    generate_random, get_entropy, derive_root_key, pbkdf2, get_oemkey) \
+    generate_random, get_entropy, derive_root_key, pbkdf2, get_oemkey, suspend, resume) \
 __attribute__((visibility("default"))) const struct crypto_drv_ops_t g_crypto_drv_ops = { \
     init, is_alg_support, power_on, power_off, get_ctx_size, ctx_copy, get_driver_ability, \
     hash_init, hash_update, hash_dofinal, hash, hmac_init, hmac_update, hmac_dofinal, hmac, cipher_init, \
     cipher_update, cipher_dofinal, cipher, ae_init, ae_update_aad, ae_update, ae_enc_final, ae_dec_final, \
     rsa_generate_keypair, rsa_encrypt, rsa_decrypt, rsa_sign_digest, rsa_verify_digest, ecc_generate_keypair, \
     ecc_encrypt, ecc_decrypt, ecc_sign_digest, ecc_verify_digest, ecdh_derive_key, dh_generate_key, dh_derive_key, \
-    generate_random, get_entropy, derive_root_key, pbkdf2, get_oemkey}
+    generate_random, get_entropy, derive_root_key, pbkdf2, get_oemkey, suspend, resume}
 
 #endif

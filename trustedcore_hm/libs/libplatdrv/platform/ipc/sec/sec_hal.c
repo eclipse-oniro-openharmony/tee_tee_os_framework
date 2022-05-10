@@ -17,6 +17,14 @@ static int32_t generate_random(void *rnd, size_t rnd_len)
     return CRYPTO_SUCCESS;
 }
 
+static int32_t get_entropy(void *rnd, size_t rnd_len)
+{
+    int32_t ret = trng_get_entropy(rnd, (uint32_t)rnd_len);
+    if (ret != CRYPTO_SUCCESS)
+        return CRYPTO_BAD_PARAMETERS;
+    return CRYPTO_SUCCESS;
+}
+
 static int derive_root_key(uint32_t derive_type, const struct memref_t *data_in, struct memref_t *data_out)
 {
     (void)derive_type;
@@ -71,7 +79,7 @@ const static struct crypto_ops_t g_crypto_ops = {
     0,
     0,
     generate_random,
-    0,
+    get_entropy,
     derive_root_key,
     0,
 };

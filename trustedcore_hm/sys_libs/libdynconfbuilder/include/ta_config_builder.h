@@ -64,6 +64,7 @@ enum ta_config_tags {
 #define RPMB_RESET_PERMISSION        0x04U
 #define SE_OPEN_SESSION_PERMISSION   0x01U
 #define TUI_PERMISSION               0x01U
+#define CERT_GENERAL_PERMISSION      0x01U
 
 /* CN format in TA's certificate: "uuid string" + "_" + "service name" */
 #define TA_CERT_MAX_CN_INFO_LEN   64
@@ -87,6 +88,7 @@ struct ta_manifest_info {
     uint32_t stack_size;
     bool mem_page_align;
     uint32_t target_type;
+    bool sys_verify_ta;
 };
 
 struct ta_rpmb_info {
@@ -103,6 +105,10 @@ struct ta_se_info {
 };
 
 struct ta_tui_info {
+    uint64_t permissions;
+};
+
+struct ta_cert_perm_info {
     uint64_t permissions;
 };
 
@@ -123,13 +129,14 @@ struct ta_control_info {
     struct ta_sfs_info sfs_info;
     struct ta_se_info se_info;
     struct ta_tui_info tui_info;
+    struct ta_cert_perm_info cert_info;
     uint32_t ta_manager;
     struct callee_ta_info *callee_info;
     struct ta_debug_info debug_info;
 };
 
 struct config_info {
-    struct list_head head;
+    struct dlist_node head;
     TEE_UUID uuid;
     char service_name[MAX_SERVICE_NAME_LEN];
     uint32_t service_name_len;

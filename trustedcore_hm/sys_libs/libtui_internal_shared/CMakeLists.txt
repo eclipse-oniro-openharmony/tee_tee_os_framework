@@ -38,7 +38,13 @@ endif()
 
 if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
     list(APPEND LIBTUI_INTERNAL_SHARED_LDFLAGS
-        -execute-only
+        --execute-only
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND LIBTUI_INTERNAL_SHARED_LDFLAGS
+        -z separate-loadable-segments
     )
 endif()
 

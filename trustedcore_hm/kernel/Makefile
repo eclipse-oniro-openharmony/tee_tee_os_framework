@@ -211,7 +211,7 @@ WARNINGS = all extra error strict-prototypes missing-prototypes \
 CFLAGS += --std=c11 -nostdinc -nostdlib -ffreestanding \
 	${WARNINGS:%=-W%} ${INCLUDES} -fpie
 CPPFLAGS += -march=armv8-a -nostdinc
-LDFLAGS += -nostdlib -pie -z noexecstack -z relro -z now
+LDFLAGS += -nostdlib -pie -z noexecstack -z relro -z now -z notext -z max-page-size=4096
 LDFLAGS += --build-id=none
 ASFLAGS += ${INCLUDES} -march=armv8-a
 
@@ -223,8 +223,13 @@ else
 LDFLAGS += -s
 endif # strip debug info
 
-ifeq (${HM_ARCH}, aarch64)
+ifeq ($(HM_ARCH), aarch32)
+LDFLAGS+= -marmelf
+endif # HM_ARCH==aarch32
+
+ifeq ($(HM_ARCH), aarch64)
 CFLAGS += -mgeneral-regs-only
+LDFLAGS+= -maarch64elf
 endif # HM_ARCH==aarch64
 
 ifeq (${CONFIG_WHOLE_PROGRAM_OPTIMIZATIONS_KERNEL}, y)
@@ -234,22 +239,17 @@ endif #CONFIG_WHOLE_PROGRAM_OPTIMIZATIONS_KERNEL==y
 
 ifeq (${CONFIG_OPTIMIZATION_O0},y)
 CFLAGS += -O0    # gcc's default optimization level is O0
-LDFLAGS += -O0   # gcc compiles code directly without any optimizations
 else
 ifeq (${CONFIG_OPTIMIZATION_O1},y)
 CFLAGS += -O1     # compiler will optimize the code and the size of executable file
-LDFLAGS += -O1    # but not affect the compiling time seriously
 else
 ifeq (${CONFIG_OPTIMIZATION_O2},y)
 CFLAGS += -O2    # compiler will optimize the size of program
-LDFLAGS += -O2   # with most of optimization methods in O2
 else
 ifeq (${CONFIG_OPTIMIZATION_O3},y)
 CFLAGS += -O3        # the highest optimization level is O3. compiler will optimize program deeply
-LDFLAGS += -O3       # but this may cause some error in some situation
 else
 CFLAGS += -Oz       # when Oz is configured compiler will take some extra time to optimize the code speed
-LDFLAGS += -Oz      # Oz is usually recommended
 endif # CONFIG_OPTIMIZATION_O3
 endif # CONFIG_OPTIMIZATION_O2
 endif # CONFIG_OPTIMIZATION_O1
@@ -340,8 +340,6 @@ all: ${HMBUILD_ROOT}/kernel.elf
 .PHONY: ${MODULES}
 
 style: astyle pylint
-
-LD := $(GCC_TOOLCHAIN)/bin/$(KERNEL_TARGET_ARCH)-ld
 
 LINKER_SCRIPT = linker.lds
 

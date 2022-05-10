@@ -9,11 +9,9 @@
 #include <errno.h>
 #include <bootinfo_types.h>
 #include <cs.h>
-#include <hongmeng.h>
 #include <sys/usrsyscall_ext.h>
 #include <ipclib.h>
 #include <ac.h>
-#include <ccmgr_hm.h>
 #include <sys/hmapi_ext.h>
 #include <tamgr_ext.h>
 #include <ta_permission.h>

@@ -5,8 +5,8 @@
  */
 #ifndef HWI_DRV_CALL_H
 #define HWI_DRV_CALL_H
-#include "sre_typedef.h"
+#include <stdint.h>
 
-UINT32 __SRE_HwiMsgRegister(HWI_HANDLE_T uwHwiNum);
-UINT32 __SRE_HwiMsgDeregister(HWI_HANDLE_T uwHwiNum);
+uint32_t tee_hwi_msg_register(uint32_t uw_hwi_num);
+uint32_t tee_hwi_msg_deregister(uint32_t uw_hwi_num);
 #endif /* HWI_DRV_CALL_H */

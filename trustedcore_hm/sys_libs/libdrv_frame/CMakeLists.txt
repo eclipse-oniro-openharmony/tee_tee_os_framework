@@ -23,17 +23,10 @@ list(APPEND TEE_INCLUDE_PATH
     ${PREBUILD_DIR}/headers/sys/hmapi
 )
 list(APPEND TEE_C_SOURCES
-    src/tc_drv.c
     src/libdrv_frame.c
     src/drv_thread.c
     src/drv_param_ops.c
 )
-
-if ("${CONFIG_DRIVER_DYN_MOD}" STREQUAL "true")
-    list(APPEND TEE_C_SOURCES
-        src/drv_mod.c
-    )
-endif()
 
 tee_add_library(drv_frame STATIC
     SOURCES

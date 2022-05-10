@@ -186,12 +186,12 @@ int32_t gatekeeper_syscall(int32_t swi_id, struct drv_param *params, uint64_t pe
         ACCESS_CHECK_A64(args[1], (uint32_t)args[2]);
         ACCESS_WRITE_RIGHT_CHECK(args[1], (uint32_t)args[2]);
         ret = add_key_factor(args[0], (uint8_t *)(uintptr_t)args[1], (uint32_t)args[2]);
-        args[0] = ret;
+        args[0] = (uint64_t)ret;
         SYSCALL_END
 
         SYSCALL_PERMISSION(SW_SYSCALL_DELETE_KEY_FACTOR, permissions, KEY_FACTOR_GROUP_PERMISSION)
         ret = delete_key_factor(args[0]);
-        args[0] = ret;
+        args[0] = (uint64_t)ret;
         SYSCALL_END
 
         SYSCALL_PERMISSION(SW_SYSCALL_GET_KEY_FACTOR, permissions, KEY_FACTOR_GROUP_PERMISSION)
@@ -202,7 +202,7 @@ int32_t gatekeeper_syscall(int32_t swi_id, struct drv_param *params, uint64_t pe
         ACCESS_READ_RIGHT_CHECK(args[1], *(uint32_t *)(uintptr_t)args[2]);
         ACCESS_WRITE_RIGHT_CHECK(args[1], *(uint32_t *)(uintptr_t)args[2]);
         ret = get_key_factor(args[0], (uint8_t *)(uintptr_t)args[1], (uint32_t *)(uintptr_t)args[2]);
-        args[0] = ret;
+        args[0] = (uint64_t)ret;
         SYSCALL_END
         default:
             return -1;

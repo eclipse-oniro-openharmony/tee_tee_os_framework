@@ -14,7 +14,7 @@ struct platform_info g_plat_cfg = {
      * To config, set TRUSTEDCORE_PHY_TEXT_BASE in common/var.mk
      * value is assigned in boot_kernel_on_current_cpu function
      */
-    .phys_region_start = TRUSTEDCORE_PHY_TEXT_BASE,
+    .phys_region_start = 0,
     .uart_addr = UART_ADDR,
     .uart_type = UART_ENABLE_FLAG | PL011_TYPE,
     .shmem_offset = SHMEM_OFFSET,
@@ -35,16 +35,21 @@ struct platform_info g_plat_cfg = {
     .plat_features = PLAT_DEF_ENG,
 
     /* at most PLAT_MAX_DEVIO_REGIONS (128) regions */
-    .plat_io_regions = {
-        /* .start, .end */
-        /* the first region should be UART6 */
-        { CPU_CTLR_ADDR, CPU_CTLR_ADDR + CPU_CTLR_SIZE },
-        { SEC_TRNG0_BASE, SEC_TRNG0_BASE + SEC_TRNG0_SIZE },
-        { SEC_CLK_BASE, SEC_CLK_BASE + SEC_CLK_SIZE },
-        { SEC_KLAD_BASE, SEC_KLAD_BASE + SEC_KLAD_SIZE },
-        { SEC_OTP_BASE, SEC_OTP_BASE + SEC_OTP_SIZE },
-        { TIMER1_BASE, TIMER1_BASE + TIMER1_BASE_SIZE },
-        /* this is terminator */
-        { 0, 0 }
+    .extend_datas_io = {
+        .extend_magic = 0,
+        .extend_length = 0,
+        .extend_paras = {0},
+        .plat_io_regions = {
+            /* .start, .end */
+            /* the first region should be UART6 */
+            { CPU_CTLR_ADDR, CPU_CTLR_ADDR + CPU_CTLR_SIZE },
+            { SEC_TRNG0_BASE, SEC_TRNG0_BASE + SEC_TRNG0_SIZE },
+            { SEC_CLK_BASE, SEC_CLK_BASE + SEC_CLK_SIZE },
+            { SEC_KLAD_BASE, SEC_KLAD_BASE + SEC_KLAD_SIZE },
+            { SEC_OTP_BASE, SEC_OTP_BASE + SEC_OTP_SIZE },
+            { TIMER1_BASE, TIMER1_BASE + TIMER1_BASE_SIZE },
+            /* this is terminator */
+            { 0, 0 }
+        }
     }
 };

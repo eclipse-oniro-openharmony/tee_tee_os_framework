@@ -8,6 +8,10 @@ include $(TOPDIR)/mk/var.mk
 crypto_mgr_c_files += $(wildcard src/*.c) \
                       $(wildcard src/crypto_ioctl/*.c)
 
+ifeq ($(CONFIG_DATA_FALLTHROUGH),y)
+flags += -DDATA_FALLTHROUGH
+endif
+
 inc-flags += -I$(PLATFORM_DIR)/common/tee_config
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TOPDIR)/drivers/tee_drv_server/src

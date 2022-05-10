@@ -8,7 +8,7 @@
 #define __CRYPTO_INNER_DEFINES_H_
 
 #include <tee_crypto_api.h>
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
 #define SIP_HASH_OUTPUT_LEN                 8
 #endif
 #define MD5_OUTPUT_LEN                      16
@@ -88,6 +88,7 @@
 #define HMAC_SM3_MAX_KEY                    1024
 #define SM4_KEY_SIZE                        128
 #define AES_BLOCK_SIZE                      16
+#define DH_BLOCK_SIZE                       8
 #define MAX_HMAC_LEN                        64
 #define RSA_PKCS1_PADDING_LEN               2
 #define RSA_KEY_PAIR_ATTRIBUTE_COUNT        8
@@ -139,7 +140,7 @@ const static struct min_size_of_algorithm g_output_lower_limit[] = {
     { TEE_ALG_AES_CBC_MAC_NOPAD,  AES_MAC_LEN },
     { TEE_ALG_DES_CBC_MAC_NOPAD,  DES_CMAC_LEN },
     { TEE_ALG_DES3_CBC_MAC_NOPAD, DES_CMAC_LEN },
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     { TEE_ALG_SIP_HASH,           SIP_HASH_OUTPUT_LEN },
 #endif
 };

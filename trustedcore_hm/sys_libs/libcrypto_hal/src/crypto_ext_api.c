@@ -19,58 +19,27 @@ TEE_Result tee_ext_kdf_func(struct kdf_params_t *params, uint32_t hash_mode, uin
 
     TEE_Result ret;
 
-#ifdef DX_ENABLE
     ret = (TEE_Result)__CC_CRYS_KDF_KeyDerivFunc(params->key, params->key_size, NULL, (CRYS_KDF_HASH_OpMode_t)hash_mode,
         (CRYS_KDF_DerivFuncMode_t)kdf_mode, params->out, params->out_size);
-#else
-    ret = TEE_ERROR_NOT_SUPPORTED;
-    (void)hash_mode;
-    (void)kdf_mode;
-#endif
     return ret;
 }
 
 TEE_Result engine_power_on(void)
 {
-    TEE_Result ret;
-
-#ifdef DX_ENABLE
-    ret = (TEE_Result)__CC_DX_power_on();
-#else
-    ret = TEE_SUCCESS;
-#endif
-    return ret;
+    return (TEE_Result)__CC_DX_power_on();
 }
 
 TEE_Result engine_power_off(void)
 {
-    TEE_Result ret;
-
-#ifdef DX_ENABLE
-    ret = (TEE_Result)__CC_DX_power_down();
-#else
-    ret = TEE_SUCCESS;
-#endif
-    return ret;
+    return (TEE_Result)__CC_DX_power_down();
 }
 
 bool eps_support_cdrm_enhance(void)
 {
-#ifdef DX_ENABLE
     return __CC_EPS_SupportCdrmEnhance();
-#else
-    return false;
-#endif
 }
+
 TEE_Result do_eps_ctrl(uint32_t type, uint32_t profile)
 {
-#ifdef DX_ENABLE
-    CRYSError_t ret;
-    ret = __CC_EPS_CTRL(type, profile);
-    return ret;
-#else
-    (void)type;
-    (void)profile;
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
+    return __CC_EPS_CTRL(type, profile);
 }

@@ -1,5 +1,6 @@
 {
 global:
+TEE_EXT_LoadFile;
 tee_hal_get_provision_key;
 /* cfi fallback */
 _cfi_disabled;
@@ -32,6 +33,7 @@ __tee_mutex_unlock;
 __tee_mutex_release;
 hm_ccmgr_init;
 __virt_to_phys;
+tee_virt_to_phys;
 get_cs_es_info;
 __dma_map_area;
 __dma_unmap_area;
@@ -67,12 +69,17 @@ tee_agent_lock;
 tee_agent_unlock;
 tee_get_agent_buffer;
 tee_send_agent_cmd;
+tee_unlink_lib;
+tee_load_sec_lib;
+tee_load_sec_ta;
+tee_bind_tee_service;
+tee_unbind_tee_service;
 
 hwi_create_irq_thread;
 hwi_init;
 __dma_flush_range;
 __dma_inv_range;
-/* boringssl_symbol */
+/* openssl_symbol */
 EVP_sha256;
 EVP_sha512;
 SHA256;
@@ -90,6 +97,9 @@ RSA_get0_key;
 RSA_get0_factors;
 RSA_get0_crt_params;
 get_rsa_crt_big_num;
+drbg_delete_thread_state;
+OPENSSL_thread_stop;
+RAND_priv_bytes;
 
 /* the following apis are exported for gtask dynamic link tee_shared library*/
 BN_new;
@@ -401,6 +411,10 @@ tee_sec_fs_init;
 TEE_Ext_CreatePersistentObject;
 TEE_Ext_OpenPersistentObject;
 TEE_Ext_DeleteAllObjects;
+tee_ext_create_persistent_object;
+tee_ext_open_persistent_object;
+tee_ext_delete_all_objects;
+
 #endif
 #ifdef TEE_FS_OPER
 faccess;
@@ -432,6 +446,7 @@ tee_fs_fsync;
 tee_fs_frename;
 tee_fs_fcopy;
 TEE_EXT_DiskUsage;
+
 #endif
 tee_memory_dump;
 TEE_Free;
@@ -463,6 +478,7 @@ task_map_from_task_handle;
 task_unmap;
 task_map_phy_mem;
 TEE_EXT_ROOT_UuidDeriveKey;
+tee_ext_root_uuid_derive_key;
 get_class_oem_huk;
 get_class_ecc_key;
 derive_ecc_private_key_from_huk;
@@ -477,6 +493,8 @@ ecc_verify_digest;
 create_attestation_cert;
 get_subject_CN;
 get_subject_OU;
+get_subject_x509_cn;
+get_subject_x509_ou;
 import_pub_from_sp;
 get_serial_number_from_cert;
 get_issuer_from_cert;
@@ -489,6 +507,7 @@ cinit00;
 __SRE_MemUsageGet;
 g_dx_content_path_addr;
 SLog;
+slog;
 get_value;
 uart_cprintf;
 uart_printf_func;
@@ -499,6 +518,7 @@ set_log_use_tid_flag;
 __SRE_GetKMROT;
 __SRE_SetKMROT;
 TEE_EXT_GetRoT;
+tee_ext_get_rot;
 TEE_AllocateOperation;
 TEE_FreeOperation;
 TEE_GetOperationInfo;
@@ -648,9 +668,11 @@ TEE_GetCancellationFlag;
 TEE_UnmaskCancellation;
 TEE_MaskCancellation;
 TEE_GetSessionType;
+tee_get_session_type;
 __dump_backtraces;
 TEE_EXT_GetDeviceUniqueId;
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
+tee_ext_get_device_unique_id;
+#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT || defined CONFIG_EXPORT_RPMB_STUB)
 TEE_RPMB_FS_Rename;
 TEE_RPMB_FS_Rm;
 TEE_RPMB_FS_Write;
@@ -662,12 +684,19 @@ TEE_RPMB_FS_Format;
 TEE_RPMB_KEY_Status;
 TEE_RPMB_FS_Erase;
 TEE_RPMB_FS_SetAttr;
+#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
 TEE_EXT_TA_version_check;
+tee_ext_ta_version_check;
 TEE_RPMB_ANTI_VERSION_Rollback;
 TEE_EXT_GetRpmbThreshold;
 TEE_EXT_GetRpmbCapability;
+tee_ext_get_rpmb_threshold;
+tee_ext_get_rpmb_capability;
 TEE_EXT_create_cert_req;
 TEE_EXT_verify_dev_cert;
+tee_create_cert_req;
+tee_verify_dev_cert;
+#endif
 #endif
 
 #if (defined TEE_SUPPORT_SEM || defined TEE_SUPPORT_SE_SERVICE_32BIT || defined TEE_SUPPORT_SE_SERVICE_64BIT)
@@ -694,22 +723,48 @@ tee_se_set_aid;
 tee_se_set_deactive;
 #endif
 
+#ifdef CONFIG_SRAM_PROTECTION
+AES_set_encrypt_key;
+CRYPTO_gcm128_encrypt;
+CRYPTO_gcm128_decrypt;
+CRYPTO_gcm128_tag;
+AES_encrypt;
+CRYPTO_gcm128_init;
+CRYPTO_gcm128_aad;
+CRYPTO_gcm128_setiv;
+CRYPTO_gcm128_release;
+#endif
+
 TEE_EXT_DeriveTAPlatfromKeys;
+tee_ext_derive_ta_platfrom_keys;
 TEE_EXT_DeriveTARootKey;
+tee_ext_derive_ta_root_key;
 ecc_derive_public_key;
 TEE_EXT_AES_CRYPTO;
+tee_ext_aes_crypto;
 TEE_EXT_HASH;
+tee_ext_hash;
 TEE_EXT_ROOT_DeriveKey2;
+tee_ext_root_derive_key2;
 TEE_EXT_HwiMsgRegister;
+tee_ext_hwi_msg_register;
 TEE_EXT_HwiMsgDeregister;
+tee_ext_hwi_msg_deregister;
 __SRE_HwiMsgCreateEnable;
 TEE_EXT_HwiMsgWait;
+tee_ext_hwi_msg_wait;
 TEE_EXT_GetVerifyBootInfo;
+tee_ext_get_verify_boot_info;
 TEE_EXT_GetTrustBootImgInfo;
+tee_ext_get_trust_boot_img_info;
 TEE_EXT_GetCallerInfo;
+tee_ext_get_caller_info;
 TEE_EXT_IsDeviceRooted;
+tee_ext_is_device_rooted;
 TEE_EXT_DeviceRootStatus;
+tee_ext_device_root_status;
 __SRE_ReadRootStatus;
+tee_read_root_status;
 __SRE_WriteRootStatus;
 /* tee_symbol_ext */
 __get_target_product;
@@ -726,15 +781,28 @@ TEE_EXT_GetSeCapability;
 TEE_EXT_GetTUICapability;
 TEE_EXT_ta_ctrl_list_process;
 TEE_EXT_crl_cert_process;
+tee_ext_get_sfs_capability;
+tee_ext_get_se_capability;
+tee_ext_get_tui_capability;
+tee_ext_ta_ctrl_list_process;
+tee_ext_crl_cert_process;
 tee_ext_get_manage_info;
 TEE_EXT_CheckInvokePermission;
+tee_ext_check_invoke_permission;
 ac_init_simple;
 engine_power_on;
 tee_ext_kdf_func;
 engine_power_off;
+ac_generate_dyn_uuid_data;
 ac_add_dynamic_policy;
 ac_del_dynamic_policy;
 tee_crypto_derive_root_key;
+#ifdef DYN_IMPORT_CERT
+ta_signing_cert_import;
+ta_signing_cert_export;
+ta_signing_cert_destroy;
+#endif
+
 
 TEE_EXT_tui_hw_init;
 TEE_EXT_tui_create_win;
@@ -834,8 +902,11 @@ EVP_aes_128_cbc;
 
 TEE_EXT_InitTAAttest;
 TEE_EXT_GetTAAttest;
+tee_ext_init_ta_attest;
+tee_ext_get_ta_attest;
 tee_common_service_sec_flash_allowed;
 TEE_EXT_GetSecFlashShareMem;
+tee_ext_get_sec_flash_share_mem;
 /* chinadrm api */
 aes_key_wrap;
 aes_key_unwrap;
@@ -856,54 +927,81 @@ load_otrp_ta;
 #endif
 tee_crypto_hmac;
 tee_internal_derive_key;
+__tee_hal_get_dieid;
+tee_ext_get_dieid;
 tee_internal_provision_key;
 tee_internal_derive_ta_plat_root_key;
 tee_internal_derive_key2_iter;
+/* tcmgr service */
+#if (defined (CONFIG_REMOTE_ATTESTATION) || defined (CONFIG_REMOTE_ATTESTATION_A32))
+ra_qsi_provision;
+ra_qsi_report;
+ra_qsi_save_akcert;
+ra_seal;
+ra_unseal;
+ra_local_report;
+#endif
 /* timer */
 sleep;
 nanosleep;
 renew_hmtimer_job_handler;
 localtime;
-tee_timer_drv_init;
 TEE_GetSystemTime;
 TEE_Wait;
 TEE_GetTAPersistentTime;
 TEE_SetTAPersistentTime;
 TEE_GetREETime;
+get_ree_time_str;
 TEE_GetREETimeStr;
-#ifdef CONFIG_RTC_TIMER
+tee_ext_create_timer;
+tee_ext_destory_timer;
+tee_ext_get_timer_expire;
+tee_ext_get_timer_remain;
+tee_get_secure_rtc_time;
 TEE_EXT_CreateTimer;
 TEE_EXT_DestoryTimer;
 TEE_EXT_GetTimerExpire;
 TEE_EXT_GetTimerRemain;
-__get_secure_rtc_time;
 __sre_get_rtc_time;
-#endif
+__get_secure_rtc_time;
+tee_antiroot_create_timer;
+tee_antiroot_destory_timer;
 TEE_ANTI_ROOT_CreateTimer;
 TEE_ANTI_ROOT_DestoryTimer;
 get_sys_rtc_time;
+__get_sys_rtc_time;
+gen_sys_date_time;
 __gen_sys_date_time;
+tee_msleep;
 __SRE_SwMsleep;
+SRE_DelayMs;
 __SRE_TimerEventCreate;
 __SRE_TimerEventStart;
 __SRE_TimerEventStop;
 __SRE_TimerEventDestroy;
 __SRE_TimerGetExpire;
 __SRE_TimerCheck;
-__SRE_ReadTimestamp;
+tee_time_event_create;
+tee_time_event_destroy;
+tee_time_event_start;
+tee_time_event_stop;
+tee_time_event_check;
+tee_time_event_get_expire;
 SRE_TimerEventStart;
 SRE_TimerEventStop;
 SRE_TimerEventCreate;
 SRE_TimerEventDestroy;
-SRE_DelayMs;
+delay_us;
+delay_ms;
 SRE_DelayUs;
+tee_read_time_stamp;
 SRE_ReadTimestamp;
+__SRE_ReadTimestamp;
+get_sys_date_time;
 __get_sys_date_time;
 
 #ifndef CONFIG_OFF_DRV_TIMER
-__init_startup_time_kernel;
-__adjust_sys_time;
-__get_startup_time;
+adjust_sys_time;
 release_timer_event;
 hm_timer_init;
 set_ta_timer_permission;

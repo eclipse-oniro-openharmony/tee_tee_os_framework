@@ -6,14 +6,11 @@
 #include <securec.h>
 #include <tee_defines.h>
 #include <tee_log.h>
-#ifdef SUPPORT_GATEKEEPER_TA
 #include <tee_core_api.h>
-#include <product_uuid_public.h>
+#include <tee_inner_uuid.h>
 #include "gatekeeper.h"
-#endif
 #include "tee_gk_auth_token.h"
 
-#ifdef SUPPORT_GATEKEEPER_TA
 #define PARAM_NUM 4
 
 static TEE_Result get_unlock_timestamp(uint32_t uid, uint64_t *timestamp)
@@ -56,7 +53,6 @@ static TEE_Result get_unlock_timestamp(uint32_t uid, uint64_t *timestamp)
     TEE_CloseTASession(ta2ta_session);
     return ret;
 }
-#endif
 
 TEE_Result tee_gatekeeper_get_verify_timestamp(uint32_t uid, uint64_t *timestamp)
 {
@@ -65,11 +61,6 @@ TEE_Result tee_gatekeeper_get_verify_timestamp(uint32_t uid, uint64_t *timestamp
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-#ifdef SUPPORT_GATEKEEPER_TA
     return get_unlock_timestamp(uid, timestamp);
-#else
-    (void)uid;
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }
 

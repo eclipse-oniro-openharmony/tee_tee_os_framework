@@ -9,10 +9,10 @@
 #include <hmlog.h>
 #include "drv_param_ops.h"
 
-static int32_t cipher_init_ops(const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg,
+static int32_t cipher_init_ops(const struct drv_data *drv, const struct crypto_drv_ops_t *ops,
     struct crypto_ioctl *ioctl)
 {
-    if (ops->cipher_init == NULL) {
+    if (ops->cipher_init == NULL || drv->private_data == NULL) {
         hm_error("hardware engine cipher init fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
@@ -30,70 +30,41 @@ static int32_t cipher_init_ops(const struct crypto_drv_ops_t *ops, struct memref
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *temp_crypto_arg = crypto_arg;
-    void *ctx_buffer = alloc_and_fill_ctx_buf(temp_crypto_arg);
-    if (ctx_buffer == NULL) {
-        do_power_off(ops);
-        return CRYPTO_OVERFLOW;
-    }
-
-    temp_crypto_arg++;
     struct symmerit_key_t key;
     key.key_type = ioctl->arg4;
-    key.key_buffer = temp_crypto_arg->buffer;
-    key.key_size = temp_crypto_arg->size;
+    key.key_buffer = (uint64_t)(uintptr_t)ioctl->data_1;
+    key.key_size = ioctl->data_size_1;
 
-    temp_crypto_arg++;
     struct memref_t iv;
-    iv.buffer = temp_crypto_arg->buffer;
-    iv.size = temp_crypto_arg->size;
+    iv.buffer = (uint64_t)(uintptr_t)ioctl->data_2;
+    iv.size = ioctl->data_size_2;
 
     uint32_t direction = ioctl->arg3;
-    ret = ops->cipher_init(alg_type, ctx_buffer, direction, &key, &iv);
+    ret = ops->cipher_init(alg_type, drv->private_data, direction, &key, &iv);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
         hm_error("hardware engine do hmac init failed. ret = %d\n", ret);
-        free(ctx_buffer);
         return ret;
     }
 
-    (void)memcpy_s((void *)(uintptr_t)crypto_arg->buffer, crypto_arg->size, ctx_buffer, crypto_arg->size);
-    free(ctx_buffer);
     return ret;
 }
 
 int32_t cipher_init_call(const struct drv_data *drv, unsigned long args, uint32_t args_len,
     const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
-    struct memref_t *buf_arg = NULL;
-
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
         return CRYPTO_BAD_PARAMETERS;
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
-    if (ret != CRYPTO_SUCCESS)
-        return ret;
-
-    ret = cipher_init_ops(ops, buf_arg, ioctl_args);
-    if (ret != CRYPTO_SUCCESS)
-        goto end;
-
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
-    if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
-
-end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
-        ioctl_args->total_nums * sizeof(struct memref_t));
-    return ret;
+    return cipher_init_ops(drv, ops, ioctl_args);
 }
 
-static int32_t cipher_update_ops(const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg)
+static int32_t cipher_update_ops(const struct drv_data *drv,
+    const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg)
 {
-    if (ops->cipher_update == NULL) {
+    if (ops->cipher_update == NULL || drv->private_data == NULL) {
         hm_error("hardware engine cipher update fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
@@ -102,13 +73,6 @@ static int32_t cipher_update_ops(const struct crypto_drv_ops_t *ops, struct memr
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    void *ctx_buffer = alloc_and_fill_ctx_buf(crypto_arg);
-    if (ctx_buffer == NULL) {
-        do_power_off(ops);
-        return CRYPTO_OVERFLOW;
-    }
-
-    crypto_arg++;
     struct memref_t data_out;
     data_out.buffer = crypto_arg->buffer;
     data_out.size = crypto_arg->size;
@@ -118,31 +82,26 @@ static int32_t cipher_update_ops(const struct crypto_drv_ops_t *ops, struct memr
     data_in.buffer = crypto_arg->buffer;
     data_in.size = crypto_arg->size;
 
-    ret = ops->cipher_update(ctx_buffer, &data_in, &data_out);
+    ret = ops->cipher_update(drv->private_data, &data_in, &data_out);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
         hm_error("hardware engine do cipher update failed. ret = %d\n", ret);
-        free(ctx_buffer);
         return ret;
     }
 
     crypto_arg--;
     if (data_out.size > crypto_arg->size) {
         hm_error("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
-        free(ctx_buffer);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = data_out.size;
-    crypto_arg--;
-    (void)memcpy_s((void *)(uintptr_t)crypto_arg->buffer, crypto_arg->size, ctx_buffer, crypto_arg->size);
-    free(ctx_buffer);
     return ret;
 }
 
 int32_t cipher_update_call(const struct drv_data *drv, unsigned long args, uint32_t args_len,
     const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *cipher_update_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -150,31 +109,34 @@ int32_t cipher_update_call(const struct drv_data *drv, unsigned long args, uint3
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &cipher_update_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    ret = cipher_update_ops(ops, buf_arg);
+    ret = cipher_update_ops(drv, ops, buf_arg);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = fill_share_mem(share_buf, buf_arg, ioctl_args->total_nums);
+    ret = fill_share_mem(cipher_update_share_buf, buf_arg, ioctl_args->total_nums);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)cipher_update_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(cipher_update_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }
 
-static int32_t cipher_dofinal_ops(const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg)
+static int32_t cipher_dofinal_ops(const struct drv_data *drv,
+    const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg)
 {
-    if (ops->cipher_dofinal == NULL) {
+    if (ops->cipher_dofinal == NULL || drv->private_data == NULL) {
         hm_error("hardware engine cipher dofinal fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
@@ -183,47 +145,35 @@ static int32_t cipher_dofinal_ops(const struct crypto_drv_ops_t *ops, struct mem
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    void *ctx_buffer = alloc_and_fill_ctx_buf(crypto_arg);
-    if (ctx_buffer == NULL) {
-        do_power_off(ops);
-        return CRYPTO_OVERFLOW;
-    }
-
-    crypto_arg++;
     struct memref_t data_out;
-    data_out.buffer = crypto_arg->buffer;
     data_out.size = crypto_arg->size;
+    data_out.buffer = crypto_arg->buffer;
 
     crypto_arg++;
     struct memref_t data_in;
-    data_in.buffer = crypto_arg->buffer;
     data_in.size = crypto_arg->size;
+    data_in.buffer = crypto_arg->buffer;
 
-    ret = ops->cipher_dofinal(ctx_buffer, &data_in, &data_out);
+    ret = ops->cipher_dofinal(drv->private_data, &data_in, &data_out);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
         hm_error("hardware engine do cipher dofinal failed. ret = %d\n", ret);
-        free(ctx_buffer);
         return ret;
     }
 
     crypto_arg--;
     if (data_out.size > crypto_arg->size) {
         hm_error("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
-        free(ctx_buffer);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = data_out.size;
-    crypto_arg--;
-    (void)memcpy_s((void *)(uintptr_t)crypto_arg->buffer, crypto_arg->size, ctx_buffer, crypto_arg->size);
-    free(ctx_buffer);
     return ret;
 }
 
 int32_t cipher_dofinal_call(const struct drv_data *drv, unsigned long args, uint32_t args_len,
     const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *cipher_dofinal_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -231,24 +181,27 @@ int32_t cipher_dofinal_call(const struct drv_data *drv, unsigned long args, uint
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &cipher_dofinal_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    ret = cipher_dofinal_ops(ops, buf_arg);
+    ret = cipher_dofinal_ops(drv, ops, buf_arg);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = fill_share_mem(share_buf, buf_arg, ioctl_args->total_nums);
+    ret = fill_share_mem(cipher_dofinal_share_buf, buf_arg, ioctl_args->total_nums);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)cipher_dofinal_share_buf, ioctl_args->buf_len, ioctl_args->buf,
+        ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(cipher_dofinal_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }
@@ -308,7 +261,7 @@ static int32_t cipher_ops(const struct crypto_drv_ops_t *ops, struct memref_t *c
 int32_t cipher_call(const struct drv_data *drv, unsigned long args, uint32_t args_len,
     const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *cipher_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -316,7 +269,7 @@ int32_t cipher_call(const struct drv_data *drv, unsigned long args, uint32_t arg
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &cipher_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -324,16 +277,18 @@ int32_t cipher_call(const struct drv_data *drv, unsigned long args, uint32_t arg
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = fill_share_mem(share_buf, buf_arg, ioctl_args->total_nums);
+    ret = fill_share_mem(cipher_share_buf, buf_arg, ioctl_args->total_nums);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)cipher_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(cipher_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }

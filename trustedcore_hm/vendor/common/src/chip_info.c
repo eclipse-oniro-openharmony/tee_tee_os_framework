@@ -1,15 +1,15 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
  * Description: functions to get chip info
  * Create: 2020-4-6
  */
 #include "chip_info.h"
-#include <stdint.h>
-#include "tee_defines.h"
-#include "tee_bit_ops.h"
 
-__attribute__((weak, __visibility__("default"))) int32_t __tee_hal_get_dieid(uint32_t *in_buffer)
+/*
+ * This function is used to skip the "input module has no datalayout" compilation error,
+ * when llvm12 is used in the CMake compilation framework.
+ */
+int chip_info_skip_compiler_no_datalayout_error()
 {
-    (void)in_buffer;
-    return TEE_ERROR_NOT_SUPPORTED;
+    return 0;
 }

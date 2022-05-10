@@ -8,7 +8,8 @@ configure_modem()
         -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
         -DARCH=arm \
         -DCMAKE_MODULE_PATH=${ABS_SOURCE_PATH}/cmake \
-        -DCMAKE_TOOLCHAIN_PATH=${ABS_SOURCE_PATH}/prebuild/toolchains \
+        -DCMAKE_TOOLCHAIN_PATH=${TOOLCHAIN_ROOT} \
+        -DCMAKE_TOOLCHAIN_BASEVER=${LLVM_TOOLCHAIN_BASEVER} \
         -DCMAKE_TOOLCHAIN_FILE=${ABS_SOURCE_PATH}/cmake/toolchains/${TOOLCHAIN_FILE_32} \
         -DCONFIG_FILE=${CONFIG_FILE} \
         -DTARGET_BOARD_PLATFORM=${TARGET_BOARD_PLATFORM} \
@@ -56,13 +57,15 @@ compile_single_modem()
     ##################
     # running XOM32. #
     ##################
-    OBJCOPY=${ABS_SOURCE_PATH}/prebuild/toolchains/clang+llvm/bin/llvm-objcopy
+    OBJCOPY=${TOOLCHAIN_ROOT}/clang+llvm/bin/llvm-objcopy
     SEC_MODEM_PATH=libs/hisi-platdrv/platform/kirin/sec_modem
     cp ${OUT_MODEM}/${SEC_MODEM_PATH}/libsingle_sec_modem.so ${OUT_MODEM}/sec_modem.so
     if [ "${USE_XOM32}" == "y" ]; then
         echo "run xom32"
         ${OUT_MODEM}/tools/xom/xom ${OUT_MODEM}/sec_modem.so
         ${OBJCOPY} ${OUT_MODEM}/sec_modem.so --remove-section ".xomloc"
+    else
+        ${OBJCOPY} ${OUT_MODEM}/sec_modem.so
     fi
 
     #############

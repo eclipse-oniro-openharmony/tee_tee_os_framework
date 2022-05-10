@@ -8,18 +8,16 @@ if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND HMSYSMGR_LIBRARIES
         debug
         syscalls
-        hongmeng
+        syscalls_sysmgr
+        cs_sysmgr
         c_sysmgr
         fileio
         mmgr_sysmgr
         pathmgr
         vfs_sysmgr
         ac
-        ipc
-        ccmgr_hm
         hmlog
         asan_sysmgr
-        mmgr
         agent_base
     )
     list(APPEND HMSYSMGR_INTERNAL_LIBRARIES
@@ -33,18 +31,16 @@ else()
     list(APPEND HMSYSMGR_LIBRARIES
         debug_a32
         syscalls_a32
-        hongmeng_a32
+        syscalls_sysmgr_a32
+        cs_sysmgr_a32
         c_sysmgr_a32
         fileio_a32
         mmgr_sysmgr_a32
         pathmgr_a32
         vfs_sysmgr_a32
         ac_a32
-        ipc_a32
-        ccmgr_hm_a32
         hmlog_a32
         asan_sysmgr_a32
-        mmgr_a32
         agent_base_a32
     )
     list(APPEND HMSYSMGR_INTERNAL_LIBRARIES
@@ -54,6 +50,20 @@ else()
     list(APPEND HMSYSMGR_WHOLEARCHIVE_LIBRARIES
         security_a32
     )
+endif()
+
+if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
+    if ("${ARCH}" STREQUAL "aarch64")
+        list(APPEND HMSYSMGR_LIBRARIES
+            mem_measure
+            openssl
+        )
+    else()
+        list(APPEND HMSYSMGR_LIBRARIES
+            mem_measure_a32
+            openssl_a32
+        )
+    endif()
 endif()
 
 if ("${CONFIG_GCOV}" STREQUAL "y")
@@ -71,7 +81,7 @@ endif()
 if ("${ARCH}" STREQUAL "aarch64")
     if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
         list(APPEND HMSYSMGR_LDFLAGS
-            -execute-only
+            --execute-only
             --undefined=__vsyscall_ptr
             -T${PREBUILD_TOOLS}/common/boot-app-${ARCH}.lds
         )

@@ -11,6 +11,7 @@ export CONFIG_TA_SIGN_KEY_CBG := true
 export CONFIG_SE_SERVICE_32BIT :=true
 export CONFIG_NO_ZIP_IMAGE := true
 export CONFIG_PERMSRV_64BIT := false
+export CONFIG_DYN_SRV_MULTI_THREAD_DISABLE := true
 
 #set hisi_drv to BLOCKLIST with no -Werror
 BLOCKLIST += ipc/sec

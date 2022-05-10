@@ -20,7 +20,7 @@
 #include "drv_index_mgr.h"
 #include "drv_dyn_conf_mgr.h"
 
-static struct list_head g_task_list = LIST_HEAD_INIT(g_task_list);
+static struct dlist_node g_task_list = dlist_head_init(g_task_list);
 static pthread_mutex_t g_task_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
 
 static int32_t init_drv_node(struct task_node *node)
@@ -51,7 +51,7 @@ static int32_t init_ta_node(struct task_node *node)
 
 static int32_t init_task_node(struct task_node *node)
 {
-    init_list_head(&node->node_list);
+    dlist_init(&node->node_list);
     node->pid = INVALID_CALLER_PID;
 
     /* TA will not use this */
@@ -60,7 +60,7 @@ static int32_t init_task_node(struct task_node *node)
     node->tlv.drvcall_perm_apply_list = NULL;
     node->tlv.drv_conf = NULL;
 
-    init_list_head(&node->fd_head);
+    dlist_init(&node->fd_head);
     if (robust_mutex_init(&node->fd_mtx) != 0) {
         tloge("fd mtx init fail\n");
         return -1;
@@ -271,9 +271,9 @@ static bool is_state_match(struct task_node *node, enum node_state except_state)
 
 static struct task_node *find_normal_node(const struct tee_uuid *uuid, uint32_t taskid)
 {
-    struct list_head *pos = NULL;
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    struct dlist_node *pos = NULL;
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (memcmp(uuid, &temp->tlv.uuid, sizeof(*uuid)) == 0) {
             if (!is_state_match(temp, TASK_NORMAL))
                 continue;
@@ -302,9 +302,9 @@ static struct task_node *find_normal_node(const struct tee_uuid *uuid, uint32_t 
 /* find node whose state not set TASK_EXIT */
 static struct task_node *find_effective_node(const struct tee_uuid *uuid)
 {
-    struct list_head *pos = NULL;
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    struct dlist_node *pos = NULL;
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (memcmp(uuid, &temp->tlv.uuid, sizeof(*uuid)) == 0) {
             if (!is_state_match(temp, TASK_EXIT)) {
                 tlogd("find uuid:0x%x\n", uuid->timeLow);
@@ -318,9 +318,9 @@ static struct task_node *find_effective_node(const struct tee_uuid *uuid)
 
 static struct task_node *find_node_by_name(const char *drv_name, uint32_t len)
 {
-    struct list_head *pos = NULL;
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    struct dlist_node *pos = NULL;
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (temp->target_type == DRV_TARGET_TYPE &&
             temp->tlv.drv_conf != NULL &&
             temp->tlv.drv_conf->mani.service_name_size == len &&
@@ -330,7 +330,7 @@ static struct task_node *find_node_by_name(const char *drv_name, uint32_t len)
                 continue;
             }
 
-            tloge("find drv:%s\n", drv_name);
+            tlogd("find drv:%s\n", drv_name);
             return temp;
         }
     }
@@ -394,7 +394,7 @@ static struct task_node *get_node_by_uuid(const struct tee_uuid *uuid, uint32_t 
     struct task_node *temp = find_normal_node(uuid, taskid);
     if (temp == NULL) {
         if (!exit_flag)
-            tloge("cannot find node:0x%x\n", uuid->timeLow);
+            tlogd("cannot find node:0x%x\n", uuid->timeLow);
         return NULL;
     }
 
@@ -474,9 +474,9 @@ int32_t get_drvcall_and_fd_node(int64_t fd, const struct tee_drv_param *params,
         return -1;
     }
 
-    struct list_head *pos = NULL;
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    struct dlist_node *pos = NULL;
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (memcmp(&temp->tlv.uuid, &params->uuid, sizeof(struct tee_uuid)) == 0 &&
             temp->pid == pid_to_hmpid(params->caller_pid)) {
             /*
@@ -537,7 +537,7 @@ static void put_node(struct task_node *node, uint32_t dec_cnt)
             return;
         }
 
-        list_del(&node->node_list);
+        dlist_delete(&node->node_list);
         free_task_node(node);
     }
 }
@@ -757,10 +757,10 @@ static int32_t inherit_drv_node(struct drv_conf_t *drv_conf)
         return -1;
     }
 
-    struct list_head *pos = NULL;
+    struct dlist_node *pos = NULL;
 
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (temp->tlv.drv_conf != NULL &&
             strcmp(drv_conf->mani.service_name, temp->tlv.drv_conf->mani.service_name) == 0) {
             if (copy_drv_conf_to_target(drv_conf, temp->tlv.drv_conf) != 0) {
@@ -814,7 +814,7 @@ int32_t receive_task_conf(struct task_node *node)
     if (ret != 0)
         goto unlock_mtx;
 
-    list_add_tail(&node->node_list, &g_task_list);
+    dlist_insert_tail(&node->node_list, &g_task_list);
 
     ret = 0;
 
@@ -862,7 +862,7 @@ int32_t free_drv_conf_by_service_name(const char *drv_name, uint32_t len)
         goto unlock_mtx;
     }
 
-    list_del(&node->node_list);
+    dlist_delete(&node->node_list);
     free_flag = true;
     ret = 0;
 
@@ -884,9 +884,9 @@ struct task_node *find_drv_node_by_taskid(uint32_t exit_pid)
         return NULL;
     }
 
-    struct list_head *pos = NULL;
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    struct dlist_node *pos = NULL;
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (temp->target_type == DRV_TARGET_TYPE && pid_to_hmpid(temp->pid) == pid_to_hmpid(exit_pid)) {
             tlogd("find drv taskid:0x%x uuid:0x%x\n", exit_pid, temp->tlv.uuid.timeLow);
             node = temp;
@@ -902,9 +902,9 @@ struct task_node *find_drv_node_by_taskid(uint32_t exit_pid)
 
 void tee_drv_pm_cmd_handle(uint16_t msg_id)
 {
-    struct list_head *pos = NULL;
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    struct dlist_node *pos = NULL;
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (temp->target_type == DRV_TARGET_TYPE &&
             temp->tlv.drv_conf != NULL &&
             temp->state == TASK_NORMAL) {
@@ -986,9 +986,9 @@ void dump_task_node(void)
         return;
     }
 
-    struct list_head *pos = NULL;
-    list_for_each(pos, &g_task_list) {
-        struct task_node *temp = list_entry(pos, struct task_node, node_list);
+    struct dlist_node *pos = NULL;
+    dlist_for_each(pos, &g_task_list) {
+        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         tlogi("[task node begin] uuid:0x%x pid:0x%x type:%s ref_cnt:%u\n", temp->tlv.uuid.timeLow, temp->pid,
             (temp->target_type == DRV_TARGET_TYPE) ? "DRV" : "TA", temp->ref_cnt);
         dump_task_state(temp);

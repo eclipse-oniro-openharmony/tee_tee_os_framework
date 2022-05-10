@@ -118,3 +118,16 @@ uint32_t dxcc_dh_get_secret_key_adaptr(uint8_t *client_prvkey_ptr, size_t client
     *secret_keysize_ptr = (uint16_t)secret_key_size;
     return ret;
 }
+
+int32_t read_entropy_data(void *buffer, size_t size)
+{
+    if (buffer == NULL || size == 0)
+        return CRYPTO_BAD_PARAMETERS;
+
+    CCRndContext_t rndContext_ptr;
+    CCRndWorkBuff_t workBuff_ptr;
+    (void)memset_s(&rndContext_ptr, sizeof(rndContext_ptr), 0x0, sizeof(rndContext_ptr));
+    (void)memset_s(&workBuff_ptr, sizeof(workBuff_ptr), 0x0, sizeof(workBuff_ptr));
+    CCError_t error = CC_GetEntropy(&rndContext_ptr, buffer, size, &workBuff_ptr);
+    return (int32_t)error;
+}

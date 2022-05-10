@@ -3,14 +3,10 @@
  * Description: extension certification api
  * Create: 2020-06-08
  */
-#ifdef CRYPTO_SSL_SUPPORT_X509
 #include <openssl/ec.h>
 #include <openssl/rsa.h>
 #include <openssl/x509.h>
-#ifndef BORINGSSL_ENABLE
 #include <rsa/rsa_local.h>
-#endif
-#endif
 #include <securec.h>
 #include <tee_log.h>
 #include <tee_ext_api.h>
@@ -20,7 +16,6 @@
 #include <crypto_ext_api.h>
 #include "crypto_inner_interface.h"
 
-#ifdef CRYPTO_SSL_SUPPORT_X509
 #define EXT_RET_ERROR            (-1)
 #define EXT_RET_SUCCESS          0
 
@@ -291,12 +286,6 @@ static int create_x509_pkcs10_req(uint8_t *req, size_t req_len, const char *name
         tloge("create cert request failed\n");
         return -1;
     }
-#ifdef BORINGSSL_ENABLE
-    if (x->req_info == NULL) {
-        tloge("create cert request failed\n");
-        return -1;
-    }
-#endif
 
     if (X509_REQ_set_pubkey(x, pkey) != SSL_LIB_OP_SUCC) {
         tloge("x509 req set pubkey fail\n");
@@ -441,7 +430,7 @@ static TEE_Result get_device_unique_id_str(uint8_t *buff, uint32_t len)
 {
     TEE_Result ret;
     uint8_t unique_id[SHA256_BYTE_SIZE] = { 0 };
-    uint32_t id_len = sizeof(unique_id);
+    uint32_t id_len = (uint32_t)sizeof(unique_id);
     uint8_t ch[HALF_BYTE_MAX] = "0123456789ABCDEF";
     uint32_t i;
 
@@ -451,7 +440,7 @@ static TEE_Result get_device_unique_id_str(uint8_t *buff, uint32_t len)
         return TEE_ERROR_GENERIC;
     }
 
-    ret = TEE_EXT_GetDeviceUniqueId(unique_id, &id_len);
+    ret = tee_ext_get_device_unique_id(unique_id, &id_len);
     check = ((ret != TEE_SUCCESS) || (id_len != SHA256_BYTE_SIZE));
     if (check) {
         tloge("get device unique id is failed\n");
@@ -567,7 +556,7 @@ static TEE_Result get_key_for_cert_req(uint32_t key_type, EVP_PKEY **cert_key, c
     uint32_t key_size = DERIVED_KEY_SIZE;
     TEE_Result ret;
 
-    ret = TEE_EXT_ROOT_UuidDeriveKey(g_key_salt, sizeof(g_key_salt), key, &key_size);
+    ret = tee_ext_root_uuid_derive_key(g_key_salt, sizeof(g_key_salt), key, &key_size);
     if (ret != TEE_SUCCESS) {
         tloge("root uuid derive key is failed\n");
         return ret;
@@ -630,7 +619,7 @@ static TEE_Result get_derived_pub_key(int32_t key_type, union cert_pub_key *pub_
     uint8_t key[KEY_SIZE_FOR_CERT] = { 0 };
     uint32_t key_size = KEY_SIZE_FOR_CERT;
 
-    if (TEE_EXT_ROOT_UuidDeriveKey(g_key_salt, sizeof(g_key_salt), key, &key_size) != TEE_SUCCESS) {
+    if (tee_ext_root_uuid_derive_key(g_key_salt, sizeof(g_key_salt), key, &key_size) != TEE_SUCCESS) {
         tloge("root uuid derive key failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -641,7 +630,7 @@ static TEE_Result get_derived_pub_key(int32_t key_type, union cert_pub_key *pub_
         return derive_rsa_key_from_huk(key, key_size, pub_key);
 }
 
-TEE_Result TEE_EXT_create_cert_req(uint8_t *buf, size_t length, uint32_t key_type, uint8_t *file_name)
+TEE_Result tee_create_cert_req(uint8_t *buf, size_t length, uint32_t key_type, uint8_t *file_name)
 {
     uint8_t unique_id_str[DEVICE_UNIQUE_ID_STR_LEN] = { 0 };
     EVP_PKEY *key = NULL;
@@ -674,7 +663,12 @@ TEE_Result TEE_EXT_create_cert_req(uint8_t *buf, size_t length, uint32_t key_typ
     return ret;
 }
 
-TEE_Result TEE_EXT_verify_dev_cert(uint8_t *cert, uint32_t cert_len, uint8_t *parent_key, uint32_t parent_key_len)
+TEE_Result TEE_EXT_create_cert_req(uint8_t *buf, size_t length, uint32_t key_type, uint8_t *file_name)
+{
+    return tee_create_cert_req(buf, length, key_type, file_name);
+}
+
+TEE_Result tee_verify_dev_cert(uint8_t *cert, uint32_t cert_len, uint8_t *parent_key, uint32_t parent_key_len)
 {
     uint8_t tmp[PUB_KEY_SUBJECT_SIZE] = { 0 };
     int32_t pub_key_len;
@@ -724,21 +718,9 @@ TEE_Result TEE_EXT_verify_dev_cert(uint8_t *cert, uint32_t cert_len, uint8_t *pa
 
     return TEE_SUCCESS;
 }
-#else
-TEE_Result TEE_EXT_create_cert_req(uint8_t *buf, size_t length, uint32_t key_type, uint8_t *file_name)
-{
-    (void)buf;
-    (void)length;
-    (void)key_type;
-    (void)file_name;
-    return TEE_ERROR_NOT_SUPPORTED;
-}
+
 TEE_Result TEE_EXT_verify_dev_cert(uint8_t *cert, uint32_t cert_len, uint8_t *parent_key, uint32_t parent_key_len)
 {
-    (void)cert;
-    (void)cert_len;
-    (void)parent_key;
-    (void)parent_key_len;
-    return TEE_ERROR_NOT_SUPPORTED;
+    return tee_verify_dev_cert(cert, cert_len, parent_key, parent_key_len);
 }
-#endif
+

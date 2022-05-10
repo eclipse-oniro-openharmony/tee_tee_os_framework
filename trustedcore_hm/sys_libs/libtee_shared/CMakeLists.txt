@@ -7,14 +7,24 @@ include(apps_feature_macro)
 list(APPEND TEE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/sys_libs/libtee_shared/include
     ${PROJECT_SOURCE_DIR}/platform/common/tee_config
+    ${PROJECT_SOURCE_DIR}/libs/syslib/libmmgr/include
+    ${PREBUILD_HEADER}/sys/mmgr
+    ${PREBUILD_HEADER}/sys/mmgr_sysmgr
 )
 
 if ("${CONFIG_GATEKEEPER_32BIT}" STREQUAL "true" OR "${CONFIG_GATEKEEPER_64BIT}" STREQUAL "true")
-    list(APPEND TEE_C_FLAGS
-        -DSUPPORT_GATEKEEPER_TA
+    list(APPEND TEE_C_FLAGS -DSUPPORT_GATEKEEPER_TA)
+    set(TEE_SHARED_SRCS
+        ${TEE_SHARED_SRCS}
+        src/gk_auth_token.c
     )
     list(APPEND TEE_INCLUDE_PATH
         ${PROJECT_SOURCE_DIR}/sys_apps/gatekeeper/src/task_gatekeeper
+    )
+else()
+    set(TEE_SHARED_SRCS
+        ${TEE_SHARED_SRCS}
+        src/gk_auth_token_stub.c
     )
 endif()
 
@@ -36,6 +46,12 @@ if ("${CONFIG_EXPORT_OPENSSL_SYMBOL}" STREQUAL "true")
     )
 endif()
 
+ if ("${CONFIG_DYN_IMPORT_CERT}" STREQUAL "y")
+    list(APPEND TEE_C_FLAGS
+        -DDYN_IMPORT_CERT=1
+    )
+ endif()
+
 if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND TEE_SHARED_LIBS
         ccmgr
@@ -43,9 +59,9 @@ if ("${ARCH}" STREQUAL "aarch64")
         timer
         agent
         agent_base
-        hwi
         hmdrv
         teeos
+        permission_service
         swcrypto_engine
         taentry
         teeagentcommon_client
@@ -67,9 +83,9 @@ else()
         timer
         agent_a32
         agent_base_a32
-        hwi_a32
         hmdrv_a32
         teeos_a32
+        permission_service_a32
         swcrypto_engine
         taentry_a32
         teeagentcommon_client
@@ -86,7 +102,7 @@ else()
     )
 endif()
 
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "true" OR "${CONFIG_RPMB_64BIT}" STREQUAL "false")
+if ("${CONFIG_RPMB_64BIT}" STREQUAL "true" OR "${CONFIG_RPMB_64BIT}" STREQUAL "false" OR "${CONFIG_EXPORT_RPMB_STUB}" STREQUAL "y")
     if ("${ARCH}" STREQUAL "aarch64")
         list(APPEND TEE_SHARED_LIBS
             rpmb
@@ -98,13 +114,21 @@ if ("${CONFIG_RPMB_64BIT}" STREQUAL "true" OR "${CONFIG_RPMB_64BIT}" STREQUAL "f
     endif()
 endif()
 
+if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
+    if ("${ARCH}" STREQUAL "aarch64")
+        list(APPEND TEE_SHARED_LIBS
+            tcmgr
+        )
+    else()
+        list(APPEND TEE_SHARED_LIBS
+            tcmgr_a32
+        )
+    endif()
+endif()
+
 if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
     list(APPEND TEE_SHARED_LIBS
         mbedtls
-    )
-elseif ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-    list(APPEND TEE_SHARED_LIBS
-        boringssl
     )
 else()
     list(APPEND TEE_SHARED_LIBS
@@ -180,6 +204,13 @@ else()
     )
 endif()
 
+execute_process(
+    COMMAND cat ${CMAKE_CURRENT_SOURCE_DIR}/${ALIAS_FILE}
+    COMMAND awk "{ print \"-Wl,--defsym=\"$$1 }"
+    COMMAND tr "\n" " "
+    OUTPUT_VARIABLE ALIAS_SYM
+)
+
 list(APPEND TEE_SHARED_LINKER_FLAGS
     -Wl,--shared
     -Wl,-X
@@ -194,11 +225,18 @@ list(APPEND TEE_SHARED_LINKER_FLAGS
     -Wl,-z,max-page-size=4096
     -Wl,-L${PREBUILD_LIBS}/${ARCH}
     ${CMAKE_CURRENT_BINARY_DIR}/${EXTERN_FILE}
+    ${ALIAS_SYM}
 )
 
 if ("${ARCH}" STREQUAL "aarch64" AND "${CONFIG_ENABLE_XOM}" STREQUAL "y")
     list(APPEND TEE_SHARED_LINKER_FLAGS
-        -Wl,-execute-only
+        -Wl,--execute-only
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND TEE_SHARED_LINKER_FLAGS
+        -Wl,-z,separate-loadable-segments
     )
 endif()
 
@@ -208,31 +246,6 @@ if ("${ARCH}" STREQUAL "arm" AND "${CONFIG_ENABLE_XOM32}" STREQUAL "y")
     )
 endif()
 
-list(APPEND TEE_SHARED_LINKER_FLAGS
-    -Wl,--defsym=faccess=tee_fs_faccess
-    -Wl,--defsym=faccess2=tee_fs_faccess2
-    -Wl,--defsym=fcreate=tee_fs_fcreate
-    -Wl,--defsym=fopen=tee_fs_fopen
-    -Wl,--defsym=fwrite=tee_fs_fwrite
-    -Wl,--defsym=fread=tee_fs_fread
-    -Wl,--defsym=fseek=tee_fs_fseek
-    -Wl,--defsym=fclose=tee_fs_fclose
-    -Wl,--defsym=finfo=tee_fs_finfo
-    -Wl,--defsym=fremove=tee_fs_fremove
-    -Wl,--defsym=ftruncate=tee_fs_ftruncate
-    -Wl,--defsym=fsync=tee_fs_fsync
-    -Wl,--defsym=frename=tee_fs_frename
-    -Wl,--defsym=fcopy=tee_fs_fcopy
-    -Wl,--defsym=ta_print=tee_print
-    -Wl,--defsym=__SRE_HwiTrigger=SRE_HwiTrigger
-    -Wl,--defsym=__SRE_HwiCreate=SRE_HwiCreate
-    -Wl,--defsym=__SRE_HwiDelete=SRE_HwiDelete
-    -Wl,--defsym=TEE_EXT_GetAgentBuffer=tee_get_agent_buffer
-    -Wl,--defsym=ASM_Memcpy=asm_memcpy_ext
-    -Wl,--defsym=_cfi_disabled=g_cfi_disabled
-    -Wl,--defsym=cfi_disabled=g_cfi_disabled
-)
-
 set(TEE_PRECOMPILE_FLAGS ${TEE_C_FLAGS})
 list(REMOVE_ITEM TEE_PRECOMPILE_FLAGS "-march=armv8-a")
 foreach(d ${TEE_C_DEFINITIONS})
@@ -240,6 +253,7 @@ foreach(d ${TEE_C_DEFINITIONS})
 endforeach()
 add_custom_target(tee_shared_export)
 add_custom_target(tee_shared_extern)
+add_custom_target(tee_shared_alias)
 add_custom_command(
     TARGET tee_shared_export
     COMMAND ${CMAKE_C_COMPILER} ${TEE_PRECOMPILE_FLAGS} --target=${triple} -x assembler-with-cpp -E --no-line-commands ${CMAKE_CURRENT_SOURCE_DIR}/${EXPORT_FILE} -o ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_FILE}
@@ -247,6 +261,10 @@ add_custom_command(
 add_custom_command(
     TARGET tee_shared_extern
     COMMAND ${CMAKE_C_COMPILER} ${TEE_PRECOMPILE_FLAGS} --target=${triple} -x assembler-with-cpp -E --no-line-commands ${CMAKE_CURRENT_SOURCE_DIR}/${EXTERN_FILE} -o ${CMAKE_CURRENT_BINARY_DIR}/${EXTERN_FILE}
+)
+add_custom_command(
+    TARGET tee_shared_alias
+    COMMAND ${CMAKE_C_COMPILER} ${TEE_PRECOMPILE_FLAGS} --target=${triple} -x assembler-with-cpp -E --no-line-commands ${CMAKE_CURRENT_SOURCE_DIR}/${ALIAS_FILE} -o ${CMAKE_CURRENT_BINARY_DIR}/${ALIAS_FILE}
 )
 
 list(FIND PRODUCT_APPS "tee_shared" index)
@@ -260,13 +278,17 @@ else()
 set(LINK_COMPILET_RT clang_rt.builtins-aarch64)
 endif()
 
-tee_add_library(tee_shared SHARED
-    SOURCES
+set(TEE_SHARED_SRCS
+    ${TEE_SHARED_SRCS}
     src/extra_syms.c
     src/se_ext.c
     src/libgcc_syms.c
     src/oemkey.c
-    src/gk_auth_token.c
+)
+
+tee_add_library(tee_shared SHARED
+    SOURCES
+    ${TEE_SHARED_SRCS}
 
     COMPILE_TOOL
     clang
@@ -301,5 +323,5 @@ if ("${ARCH}" STREQUAL "arm")
 endif()
 
 if ("${BUILD_TOOL}" STREQUAL "clang")
-    add_dependencies(tee_shared tee_shared_export tee_shared_extern)
+    add_dependencies(tee_shared tee_shared_export tee_shared_extern tee_shared_alias)
 endif()

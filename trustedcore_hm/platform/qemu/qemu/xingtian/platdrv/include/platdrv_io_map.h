@@ -8,7 +8,6 @@
 #define PLATDRV_IO_MAP_XINGTIAN_H
 
 #include <platdrv.h>
-#include <plat_cfg.h>
 
 /*
  * for example

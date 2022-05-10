@@ -16,6 +16,15 @@
 #define LOW_MASK_16BIT 0xffff
 #define TYPE_LEN 32
 
+enum sharedmem_err {
+    TLV_SHAREDMEM_ERROR_GENERIC    = -5,
+    TLV_SHAREDMEM_ERROR_DATA       = -4,
+    TLV_SHAREDMEM_BAD_PARAMETERS   = -3,
+    TLV_SHAREDMEM_NO_DATA          = -2,
+    TLV_SHAREDMEM_ACCESS_DENIED    = -1,
+    TLV_SHAREDMEM_SUCCESS          = 0
+};
+
 struct tlv_item_tag {
     char type[TYPE_LEN];
     uint32_t uuid_len;

@@ -107,3 +107,14 @@ int32_t dxcc_aes_dofinal(void *ctx, const struct memref_t *data_in, struct memre
 
     return CRYPTO_SUCCESS;
 }
+
+int32_t read_entropy_data(void *buffer, size_t size)
+{
+    if (buffer == NULL || size == 0)
+        return CRYPTO_BAD_PARAMETERS;
+
+    CRYS_RND_WorkBuff_t workBuff_ptr;
+    (void)memset_s(&workBuff_ptr, sizeof(workBuff_ptr), 0x0, sizeof(workBuff_ptr));
+    CRYSError_t error = CRYS_RND_GetEntropy(buffer, size, &workBuff_ptr);
+    return error;
+}

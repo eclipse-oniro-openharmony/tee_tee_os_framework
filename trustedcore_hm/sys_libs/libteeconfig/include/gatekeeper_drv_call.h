@@ -5,7 +5,7 @@
  */
 #ifndef GATEKEEPER_DRV_CALL_H
 #define GATEKEEPER_DRV_CALL_H
-#include "sre_typedef.h"
+#include <stdint.h>
 
 bool __add_key_factor(uint64_t secure_id, const uint8_t *key_factor, uint32_t key_len);
 bool __delete_key_factor(uint64_t secure_id);

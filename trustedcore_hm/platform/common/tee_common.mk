@@ -1,13 +1,17 @@
 #ta loader and gtask sysmgr core service packages of 64 bit runntime
 #Compile libs for hm-apps
+
+ifneq ($(CONFIG_NO_VENDOR_LIB_EMBEDDED), true)
+    include $(PLATFORM_DIR)/common/vendor_shared.mk
+endif
+
 arm_libs +=
-arm_sys_libs += libteeconfig libtee_shared libbase_shared libgm_shared libtui_internal_shared libdrv_shared libspawn_common libelf_verify_key libtee_cmscbb libteedynsrv
-arm_host_libs += libramfs_host libvfs_host libhwsecurec_host
+arm_sys_libs += libteeconfig libtee_shared libbase_shared libtui_internal_shared libdrv_shared libspawn_common libelf_verify_key libtee_cmscbb libteedynsrv
+arm_host_libs += libhwsecurec_host
 arm_pro_libs +=
-arm_chip_libs += ramfsmkimg_host ramfsdump_host
+arm_chip_libs += ramfsmkimg_host
 aarch64_libs += libac_policy libteeagentcommon libteeagentcommon_client libdrv_frame
 aarch64_sys_libs += libccmgr libhmdrv_stub libtimer libswcrypto_engine libcrypto_hal libdynconfmgr libdynconfbuilder libspawn_common libelf_verify_key libtee_cmscbb libteedynsrv
-vendor_libs += libvendor_shared libvendor_static
 hm_kernel    := kernel
 hm_elfloader := elfloader
 #Compile ext_libs for hm-apps
@@ -15,7 +19,7 @@ arm_ext_libs +=
 thirdparty_libs += libhwsecurec
 host_tools += scramb_syms_host xom
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
 arm_open_source_libs +=
 else
 arm_open_source_libs +=
@@ -90,10 +94,6 @@ endif
 
 ifeq ($(CONFIG_TA_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/drivers/tarunner.elf
-ifeq ($(CONFIG_GMLIB_IMPORT), true)
-product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libgm_shared/libgm_shared.so
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libgm_shared/libgm_shared.so
-endif
 endif
 
 ifeq ($(CONFIG_HUK_SERVICE_64BIT), true)
@@ -108,6 +108,20 @@ check-syms-y += $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
 $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf:
 	@mkdir $(OUTPUTDIR)/arm/apps/huk_service_a32
 	@cp $(OUTPUTDIR)/arm/apps/huk_service_a32.elf $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
+endif
+
+ifeq ($(CONFIG_REMOTE_ATTESTATION_64BIT), true)
+aarch64_frm_drivers += tcmgr_service
+product_apps += $(OUTPUTDIR)/aarch64/apps/tcmgr_service.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/apps/tcmgr_service.elf
+endif
+ifeq ($(CONFIG_REMOTE_ATTESTATION_32IT), true)
+arm_frm_drivers += tcmgr_service
+product_apps += $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf
+check-syms-y += $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf
+$(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf:
+	@mkdir $(OUTPUTDIR)/arm/apps/tcmgr_service_a32
+	@cp $(OUTPUTDIR)/arm/apps/tcmgr_service_a32.elf $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf
 endif
 
 ifndef CONFIG_SSA_EMBEDDED
@@ -163,8 +177,6 @@ product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so
 check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so
 product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libbase_shared/libbase_shared.so
 check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libbase_shared/libbase_shared.so
-product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libvendor_shared/libvendor_shared.so
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libvendor_shared/libvendor_shared.so
 endif
 
 ifeq ($(CONFIG_TA_32BIT), true)
@@ -172,12 +184,6 @@ product_apps += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
 check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
 product_apps += $(OUTPUTDIR)/arm/obj/arm/libbase_shared/libbase_shared_a32.so
 check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libbase_shared/libbase_shared_a32.so
-product_apps += $(OUTPUTDIR)/arm/obj/arm/libvendor_shared/libvendor_shared_a32.so
-check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libvendor_shared/libvendor_shared_a32.so
-ifeq ($(CONFIG_GMLIB_IMPORT), true)
-product_apps += $(OUTPUTDIR)/arm/obj/arm/libgm_shared/libgm_shared_a32.so
-check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libgm_shared/libgm_shared_a32.so
-endif
 product_apps += $(OUTPUTDIR)/arm/drivers/tarunner_a32.elf
 endif
 
@@ -269,5 +275,10 @@ ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), false)
 arm_driver_drivers += base_mgr/crypto_mgr
 product_apps += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
+endif
+
+ifeq ($(CONFIG_KMS), true)
+aarch64_sys_apps += kms
+product_apps += $(OUTPUTDIR)/aarch64/apps/kms.elf
 endif
 

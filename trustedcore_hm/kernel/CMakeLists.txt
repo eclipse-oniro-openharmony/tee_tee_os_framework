@@ -353,6 +353,7 @@ set(ELFLOADER_INCLUDES
     ${PREBUILD_HEADER}/kernel/include/plat
     ${PREBUILD_HEADER}/kernel/include/arch/arm
     ${PREBUILD_LIBC_INC}
+    ${PREBUILD_LIBC_INC}/arch/generic
     ${HDR_L_DIR}
     ${PREBUILD_HEADER}/kernel/klibc
 )
@@ -375,6 +376,14 @@ set(ELFLOADER_CFLAGS
 if ("${CONFIG_BOOT_ARGS_TRANSFER}" STREQUAL "true")
 set(ELFLOADER_CFLAGS
     ${ELFLOADER_CFLAGS}
+    -DBOOT_ARGS_TRANSFER
+)
+endif()
+
+if ("${CONFIG_NO_PLATCFG_EMBEDDED}" STREQUAL "true")
+set(ELFLOADER_CFLAGS
+    ${ELFLOADER_CFLAGS}
+    -DNO_PLATCFG_EMBEDDED
     -DBOOT_ARGS_TRANSFER
 )
 endif()

@@ -1,8 +1,10 @@
 string(FIND ${PROJECT_SOURCE_DIR} "hm-teeos" IS_TEEOS)
 if (IS_TEEOS GREATER 0)
     set(TOP_IS_TEEOS "true")
+    set(TOP_TEEOS_DIR ${PROJECT_SOURCE_DIR}/..)
 else()
     set(TOP_IS_TEEOS "false")
+    set(TOP_TEEOS_DIR ${PROJECT_SOURCE_DIR}/../..)
 endif()
 
 set(LIB_PREFIX lib)
@@ -211,17 +213,17 @@ set(LIBATOMIC_PATH)
 set(LIBATOMIC_RET)
 set(RUNTIMELIB_LINK_PATH)
 
-if(EXISTS "${GCC_TOOLCHAIN_PATH}/../../../../../open_source")
+if (NOT "${GCC_TOOLCHAIN_PATH}" STREQUAL "")
     if("${ARCH}" STREQUAL "aarch64")
-        set(LIBCOMPILER_RT_BUILTINS_PATH "${GCC_TOOLCHAIN_PATH}/../../../../../hm-teeos/libs/teelib/libcompiler-rt/aarch64-build/lib/linux/libclang_rt.builtins-aarch64.a")
+        set(LIBCOMPILER_RT_BUILTINS_PATH "${TOP_TEEOS_DIR}/hm-teeos/libs/teelib/libcompiler-rt/aarch64-build/lib/linux/libclang_rt.builtins-aarch64.a")
     else()
-        set(LIBCOMPILER_RT_BUILTINS_PATH "${GCC_TOOLCHAIN_PATH}/../../../../../hm-teeos/libs/teelib/libcompiler-rt/arm-build/lib/linux/libclang_rt.builtins-arm.a")
+        set(LIBCOMPILER_RT_BUILTINS_PATH "${TOP_TEEOS_DIR}/hm-teeos/libs/teelib/libcompiler-rt/arm-build/lib/linux/libclang_rt.builtins-arm.a")
     endif()
 else()
     if("${ARCH}" STREQUAL "aarch64")
-        set(LIBCOMPILER_RT_BUILTINS_PATH "${GCC_TOOLCHAIN_PATH}/../../hm-teeos-release/libs/aarch64/libclang_rt.builtins-aarch64.a")
+        set(LIBCOMPILER_RT_BUILTINS_PATH "${TOP_TEEOS_DIR}/hm-apps/trustedcore_hm/prebuild/hm-teeos-release/libs/aarch64/libclang_rt.builtins-aarch64.a")
     else()
-        set(LIBCOMPILER_RT_BUILTINS_PATH "${GCC_TOOLCHAIN_PATH}/../../hm-teeos-release/libs/arm/libclang_rt.builtins-arm.a")
+        set(LIBCOMPILER_RT_BUILTINS_PATH "${TOP_TEEOS_DIR}/hm-apps/trustedcore_hm/prebuild/hm-teeos-release/libs/arm/libclang_rt.builtins-arm.a")
     endif()
 endif()
 
@@ -593,6 +595,7 @@ function(tee_add_executable target)
 
     add_custom_command(TARGET ${target}
         POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} $<TARGET_FILE:${target}>
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${target}> $<TARGET_FILE_DIR:${target}>/${target}
     )
 
@@ -642,7 +645,7 @@ function(tee_add_library target)
             endif()
         endif()
 
-        if (NOT "${TEELIB_NO_XOM}" STREQUAL "FALSE")
+        if (NOT TEELIB_NO_XOM)
             if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
                 if (NOT "${BUILD_TA}" STREQUAL "y")
                     if (NOT "${TARGET_IS_TA}" STREQUAL "y")

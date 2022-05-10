@@ -6,16 +6,79 @@
 #include "crypto_manager.h"
 #include <stdio.h>
 #include <hmdrv.h>
+#include <tee_log.h>
+#include <securec.h>
 #include <sre_syscalls_id.h>
+#include "tee_sharemem_ops.h"
+#include "tee_drv_client.h"
+#include "crypto_hal.h"
+#include "tee_mem_mgmt_api.h"
 #include "crypto_default_engine.h"
+#include "soft_common_api.h"
 
 #define hmccmgr_call_ex(...) hm_drv_call_ex(__VA_ARGS__)
 #define hmccmgr_call(...)    hm_drv_call(__VA_ARGS__)
 
+int32_t driver_ctx_buffer_prepare(const struct ctx_handle_t *src_ctx, struct ctx_handle_t *dest_ctx)
+{
+    if (src_ctx == NULL || dest_ctx == NULL)
+        return CRYPTO_BAD_PARAMETERS;
+
+    uint64_t *ctx_buffer = &(dest_ctx->ctx_buffer);
+    int32_t ctx_size = src_ctx->ctx_size;
+
+    if (ctx_buffer == NULL)
+        return CRYPTO_BAD_PARAMETERS;
+
+    TEE_Free((void *)(uintptr_t)(*ctx_buffer));
+    *ctx_buffer = (uintptr_t)malloc_coherent(ctx_size);
+    if (*ctx_buffer == 0) {
+        tloge("malloc crypto ctx buffer failed");
+        return CRYPTO_ERROR_OUT_OF_MEMORY;
+    }
+    (void)memset_s((void *)(uintptr_t)(*ctx_buffer), ctx_size, 0, ctx_size);
+
+    return CRYPTO_SUCCESS;
+}
+
+struct ctx_handle_t *driver_alloc_ctx_handle(uint32_t alg_type, uint32_t engine, struct ctx_handle_t *ctx)
+{
+    int32_t ctx_size;
+    uint8_t *ctx_ctx_buffer = NULL;
+    ctx_size = crypto_driver_get_ctx_size(alg_type, engine);
+    bool check = ((ctx_size <= 0) || (ctx_size > MAX_CRYPTO_CTX_SIZE) || ctx == NULL);
+    if (check) {
+        tloge("Get ctx size failed, ctx size=%d, algorithm type=0x%x, engine=0x%x\n", ctx_size, alg_type, engine);
+        goto error;
+    }
+
+    ctx_ctx_buffer = (uint8_t *)malloc_coherent((size_t)ctx_size);
+    if (ctx_ctx_buffer == NULL) {
+        tloge("Malloc ctx buffer failed, ctx size=%d\n", ctx_size);
+        goto error;
+    }
+    if (memset_s(ctx_ctx_buffer, (size_t)ctx_size, 0, (size_t)ctx_size) != EOK) {
+        tloge("memset ctx buffer failed\n");
+        goto error;
+    }
+    ctx->driver_ability = (uint32_t)crypto_driver_get_driver_ability(engine);
+    ctx->ctx_buffer = (uint64_t)(uintptr_t)ctx_ctx_buffer;
+    ctx->ctx_size = (uint32_t)ctx_size;
+    return ctx;
+
+error:
+    if (ctx_ctx_buffer != NULL) {
+        TEE_Free(ctx_ctx_buffer);
+        ctx_ctx_buffer = NULL;
+    }
+    TEE_Free(ctx);
+    return NULL;
+}
+
 uint32_t crypto_get_default_engine(uint32_t algorithm)
 {
-    uint32_t i;
-    uint32_t count = sizeof(g_algorithm_engine) / sizeof(g_algorithm_engine[0]);
+    size_t i;
+    size_t count = sizeof(g_algorithm_engine) / sizeof(g_algorithm_engine[0]);
     for (i = 0; i < count; i++) {
         if (g_algorithm_engine[i].algorithm == algorithm)
             return g_algorithm_engine[i].engine;
@@ -25,8 +88,8 @@ uint32_t crypto_get_default_engine(uint32_t algorithm)
 
 uint32_t crypto_get_default_generate_key_engine(uint32_t algorithm)
 {
-    uint32_t i;
-    uint32_t count = sizeof(g_generate_key_engine) / sizeof(g_generate_key_engine[0]);
+    size_t i;
+    size_t count = sizeof(g_generate_key_engine) / sizeof(g_generate_key_engine[0]);
     for (i = 0; i < count; i++) {
         if (g_generate_key_engine[i].algorithm == algorithm)
             return g_generate_key_engine[i].engine;
@@ -430,13 +493,22 @@ int32_t crypto_driver_dh_derive_key(const struct dh_key_t *dh_derive_key_data,
     return (int32_t)hmccmgr_call(SW_SYSCALL_CRYPTO_DH_DERIVE_KEY, args, ARRAY_SIZE(args));
 }
 
-int32_t crypto_driver_generate_random(void *buffer, uint32_t size)
+int32_t crypto_driver_generate_random(void *buffer, uint32_t size, bool is_hw_rand)
 {
-    uint64_t args[] = {
-        (uint64_t)(uintptr_t)buffer,
-        (uint64_t)size,
-    };
-    return (int32_t)hmccmgr_call(SW_SYSCALL_CRYPTO_GENERATE_RANDOM, args, ARRAY_SIZE(args));
+    if (is_hw_rand) {
+        uint64_t args[] = {
+            (uint64_t)(uintptr_t)buffer,
+            (uint64_t)size,
+        };
+
+        return (int32_t)hmccmgr_call(SW_SYSCALL_CRYPTO_GENERATE_RANDOM, args, ARRAY_SIZE(args));
+    } else {
+#ifdef OPENSSL_ENABLE
+        return get_openssl_rand(buffer, size);
+#else
+        return CRYPTO_NOT_SUPPORTED;
+#endif
+    }
 }
 
 int32_t crypto_driver_get_entropy(void *buffer, uint32_t size)

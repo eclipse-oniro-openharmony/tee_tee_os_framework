@@ -1,15 +1,15 @@
 #!/bin/bash
-# Copyright Huawei Technologies Co., Ltd. 2010-2019. All rights reserved.
+# Copyright Huawei Technologies Co., Ltd. 2010-2022. All rights reserved.
 set -e
-COMPARE_IMAGE="$3"
+COMPARE_IMAGE="$2"
 
-KERNEL_TEXT_BASE="$1"; echo "kernel text base=${KERNEL_TEXT_BASE}"
+KERNEL_TEXT_BASE=0; echo "kernel text base=${KERNEL_TEXT_BASE}"
 
-PLATFORM_CHOOSE="$2"; echo "platform is ${PLATFORM_CHOOSE}"
+PLATFORM_CHOOSE="$1"; echo "platform is ${PLATFORM_CHOOSE}"
 
-CHIP_CHOOSE="$4"; echo "chip is ${CHIP_CHOOSE}"
+CHIP_CHOOSE="$3"; echo "chip is ${CHIP_CHOOSE}"
 
-TEEOS_IMG_ENCRYPT="$5"; echo "TEE IMG encrypt is ${TEEOS_IMG_ENCRYPT}"
+TEEOS_IMG_ENCRYPT="$4"; echo "TEE IMG encrypt is ${TEEOS_IMG_ENCRYPT}"
 
 if [ "${TEEOS_IMG_ENCRYPT}" ]; then
   echo "TEE IMG encrypt is ${TEEOS_IMG_ENCRYPT}"
@@ -17,9 +17,9 @@ else
 	echo "Error:there is no input TEEOS_IMG_ENCRYPT Feature"; exit -1
 fi
 
-TEEOS_LOG_ENCODE="$6"; echo "TEEOS_LOG_ENCODE is ${TEEOS_LOG_ENCODE}"
+TEEOS_LOG_ENCODE="$5"; echo "TEEOS_LOG_ENCODE is ${TEEOS_LOG_ENCODE}"
 
-IMAGE_LOAD_ADDR="$7"; echo "IMAGE_LOAD_ADDR is ${IMAGE_LOAD_ADDR}"
+IMAGE_LOAD_ADDR=0; echo "IMAGE_LOAD_ADDR is ${IMAGE_LOAD_ADDR}"
 
 CURDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"; echo "CURDIR: ${CURDIR}"
 

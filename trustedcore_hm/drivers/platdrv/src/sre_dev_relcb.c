@@ -30,7 +30,7 @@ struct dev_relcb_st {
     struct dlist_node list;
 };
 
-DLIST_HEAD(g_devrelcblist);
+dlist_head(g_devrelcblist);
 pthread_mutex_t g_dev_relcb_mutex = PTHREAD_MUTEX_INITIALIZER;
 #ifdef FEATURE_SE
 static uint64_t g_se_flag;

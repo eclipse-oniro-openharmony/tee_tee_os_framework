@@ -22,6 +22,7 @@
 #define GICR_MAX_NUM             8
 #define PLAT_CFG_ALIGNED_SIZE    (0x1000)
 #define EXTEND_MAGIC             (0x5A5A5A5A)
+#define MAX_CMDLINE              (0x400)
 
 struct gic_config_t {
     char version;
@@ -62,7 +63,12 @@ struct platform_info {
             uint64_t extend_length;
             char extend_paras[0];
         } extend_datas;
-        p_region_t plat_io_regions[PLAT_MAX_DEVIO_REGIONS];
+        struct extend_datas_t_io {
+            uint64_t extend_magic;
+            uint64_t extend_length;
+            char extend_paras[MAX_CMDLINE];
+            p_region_t plat_io_regions[PLAT_MAX_DEVIO_REGIONS];
+        } extend_datas_io;
     };
 } __attribute__((__aligned__(PLAT_CFG_ALIGNED_SIZE)));
 

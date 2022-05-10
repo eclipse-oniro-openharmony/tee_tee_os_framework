@@ -5,7 +5,6 @@
  */
 #include <securec.h>
 #include "tee_log.h"
-#include "plat_cfg.h"
 #include "sre_syscalls_id.h"
 #include "sys/mman.h"
 #include "drv_module.h"
@@ -16,6 +15,7 @@
 #include "tee_driver_module.h"
 #include "boot_sharedmem.h"
 #include "tee_oemkey_driver.h"
+#include "drv_sharedmem.h"
 
 const char *g_debug_prefix = "tee_misc_driver";
 static struct tee_uuid g_current_uuid;
@@ -38,9 +38,9 @@ static int32_t get_shared_msg(unsigned long args, uint32_t args_len)
     }
 
     struct shared_buffer_args *input_arg = (struct shared_buffer_args *)(uintptr_t)args;
-    if (input_arg->type_size > TYPE_LEN ||
+    if (input_arg->type_size > TYPE_LEN || input_arg->type_size == 0 ||
         input_arg->buffer_size + sizeof(input_arg->buffer_size) < input_arg->buffer_size) {
-        tloge("the length is too large\n");
+        tloge("the size is invalid\n");
         return -1;
     }
 
@@ -69,7 +69,7 @@ static int32_t get_shared_msg(unsigned long args, uint32_t args_len)
     uint32_t size = input_arg->buffer_size;
     ret = get_tlv_shared_mem((char *)type, input_arg->type_size, buffer,
                              &size, input_arg->clear_flag);
-    if (ret != 0) {
+    if (ret != TLV_SHAREDMEM_SUCCESS) {
         tloge("get sharedmem error 0x%x\n", ret);
         goto end;
     }

@@ -38,7 +38,7 @@ static uint32_t hex_to_uint(const char *str, uint32_t len)
     uint32_t ret = 0;
     uint32_t i;
 
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < len && str[i] != '\0'; i++) {
         ret <<= HEX_MULTIPLY;
 
         if (str[i] >= '0' && str[i] <= '9')

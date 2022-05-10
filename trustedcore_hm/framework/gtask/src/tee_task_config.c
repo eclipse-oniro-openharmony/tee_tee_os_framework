@@ -64,3 +64,19 @@ bool is_se_service_enable(void)
     return false;
 #endif
 }
+bool is_libfuzzer_enable(void)
+{
+#if (defined TEE_SUPPORT_LIBFUZZER)
+    return true;
+#else
+    return false;
+#endif
+}
+bool is_tcmgr_service_enable(void)
+{
+#if (defined TEE_SUPPORT_TCMGR_SERVICE_32BIT || defined TEE_SUPPORT_TCMGR_SERVICE_64BIT)
+    return true;
+#else
+    return false;
+#endif
+}

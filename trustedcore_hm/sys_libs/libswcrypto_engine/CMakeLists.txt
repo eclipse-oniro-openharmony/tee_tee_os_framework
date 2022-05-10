@@ -15,16 +15,54 @@ list(APPEND TEE_C_FLAGS
 if ("${CONFIG_CRYPTO_MIX_SYSTEM}" STREQUAL "y")
     list(APPEND TEE_C_DEFINITIONS SWCRYPTO_MIX_SYSTEM)
 endif()
+
 if ("${CONFIG_CRYPTO_SUPPORT_X509}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS CRYPTO_SSL_SUPPORT_X509)
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/create_cert_wrapper.c
+        src/tee_ext_cert_api.c
+        src/x509_wrapper.c
+    )
+else()
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/stub/create_cert_wrapper_stub.c
+        src/stub/tee_ext_cert_api_stub.c
+        src/stub/x509_wrapper_stub.c
+    )
+endif()
+
+
+if ("${CONFIG_CRYPTO_ECC_WRAPPER}" STREQUAL "true" AND "${CONFIG_CRYPTO_SUPPORT_X509}" STREQUAL "true")
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/ec_wrapper_x509.c
+    )
 endif()
 
 if ("${CONFIG_CRYPTO_ECC_WRAPPER}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS CRYPTO_SUPPORT_ECC_WRAPPER)
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/ec_wrapper.c
+    )
+else()
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/stub/ec_wrapper_stub.c
+        src/stub/ec_wrapper_x509_stub.c
+    )
 endif()
 
 if ("${CONFIG_CRYPTO_AES_WRAPPER}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS CRYPTO_SUPPORT_AES_WRAPPER)
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/aes_wrapper.c
+    )
+else()
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/stub/aes_wrapper_stub.c
+    )
 endif()
 
 if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
@@ -32,8 +70,10 @@ if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
     list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
     ${PREBUILD_DIR}/headers/mbedtls
     )
-elseif ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-    list(APPEND TEE_C_DEFINITIONS BORINGSSL_ENABLE)
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/stub/rsa_wrapper_stub.c
+    )
 else()
     list(APPEND TEE_C_DEFINITIONS OPENSSL_ENABLE)
     list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
@@ -41,11 +81,14 @@ else()
         ${PREBUILD_DIR}/headers/openssl/openssl
         ${PREBUILD_DIR}/headers/openssl/crypto
     )
+    set(SWCRYPTO_SRCS
+        ${SWCRYPTO_SRCS}
+        src/rsa_wrapper.c
+    )
 endif()
 
 
 list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
-    ${PREBUILD_DIR}/headers/boringssl
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libcrypto_hal/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include
@@ -58,14 +101,8 @@ list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
 
 set(SWCRYPTO_SRCS
     ${SWCRYPTO_SRCS}
-    src/x509_wrapper.c
     src/device_key_wrapper.c
-    src/aes_wrapper.c
-    src/create_cert_wrapper.c
     src/crl_api.c
-    src/ec_wrapper.c
-    src/tee_ext_cert_api.c
-    src/rsa_wrapper.c
 )
 
 tee_add_library(swcrypto_engine STATIC

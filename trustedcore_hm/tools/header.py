@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 #trustedcore package header generator
 # Copyright Huawei Technologies Co., Ltd. 2010-2019. All rights reserved.
-
+"""Description:package image for phone
+"""
 from __future__ import print_function
 import struct
 import os
@@ -63,6 +64,7 @@ ELFINFO_MAG3_INDEX = 3
 
 
 def pack_header_item(input_file, img_addr, img_size, img_file):
+    """package header item for image header"""
     task_size = img_file[heap_sizes]
     task_name = img_file[task_names]
     task_uuid = img_file[task_uuids]
@@ -76,6 +78,7 @@ def pack_header_item(input_file, img_addr, img_size, img_file):
 
 
 def get_file_size(name):
+    """get file size for params"""
     size = os.path.getsize(name)
     mod = size % 4
     if mod:
@@ -89,6 +92,7 @@ def get_file_size(name):
 #2-N: ta.sec
 #N+1: encRndFile
 def generate_header(files_list, header_filename):
+    """generate image header"""
     with open(header_filename, 'wb') as file_names:
 
         t_filelist = files_list[1:]
@@ -102,7 +106,7 @@ def generate_header(files_list, header_filename):
 
         offset = header_size
         img_offset = offset
-        for index, imgfile in enumerate(t_filelist):
+        for index in enumerate(t_filelist):
             img_offset_list.append(img_offset)
             img_size = filesize_list[index + 1]
             img_offset += img_size
@@ -146,50 +150,29 @@ def generate_header(files_list, header_filename):
 
         global tee_dict
         global elf_class
-        got_start = tee_dict['TEE_GOT_START']
-        got_size = tee_dict['TEE_GOT_END'] - tee_dict['TEE_GOT_START']
-        relplt_start = tee_dict['TEE_RELPLT_START']
-        relplt_size = tee_dict['TEE_RELPLT_END'] - tee_dict['TEE_RELPLT_START']
-        reldyn_start = tee_dict['TEE_RELDYN_START']
-        reldyn_size = tee_dict['TEE_RELDYN_END'] - tee_dict['TEE_RELDYN_START']
-        reladyn_start = tee_dict['TEE_RELADYN_START']
-        reladyn_size = tee_dict['TEE_RELADYN_END'] - \
-                       tee_dict['TEE_RELADYN_START']
-        dynamic_start = tee_dict['TEE_DYNAMIC_START']
-        dynamic_size = tee_dict['TEE_DYNAMIC_END'] - \
-                       tee_dict['TEE_DYNAMIC_START']
-        dynsym_start = tee_dict['TEE_DYNSYM_START']
-        dynsym_size = tee_dict['TEE_DYNSYM_END'] - tee_dict['TEE_DYNSYM_START']
-        relaplt_start = tee_dict['TEE_RELAPLT_START']
-        relaplt_size = tee_dict['TEE_RELAPLT_END'] - \
-                       tee_dict['TEE_RELAPLT_START']
-        gtdata_start = tee_dict['GT_DATA_START']
-        gtdata_size = tee_dict['GT_DATA_END'] - tee_dict['GT_DATA_START']
-
-        #dump relocation info
-        print("elf class: {0}".format(elf_class))
-        print("got start: 0x{0:x} end: 0x{1:x}".format(
-              tee_dict['TEE_GOT_START'], tee_dict['TEE_GOT_END']))
-        print("relplt start: 0x{0:x} end: 0x{1:x}".format(
-              tee_dict['TEE_RELPLT_START'], tee_dict['TEE_RELPLT_END']))
-        print("reldyn start: 0x{0:x} end: 0x{1:x}".format(
-              tee_dict['TEE_RELDYN_START'], tee_dict['TEE_RELDYN_END']))
-        print("reladyn start: 0x{0:x} end: 0x{1:x}".format(
-              tee_dict['TEE_RELADYN_START'], tee_dict['TEE_RELADYN_END']))
-        print("dynsym start: 0x{0:x} end: 0x{1:x}".format(
-              tee_dict['TEE_DYNSYM_START'], tee_dict['TEE_DYNSYM_END']))
-        print("relaplt start: 0x{0:x} end: 0x{1:x}".format(
-              tee_dict['TEE_RELAPLT_START'], tee_dict['TEE_RELAPLT_END']))
-        print("gtdata start: 0x{0:x} end: 0x{1:x}".format(
-              tee_dict['GT_DATA_START'], tee_dict['GT_DATA_END']))
-        print("got size: {0}".format(got_size))
-        print("relplt size: {0}".format(relplt_size))
-        print("reldyn size: {0}".format(reldyn_size))
-        print("reladyn size: {0}".format(reladyn_size))
-        print("dynamic size: {0}".format(dynamic_size))
-        print("dynsym size: {0}".format(dynsym_size))
-        print("relaplt size: {0}".format(relaplt_size))
-        print("relaplt size: {0}".format(gtdata_size))
+        got_start = tee_dict.get('TEE_GOT_START')
+        got_size = tee_dict.get('TEE_GOT_END') - tee_dict.get('TEE_GOT_START')
+        relplt_start = tee_dict.get('TEE_RELPLT_START')
+        relplt_size = tee_dict.get('TEE_RELPLT_END') - \
+                      tee_dict.get('TEE_RELPLT_START')
+        reldyn_start = tee_dict.get('TEE_RELDYN_START')
+        reldyn_size = tee_dict.get('TEE_RELDYN_END') - \
+                      tee_dict.get('TEE_RELDYN_START')
+        reladyn_start = tee_dict.get('TEE_RELADYN_START')
+        reladyn_size = tee_dict.get('TEE_RELADYN_END') - \
+                       tee_dict.get('TEE_RELADYN_START')
+        dynamic_start = tee_dict.get('TEE_DYNAMIC_START')
+        dynamic_size = tee_dict.get('TEE_DYNAMIC_END') - \
+                       tee_dict.get('TEE_DYNAMIC_START')
+        dynsym_start = tee_dict.get('TEE_DYNSYM_START')
+        dynsym_size = tee_dict.get('TEE_DYNSYM_END') - \
+                      tee_dict.get('TEE_DYNSYM_START')
+        relaplt_start = tee_dict.get('TEE_RELAPLT_START')
+        relaplt_size = tee_dict.get('TEE_RELAPLT_END') - \
+                       tee_dict.get('TEE_RELAPLT_START')
+        gtdata_start = tee_dict.get('GT_DATA_START')
+        gtdata_size = tee_dict.get('GT_DATA_END') - \
+                      tee_dict.get('GT_DATA_START')
 
         elf_put = struct.pack('<17I',
                               elf_class,
@@ -227,7 +210,7 @@ def generate_header(files_list, header_filename):
 
 #align image file according 64 bytes
 def align_image(img_name):
-
+    """image size align for 64 bytes"""
     img_size = os.path.getsize(img_name)
     print("The size of image file is {0}".format(img_size))
 
@@ -245,6 +228,7 @@ def align_image(img_name):
 
 
 def encryt_image(img_name):
+    """encrypto image"""
     if len(sys.argv) > 8:
         kecc1pub_file = sys.argv[8]
     else:
@@ -399,14 +383,9 @@ if __name__ == '__main__':
     rtosck_img_symtab_size = int(rtosck_sym_item[1], 16)
     rtosck_img_strtab_size = int(rtosck_sym_item[2]) - rtosck_img_symtab_size;
 
-
     compare_image = int(sys.argv[6], 10)
 
     image_load_addr = int(sys.argv[7], 16)
-
-    if len(sys.argv) > 8:
-        kecc_pub_file = sys.argv[8]
-
 
     pwd_path = sys.path[0]
     tmp_internal_task_path = pwd_path + '/tmp/'
@@ -418,7 +397,7 @@ if __name__ == '__main__':
 
     #encrypt verify elf
     for index_elf, taskitem in enumerate(input_file_list):
-        if index_elf == 0 or index_elf == 1:
+        if index_elf in (0, 1):
             internal_task_list.append(taskitem)
         continue
 

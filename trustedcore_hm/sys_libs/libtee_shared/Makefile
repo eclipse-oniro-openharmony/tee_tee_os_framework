@@ -9,6 +9,9 @@ endif
 inc-flags += -I$(TOPDIR)/drivers/platdrv/include # dynion.h
 inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
 inc-flags += -I$(TOPDIR)/platform/common/tee_config
+inc-flags += -I$(TOPDIR)/libs/syslib/libmmgr/include
+inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr
+inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr_sysmgr
 
 include $(TOPDIR)/mk/lib-common.mk
 include $(TOPDIR)/mk/feature-macro.mk
@@ -32,6 +35,10 @@ $(INSTALL_FILE): $(MODULE_FILE)
 
 ifeq ($(findstring true, $(CONFIG_GATEKEEPER_32BIT) $(CONFIG_GATEKEEPER_64BIT)), true)
 flags += -DSUPPORT_GATEKEEPER_TA
+inc-flags += -I$(TOPDIR)/sys_apps/gatekeeper/src/task_gatekeeper
+libtee_shared_c_files :=  $(filter-out src/gk_auth_token_stub.c, $(libtee_shared_c_files))
+else
+libtee_shared_c_files :=  $(filter-out src/gk_auth_token.c, $(libtee_shared_c_files))
 endif
 
 ifeq ($(strip $(TARGET_BUILD_VARIANT)), user)
@@ -41,6 +48,11 @@ endif
 ifeq ($(CONFIG_EXPORT_OPENSSL_SYMBOL), true)
 flags += -DSUPPORT_EXPORT_OPENSSL_SYMBOL
 endif
+
+ifeq (${CONFIG_DYN_IMPORT_CERT},y)
+flags += -DDYN_IMPORT_CERT=1
+endif
+
 
 ifeq ($(CONFIG_LIBTEE_SHARED_LITE), y)
 EXTERN_FILE := lite_extern.txt
@@ -56,7 +68,7 @@ EXPORT_FILE := export.txt
 ALIAS_FILE  := alias.txt
 endif
 
-${BUILD_DIR}/$(EXTERN_FILE): $(EXTERN_FILE) ${BUILD_DIR}/$(EXPORT_FILE)
+${BUILD_DIR}/$(EXTERN_FILE): $(EXTERN_FILE) ${BUILD_DIR}/$(EXPORT_FILE) ${BUILD_DIR}/$(ALIAS_FILE)
 	@echo "preprocess ${BUILD_DIR}/$(EXTERN_FILE)"
 	@mkdir -p $(@D)
 	@${CC} ${flags} -P -E -o $@ -x c $<
@@ -64,21 +76,34 @@ ${BUILD_DIR}/$(EXPORT_FILE): $(EXPORT_FILE)
 	@echo "preprocess ${BUILD_DIR}/$(EXPORT_FILE)"
 	@mkdir -p $(@D)
 	@${CC} ${flags} -P -E -o $@ -x c $<
-ld-flags := -lccmgr$(TARG) -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -lagent_base$(TARG) -lhwi$(TARG) -lhmdrv$(TARG) \
-    -lteeos$(TARG) -lswcrypto_engine$(TARG) -ltaentry$(TARG) -lteeagentcommon_client$(TARG) -lcrypto$(TARG) \
+${BUILD_DIR}/$(ALIAS_FILE): $(ALIAS_FILE)
+	@echo "preprocess ${BUILD_DIR}/$(ALIAS_FILE)"
+	@mkdir -p $(@D)
+	@${CC} ${flags} -P -E -o $@ -x c $<
+ld-flags := -lccmgr$(TARG) -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -lagent_base$(TARG) -lhmdrv$(TARG) \
+    -lteeos$(TARG) -lpermission_service$(TARG) -lswcrypto_engine$(TARG) -ltaentry$(TARG) -lteeagentcommon_client$(TARG) -lcrypto$(TARG) \
     -lteeconfig$(TARG) -lteemem$(TARG) -lac$(TARG) -lac_policy$(TARG) -ldecouple$(TARG) -lssa$(TARG) -lhuk${TARG} -lteedynsrv$(TARG)
 
 ifeq ($(CONFIG_GCOV),y)
 ld-flags += -lllvm_gcov$(TARG)
 endif
 
+ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
+ld-flags += -ltcmgr$(TARG)
+endif
+
 ifdef CONFIG_RPMB_64BIT
 ld-flags += -lrpmb$(TARG)
+else
+ifdef CONFIG_EXPORT_RPMB_STUB
+ld-flags += -lrpmb$(TARG)
 endif
+endif
+
 ld-flags += -lsec_fs_msg$(TARG)
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
-ld-flags += -lboringssl${TARG}
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
+ld-flags += -lmbedtls${TARG}
 else
 ld-flags += -lopenssl${TARG}
 endif
@@ -99,8 +124,12 @@ ALIAS_SYM := $(shell cat $(ALIAS_FILE) | awk '{print "--defsym="$$1}' | tr "\n" 
 
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
-	ld-flags += -execute-only
+	ld-flags += --execute-only
 endif
+endif
+
+ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
+ld-flags += -z separate-loadable-segments
 endif
 
 ifeq (${TARG}, _a32)
@@ -122,4 +151,5 @@ $(MODULE_FILE): $(BUILD_DIR)/$(EXTERN_FILE) $(libtee_shared_objs)
 	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections --version-script=$(BUILD_DIR)/$(EXPORT_FILE) -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group \
 		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096 $(ALIAS_SYM)
+	$(VER)$(OBJCOPY) $@
 endif

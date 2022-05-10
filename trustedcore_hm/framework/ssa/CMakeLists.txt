@@ -39,7 +39,7 @@ if ("${CONFIG_MERGE_HUK_SSA}" STREQUAL "y")
     )
 endif()
 list(APPEND TEE_INCLUDE_PATH
-    ${PLATFORM_DIR}/common/tee_config
+    ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
 )
 

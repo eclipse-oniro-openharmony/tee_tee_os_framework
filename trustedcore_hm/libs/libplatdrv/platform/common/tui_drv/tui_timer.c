@@ -39,10 +39,10 @@ void set_timer_enabled(bool enabled)
 static void timer_node_free(struct timer_node *data)
 {
     if (data->handle != NULL) {
-        SRE_TimerEventStop(data->handle);
+        (void)SRE_TimerEventStop(data->handle);
         uint32_t ret = SRE_TimerEventDestroy(data->handle);
         if (ret != 0)
-            tloge("destroy tui timer 0x%x error ret=0x%x\n", data->msg_id, ret);
+            tloge("destroy tui timer 0x%x error ret=0x%x\n", (uint32_t)data->msg_id, ret);
 
         data->handle = NULL;
     }
@@ -56,9 +56,9 @@ static int32_t tui_timer_handler(void *data)
     if (node == NULL || !get_timer_enabled())
         return -1;
 
-    int32_t ret = ipc_msg_snd(node->msg_id, node->caller_pid, NULL, 0);
+    uint32_t ret = ipc_msg_snd((uint32_t)node->msg_id, node->caller_pid, NULL, 0);
     if (ret != 0) {
-        tloge("msg snd 0x%x to 0x%x error 0x%x\n", node->msg_id, node->caller_pid, ret);
+        tloge("msg snd 0x%x to 0x%x error 0x%x\n", (uint32_t)node->msg_id, node->caller_pid, ret);
         return -1;
     }
 
@@ -68,7 +68,7 @@ static int32_t tui_timer_handler(void *data)
 int32_t timer_node_create(timeval_t interval, enum tui_drv_msg msg_id, int32_t caller_pid)
 {
     timeval_t val;
-    int32_t ret;
+    uint32_t ret;
     struct timer_node *node = TEE_Malloc(sizeof(*node), 0);
     if (node == NULL) {
         tloge("malloc failed size 0x%x for tui timer", sizeof(*node));
@@ -77,7 +77,7 @@ int32_t timer_node_create(timeval_t interval, enum tui_drv_msg msg_id, int32_t c
     node->msg_id     = msg_id;
     node->interval   = interval;
     node->caller_pid = caller_pid;
-    node->handle     = SRE_TimerEventCreate(tui_timer_handler, TIMER_CLASSIC, node);
+    node->handle     = SRE_TimerEventCreate(tui_timer_handler, (int32_t)TIMER_CLASSIC, node);
     if (node->handle == NULL) {
         tloge("create tui timer error \n");
         TEE_Free(node);

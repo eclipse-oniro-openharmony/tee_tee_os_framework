@@ -71,9 +71,15 @@ if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
     if ("${ARCH}" STREQUAL "aarch64")
         set(DRV_LDFLAGS
             ${DRV_LDFLAGS}
-            -Wl,-execute-only
+            -Wl,--execute-only
         )
     endif()
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND DRV_LDFLAGS
+        -Wl,-z,separate-loadable-segments
+    )
 endif()
 
 if ("${SVC_PARTITIAL_LINK}" STREQUAL "y")

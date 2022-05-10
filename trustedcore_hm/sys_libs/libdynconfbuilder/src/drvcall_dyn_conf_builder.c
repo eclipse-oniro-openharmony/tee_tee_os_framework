@@ -48,13 +48,8 @@ int32_t init_drvcall_conf(struct drvcall_perm_apply_t *drvcall_perm_apply,
         return TEE_ERROR_GENERIC;
     }
 
-    uint32_t num = get_num_of_tag(conf_queue, DRV_PERM_DRVCALL_PERM_APPLY_ITEM);
-    if (num >= MAX_IMAGE_LEN) {
-        hm_error("drvcall_perm_apply_list size is invalied %u\n", num);
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    /* num < MAX_IMAGE_LEN means size cannot larger than 0xFFFFFFFF */
+    uint16_t num = get_num_of_tag(conf_queue, DRV_PERM_DRVCALL_PERM_APPLY_ITEM);
+    /* num < 0xffff means size cannot larger than 0xFFFFFFFF */
     uint32_t size = num * sizeof(struct drvcall_perm_apply_item_t);
     if (size == 0)
         return TEE_SUCCESS;
@@ -150,7 +145,7 @@ static int32_t handle_perm_apply_item_perm(uint64_t *perm, uint32_t size, const 
     return combine_perms(perm, size, value);
 }
 
-static int32_t build_drvcall_perm_apply_item(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_drvcall_perm_apply_item(struct dlist_node **pos, const struct conf_node_t *node,
                                              void *obj, uint32_t obj_size)
 {
     struct drvcall_perm_apply_item_t *drvcall_perm_apply_item = NULL;
@@ -197,7 +192,7 @@ static int32_t check_perm_apply_list(struct drvcall_perm_apply_item_t drvcall_pe
     return TEE_SUCCESS;
 }
 
-int32_t build_drvcall_perm_apply(struct list_head **pos, const struct conf_node_t *node,
+int32_t build_drvcall_perm_apply(struct dlist_node **pos, const struct conf_node_t *node,
                                  void *obj, uint32_t obj_size)
 {
     struct drvcall_perm_apply_t *drvcall_perm_apply = NULL;
@@ -236,7 +231,7 @@ int32_t build_drvcall_perm_apply(struct list_head **pos, const struct conf_node_
     return TEE_SUCCESS;
 }
 
-int32_t build_drvcall_conf(struct list_head **pos, const struct conf_node_t *node,
+int32_t build_drvcall_conf(struct dlist_node **pos, const struct conf_node_t *node,
                            void *obj, uint32_t obj_size)
 {
     struct drvcall_perm_apply_t *drvcall_perm = NULL;
@@ -325,7 +320,7 @@ void uninstall_drvcall_permission(const void *obj, uint32_t obj_size)
 int32_t install_drvcall_permission(void *obj, uint32_t obj_size, const struct conf_queue_t *conf_queue)
 {
     /* 1. check the params */
-    if (obj == NULL || conf_queue == NULL || list_empty(&conf_queue->queue)) {
+    if (obj == NULL || conf_queue == NULL || dlist_empty(&conf_queue->queue)) {
         hm_error("params is NULL while install drvcall permission\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
@@ -358,7 +353,7 @@ int32_t install_drvcall_permission(void *obj, uint32_t obj_size, const struct co
         goto out;
 
     /* 5.handle new obj */
-    struct list_head *pos = list_next(&conf_queue->queue);
+    struct dlist_node *pos = dlist_get_next(&conf_queue->queue);
     ret = handle_conf_node_to_obj(&pos, build_drvcall_conf, &drvcall_conf->drvcall_perm_apply,
                                   sizeof(drvcall_conf->drvcall_perm_apply));
     if (ret != TEE_SUCCESS) {

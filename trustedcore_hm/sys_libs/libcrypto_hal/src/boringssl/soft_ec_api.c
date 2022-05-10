@@ -5,19 +5,15 @@
  */
 
 #include "soft_ec_api.h"
-#ifdef BORINGSSL_ENABLE
-#include <openssl/curve25519.h>
-#else
 #include <ec/ec_local.h>
 #include <crypto/evp.h>
-#endif
 #include <openssl/ecdh.h>
 #include <openssl/ecdsa.h>
 #include <openssl/bn.h>
 #include <securec.h>
 #include <tee_log.h>
 #include "crypto_inner_interface.h"
-#include "tee_gmssl_api.h"
+#include "soft_gmssl.h"
 #include "soft_common_api.h"
 #include "soft_err.h"
 
@@ -32,7 +28,6 @@
 #define ECC521_DX_SIGN_FIX_LEN       132
 
 
-#ifndef BORINGSSL_ENABLE
 static EVP_PKEY *generate_evp_key(int32_t id)
 {
     EVP_PKEY *pkey = NULL;
@@ -56,7 +51,7 @@ static EVP_PKEY *generate_evp_key(int32_t id)
 
     return pkey;
 }
-#endif
+
 static int32_t generate_ed25519_keypair(uint32_t key_size, struct ecc_pub_key_t *public_key,
     struct ecc_priv_key_t *private_key)
 {
@@ -64,11 +59,7 @@ static int32_t generate_ed25519_keypair(uint32_t key_size, struct ecc_pub_key_t 
         tloge("key size is Invalid");
         return CRYPTO_BAD_PARAMETERS;
     }
-#ifdef BORINGSSL_ENABLE
-    ED25519_keypair(public_key->x, private_key->r);
-    public_key->x_len = ED25519_PUBLIC_KEY_LEN;
-    private_key->r_len = ED25519_PRI_KEY_LEN + ED25519_PUBLIC_KEY_LEN;
-#else
+
     EVP_PKEY *pkey = generate_evp_key(EVP_PKEY_ED25519);
     if (pkey == NULL) {
         tloge("Evp generate failed\n");
@@ -96,7 +87,6 @@ static int32_t generate_ed25519_keypair(uint32_t key_size, struct ecc_pub_key_t 
     }
     public_key->x_len = ED25519_PUBLIC_KEY_LEN;
     private_key->r_len = ED25519_PRI_KEY_LEN;
-#endif
     return CRYPTO_SUCCESS;
 }
 
@@ -107,11 +97,7 @@ static int32_t generate_x25519_keypair(uint32_t key_size, struct ecc_pub_key_t *
         tloge("key size is Invalid");
         return CRYPTO_BAD_PARAMETERS;
     }
-#ifdef BORINGSSL_ENABLE
-    X25519_keypair(public_key->x, private_key->r);
-    public_key->x_len = X25519_PUBLIC_KEY_LEN;
-    private_key->r_len = X25519_PRIVATE_KEY_LEN;
-#else
+
     EVP_PKEY *pkey = generate_evp_key(EVP_PKEY_X25519);
     if (pkey == NULL) {
         tloge("Evp generate failed\n");
@@ -139,7 +125,6 @@ static int32_t generate_x25519_keypair(uint32_t key_size, struct ecc_pub_key_t *
     public_key->x_len = X25519_PUBLIC_KEY_LEN;
     private_key->r_len = X25519_PRIVATE_KEY_LEN;
 
-#endif
     return CRYPTO_SUCCESS;
 }
 
@@ -168,13 +153,9 @@ static int32_t soft_fill_zero_to_head(uint32_t keysize, uint8_t *x, uint32_t *x_
 static int32_t config_crypto_engine_biringssl_judg(uint32_t key_size, struct ecc_pub_key_t *public_key,
                                                    const BIGNUM *x, const BIGNUM *y)
 {
-#ifdef BORINGSSL_ENABLE
-    size_t x_len = BN_bn2bin(x, public_key->x);
-    size_t y_len = BN_bn2bin(y, public_key->y);
-#else
     int32_t x_len = BN_bn2bin(x, public_key->x);
     int32_t y_len = BN_bn2bin(y, public_key->y);
-#endif
+
     bool check = (x_len <= 0 ||  y_len <= 0);
     if (check) {
         tloge("x_len or y_len is no more than 0");
@@ -244,11 +225,7 @@ static int32_t soft_eckey_boring_to_tee(const EC_KEY *key, uint32_t key_size, st
         return CRYPTO_BAD_PARAMETERS;
     }
 
-#ifdef BORINGSSL_ENABLE
-    size_t priv_key_len = BN_bn2bin(priv_bn, private_key->r);
-#else
     int32_t priv_key_len = BN_bn2bin(priv_bn, private_key->r);
-#endif
     if (priv_key_len <= 0)
         return CRYPTO_BAD_PARAMETERS;
 
@@ -550,12 +527,8 @@ static int32_t ed25519_sign_digest(struct memref_t *signature, const struct memr
     uint8_t *digest_buffer = (uint8_t *)(uintptr_t)(digest->buffer);
     uint8_t *signature_buffer = (uint8_t *)(uintptr_t)(signature->buffer);
 
-#ifdef BORINGSSL_ENABLE
-    sign_ret = ED25519_sign(signature_buffer, digest_buffer, digest->size, private_key->r);
-#else
     sign_ret = ED25519_sign(signature_buffer, digest_buffer, digest->size,
         private_key->r + X25519_SHARE_KEY_LEN, private_key->r);
-#endif
     if (sign_ret != BORINGSSL_OK) {
         tloge("ed25519 sign fail");
         return CRYPTO_BAD_PARAMETERS;

@@ -120,7 +120,7 @@ int32_t crypto_driver_dh_generate_key(const struct dh_key_t *dh_generate_key_dat
 int32_t crypto_driver_dh_derive_key(const struct dh_key_t *dh_derive_key_data,
     struct memref_t *secret, uint32_t engine);
 
-int32_t crypto_driver_generate_random(void *buffer, uint32_t size);
+int32_t crypto_driver_generate_random(void *buffer, uint32_t size, bool is_hw_rand);
 
 int32_t crypto_driver_get_entropy(void *buffer, uint32_t size);
 

@@ -6,7 +6,7 @@ include(apps_feature_macro)
 
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${PLATFORM_DIR}/common/tee_config
+    ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
 )
 

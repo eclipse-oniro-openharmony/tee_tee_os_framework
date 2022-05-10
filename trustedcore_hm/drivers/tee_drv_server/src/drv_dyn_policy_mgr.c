@@ -7,6 +7,7 @@
 #include "drv_dyn_policy_mgr.h"
 #include <tee_log.h>
 #include <ac.h>
+#include <ac_dynamic.h>
 #include <ac_ex.h>
 #include <cs.h>
 #include <target_type.h>

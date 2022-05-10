@@ -21,9 +21,11 @@ list(APPEND HOST_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PREBUILD_HEADER}/host
     ${PREBUILD_HEADER}/ddk/hmapi
+    ${PREBUILD_HEADER}/inner_sdk/hmapi
     ${PROJECT_SOURCE_DIR}/thirdparty/huawei/libhwsecurec/include/libhwsecurec
     ${PREBUILD_HEADER}/libc/hm
     ${PREBUILD_HEADER}/kernel/uapi
+    ${PREBUILD_HEADER}/kernel/arch/arm/uapi
     ${PREBUILD_HEADER}
     ${PREBUILD_HEADER}/libc
     ${PREBUILD_HEADER}/libc/arch/aarch64
@@ -53,8 +55,6 @@ tee_add_executable(ramfsmkimg
     ${HOST_INCLUDE_PATH}
 
     LIBRARIES
-    ramfs_host
-    vfs_host
     hwsecurec_host
 
     LD_FLAGS

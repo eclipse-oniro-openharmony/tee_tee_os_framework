@@ -75,7 +75,7 @@ static int32_t rsa_generate_keypair_ops(const struct crypto_drv_ops_t *ops, stru
 int32_t rsa_generate_keypair_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *rsa_gen_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -83,7 +83,7 @@ int32_t rsa_generate_keypair_call(const struct drv_data *drv, unsigned long args
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &rsa_gen_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -91,12 +91,14 @@ int32_t rsa_generate_keypair_call(const struct drv_data *drv, unsigned long args
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)rsa_gen_share_buf, ioctl_args->buf_len, ioctl_args->buf,
+        ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-
+#endif
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(rsa_gen_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }
@@ -112,25 +114,25 @@ static int32_t rsa_encrypt_ops(const struct crypto_drv_ops_t *ops, struct memref
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *rsa_encrypt_arg = crypto_arg;
     struct memref_t data_out;
-    data_out.buffer = tmp_crypto_arg->buffer;
-    data_out.size = tmp_crypto_arg->size;
+    data_out.buffer = rsa_encrypt_arg->buffer;
+    data_out.size = rsa_encrypt_arg->size;
 
-    tmp_crypto_arg++;
+    rsa_encrypt_arg++;
     struct memref_t data_in;
-    data_in.buffer = tmp_crypto_arg->buffer;
-    data_in.size = tmp_crypto_arg->size;
+    data_in.buffer = rsa_encrypt_arg->buffer;
+    data_in.size = rsa_encrypt_arg->size;
 
-    tmp_crypto_arg++;
-    struct rsa_pub_key_t *rsa_pub_key = (struct rsa_pub_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    rsa_encrypt_arg++;
+    struct rsa_pub_key_t *rsa_pub_key = (struct rsa_pub_key_t *)(uintptr_t)rsa_encrypt_arg->buffer;
     ret = check_rsa_pub_key_len(rsa_pub_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    rsa_encrypt_arg++;
     struct asymmetric_params_t rsa_params;
-    ret = restore_attrs(&rsa_params, tmp_crypto_arg);
+    ret = restore_attrs(&rsa_params, rsa_encrypt_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -158,7 +160,7 @@ end:
 int32_t rsa_encrypt_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *rsa_encrypt_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -166,7 +168,7 @@ int32_t rsa_encrypt_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &rsa_encrypt_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -174,16 +176,18 @@ int32_t rsa_encrypt_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = fill_share_mem(share_buf, buf_arg, ioctl_args->total_nums);
+    ret = fill_share_mem(rsa_encrypt_share_buf, buf_arg, ioctl_args->total_nums);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)rsa_encrypt_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(rsa_encrypt_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }
@@ -199,25 +203,25 @@ static int32_t rsa_decrypt_ops(const struct crypto_drv_ops_t *ops, struct memref
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *rsa_decrypt_arg = crypto_arg;
     struct memref_t data_out;
-    data_out.buffer = tmp_crypto_arg->buffer;
-    data_out.size = tmp_crypto_arg->size;
+    data_out.buffer = rsa_decrypt_arg->buffer;
+    data_out.size = rsa_decrypt_arg->size;
 
-    tmp_crypto_arg++;
+    rsa_decrypt_arg++;
     struct memref_t data_in;
-    data_in.buffer = tmp_crypto_arg->buffer;
-    data_in.size = tmp_crypto_arg->size;
+    data_in.buffer = rsa_decrypt_arg->buffer;
+    data_in.size = rsa_decrypt_arg->size;
 
-    tmp_crypto_arg++;
-    struct rsa_priv_key_t *private_key = (struct rsa_priv_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    rsa_decrypt_arg++;
+    struct rsa_priv_key_t *private_key = (struct rsa_priv_key_t *)(uintptr_t)rsa_decrypt_arg->buffer;
     ret = check_rsa_private_key_len(private_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    rsa_decrypt_arg++;
     struct asymmetric_params_t rsa_params;
-    ret = restore_attrs(&rsa_params, tmp_crypto_arg);
+    ret = restore_attrs(&rsa_params, rsa_decrypt_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -245,7 +249,7 @@ end:
 int32_t rsa_decrypt_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *rsa_decrypt_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -253,7 +257,7 @@ int32_t rsa_decrypt_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &rsa_decrypt_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -261,16 +265,18 @@ int32_t rsa_decrypt_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = fill_share_mem(share_buf, buf_arg, ioctl_args->total_nums);
+    ret = fill_share_mem(rsa_decrypt_share_buf, buf_arg, ioctl_args->total_nums);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)rsa_decrypt_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(rsa_decrypt_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }
@@ -286,25 +292,25 @@ static int32_t rsa_sign_digest_ops(const struct crypto_drv_ops_t *ops, struct me
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *rsa_sign_digest_arg = crypto_arg;
     struct memref_t signature;
-    signature.buffer = tmp_crypto_arg->buffer;
-    signature.size = tmp_crypto_arg->size;
+    signature.buffer = rsa_sign_digest_arg->buffer;
+    signature.size = rsa_sign_digest_arg->size;
 
-    tmp_crypto_arg++;
+    rsa_sign_digest_arg++;
     struct memref_t digest;
-    digest.buffer = tmp_crypto_arg->buffer;
-    digest.size = tmp_crypto_arg->size;
+    digest.buffer = rsa_sign_digest_arg->buffer;
+    digest.size = rsa_sign_digest_arg->size;
 
-    tmp_crypto_arg++;
-    struct rsa_priv_key_t *private_key = (struct rsa_priv_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    rsa_sign_digest_arg++;
+    struct rsa_priv_key_t *private_key = (struct rsa_priv_key_t *)(uintptr_t)rsa_sign_digest_arg->buffer;
     ret = check_rsa_private_key_len(private_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    rsa_sign_digest_arg++;
     struct asymmetric_params_t rsa_params;
-    ret = restore_attrs(&rsa_params, tmp_crypto_arg);
+    ret = restore_attrs(&rsa_params, rsa_sign_digest_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -332,7 +338,7 @@ end:
 int32_t rsa_sign_digest_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *rsa_sign_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -340,7 +346,7 @@ int32_t rsa_sign_digest_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &rsa_sign_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -348,16 +354,19 @@ int32_t rsa_sign_digest_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = fill_share_mem(share_buf, buf_arg, ioctl_args->total_nums);
+    ret = fill_share_mem(rsa_sign_share_buf, buf_arg, ioctl_args->total_nums);
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)rsa_sign_share_buf, ioctl_args->buf_len, ioctl_args->buf,
+        ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(rsa_sign_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }
@@ -373,25 +382,25 @@ static int32_t rsa_verify_digest_ops(const struct crypto_drv_ops_t *ops, struct 
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *rsa_verify_digest_arg = crypto_arg;
     struct memref_t signature;
-    signature.buffer = tmp_crypto_arg->buffer;
-    signature.size = tmp_crypto_arg->size;
+    signature.buffer = rsa_verify_digest_arg->buffer;
+    signature.size = rsa_verify_digest_arg->size;
 
-    tmp_crypto_arg++;
+    rsa_verify_digest_arg++;
     struct memref_t digest;
-    digest.buffer = tmp_crypto_arg->buffer;
-    digest.size = tmp_crypto_arg->size;
+    digest.buffer = rsa_verify_digest_arg->buffer;
+    digest.size = rsa_verify_digest_arg->size;
 
-    tmp_crypto_arg++;
-    struct rsa_pub_key_t *rsa_pub_key = (struct rsa_pub_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    rsa_verify_digest_arg++;
+    struct rsa_pub_key_t *rsa_pub_key = (struct rsa_pub_key_t *)(uintptr_t)rsa_verify_digest_arg->buffer;
     ret = check_rsa_pub_key_len(rsa_pub_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    rsa_verify_digest_arg++;
     struct asymmetric_params_t rsa_params;
-    ret = restore_attrs(&rsa_params, tmp_crypto_arg);
+    ret = restore_attrs(&rsa_params, rsa_verify_digest_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -409,7 +418,7 @@ static int32_t rsa_verify_digest_ops(const struct crypto_drv_ops_t *ops, struct 
 int32_t rsa_verify_digest_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *rsa_verify_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -417,7 +426,7 @@ int32_t rsa_verify_digest_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &rsa_verify_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -425,7 +434,7 @@ int32_t rsa_verify_digest_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         hm_error("rsa verify digest ops. ret = %d\n", ret);
 
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(rsa_verify_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return ret;
 }

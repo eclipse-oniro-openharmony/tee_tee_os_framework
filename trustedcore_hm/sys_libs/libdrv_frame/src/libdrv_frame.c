@@ -7,10 +7,10 @@
 #include <stdio.h>
 #include <errno.h>
 #include <dlfcn.h>
-#include <hm_unistd.h>
+#include <hm_getpid.h>
 #include <mmgrapi.h>
 #include <procmgr_ext.h>
-#include <pathmgr_ext.h>
+#include <pathmgr_api.h>
 #include <ipclib.h>
 #include <sys/kuapi.h>
 #include <sys/hmapi_ext.h>
@@ -25,7 +25,6 @@
 #include <ta_permission.h>
 #include <tee_tag.h>
 #include <tee_drv_internal.h>
-#include "tc_drv.h"
 
 static cref_t g_teesmc_hdlr;
 static rref_t g_sysctrl_ref;
@@ -121,74 +120,12 @@ static int32_t system_init(const char *name, bool new_frame)
     return 0;
 }
 
-static int32_t hwi_context_init(const struct drv_frame_t *drv_frame)
-{
-    cref_t hwi_ch = 0;
-    const int channel_index = 1;
-    int32_t ret;
-
-    if (!drv_frame->is_irq_triggered)
-        return 0;
-
-    ret = hm_get_ipc_channel(channel_index, &hwi_ch);
-    if (ret != 0) {
-        printf("%s : failed to get ipc channel for hwi: %d\n", drv_frame->name, ret);
-        return -1;
-    }
-
-    ret = hwi_init(hwi_ch);
-    if (ret != 0) {
-        printf("%s: HWI init failed: %d\n", drv_frame->name, ret);
-        return -1;
-    }
-
-    ret = hwi_create_irq_thread();
-    if (ret != 0) {
-        printf("%s: failed to create hwi irq thread: %d\n", drv_frame->name, ret);
-        return -1;
-    }
-
-    return 0;
-}
-
-static int32_t drv_framework_init(const struct drv_frame_t *drv_frame)
-{
-    int32_t ret;
-
-    ret = hwi_context_init(drv_frame);
-    if (ret != 0)
-        return -1;
-
-    if (drv_frame->init != NULL) {
-        ret = drv_frame->init();
-        if (ret != 0) {
-            printf("%s: failed to init platorm driver: %d\n", drv_frame->name, ret);
-            return -1;
-        }
-    }
-
-    ret = tc_drv_init();
-    if (ret != 0) {
-        printf("%s: failed to init platorm driver: %d\n", drv_frame->name, ret);
-        return -1;
-    }
-
-    return 0;
-}
-
 int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *ch, bool new_frame)
 {
     int32_t ret;
 
     if (drv_frame == NULL || drv_frame->name == NULL || ch == NULL) {
         printf("invalid params\n");
-        return -1;
-    }
-
-    hm_mmgr_clt_init();
-    ret = cs_client_init(&g_sysmgr_client, __sysmgrch);
-    if (ret != 0) {
-        printf("%s: failed to init cc client: %d\n", drv_frame->name, ret);
         return -1;
     }
 

@@ -60,7 +60,9 @@ struct oemkey_buffer_args {
 };
 #define IOCTRL_GET_OEM_KEY 0x11
 #define IOCTRL_GET_TLV_SHARED_MEM 0x10
-#define IOCTRL_CRYPTO_GET_OEMKEY 0xc728
+
+#define GET_SHAREDMEM_TYPE_STATIC   0u
+#define GET_SHAREDMEM_TYPE_DYNAMIC  1u
 
 int32_t get_sharedmem_addr(uintptr_t *sharedmem_vaddr, bool *sharedmem_flag, uint32_t *sharedmem_size);
 /* get sharedmem from platdrv */

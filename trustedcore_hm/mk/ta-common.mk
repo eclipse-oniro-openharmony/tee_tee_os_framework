@@ -22,8 +22,12 @@ endif
 
 ifeq (${CONFIG_ENABLE_XOM},y)
 ifeq ($(ARCH),aarch64)
-TA_LDFLAGS += -execute-only
+TA_LDFLAGS += --execute-only
 endif
+endif
+
+ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
+TA_LDFLAGS += -z separate-loadable-segments
 endif
 
 # for ld flags
@@ -62,3 +66,10 @@ include $(TOPDIR)/mk/llvm-apps-cfi.mk
 ### 	     do it later.
 TA_LDFLAGS:=$(filter-out -pie,$(TA_LDFLAGS))
 TA_LDFLAGS:=$(filter-out --gc-sections,$(TA_LDFLAGS))
+
+# to compile libfuzzer-specific TA
+ifeq (${ARCH}, aarch64)
+ifeq ($(CONFIG_LIBFUZZER_SERVICE_64BIT), true)
+include $(TOPDIR)/mk/libfuzzer_cflags.mk
+endif
+endif

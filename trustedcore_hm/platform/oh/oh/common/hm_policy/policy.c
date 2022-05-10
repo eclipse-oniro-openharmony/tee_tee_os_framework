@@ -10,7 +10,6 @@
 #include <security_cap_def.h>
 #include <security_ops.h>
 #include <tee_common.h> /* uuid */
-#include <product_uuid.h> /* uuid */
 #include "product_uuid_public.h" /* uuid */
 #include <tee_reserve.h> /* uuid */
 #include <tee_defines.h> /* TEE_UUID */
@@ -85,7 +84,6 @@ AC_DEFINE_SUBJ_BEG(virt2phys)
 AC_DEFINE_SUBJ_END(virt2phys)
 
 AC_DEFINE_SUBJ_BEG(dyn_plc)
-    { AC_SID_TEE_SERVICE_PERM, 0, NULL },
 AC_DEFINE_SUBJ_END(dyn_plc)
 
 AC_DEFINE_SUBJ_BEG(get_uuid)

@@ -14,9 +14,6 @@
 #include "drv_pal.h"
 #include "hmdrv_stub_timer.h"
 
-#define DRV_CALL_OK      0
-#define DRV_CALL_ERROR  (-1)
-
 int32_t audit_check_fail(void)
 {
 #ifdef SRE_AUDIT

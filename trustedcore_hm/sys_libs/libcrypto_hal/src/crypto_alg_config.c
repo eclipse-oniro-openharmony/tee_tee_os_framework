@@ -5,7 +5,7 @@
  */
 #include "crypto_alg_config.h"
 #include <tee_crypto_api.h>
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
 #include <crypto/siphash.h>
 #endif
 #include "crypto_inner_defines.h"
@@ -92,7 +92,7 @@ static TEE_Result check_keysize_for_hmac_sm3(uint32_t max_key_size)
     return TEE_SUCCESS;
 }
 
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
 static TEE_Result check_keysize_for_sip_hash(uint32_t max_key_size)
 {
     if (max_key_size != SIPHASH_KEY_SIZE * BIT_TO_BYTE)
@@ -324,7 +324,7 @@ static const struct alg_config_t g_alg_config[] = {
         TEE_ALG_HMAC_SM3, TEE_MODE_MAC, TEE_OPERATION_MAC,
         check_keysize_for_hmac_sm3, TEE_TYPE_HMAC_SM3, TEE_OPTIONAL_ELEMENT_NONE
     },
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     {
         TEE_ALG_SIP_HASH, TEE_MODE_MAC, TEE_OPERATION_MAC,
         check_keysize_for_sip_hash, TEE_TYPE_SIP_HASH, TEE_OPTIONAL_ELEMENT_NONE
@@ -392,6 +392,10 @@ static const struct alg_config_t g_alg_config[] = {
     },
     {
         TEE_ALG_SM4_CFB128, TEE_MODE_ENCRYPT, TEE_OPERATION_CIPHER,
+        check_keysize_for_sm4, TEE_TYPE_SM4, TEE_OPTIONAL_ELEMENT_NONE
+    },
+    {
+        TEE_ALG_SM4_GCM, TEE_MODE_ENCRYPT, TEE_OPERATION_AE,
         check_keysize_for_sm4, TEE_TYPE_SM4, TEE_OPTIONAL_ELEMENT_NONE
     },
     {
@@ -603,7 +607,7 @@ static const uint32_t g_supported_object_type[] = {
     TEE_TYPE_SM2_DSA_KEYPAIR,
     TEE_TYPE_SM2_KEP_KEYPAIR,
     TEE_TYPE_SM2_PKE_KEYPAIR,
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     TEE_TYPE_SIP_HASH,
 #endif
 #ifdef CRYPTO_SSL_SUPPORT_EC25519

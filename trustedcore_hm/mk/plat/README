@@ -55,3 +55,7 @@ WITH_CHIP_NAPA := 40 # napa
 WITH_CHIP_HI1981    := 41 # turing ascend hi1981
 WITH_CHIP_OH_32 := 42
 WITH_CHIP_OH_64 := 43
+WITH_CHIP_HI1911    := 44 # turing ascend hi1911
+WITH_CHIP_HI1383    := 45 # CT
+WITH_CHIP_MOSES := 46 # Balong
+WITH_CHIP_PROMETHEUS := 47 # Balong

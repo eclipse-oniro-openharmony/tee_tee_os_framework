@@ -9,6 +9,7 @@
 #include <sys/usrsyscall_ext.h>
 #include <api/kcalls.h>
 #include <sre_hwi.h>
+#include <drv_hwi_share.h>
 #include <hmlog.h>
 #include <drv_module.h>
 #include <timer_reg.h>
@@ -69,7 +70,7 @@ intptr_t irq_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *i
 #ifdef TIMER_EVENT_SUPPORT
     case TICK_TIMER_FIQ_NUMBLER:
         timer_oneshot_fiq_handler();
-        ret = SRE_HwiEnable(TICK_TIMER_FIQ_NUMBLER);
+        ret = sys_hwi_enable(TICK_TIMER_FIQ_NUMBLER);
         if (ret != SRE_OK) {
             hm_error("tick timer failed\n");
             return TMR_DRV_ERROR;
@@ -80,7 +81,7 @@ intptr_t irq_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *i
 #if (defined CONFIG_RTC_TIMER) && (!defined SOFT_RTC_IRQ_DISABLE)
     case SECURE_RTC_FIQ_NUMBLER:
         timer_rtc_oneshot_fiq_handler();
-        ret = SRE_HwiEnable(SECURE_RTC_FIQ_NUMBLER);
+        ret = sys_hwi_enable(SECURE_RTC_FIQ_NUMBLER);
         if (ret != SRE_OK) {
             hm_error("rtc timer failed\n");
             return TMR_DRV_ERROR;
@@ -91,7 +92,7 @@ intptr_t irq_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *i
 #ifndef TIMER_FREE_RUNNING_FIQ_DISABLE
     case FREE_RUNNING_FIQ_NUMBLER:
         timer_free_running_fiq_handler();
-        ret = SRE_HwiEnable(FREE_RUNNING_FIQ_NUMBLER);
+        ret = sys_hwi_enable(FREE_RUNNING_FIQ_NUMBLER);
         if (ret != SRE_OK) {
             hm_error("free running timer failed\n");
             return TMR_DRV_ERROR;

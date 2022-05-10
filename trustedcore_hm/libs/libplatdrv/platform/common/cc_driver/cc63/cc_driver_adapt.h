@@ -296,5 +296,6 @@ int32_t dxcc_aes_dofinal(void *ctx, const struct memref_t *data_in, struct memre
 
 dx_rand_ctx_t *get_rnd_context_ptr(void);
 dx_rand_work_buf_t *get_rnd_workbuff_ptr(void);
+int32_t read_entropy_data(void *buffer, size_t size);
 
 #endif

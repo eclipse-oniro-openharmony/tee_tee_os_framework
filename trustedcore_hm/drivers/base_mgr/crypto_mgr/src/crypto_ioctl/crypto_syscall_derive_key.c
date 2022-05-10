@@ -75,7 +75,7 @@ int32_t ecdh_derive_key_call(const struct drv_data *drv, unsigned long args, uin
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &ecdh_buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &ecdh_buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -86,10 +86,11 @@ int32_t ecdh_derive_key_call(const struct drv_data *drv, unsigned long args, uin
     ret = fill_share_mem(share_buf, ecdh_buf_arg, ioctl_args->total_nums);
     if (ret != CRYPTO_SUCCESS)
         goto end;
-
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, ecdh_buf_arg,
@@ -167,7 +168,7 @@ int32_t dh_generate_key_call(const struct drv_data *drv, unsigned long args, uin
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &dh_generate_buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &dh_generate_buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -179,9 +180,11 @@ int32_t dh_generate_key_call(const struct drv_data *drv, unsigned long args, uin
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, dh_generate_buf_arg,
@@ -249,7 +252,7 @@ int32_t dh_derive_key_call(const struct drv_data *drv, unsigned long args, uint3
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &dh_derive_buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &dh_derive_buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -261,9 +264,11 @@ int32_t dh_derive_key_call(const struct drv_data *drv, unsigned long args, uint3
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, dh_derive_buf_arg,
@@ -388,7 +393,7 @@ int32_t derive_root_key_call(const struct drv_data *drv, unsigned long args, uin
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &derive_buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &derive_buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -398,9 +403,11 @@ int32_t derive_root_key_call(const struct drv_data *drv, unsigned long args, uin
         goto end;
     }
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, derive_buf_arg,
@@ -466,7 +473,7 @@ int32_t pbkdf2_call(const struct drv_data *drv, unsigned long args, uint32_t arg
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &pbkdf2_buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &pbkdf2_buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -474,9 +481,11 @@ int32_t pbkdf2_call(const struct drv_data *drv, unsigned long args, uint32_t arg
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, pbkdf2_buf_arg,

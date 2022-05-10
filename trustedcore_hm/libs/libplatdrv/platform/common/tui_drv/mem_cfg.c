@@ -119,7 +119,7 @@ bool unset_secure_mem(struct mem_cfg *cfg, int32_t mem_type)
     ret = cfg_secmem(cfg, mem_type);
 #else
     (void)mem_type;
-    ret = ddr_sec_cfg((struct sglist *)sgl, DDR_SEC_TUI, DDR_UNSET_SEC);
+    ret = ddr_sec_cfg((struct sglist *)sgl, (int32_t)DDR_SEC_TUI, (int32_t)DDR_UNSET_SEC);
 #endif
     if (ret != 0) {
         tloge("config mem failed 0x%x\n", ret);
@@ -183,8 +183,8 @@ bool set_secure_mem(struct mem_cfg *cfg, int32_t mem_type)
         return false;
 #else
     (void)mem_type;
-    (void)ddr_sec_cfg((struct sglist *)sgl, DDR_SEC_TUI, DDR_SET_SEC);
-    ret = ddr_sec_cfg((struct sglist *)sgl, DDR_SEC_TUI, DDR_CHECK_SEC);
+    (void)ddr_sec_cfg((struct sglist *)sgl, (int32_t)DDR_SEC_TUI, (int32_t)DDR_SET_SEC);
+    ret = ddr_sec_cfg((struct sglist *)sgl, (int32_t)DDR_SEC_TUI, (int32_t)DDR_CHECK_SEC);
     if (ret != 0) {
         tloge("config mem failed 0x%x\n", ret);
         return false;
@@ -196,7 +196,7 @@ bool set_secure_mem(struct mem_cfg *cfg, int32_t mem_type)
 #ifdef TEE_SUPPORT_M_DRIVER
         (void)secmem_sec_cfg(&mem, 0, 0);
 #else
-        (void)ddr_sec_cfg((struct sglist *)sgl, DDR_SEC_TUI, DDR_UNSET_SEC);
+        (void)ddr_sec_cfg((struct sglist *)sgl, (int32_t)DDR_SEC_TUI, (int32_t)DDR_UNSET_SEC);
 #endif
         return false;
     }

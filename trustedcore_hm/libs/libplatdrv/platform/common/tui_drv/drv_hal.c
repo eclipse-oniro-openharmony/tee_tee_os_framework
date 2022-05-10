@@ -67,13 +67,12 @@ static bool init_mxt_data(uint64_t tp_info_phy)
 static enum sec_mode g_tp_mode;
 static int32_t g_chip_type;
 
-static int32_t g_caller_pid;
+static uint32_t g_caller_pid;
 static const int32_t g_irq_wanted[] = { TYPE_TOUCH, TYPE_RELEASE };
 static bool g_irq_wanted_touch      = true;
 #endif
 
 static bool g_tp_slide              = false;
-#define THP_MAX_FRAME_NUM 10
 
 void set_tp_slide_mode(bool slide)
 {
@@ -112,7 +111,7 @@ static void tp_irq(const void *arg)
         g_irq_wanted_touch = !g_irq_wanted_touch;
     }
     tlogd("send tp event to 0x%x 0x%x:0x%x @ 0x%x", g_caller_pid, node.x, node.y, node.status);
-    (void)ipc_msg_snd(TUI_DRV_MSG_TP_EVENT, g_caller_pid, &node, sizeof(node));
+    (void)ipc_msg_snd((uint32_t)TUI_DRV_MSG_TP_EVENT, g_caller_pid, &node, sizeof(node));
 }
 
 static bool g_tui_start = false;
@@ -139,12 +138,12 @@ static void tp_irq_thp(const void *arg)
 
     int32_t fr_cnt = hisi_tui_get_frame_count();
     if (g_tp_mode != SECURE_ENABLE || fr_cnt > THP_IRQ_QUEUE_MAX) {
-        tloge("tp mode 0x%x, frame cnt %d", g_tp_mode, fr_cnt);
+        tloge("tp mode 0x%x, frame cnt %d", (uint32_t)g_tp_mode, fr_cnt);
         return;
     }
 
     struct event_node node = { 0 };
-    (void)ipc_msg_snd(TUI_DRV_MSG_TP_EVENT, g_caller_pid, &node, sizeof(node));
+    (void)ipc_msg_snd((uint32_t)TUI_DRV_MSG_TP_EVENT, g_caller_pid, &node, sizeof(node));
 
     /* incremented in hisi driver */
     hisi_tui_set_frame_count(hisi_tui_get_frame_count() + 1);
@@ -159,7 +158,7 @@ static bool set_tp_irq(const struct tp_cfg *cfg)
     hisi_tui_set_frame_count(0);
 
 #ifdef CONFIG_HISI_MAILBOX /* defined in kirin990.mk */
-    if (g_chip_type == THP_SHB_DEVICE) {
+    if (g_chip_type == (int32_t)THP_SHB_DEVICE) {
         tui_logt("hisi shb tp init");
         ret = hisi_tui_shb_tp_init((void *)tp_irq, (uint32_t *)&cfg->caller_pid);
         if (ret != 0)
@@ -169,7 +168,7 @@ static bool set_tp_irq(const struct tp_cfg *cfg)
     }
 #endif
 
-    if (g_chip_type >= THP_JDI_DEVICE_VICTORIA && g_chip_type < MAX_THP_DEVICE_NUM)
+    if (g_chip_type >= (int32_t)THP_JDI_DEVICE_VICTORIA && g_chip_type < (int32_t)MAX_THP_DEVICE_NUM)
         ret = hisi_tui_tp_init(g_chip_type, (void *)tp_irq_thp, NULL);
     else
         ret = hisi_tui_tp_init(g_chip_type, (void *)tp_irq, NULL);
@@ -205,10 +204,10 @@ bool set_fb_mem_mode(struct mem_cfg *fb_cfg, enum sec_mode mode)
         return true;
 
     if (mode == SECURE_ENABLE) {
-        set_secure_mem(fb_cfg, T_MPU_REQ_ORIGIN_TEE_ZONE_TUI_EXT1);
+        (void)set_secure_mem(fb_cfg, T_MPU_REQ_ORIGIN_TEE_ZONE_TUI_EXT1);
         tlogd("set fb mode to secure");
     } else {
-        unset_secure_mem(fb_cfg, T_MPU_REQ_ORIGIN_TEE_ZONE_TUI_EXT1);
+        (void)unset_secure_mem(fb_cfg, T_MPU_REQ_ORIGIN_TEE_ZONE_TUI_EXT1);
         tloge("set fb mode to no secure");
     }
 
@@ -228,16 +227,16 @@ bool set_fb_drv_mode(struct fb_cfg *cfg, enum sec_mode mode)
     }
 
     if (mode == cfg->drv_mode) {
-        tloge("set_fb_drv_mode fail mode 0x%x 0x%x", mode, cfg->drv_mode);
+        tloge("set_fb_drv_mode fail mode 0x%x 0x%x", (uint32_t)mode, cfg->drv_mode);
         return true;
     }
 #ifdef TEE_SUPPORT_TUI_MTK_DRIVER
-    ret = fb_cfg_sec(mode);
+    ret = fb_cfg_sec((int32_t)mode);
 #else
-    ret = hisi_fb_cfg_sec(mode);
+    ret = hisi_fb_cfg_sec((int32_t)mode);
 #endif
     if (ret != 0) {
-        tloge("set fb drv to mode 0x%x fail, res 0x%x\n", mode, ret);
+        tloge("set fb drv to mode 0x%x fail, res 0x%x\n", (uint32_t)mode, ret);
         return false;
     }
     cfg->drv_mode = mode;
@@ -253,7 +252,7 @@ bool set_tp_drv_mode(struct tp_cfg *cfg, enum sec_mode mode)
     }
 
     if (mode == cfg->drv_mode) {
-        tloge("set_tp_drv_mode fail mode is 0x%x 0x%x", mode, cfg->drv_mode);
+        tloge("set_tp_drv_mode fail mode is 0x%x 0x%x", (uint32_t)mode, cfg->drv_mode);
         return true;
     }
 

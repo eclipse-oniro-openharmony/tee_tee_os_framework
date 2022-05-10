@@ -10,74 +10,11 @@
 #include "crypto_manager.h"
 #include "soft_common_api.h"
 #include "crypto_mgr_syscall.h"
-#include "ccmgr_hm.h"
+#include <rnd_seed.h>
 #include "sys/usrsyscall_ext.h"
 #include <api/errno.h>
 #include "tee_drv_client.h"
-
-#define MAX_CRYPTO_RANDOM_LEN (500 * 1024)
-#define MAX_CRYPTO_CTX_SIZE   (1024 * 1024)
-
-#ifdef CRYPTO_MGR_SERVER_ENABLE
-static int64_t get_ctx_fd_handle(uint32_t alg_type)
-{
-    const char *drv_name = TEE_CRYPTO_DRIVER_NAME;
-    uint32_t args = (uint32_t)(&alg_type);
-    return tee_drv_open(drv_name, &args, sizeof(args));
-}
-#endif
-
-static struct ctx_handle_t *driver_alloc_ctx_handle(uint32_t alg_type, uint32_t engine, struct ctx_handle_t *ctx)
-{
-    int32_t ctx_size;
-    uint8_t *ctx_ctx_buffer = NULL;
-#ifdef CRYPTO_MGR_SERVER_ENABLE
-    int64_t fd = get_ctx_fd_handle(alg_type);
-    if (fd <= 0) {
-        tloge("open fd failed\n");
-        goto error;
-    }
-    ctx_size = crypto_driver_get_ctx_size(alg_type, fd);
-#else
-    ctx_size = crypto_driver_get_ctx_size(alg_type, engine);
-#endif
-    bool check = ((ctx_size <= 0) || (ctx_size > MAX_CRYPTO_CTX_SIZE));
-    if (check) {
-        tloge("Get ctx size failed, ctx size=%d, algorithm type=0x%x, engine=0x%x\n", ctx_size, alg_type, engine);
-        goto error;
-    }
-
-    ctx_ctx_buffer = (uint8_t *)malloc_coherent((size_t)ctx_size);
-    if (ctx_ctx_buffer == NULL) {
-        tloge("Malloc ctx buffer failed, ctx size=%d\n", ctx_size);
-        goto error;
-    }
-    if (memset_s(ctx_ctx_buffer, (size_t)ctx_size, 0, (size_t)ctx_size) != EOK) {
-        tloge("memset ctx buffer failed\n");
-        goto error;
-    }
-#ifdef CRYPTO_MGR_SERVER_ENABLE
-    ctx->driver_ability = crypto_driver_get_driver_ability(fd);
-    ctx->fd = fd;
-#else
-    ctx->driver_ability = (uint32_t)crypto_driver_get_driver_ability(engine);
-#endif
-    ctx->ctx_buffer = (uint64_t)(uintptr_t)ctx_ctx_buffer;
-    ctx->ctx_size = (uint32_t)ctx_size;
-    return ctx;
-
-error:
-    if (ctx_ctx_buffer != NULL) {
-        TEE_Free(ctx_ctx_buffer);
-        ctx_ctx_buffer = NULL;
-    }
-#ifdef CRYPTO_MGR_SERVER_ENABLE
-    if (fd < 0)
-        tee_drv_close(fd);
-#endif
-    TEE_Free(ctx);
-    return NULL;
-}
+#include "tee_sharemem_ops.h"
 
 struct ctx_handle_t *alloc_ctx_handle(uint32_t alg_type, uint32_t engine)
 {
@@ -161,37 +98,48 @@ static void free_ctx_buff(struct ctx_handle_t *ctx)
     }
 }
 
+void tee_crypto_free_sharemem(struct ctx_handle_t *ctx)
+{
+    if (ctx == NULL)
+        return;
+
+    if (ctx->ctx_buffer != 0) {
+        (void)memset_s((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size, 0, ctx->ctx_size);
+        tee_free_sharemem((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size);
+        ctx->ctx_buffer = 0;
+        ctx->ctx_size = 0;
+    }
+}
+
 void tee_crypto_ctx_free(struct ctx_handle_t *ctx)
 {
     if (ctx == NULL)
         return;
+#ifndef CRYPTO_MGR_SERVER_ENABLE
     free_ctx_buff(ctx);
+#else
+    tee_crypto_free_sharemem(ctx);
+#endif
     struct crypto_cache_t *cache = (struct crypto_cache_t *)(uintptr_t)(ctx->cache_buffer);
     free_crypto_cache(cache);
     cache = NULL;
     TEE_Free(ctx);
-    if (ctx->fd != 0) {
+    if (ctx->fd > 0) {
         int32_t ret = tee_drv_close(ctx->fd);
         if (ret != 0)
             tloge("close fd fail fd = 0x%x, ret = 0x%x\n", ctx->fd, ret);
     }
 }
 
-int32_t tee_crypto_ctx_copy(const struct ctx_handle_t *src_ctx, struct ctx_handle_t *dest_ctx)
+static void ctx_copy_normal(const struct ctx_handle_t *src_ctx, struct ctx_handle_t *dest_ctx)
 {
-    bool check = ((src_ctx == NULL) || (dest_ctx == NULL) || src_ctx->ctx_size > MAX_CRYPTO_CTX_SIZE);
-    if (check)
-        return CRYPTO_BAD_PARAMETERS;
-
-    if (src_ctx == dest_ctx)
-        return CRYPTO_SUCCESS;
-
     dest_ctx->alg_type = src_ctx->alg_type;
     dest_ctx->ctx_size = src_ctx->ctx_size;
     dest_ctx->direction = src_ctx->direction;
     dest_ctx->engine = src_ctx->engine;
     dest_ctx->is_support_ae_update = src_ctx->is_support_ae_update;
     dest_ctx->tag_len = src_ctx->tag_len;
+    dest_ctx->driver_ability = src_ctx->driver_ability;
 
     (void)memcpy_s(dest_ctx->cbc_mac_buffer, sizeof(dest_ctx->cbc_mac_buffer),
         src_ctx->cbc_mac_buffer, sizeof(src_ctx->cbc_mac_buffer));
@@ -200,17 +148,26 @@ int32_t tee_crypto_ctx_copy(const struct ctx_handle_t *src_ctx, struct ctx_handl
 
     dest_ctx->cipher_cache_len = src_ctx->cipher_cache_len;
     dest_ctx->free_context = src_ctx->free_context;
+}
+
+int32_t tee_crypto_ctx_copy(const struct ctx_handle_t *src_ctx, struct ctx_handle_t *dest_ctx)
+{
+    if ((src_ctx == NULL) || (dest_ctx == NULL) || src_ctx->ctx_size > MAX_CRYPTO_CTX_SIZE)
+        return CRYPTO_BAD_PARAMETERS;
+
+    if (src_ctx == dest_ctx)
+        return CRYPTO_SUCCESS;
+
+    ctx_copy_normal(src_ctx, dest_ctx);
 
     int32_t ret;
     if (src_ctx->engine == SOFT_CRYPTO) {
         ret = soft_crypto_ctx_copy(src_ctx, dest_ctx);
     } else {
-        TEE_Free((void *)(uintptr_t)(dest_ctx->ctx_buffer));
-        dest_ctx->ctx_buffer = (uintptr_t)TEE_Malloc(src_ctx->ctx_size, 0);
-        if (dest_ctx->ctx_buffer == 0) {
-            tloge("malloc crypto ctx failed");
-            return CRYPTO_ERROR_OUT_OF_MEMORY;
-        }
+        ret = driver_ctx_buffer_prepare(src_ctx, dest_ctx);
+        if (ret != CRYPTO_SUCCESS)
+            return ret;
+
         ret = crypto_driver_ctx_copy(src_ctx, dest_ctx);
     }
     if (ret != CRYPTO_SUCCESS)
@@ -229,6 +186,8 @@ free_ctx:
     if (src_ctx->engine != SOFT_CRYPTO) {
         TEE_Free((void *)(uintptr_t)(dest_ctx->ctx_buffer));
         dest_ctx->ctx_buffer = 0;
+        if (dest_ctx->fd > 0)
+            tee_drv_close(dest_ctx->fd);
     } else {
         free_ctx_buff(dest_ctx);
     }
@@ -387,26 +346,10 @@ int32_t soft_random_get(uint8_t *trng_addr, uint32_t length)
 
 int32_t get_seed_from_sysmgr(void)
 {
-    struct acquire_rnd_msg msg = { {{ 0 }} };
-    struct acquire_rnd_reply rmsg;
-    int32_t ret;
-    cref_t sysmgrch = hmapi_get_sysmgrch();
-
-    msg.header.send.msg_class = HM_MSG_HEADER_CLASS_ACQUIRE_RND;
-    msg.header.send.msg_flags = 0;
-    msg.header.send.msg_id    = 0x0;
-    msg.header.send.msg_size  = sizeof(msg);
-
-    ret = hm_msg_call(sysmgrch, &msg, sizeof(msg), &rmsg, sizeof(rmsg), 0, HM_NO_TIMEOUT);
-    if (ret != HM_OK) {
-        tloge("crypto manage: hm_msg_call 0x%x failed: %d\n", sysmgrch, ret);
-        return HM_ERROR;
-    }
-    g_seed = (uint32_t)rmsg.rnd;
-    return (int32_t)rmsg.header.reply.ret_val;
+    return get_seed(&g_seed);
 }
 
-int32_t tee_crypto_generate_random(void *buffer, uint32_t size)
+int32_t tee_crypto_generate_random(void *buffer, uint32_t size, bool is_hw_rand)
 {
     if ((buffer == NULL) || (size == 0)) {
         tloge("Invalid params\n");
@@ -425,7 +368,7 @@ int32_t tee_crypto_generate_random(void *buffer, uint32_t size)
 #if !defined(TEE_SUPPORT_PLATDRV_64BIT) && !defined(TEE_SUPPORT_PLATDRV_32BIT) && !defined(CRYPTO_MGR_SERVER_ENABLE)
         ret = soft_random_get(buffer + offset_len, MAX_CRYPTO_RANDOM_LEN);
 #else
-        ret = crypto_driver_generate_random(buffer + offset_len, MAX_CRYPTO_RANDOM_LEN);
+        ret = crypto_driver_generate_random(buffer + offset_len, MAX_CRYPTO_RANDOM_LEN, is_hw_rand);
 #endif
         if (ret != CRYPTO_SUCCESS) {
             tloge("driver generate random failed, ret = 0x%x\n", ret);
@@ -436,8 +379,16 @@ int32_t tee_crypto_generate_random(void *buffer, uint32_t size)
     }
 #if !defined(TEE_SUPPORT_PLATDRV_64BIT) && !defined(TEE_SUPPORT_PLATDRV_32BIT) && !defined(CRYPTO_MGR_SERVER_ENABLE)
     ret = soft_random_get(buffer + offset_len, size);
+    (void)is_hw_rand;
 #else
-    ret = crypto_driver_generate_random(buffer + offset_len, size);
+    ret = crypto_driver_generate_random(buffer + offset_len, size, is_hw_rand);
 #endif
     return ret;
 }
+
+#ifdef OPENSSL_ENABLE
+void tee_crypto_free_opensssl_drbg(void)
+{
+    free_openssl_drbg_mem();
+}
+#endif

@@ -82,6 +82,29 @@ int32_t trng_get_random(uint8_t *trng_addr, uint32_t length)
     return 0;
 }
 
+int32_t trng_get_entropy(uint8_t *trng_addr, uint32_t length)
+{
+    int32_t i;
+    int32_t ret;
+    uint32_t random;
+    uint8_t *tmp = trng_addr;
+
+    if (trng_addr == NULL || length == 0)
+        return -1;
+
+    for (i = 0; i < length; i++) {
+        ret = cryp_trng_get_random(&random, -1);
+        if (ret != HI_SUCCESS) {
+            tloge("get entropy failed, ret is %x\n", ret);
+            (void)memset_s(trng_addr, length, 0, length);
+            return -1;
+        }
+        *tmp = (uint8_t)random;
+        tmp++;
+    }
+    return 0;
+}
+
 int32_t cipher_derivekey(const uint8_t *pdata_in, size_t data_size, uint32_t key[CIPHER_KEY_SIZE_IN_WORD])
 {
     int32_t ret;

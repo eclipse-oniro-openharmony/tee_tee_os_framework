@@ -20,6 +20,7 @@ inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/drivers/platdrv/include
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src
+inc-flags += -I$(TOPDIR)/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(TOPDIR)/drivers/tee_drv_server/src
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
@@ -35,7 +36,7 @@ endif
 
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
-	tee_misc_driver_LDFLAGS += -execute-only
+	tee_misc_driver_LDFLAGS += --execute-only
 endif
 endif
 

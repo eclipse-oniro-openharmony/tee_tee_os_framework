@@ -106,11 +106,14 @@ static const char *extract_basename(const char *filename)
 {
     if (filename == NULL)
         return NULL;
-    uint32_t len = strnlen(filename, MAX_FILENAME_LENGTH);
+    uint32_t len = (uint32_t)strnlen(filename, MAX_FILENAME_LENGTH);
     if (len >= MAX_FILENAME_LENGTH)
         return NULL;
     const char *ptr = filename + len;
-    for (; ptr >= filename && *ptr != '/'; ptr--);
+    for (; ptr >= filename; ptr--) {
+        if (*ptr == '/')
+            break;
+    }
     return ptr + 1;
 }
 

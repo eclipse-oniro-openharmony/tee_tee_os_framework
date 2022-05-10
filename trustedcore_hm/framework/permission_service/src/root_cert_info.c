@@ -8,9 +8,12 @@
 #include <crypto_wrapper.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_sharemem.h>
+#include "drv_sharedmem.h"
+
 const char *g_config_product_ou     = "Huawei iTrustee Production";
 const char *g_config_development_ou = "Huawei iTrustee Development";
 const char *g_config_cn             = "iTrustee_Config";
+const char *g_oh_config_cn             = "Config";
 const char *g_oh_config_product_ou     = "Production";
 const char *g_oh_config_development_ou = "Development";
 
@@ -275,14 +278,14 @@ uint32_t get_ca_pubkey_size(void)
 const uint8_t *get_ca_pubkey(void)
 {
     int32_t ret;
-    uint32_t size = sizeof(struct rsa_key_info);
+    uint32_t size = (uint32_t)sizeof(struct rsa_key_info);
     char ta_root_cert_tag[] = "ta_root_pub_key";
     ret =  get_tlv_sharedmem(ta_root_cert_tag,
                              sizeof(ta_root_cert_tag),
                              &g_ca_key_info,
                              &size,
                              false);
-    if (ret == 0)
+    if (ret == TLV_SHAREDMEM_SUCCESS)
         return g_ca_key_info.rsa_key;
     else
         return NULL;
@@ -291,14 +294,14 @@ const uint8_t *get_ca_pubkey(void)
 const rsa_pub_key_t *get_config_pub_key(void)
 {
     int32_t ret;
-    uint32_t size = sizeof(rsa_pub_key_t);
+    uint32_t size = (uint32_t)sizeof(rsa_pub_key_t);
     char ta_config_cert_tag[] = "ta_config_pub_key";
     ret =  get_tlv_sharedmem(ta_config_cert_tag,
                              sizeof(ta_config_cert_tag),
                              &g_config_key,
                              &size,
                              false);
-    if (ret == 0)
+    if (ret == TLV_SHAREDMEM_SUCCESS)
         return &g_config_key;
     else
         return NULL;
@@ -384,6 +387,11 @@ const uint8_t *get_priv_ca_key(uint32_t alg)
 const char *get_config_cert_cn(void)
 {
     return g_config_cn;
+}
+
+const char *get_oh_config_cert_cn(void)
+{
+    return g_oh_config_cn;
 }
 
 const char *get_config_cert_ou_prod(void)

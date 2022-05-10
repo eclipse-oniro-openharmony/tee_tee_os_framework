@@ -273,7 +273,7 @@ int32_t multi_drv_framwork_init(uint32_t thread_limit, uint32_t stack_size, cref
         return -1;
 
     if (thread_limit > 0) {
-        sem_init(&g_thread_sem, 0, 0);
+        (void)sem_init(&g_thread_sem, 0, 0);
         creat_server_thread(channel, stack, thread_limit);
         if (sem_wait(&g_thread_sem) != 0)
             hm_panic("sem wait failed\n");

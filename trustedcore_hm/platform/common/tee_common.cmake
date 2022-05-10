@@ -1,33 +1,32 @@
+if (NOT "${CONFIG_NO_VENDOR_LIB_EMBEDDED}" STREQUAL "true")
+   include(${PLATFORM_DIR}/common/vendor_shared.cmake)
+endif()
+
 if ("${BUILD_KERNEL}" STREQUAL "y")
-
-if ("${CONFIG_ARCH_AARCH64}" STREQUAL "y")
-    list(APPEND KERNEL_RELEASE_64 kernel.elf)
-    list(APPEND KERNEL_RELEASE_64 elfloader.o)
-endif()
-
-if ("${CONFIG_ARCH_AARCH32}" STREQUAL "y")
-    list(APPEND KERNEL_RELEASE_32 kernel.elf)
-    list(APPEND KERNEL_RELEASE_32 elfloader.o)
-endif()
-
+    if ("${CONFIG_ARCH_AARCH64}" STREQUAL "y")
+        list(APPEND KERNEL_RELEASE_64 kernel.elf)
+        list(APPEND KERNEL_RELEASE_64 elfloader.o)
+    endif()
+    if ("${CONFIG_ARCH_AARCH32}" STREQUAL "y")
+        list(APPEND KERNEL_RELEASE_32 kernel.elf)
+        list(APPEND KERNEL_RELEASE_32 elfloader.o)
+    endif()
 endif()
 
 if ("${CONFIG_SUPPORT_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_RELEASE_64 teeconfig tee_shared base_shared gm_shared drv_shared)
+    list(APPEND PRODUCT_RELEASE_64 teeconfig tee_shared base_shared drv_shared)
 else()
-    list(APPEND PRODUCT_RELEASE_64 teeconfig tee_shared base_shared gm_shared drv_shared)
-    list(APPEND PRODUCT_RELEASE_32 teeconfig tee_shared base_shared gm_shared drv_shared)
+    list(APPEND PRODUCT_RELEASE_64 teeconfig tee_shared base_shared drv_shared)
+    list(APPEND PRODUCT_RELEASE_32 teeconfig tee_shared base_shared drv_shared)
 endif()
 
-list(APPEND PRODUCT_RELEASE_HOST ramfs_host vfs_host hwsecurec_host ramfsmkimg ramfsdump scramb_syms_host xom)
+list(APPEND PRODUCT_RELEASE_HOST hwsecurec_host ramfsmkimg scramb_syms_host xom)
 if ("${CONFIG_SUPPORT_64BIT}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_64 tee_cmscbb elf_verify_key ac_policy teeagentcommon teeagentcommon_client drv_frame ccmgr hmdrv_stub timer swcrypto_engine crypto_hal dynconfmgr dynconfbuilder spawn_common teedynsrv)
 else()
     list(APPEND PRODUCT_RELEASE_64 tee_cmscbb elf_verify_key ac_policy teeagentcommon teeagentcommon_client drv_frame ccmgr hmdrv_stub timer swcrypto_engine crypto_hal dynconfmgr dynconfbuilder spawn_common teedynsrv)
     list(APPEND PRODUCT_RELEASE_32 tee_cmscbb elf_verify_key ac_policy teeagentcommon teeagentcommon_client drv_frame ccmgr hmdrv_stub timer swcrypto_engine crypto_hal dynconfmgr dynconfbuilder spawn_common teedynsrv)
 endif()
-list(APPEND PRODUCT_RELEASE_64 vendor_shared vendor_static)
-list(APPEND PRODUCT_RELEASE_32 vendor_shared vendor_static)
 list(APPEND PRODUCT_RELEASE_32 bz_hm)
 if ("${CONFIG_SUPPORT_64BIT}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_64 hwsecurec)
@@ -115,16 +114,16 @@ if ("${CONFIG_KMS}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_64 kms.elf)
 endif()
 
-if ("${CONFIG_TA_64BIT}" STREQUAL "true")
-    if ("${CONFIG_GMLIB_IMPORT}" STREQUAL "true")
-        list(APPEND PRODUCT_RELEASE_64 gm_shared)
-    endif()
-endif()
-
 if ("${CONFIG_TUI_32BIT}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_32 tui_internal_shared)
 elseif ("${CONFIG_TUI_64BIT}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_64 tui_internal_shared)
+endif()
+if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true")
+    list(APPEND PRODUCT_RELEASE_64 tcmgr_service.elf)
+endif()
+if ("${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
+    list(APPEND PRODUCT_RELEASE_32 tcmgr_service.elf)
 endif()
 
 if ("${CONFIG_HUK_SERVICE_64BIT}" STREQUAL "true")
@@ -211,45 +210,25 @@ endif()
 if ("${CONFIG_TA_64BIT}" STREQUAL "true")
     list(APPEND PRODUCT_APPS_64
         tee_shared
-        vendor_shared
         tarunner.elf
         base_shared
     )
     list(APPEND CHECK_SYMS
         libtee_shared.so
-        libvendor_shared.so
         libbase_shared.so
     )
-    if ("${CONFIG_GMLIB_IMPORT}" STREQUAL "true")
-        list(APPEND PRODUCT_APPS_64
-            gm_shared
-        )
-        list(APPEND CHECK_SYMS
-            libgm_shared.so
-        )
-    endif()
 endif()
 
 if ("${CONFIG_TA_32BIT}" STREQUAL "true")
     list(APPEND PRODUCT_APPS_32
         tee_shared
-        vendor_shared
         tarunner.elf
         base_shared
     )
     list(APPEND CHECK_SYMS
         libtee_shared.so
-        libvendor_shared.so
         libbase_shared.so
     )
-    if ("${CONFIG_GMLIB_IMPORT}" STREQUAL "true")
-        list(APPEND PRODUCT_APPS_32
-            gm_shared
-        )
-        list(APPEND CHECK_SYMS
-            libgm_shared.so
-        )
-    endif()
 endif()
 
 if ("${CONFIG_GTASK_64BIT}" STREQUAL "true")
@@ -397,6 +376,23 @@ if ("${CONFIG_TEE_MISC_DRIVER_64BIT}" STREQUAL "false")
     )
 endif()
 
+if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true")
+    list(APPEND PRODUCT_APPS_64
+        tcmgr_service.elf
+    )
+    list(APPEND CHECK_SYMS
+        tcmgr_service.elf
+    )
+endif()
+if ("${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
+    list(APPEND PRODUCT_APPS_32
+        tcmgr_service.elf
+    )
+    list(APPEND CHECK_SYMS
+        tcmgr_service.elf
+    )
+endif()
+
 if ("${BUILD_TEST}" STREQUAL "y")
     if ("${BUILD_TA_NAME}" STREQUAL "build_all")
         if ("${CONFIG_TA_64BIT}" STREQUAL "true")
@@ -442,7 +438,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 ta_attestation_test_ta_a64.elf
                 ta_attestation_test_ta_2_a64.elf
                 test_crypto_func_a64.elf
-                test_crypto_func_ext_a64.elf
                 test_framwork1_a64.elf
                 test_generate_key_perf_a64.elf
                 test_huk_service_a64.elf
@@ -540,6 +535,14 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 TTA_testingInternalAPI_TrustedCoreFramework_ICA_a64
                 TTA_Time_a64
             )
+            if (NOT "${CONFIG_NO_VENDOR_LIB_EMBEDDED}" STREQUAL "true")
+                list(APPEND PRODUCT_APPS_64
+                   test_crypto_func_ext_a64.elf
+                )
+                list(APPEND TEST_APPS_DIR_64
+                    test_crypto_func_ext_a64
+                )
+            endif()
         endif()
 
         if ("${CONFIG_TA_32BIT}" STREQUAL "true")
@@ -693,6 +696,14 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 TTA1
                 TTA2
             )
+            if (NOT "${CONFIG_NO_VENDOR_LIB_EMBEDDED}" STREQUAL "true")
+                list(APPEND PRODUCT_APPS_64
+                    test_crypto_func_ext.elf
+                )
+                list(APPEND TEST_APPS_DIR_64
+                    test_crypto_func_ext
+                )
+            endif()
         endif()
     else()
         foreach(r ${PRODUCT_RELEASE_64})

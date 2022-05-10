@@ -1,25 +1,12 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
  * Description: moved from teeos, timer function
- * Create: 2019-12-10
+ * Create: 2022-04-22
  */
-#ifndef LIBTIMER_A32_SRE_SYS_H
-#define LIBTIMER_A32_SRE_SYS_H
-#include "sre_typedef.h"
-
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
-
-VOID SRE_DelayUs(UINT32 uwDelay);
-VOID SRE_DelayMs(UINT32 uwDelay);
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
-
-#endif /* LIBTIMER_A32_SRE_SYS_H */
+#ifndef LIBTIMER_SRE_SYS_H
+#define LIBTIMER_SRE_SYS_H
+#include <sre_typedef.h>
+#include <sys_timer.h>
+#include <tee_time_sleep.h>
+#include <tee_time_legacy.h>
+#endif /* LIBTIMER_SRE_SYS_H */

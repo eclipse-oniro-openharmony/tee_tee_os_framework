@@ -5,7 +5,6 @@ include(apps_subcommon)
 include(apps_feature_macro)
 
 list(APPEND TEE_C_SOURCES
-    ${PROJECT_SOURCE_DIR}/vendor/common/src/chip_info.c
     ${PROJECT_SOURCE_DIR}/vendor/common/src/tee_crypto_kds_api.c
 )
 

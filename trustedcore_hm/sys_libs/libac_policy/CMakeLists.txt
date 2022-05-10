@@ -20,7 +20,7 @@ list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/hm_policy
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include/TEE_ext
-    ${PLATFORM_DIR}/common/tee_config
+    ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
     ${PLATFORM_DIR}/common/hm_policy
 )

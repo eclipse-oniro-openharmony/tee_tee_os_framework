@@ -21,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-#include <list.h>
+#include <dlist.h>
 #include <uidgid.h>
 #include <hm_stat.h>
 
@@ -169,7 +169,7 @@ struct vfs_ops {
  * @ops:     Pointer to filesystem functions
  */
 struct vfs_data {
-    struct list_head fss;
+    struct dlist_node fss;
     const char *fs_root;
     const struct vfs_ops *ops;
 };

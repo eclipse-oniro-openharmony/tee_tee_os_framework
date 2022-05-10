@@ -15,7 +15,7 @@
  * after sharedmem acquired firstly
  */
 int32_t get_tlv_sharedmem(const char *type, uint32_t type_size,
-                           void *buffer, uint32_t *size, bool clear_flag);
+                          void *buffer, uint32_t *size, bool clear_flag);
 int32_t tee_get_chip_type(char *buffer, uint32_t buffer_len);
 
 int32_t tee_shared_mem(const char *type, uint32_t type_size, void *buffer, uint32_t *buffer_size, bool clear_flag);

@@ -14,14 +14,7 @@ flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
 flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
 # Source files required to build the target
-all_c_files := $(wildcard src/*.c)
-
-ifneq ($(CONFIG_DRIVER_DYN_MOD), true)
-filter_c_files := src/drv_mod.c
-libdrv_frame_c_files += $(filter-out $(filter_c_files), $(all_c_files))
-else
-libdrv_frame_c_files += $(all_c_files)
-endif
+libdrv_frame_c_files := $(wildcard src/*.c)
 
 # Header files/directories this library provides
 EXPORT_HDRS := $(wildcard $(TOPDIR)/sys_libs/libdrv_frame/include/*)

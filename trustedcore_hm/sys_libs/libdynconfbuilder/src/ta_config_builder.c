@@ -63,7 +63,7 @@ TEE_Result check_device_id(struct config_info *config, const uint8_t *buff, uint
     uint32_t id_len = sizeof(unique_id);
     uint8_t tlv_device_id[DEVICE_ID_LEN * 2 + 1] = { 0 }; /* 2 is double */
 
-    if (TEE_EXT_GetDeviceUniqueId(unique_id, &id_len) != TEE_SUCCESS) {
+    if (tee_ext_get_device_unique_id(unique_id, &id_len) != TEE_SUCCESS) {
         hm_error("get device id failed\n");
         config->control_info.debug_info.valid_device = false;
         return TEE_ERROR_GENERIC;
@@ -97,7 +97,7 @@ static int32_t handle_ta_basic_info_service_name(struct config_info *cfg_info,
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_basic_info_service_name(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_basic_info_service_name(struct dlist_node **pos, const struct conf_node_t *node,
                                                 void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -139,7 +139,7 @@ static int32_t handle_ta_basic_info_uuid(struct config_info *cfg_info, uint32_t 
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_basic_info_uuid(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_basic_info_uuid(struct dlist_node **pos, const struct conf_node_t *node,
                                         void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -165,7 +165,7 @@ static int32_t build_ta_basic_info_uuid(struct list_head **pos, const struct con
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_basic_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_basic_info(struct dlist_node **pos, const struct conf_node_t *node,
                                    void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -202,7 +202,7 @@ static int32_t build_ta_basic_info(struct list_head **pos, const struct conf_nod
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_mani_info_instance_keep_alive(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info_instance_keep_alive(struct dlist_node **pos, const struct conf_node_t *node,
                                                       void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -226,7 +226,7 @@ static int32_t build_ta_mani_info_instance_keep_alive(struct list_head **pos, co
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_mani_info_multi_command(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info_multi_command(struct dlist_node **pos, const struct conf_node_t *node,
                                                 void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -250,7 +250,7 @@ static int32_t build_ta_mani_info_multi_command(struct list_head **pos, const st
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_mani_info_multi_session(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info_multi_session(struct dlist_node **pos, const struct conf_node_t *node,
                                                 void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -305,7 +305,7 @@ static int32_t handle_ta_mani_info_stack_size(uint32_t *stack_size, uint32_t siz
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_mani_info_stack_size(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info_stack_size(struct dlist_node **pos, const struct conf_node_t *node,
                                              void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -363,7 +363,7 @@ static int32_t handle_ta_mani_info_heap_size(uint32_t *heap_size, uint32_t size,
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_mani_info_heap_size(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info_heap_size(struct dlist_node **pos, const struct conf_node_t *node,
                                             void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -421,7 +421,7 @@ static int32_t handle_ta_mani_info_target_type(uint32_t *target_type, uint32_t s
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_mani_info_target_type(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info_target_type(struct dlist_node **pos, const struct conf_node_t *node,
                                               void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -448,7 +448,7 @@ static int32_t build_ta_mani_info_target_type(struct list_head **pos, const stru
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_mani_info_single_instance(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info_single_instance(struct dlist_node **pos, const struct conf_node_t *node,
                                                   void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -482,7 +482,7 @@ static struct dyn_conf_build_func ta_mani_funcs[] = {
     { CONFIGINFO_TA_MANIFEST_INFO_SINGLE_INSTANCE, build_ta_mani_info_single_instance, NULL },
 };
 
-static int32_t build_ta_mani_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_mani_info(struct dlist_node **pos, const struct conf_node_t *node,
                                   void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -551,7 +551,7 @@ static int32_t handle_ta_control_info_rpmb_size(uint32_t *rpmb_size, uint32_t si
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info_rpmb_size(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_rpmb_size(struct dlist_node **pos, const struct conf_node_t *node,
                                                void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -578,7 +578,7 @@ static int32_t build_ta_control_info_rpmb_size(struct list_head **pos, const str
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info_rpmb_general(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_rpmb_general(struct dlist_node **pos, const struct conf_node_t *node,
                                                   void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -602,7 +602,7 @@ static int32_t build_ta_control_info_rpmb_general(struct list_head **pos, const 
     return TEE_SUCCESS;
 }
 
-static int32_t handle_ta_control_info_rpmb_permission(struct list_head **pos, const struct conf_node_t *node,
+static int32_t handle_ta_control_info_rpmb_permission(struct dlist_node **pos, const struct conf_node_t *node,
                                                       void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -632,7 +632,7 @@ static int32_t handle_ta_control_info_rpmb_permission(struct list_head **pos, co
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info_rpmb_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_rpmb_info(struct dlist_node **pos, const struct conf_node_t *node,
                                                void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -671,7 +671,7 @@ static int32_t build_ta_control_info_rpmb_info(struct list_head **pos, const str
 #endif
 
 #if defined(CONFIG_APP_TEE_SE)
-static int32_t build_ta_control_info_se_open_session(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_se_open_session(struct dlist_node **pos, const struct conf_node_t *node,
                                                      void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -695,7 +695,7 @@ static int32_t build_ta_control_info_se_open_session(struct list_head **pos, con
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info_se_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_se_info(struct dlist_node **pos, const struct conf_node_t *node,
                                              void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -727,7 +727,7 @@ static int32_t build_ta_control_info_se_info(struct list_head **pos, const struc
 #endif
 
 #if (defined(CONFIG_LIB_TUI) || defined(CONFIG_LIB_TUI_A32))
-static int32_t build_ta_control_info_tui_general(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_tui_general(struct dlist_node **pos, const struct conf_node_t *node,
                                                  void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -751,7 +751,7 @@ static int32_t build_ta_control_info_tui_general(struct list_head **pos, const s
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info_tui_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_tui_info(struct dlist_node **pos, const struct conf_node_t *node,
                                               void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -782,7 +782,7 @@ static int32_t build_ta_control_info_tui_info(struct list_head **pos, const stru
 }
 #endif
 
-static int32_t build_ta_control_info_debug_status(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_debug_status(struct dlist_node **pos, const struct conf_node_t *node,
                                                   void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -828,7 +828,7 @@ static int32_t handle_ta_control_info_debug_device_id(struct config_info *cfg_in
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info_debug_device_id(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_debug_device_id(struct dlist_node **pos, const struct conf_node_t *node,
                                                      void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -854,7 +854,7 @@ static int32_t build_ta_control_info_debug_device_id(struct list_head **pos, con
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info_debug_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info_debug_info(struct dlist_node **pos, const struct conf_node_t *node,
                                                 void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -891,7 +891,7 @@ static int32_t build_ta_control_info_debug_info(struct list_head **pos, const st
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_control_info(struct list_head **pos, const struct conf_node_t *node,
+static int32_t build_ta_control_info(struct dlist_node **pos, const struct conf_node_t *node,
                                      void *obj, uint32_t obj_size)
 {
     (void)pos;
@@ -946,7 +946,7 @@ static int32_t build_ta_control_info(struct list_head **pos, const struct conf_n
     return TEE_SUCCESS;
 }
 
-static int32_t build_ta_config(struct list_head **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
+static int32_t build_ta_config(struct dlist_node **pos, const struct conf_node_t *node, void *obj, uint32_t obj_size)
 {
     struct config_info *cfg_info = NULL;
 
@@ -1009,8 +1009,8 @@ int32_t install_ta_config(void *obj, uint32_t obj_size, const struct conf_queue_
         return TEE_ERROR_GENERIC;
     }
 
-    if (!list_empty(&conf_queue->queue)) {
-        struct list_head *pos = list_next(&conf_queue->queue);
+    if (!dlist_empty(&conf_queue->queue)) {
+        struct dlist_node *pos = dlist_get_next(&conf_queue->queue);
         int32_t ret = handle_conf_node_to_obj(&pos, build_ta_config, cfg_info, sizeof(*cfg_info));
         if (ret != TEE_SUCCESS) {
             hm_error("handle ta config failed\n");

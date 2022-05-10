@@ -61,7 +61,7 @@ extern uint32_t __tee_call_bus_drivers(uint32_t cmd, const char *parm_info, uint
 /* TUI */
 extern int __tui_sendevent(int type);
 
-extern int __tee_hal_get_dieid(unsigned int *pBuffer);
+extern int tee_ext_get_dieid(unsigned int *buffer);
 extern int __driver_dep_test();
 extern int __ts_ioctl(unsigned int cmd, void *arg);
 
@@ -86,7 +86,7 @@ extern int __phNxpEse_GetOsMode(void);
 extern int __ese_proto7816_reset(void);
 extern int __ese_set_nfc_chiptype(int chip_type);
 /* display */
-extern int __is_device_rooted(void);
+extern int tee_is_device_rooted(void);
 extern int __driver_fingerprint_command(void *cmmand_info);
 extern int __driver_spi_full_duplex(void *p_write_info, void *p_read_info);
 extern int __driver_spi_full_duplex_with_speed(void *p_write_info, void *p_read_info, int speed);

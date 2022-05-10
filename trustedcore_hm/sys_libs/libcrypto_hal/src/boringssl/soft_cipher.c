@@ -5,11 +5,11 @@
  */
 
 #include "soft_cipher.h"
+#include "soft_gmssl.h"
 #include <openssl/err.h>
 #include <openssl/cmac.h>
 #include <securec.h>
 #include <tee_log.h>
-#include "tee_gmssl_api.h"
 #include "soft_common_api.h"
 #include "ae_common.h"
 #include "soft_err.h"
@@ -396,11 +396,7 @@ static int32_t proc_aes_des_cipher_final(struct ctx_handle_t *cipher_ctx, const 
     cipher_ctx->ctx_buffer = 0;
 
     if (rc != BORINGSSL_OK || update_len + final_len < 0) {
-#ifdef BORINGSSL_ENABLE
-        if (ERR_GET_REASON(ERR_peek_last_error()) == CIPHER_R_BAD_DECRYPT)
-#else
         if (ERR_GET_REASON(ERR_peek_last_error()) == EVP_R_BAD_DECRYPT)
-#endif
             return CRYPTO_BAD_FORMAT;
         tloge("Evp aes cipher final failed\n");
         return get_soft_crypto_error(TEE_ERROR_GENERIC);

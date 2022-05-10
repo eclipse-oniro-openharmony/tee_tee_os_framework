@@ -22,8 +22,6 @@
 #define div_by_1000_1024(y) ((y) + ((3 * (y)) >> 7) + ((9 * (y)) >> 14))
 #define get_time_value(time_high, time_low) (((uint64_t)(time_high) << 32) | (time_low))
 
-void adjust_sys_time(const struct tee_time_t *time);
-
 void init_startup_time_kernel(uint32_t rtc_time);
 
 void get_sys_startup_time(struct tee_time_t *time, uint32_t *rtc_time);
@@ -35,8 +33,6 @@ void get_sys_rtc_time_offset(struct tee_time_t *time);
 void gen_sys_date_time(const uint32_t rtc_time, struct tee_date_t *time);
 
 uint32_t drv_get_sys_date_time(struct tee_date_t *time_date);
-
-void __get_sys_date_time(tee_date_time_kernel *time_date);
 
 uint32_t timer_clock_to_timeval(uint64_t clock_cycles, int32_t *seconds, int32_t *n_seconds);
 

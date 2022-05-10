@@ -6,11 +6,11 @@
 #ifndef __SRE_ACCESS_CONTROL_ID_H_
 #define __SRE_ACCESS_CONTROL_ID_H_
 
-#include "sre_typedef.h"
 #include <uidgid.h>
+#include <stdint.h>
 
 #ifdef SRE_AUDIT
-extern void audit_syscall_perm_failure(INT32 swi_id, UINT64 permission, uid_t uid);
+extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_t uid);
 #endif
 
 #define HANDLE_SYSCALL(swi_id) switch (swi_id)
@@ -18,7 +18,7 @@ extern void audit_syscall_perm_failure(INT32 swi_id, UINT64 permission, uid_t ui
 #ifdef SRE_AUDIT
 #define SYSCALL_PERMISSION(swi_id, current_permissions, permission) \
     case swi_id: {                                                  \
-        UINT64 ullNeedPermission = permission;                      \
+        uint64_t ullNeedPermission = permission;                      \
         if ((permission & current_permissions) == permission) {
 #define SYSCALL_END                                                                                                  \
     break;                                                                                                           \
@@ -231,7 +231,7 @@ extern void audit_syscall_perm_failure(INT32 swi_id, UINT64 permission, uid_t ui
 #define SECFLASH_SPECIFIC_PERMISSION 0x4000000000000000LL
 /* Access for all functions - ATTN this is reserved for global task
  * and other test tasks */
-#define ALL_GROUP_PERMISSION ((UINT64) - 1)
+#define ALL_GROUP_PERMISSION ((uint64_t) - 1)
 #define GT_PERMISSIONS (TASK_GROUP_PERMISSION | OEM_KEY_GROUP_PERMISSION| TUI_GROUP_PERMISSION | DYNAMIC_ION_PERMISSION)
 
 #if defined(TESTSUITE_RTOSck_UT) || defined(TESTSUITE_RTOSck_PT) || \

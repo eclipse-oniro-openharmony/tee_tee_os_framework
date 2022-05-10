@@ -6,7 +6,7 @@
 #ifndef TEE_DRV_SERVER_SRC_DRV_FD_MANAGER_H
 #define TEE_DRV_SERVER_SRC_DRV_FD_MANAGER_H
 
-#include <list.h>
+#include <dlist.h>
 #include <stdint.h>
 #include <pthread.h>
 #include <sys/hm_types.h>
@@ -18,7 +18,7 @@
 #define CALLER_TASKID_INDEX 4
 
 struct fd_data {
-    struct list_head data_list;
+    struct dlist_node data_list;
     uint64_t cmd_perm;
     pthread_mutex_t ref_mtx;
     pthread_cond_t ref_cond;
@@ -27,10 +27,10 @@ struct fd_data {
 };
 
 struct drv_task {
-    struct list_head task_list;
+    struct dlist_node task_list;
     uint32_t task_pid;
     uint32_t task_count; /* locked by task_mtx */
-    struct list_head data_head; /* fd_data list head */
+    struct dlist_node data_head; /* fd_data list head */
     pthread_mutex_t task_mtx;
     uint32_t ref_cnt; /* locked by g_drv_mtx */
 };

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
  * Description: Describe the link file for 64bits TA
  * Create: 2019-12-03
  */
@@ -9,12 +9,25 @@ OUTPUT_FORMAT("elf64-littleaarch64", "elf64-bigaarch64",
 OUTPUT_ARCH(aarch64)
 ENTRY(_start)
 SEARCH_DIR("=/home/tcwg-buildslave/workspace/tcwg-make-release/builder_arch/amd64/label/tcwg-x86_64-build/target/aarch64-linux-gnu/_build/builds/destdir/x86_64-unknown-linux-gnu/aarch64-linux-gnu/lib64"); SEARCH_DIR("=/usr/local/lib64"); SEARCH_DIR("=/lib64"); SEARCH_DIR("=/usr/lib64"); SEARCH_DIR("=/home/tcwg-buildslave/workspace/tcwg-make-release/builder_arch/amd64/label/tcwg-x86_64-build/target/aarch64-linux-gnu/_build/builds/destdir/x86_64-unknown-linux-gnu/aarch64-linux-gnu/lib"); SEARCH_DIR("=/usr/local/lib"); SEARCH_DIR("=/lib"); SEARCH_DIR("=/usr/lib");
+
+PHDRS
+{
+    phdr    PT_PHDR                             PHDRS   FLAGS (4);
+    text    PT_LOAD                     FILEHDR PHDRS   FLAGS (5);
+    smee    0x65656d73   AT(smee_start)                 FLAGS (6);
+    data    PT_LOAD                                     FLAGS (6);
+    dynamic PT_DYNAMIC                                  FLAGS (6);
+    relro   0x6474e552                                  FLAGS (4);
+    stack   PT_GNU_STACK                                FLAGS (6);
+}
+
 SECTIONS
 {
   /* Read-only sections, merged into text segment: */
   . = SEGMENT_START("text-segment", 0) + SIZEOF_HEADERS;
+  _start = .;
   /* This should be the first section after program headers */
-  .magic : { *(.magic) }
+  .magic : { *(.magic) } : text
   .note.gnu.build-id : { *(.note.gnu.build-id) }
   .hash           : { *(.hash) }
   .gnu.hash       : { *(.gnu.hash) }
@@ -43,7 +56,14 @@ SECTIONS
       *(.rela.plt)
       *(.rela.iplt)
     }
-  .rodata         : { *(.rodata .rodata.* .gnu.linkonce.r.*) }
+  .rodata         :
+  {
+    *(.rodata .rodata.* .gnu.linkonce.r.*)
+    . = ALIGN(16);
+    PROVIDE (__start___llvm_prf_names = .);
+    *(__llvm_prf_names)
+    PROVIDE (__stop___llvm_prf_names = .);
+  }
   .rodata1        : { *(.rodata1) }
   .eh_frame_hdr : { *(.eh_frame_hdr) *(.eh_frame_entry .eh_frame_entry.*) }
   .eh_frame       : ONLY_IF_RO { KEEP (*(.eh_frame)) *(.eh_frame.*) }
@@ -77,6 +97,15 @@ SECTIONS
   PROVIDE (__etext = .);
   PROVIDE (_etext = .);
   PROVIDE (etext = .);
+
+  . = ALIGN(0x1000);
+  PROVIDE_HIDDEN (smee_start = .);
+  .smee : ALIGN(0x1000)
+  {
+    *(sram_protection_section)
+    *(smee* .smee* .*smee)
+  } : smee
+
   /* Adjust the address for the data segment.  We want to adjust up to
      the same address within the page on the next page up.  */
   . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE));
@@ -136,16 +165,29 @@ SECTIONS
     KEEP (*(.dtors))
   }
   .jcr            : { KEEP (*(.jcr)) }
-  .data.rel.ro : { *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*) *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*) }
-  .dynamic        : { *(.dynamic) }
-  .got            : { *(.got.plt) *(.igot.plt) *(.got) *(.igot) }
+  .data.rel.ro :
+  {
+    *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+    *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+  } : data : relro
+  .dynamic        : { *(.dynamic) } : data : dynamic : relro
+  .got            : { *(.got.plt) *(.igot.plt) *(.got) *(.igot) } : data : relro
   . = DATA_SEGMENT_RELRO_END (0, .);
   .data           :
   {
     PROVIDE (__data_start = .);
     *(.data .data.* .gnu.linkonce.d.*)
+    PROVIDE (__start___llvm_prf_cnts = .);
+    *(__llvm_prf_cnts)
+    PROVIDE (__stop___llvm_prf_cnts = .);
+    PROVIDE (__start___llvm_prf_data = .);
+    *(__llvm_prf_data)
+    PROVIDE (__stop___llvm_prf_data = .);
+    PROVIDE (__start___llvm_prf_vnds = .);
+    *(__llvm_prf_vnds);
+    PROVIDE (__stop___llvm_prf_vnds = .);
     SORT(CONSTRUCTORS)
-  }
+  } : data
   .data1          : { *(.data1) }
   _edata = .; PROVIDE (edata = .);
   . = .;
@@ -158,7 +200,7 @@ SECTIONS
    *(.bss .bss.* .gnu.linkonce.b.*)
    *(COMMON)
    . = ALIGN(. != 0 ? 64 / 8 : 1);
-  }
+  } : data
   TA_BSS_END = .;
   _bss_end__ = . ; __bss_end__ = . ;
   . = ALIGN(64 / 8);

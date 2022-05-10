@@ -4,8 +4,11 @@ set(WITH_CHIP_HI3516      "23")
 set(TRUSTEDCORE_PLATFORM_CHOOSE WITH_IPC_PLATFORM)
 set(PLATFORM_NAME "ipc")
 set(CHIP_NAME     ${TARGET_BOARD_PLATFORM})
-set(PRODUCT_NAME  "camera")
-
+if("${product_name}" STREQUAL "demo")
+    set(PRODUCT_NAME  "demo_arm32")
+else()
+    set(PRODUCT_NAME "camera")
+endif()
 set(TARGET_BOARD_PLATFORM ${TARGET_BOARD_PLATFORM})
 
 list(APPEND TRUSTEDCORE_PLATFORM_FLAGS

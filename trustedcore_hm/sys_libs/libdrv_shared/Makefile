@@ -65,12 +65,16 @@ $(BUILD_DIR)/export.txt: export.txt
 	@${CC} ${flags} -P -E -o $@ -x c $<
 
 ld-flags :=
-ld-flags += -lhwi$(TARG) -lc_shared$(TARG) -lteemem$(TARG) -lipc$(TARG) -lmmgr$(TARG) -lsyscalls$(TARG) -lhongmeng$(TARG)
+ld-flags += -lhwi$(TARG) -lc_shared$(TARG) -lteemem$(TARG) -lteeconfig$(TARG) -lio$(TARG)
 
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
-	ld-flags += -execute-only
+	ld-flags += --execute-only
 endif
+endif
+
+ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
+ld-flags += -z separate-loadable-segments
 endif
 
 ifeq (${TARG}, _a32)
@@ -93,6 +97,7 @@ $(MODULE_FILE): $(BUILD_DIR)/extern.txt $(libdrv_shared_objs)
 	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections --version-script=$(BUILD_DIR)/export.txt -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group \
 		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096
+	$(VER)$(OBJCOPY) $@
 endif
 
 

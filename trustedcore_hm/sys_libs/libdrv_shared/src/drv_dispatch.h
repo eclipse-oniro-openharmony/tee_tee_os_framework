@@ -6,13 +6,13 @@
 #ifndef TEE_DRV_SERVER_SRC_DRV_DISPATCH_H
 #define TEE_DRV_SERVER_SRC_DRV_DISPATCH_H
 
-#include <list.h>
+#include <dlist.h>
 #include <hm_msg_type.h>
 #include <tee_defines.h>
 #include <cs.h>
 
 struct fd_node {
-    struct list_head data_list;
+    struct dlist_node data_list;
     int64_t fd;
     struct drv_node *drv;
     bool close_flag;

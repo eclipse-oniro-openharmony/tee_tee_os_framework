@@ -82,6 +82,7 @@ struct file_stat_entry {
 #endif
     { "/huk_service.elf", 32, 1001, 00040 },
     { "/crypto_mgr.elf", 33, 1002, 07005 },
+    { "/tcmgr_service.elf", 33, 1001, 00040 },
 };
 
 #ifndef ARRAY_SIZE
@@ -89,7 +90,7 @@ struct file_stat_entry {
 #endif
 
 #ifndef RAM_STATIC_ASSERT
-#define RAM_STATIC_ASSERT(condition, name) extern int g_STATIC_ASSERT_##name[1 - 2 * (int)((condition) == 0)]
+#define RAM_STATIC_ASSERT(condition, name) extern int g_STATIC_ASSERT_##name[1 - 2 * (int)((condition) == false)]
 #endif
 
 #define RAMFS_ERROR  (-1)
@@ -107,21 +108,21 @@ RAM_STATIC_ASSERT(sizeof(struct ramfs_inode) == RAMFS_INODE_SIZE, ramfs_inode_si
 
 static void usage(const char *name)
 {
-    fprintf(stderr,
-            "usage: %s -n size imgfile infile...\n"
-            "where:\tsize   Size of the resulting image, optionally\n"
-            "\t\tfollowed by:\n"
-            "\t\tK\tSize is in kibibytes\n"
-            "\t\tM\tSize is mebibytes\n",
-            name);
+    (void)fprintf(stderr,
+        "usage: %s -n size imgfile infile...\n"
+        "where:\tsize   Size of the resulting image, optionally\n"
+        "\t\tfollowed by:\n"
+        "\t\tK\tSize is in kibibytes\n"
+        "\t\tM\tSize is mebibytes\n",
+        name);
     exit(EXIT_FAILURE);
 }
 
-static int32_t ramfs_set_stat(struct ramfs_inode *inode)
+static int ramfs_set_stat(struct ramfs_inode *inode)
 {
     uint32_t i;
     static uint32_t other_uid;
-    other_uid = ARRAY_SIZE(g_file_stat_entries);
+    other_uid = (uint32_t)ARRAY_SIZE(g_file_stat_entries);
 
     for (i = 0; i < ARRAY_SIZE(g_file_stat_entries); i++) {
         struct file_stat_entry *e = &g_file_stat_entries[i];
@@ -136,14 +137,14 @@ static int32_t ramfs_set_stat(struct ramfs_inode *inode)
     inode->gid  = INODE_GID;
     inode->mode = INODE_MODE;
     other_uid++;
-    perror("ramfs_set_stat: filename not found, new internal ta\n");
+    (void)perror("ramfs_set_stat: filename not found, new internal ta\n");
     return 0;
 }
 
 static struct ramfs_metadata *ramfs_metadata_alloc_init(int32_t nr_files)
 {
-    unsigned long metadata_size;
-    metadata_size = ramfs_calc_metadata_size(nr_files);
+    int32_t metadata_size;
+    metadata_size = (int32_t)ramfs_calc_metadata_size((uint32_t)nr_files);
     struct ramfs_metadata *metadata = NULL;
     int32_t ret_s;
 
@@ -181,13 +182,13 @@ static int32_t set_inode_info(struct ramfs_inode *inode, const char *filename,
 
     basename = ramfs_extract_basename(filename);
     if (basename == NULL || basename[0] == '\0') {
-        printf("wrong file name: '%s'\n", filename);
+        (void)printf("wrong file name: '%s'\n", filename);
         return RAMFS_ERROR;
     }
 
     *bytes = snprintf_s(inode->filename, sizeof(inode->filename), sizeof(inode->filename) - ARGC_1, "/%s", basename);
     if (*bytes == -1) {
-        printf("wrong file name: '%s'\n", filename);
+        (void)printf("wrong file name: '%s'\n", filename);
         return RAMFS_ERROR;
     }
 
@@ -198,7 +199,7 @@ static int32_t set_inode_info(struct ramfs_inode *inode, const char *filename,
     }
 
     if (stat_buf->st_size > RAMFS_MAX_FILE_SIZE) {
-        printf("file '%s' too large\n", filename);
+        (void)printf("file '%s' too large\n", filename);
         return RAMFS_ERROR;
     }
 
@@ -221,7 +222,7 @@ static long process_file(struct ramfs_metadata *metadata, FILE *img_fp, uint32_t
     uint8_t buffer[PAGE_SIZE];
     struct stat stat_buf;
     int32_t bytes;
-    unsigned long written;
+    long written;
     FILE *fp = NULL;
     int32_t err;
 
@@ -248,13 +249,13 @@ static long process_file(struct ramfs_metadata *metadata, FILE *img_fp, uint32_t
         bytes = (int32_t)fwrite(buffer, ARGC_1, PAGE_SIZE, img_fp);
         if (bytes != PAGE_SIZE) {
             perror("write file error");
-            fclose(fp);
+            (void)fclose(fp);
             return RAMFS_ERROR;
         }
         written += PAGE_SIZE;
     } while (bytes != 0);
 
-    fclose(fp);
+    (void)fclose(fp);
     return written;
 }
 
@@ -282,7 +283,7 @@ static int32_t fill_files(FILE *img_fp, struct ramfs_metadata *metadata,
     uint32_t i;
     uint32_t offset;
 
-    err = fseeko(img_fp, ramfs_metadata_size(metadata), SEEK_SET);
+    err = fseeko(img_fp, (off_t)ramfs_metadata_size(metadata), SEEK_SET);
     if (err != 0) {
         perror("fseeko error\n");
         return RAMFS_ERROR;
@@ -296,9 +297,7 @@ static int32_t fill_files(FILE *img_fp, struct ramfs_metadata *metadata,
     size -= ramfs_metadata_size(metadata);
 
     for (i = 0, offset = 0; i < (uint32_t)argc; i++) {
-        int32_t filled_size;
-
-        filled_size = process_file(metadata, img_fp, i, offset, argv[i]);
+        long filled_size = process_file(metadata, img_fp, i, offset, argv[i]);
         if (filled_size < 0) {
             perror("process_file failed\n");
             return RAMFS_ERROR;
@@ -350,12 +349,12 @@ static void process_files(unsigned long size, const char *imgfile, int32_t argc,
 
     err = fill_files(img_fp, metadata, size, argc, argv);
     if (err != 0) {
-        fclose(img_fp);
+        (void)fclose(img_fp);
         ramfs_metadata_destroy(metadata);
         exit(EXIT_FAILURE);
     }
 
-    fclose(img_fp);
+    (void)fclose(img_fp);
     ramfs_metadata_destroy(metadata);
 }
 
@@ -369,7 +368,7 @@ static void handle_opt(int32_t argc, char *argv[], unsigned long *size)
         switch (opt) {
         case 'n':
             if (*optarg == '\0') {
-                fprintf(stderr, "Zero-length size not allowed\n");
+                (void)fprintf(stderr, "Zero-length size not allowed\n");
                 usage(argv[0]);
             }
 
@@ -383,7 +382,7 @@ static void handle_opt(int32_t argc, char *argv[], unsigned long *size)
             if (modifier == 'M')
                 msize = SIZE_M;
             if (msize != 0 && *size > UINT64_MAX / msize) {
-                fprintf(stderr, "size is too large\n");
+                (void)fprintf(stderr, "size is too large\n");
                 usage(argv[0]);
             }
             if (msize != 0)
@@ -395,10 +394,10 @@ static void handle_opt(int32_t argc, char *argv[], unsigned long *size)
 
         case 'f':
             if (*optarg == '\0') {
-                fprintf(stderr, "Not a correct file name\n");
+                (void)fprintf(stderr, "Not a correct file name\n");
                 usage(argv[0]);
             }
-            printf("doesn't support .ini file\n");
+            (void)printf("doesn't support .ini file\n");
             break;
 
         default:
@@ -424,16 +423,13 @@ int32_t main(int32_t argc, char *argv[])
     case ARGC_1:
         usage(argv[0]);
         break;
-
     default:
         if (size == 0) {
             usage(argv[0]);
             break;
         }
-
-        process_files(size, argv[optind], n_args - ARGC_1, &argv[optind + ARGC_1]);
+        process_files(size, argv[optind], n_args - (int32_t)ARGC_1, &argv[optind + ARGC_1]);
         break;
     }
-
     return 0;
 }

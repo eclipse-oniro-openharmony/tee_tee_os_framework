@@ -24,10 +24,14 @@ flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG
 
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
-	LIB_VENDOR_FLAGS := -execute-only
+	LIB_VENDOR_FLAGS := --execute-only
 else
 	LIB_VENDOR_FLAGS :=
 endif
+endif
+
+ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
+LIB_VENDOR_FLAGS += -z separate-loadable-segments
 endif
 
 ifeq ($(CONFIG_DX_ENABLE), true)

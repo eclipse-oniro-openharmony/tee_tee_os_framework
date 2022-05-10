@@ -1,23 +1,25 @@
 #
-# Copyright 2017, Huawei Co. Ltd
+# Copyright 2022, Huawei Co. Ltd
 #
 # See "HUAWEI_LICENSE" for details.
 #
 
 # Targets
-
 MODULE := libtimer${TARG}.a
 
 flags += -fno-builtin
 
 inc-flags += -I$(TOPDIR)/sys_libs/libtimer/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext/
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel/
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
-inc-flags += -I$(TOPDIR)/drivers/platdrv/include/
 inc-flags += -I$(TOPDIR)/drivers/drv_timer/src
-inc-flags += -I$(TOPDIR)/platform/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/timer/include
 inc-flags += -I$(TOPDIR)/drivers/drv_timer/platform/$(PLATFORM_NAME)/include/
+inc-flags += -I$(TOPDIR)/platform/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/timer/include
+inc-flags += -I$(PREBUILD_DIR)/headers/sys/timemgr
+ifeq (${TARG}, _a32)
+inc-flags += -I$(TOPDIR)/sys_libs/libtimer/include/arm
+else
+inc-flags += -I$(TOPDIR)/sys_libs/libtimer/include/aarch64
+endif
+
 ifeq ($(chip_type), es)
 inc-flags += -I$(TOPDIR)/../../../../../vendor/hisi/ap/platform/$(TARGET_BOARD_PLATFORM)_es
 else
@@ -28,23 +30,29 @@ inc-flags += -I$(TOPDIR)/../../../../../vendor/hisi/ap/platform/$(TARGET_BOARD_P
 endif
 endif
 
-ifeq (${TARG}, _a32)
-inc-flags += -I$(TOPDIR)/sys_libs/libtimer/include/arm
-else
-inc-flags += -I$(TOPDIR)/sys_libs/libtimer/include/aarch64
-endif
-
-ifeq ($(CONFIG_GENERIC_TIMER), y)
-flags += -DCONFIG_GENERIC_TIMER
-endif
-inc-flags += -I$(PREBUILD_DIR)/headers/sys/timemgr
-inc-flags += -I$(PREBUILD_DIR)/headers/include/uapi
-
 # Source files required to build the target
-libtimer_c_files += $(wildcard src/*.c)
-
-ifneq ($(CONFIG_LIB_TIMEMGR),y)
-libtimer_c_files := $(filter-out  src/classic_timer_api.c, $(libtimer_c_files))
+ifeq ($(CONFIG_TIMER_DISABLE), y)
+libtimer_c_files := src/tee_timer_stub.c
+libtimer_c_files += src/tee_time_rtc.c
+else ifeq ($(CONFIG_OFF_DRV_TIMER), y)
+libtimer_c_files := $(wildcard src/*.c)
+libtimer_c_files += $(wildcard src/*/*.c)
+libtimer_c_files := $(filter-out src/tee_timer_stub.c, $(libtimer_c_files))
+libtimer_c_files := $(filter-out src/timer_adapt/tee_sec_timer_adapt.c, $(libtimer_c_files))
+libtimer_c_files := $(filter-out src/tee_timer_call.c, $(libtimer_c_files))
+libtimer_c_files := $(filter-out src/rtc_adapt/rtc_drv_timer_adapt.c, $(libtimer_c_files))
+ifneq ($(CONFIG_RTC_TIMER), y)
+libtimer_c_files := $(filter-out src/rtc_adapt/rtc_drv_rtc_adapt.c, $(libtimer_c_files))
+endif
+else
+libtimer_c_files := $(wildcard src/*.c)
+libtimer_c_files += $(wildcard src/*/*.c)
+libtimer_c_files := $(filter-out src/tee_timer_stub.c, $(libtimer_c_files))
+libtimer_c_files := $(filter-out src/timer_adapt/tee_generic_timer_adapt.c, $(libtimer_c_files))
+libtimer_c_files := $(filter-out src/rtc_adapt/rtc_drv_rtc_adapt.c, $(libtimer_c_files))
+ifneq ($(CONFIG_RTC_TIMER), y)
+libtimer_c_files := $(filter-out src/rtc_adapt/rtc_drv_timer_adapt.c, $(libtimer_c_files))
+endif
 endif
 
 # Header files/directories this library provides

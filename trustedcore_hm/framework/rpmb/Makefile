@@ -7,7 +7,7 @@ SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 include $(TOPDIR)/mk/var.mk
 rpmb_c_files += $(wildcard src/*.c)
 inc-flags += -I$(TOPDIR)/framework/rpmb/include
-inc-flags += -I$(PLATFORM_DIR)/common/tee_config
+inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TOPDIR)/vendor/ascend/libvendor_shared/src/libhsm_client/include
 inc-flags += -I$(TOPDIR)/sys_libs/libcrypto_hal/include
@@ -22,10 +22,6 @@ endif
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(PREBUILD_HEADER)/openssl
-endif
-
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), boringssl)
-inc-flags += -I$(PREBUILD_HEADER)/boringssl
 endif
 
 # Libraries
@@ -46,7 +42,4 @@ DRV_LDFLAGS += $(LIBCOMPILER_RT_BUILTINS)
 
 ifeq ($(CONFIG_HSM), true)
 flags += -DTEE_SUPPORT_HSM
-endif
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), boringssl)
-flags += -DBORINGSSL_ENABLE
 endif

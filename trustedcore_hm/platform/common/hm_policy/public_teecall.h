@@ -16,7 +16,8 @@ const cap_teecall_t g_pub_teecall_cap[MAX_PUB_CAP_NUM] = {
     [AC_ARRAY_IDX_BUILTIN(TEESMCMGR)]  = { TEECALL_GENERAL_GROUP_PERMISSION },
     [AC_ARRAY_IDX_BUILTIN(GTASK)]      = { TEECALL_GENERAL_GROUP_PERMISSION | TEECALL_GTASK_GROUP_PERMISSION |
                                            TEECALL_KERNEL_GROUP_PERMISSION },
-    [AC_ARRAY_IDX_BUILTIN(PLATDRV)]    = { TEECALL_KERNEL_GROUP_PERMISSION | TEECALL_GET_SHAREMEM_GROUP_PERMISSION },
+    [AC_ARRAY_IDX_BUILTIN(PLATDRV)]    = { TEECALL_KERNEL_GROUP_PERMISSION | TEECALL_GET_SHAREMEM_GROUP_PERMISSION |
+                                           TEECALL_VATOPA_GROUP_PERMISSION },
     [AC_ARRAY_IDX_BUILTIN(DRV_TIMER)]  = { TEECALL_KERNEL_GROUP_PERMISSION },
     [AC_ARRAY_IDX_BUILTIN(HMCCMGR)]    = { TEECALL_GENERAL_GROUP_PERMISSION },
 };
@@ -62,21 +63,10 @@ AC_DEFINE_TEECALL_SUBJ_BEG(teecall)
 #undef CAP_BEGIN
 #undef CAP_DEF
 #define CAP_BEGIN(CAPS) CAPS
-#ifndef AC_USE_POLICY_DB
 #define CAP_DEF(cap)                                                                                \
     const struct ac_cap g_ac_cap_##cap = { CAPTYPE_##cap, ARRAY_SIZE(ac_subj_##cap), ac_subj_##cap }; \
     struct ac_cap g_ac_cap_dyn_##cap   = { CAPTYPE_##cap, 0, NULL };
-#else
-#define CAP_DEF(cap) { CAPTYPE_##cap, ARRAY_SIZE(ac_subj_##cap), ac_subj_##cap },
-    const struct ac_cap g_local_cap[] = {
-#endif
 
 #include <cap_def.h>
-
-#ifdef AC_USE_POLICY_DB
-}
-;
-AC_DEFINE_ARRAY_SIZE(g_local_cap);
-#endif
 
 #endif

@@ -31,12 +31,14 @@ $(MODULE_FILE): $(libvendor_shared_objs)
 	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections  -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group $(LIB_VENDOR_FLAGS) \
 		$(LIBCOMPILER_RT_BUILTINS) --end-group -nostdlib -z max-page-size=4096
+	$(VER)$(OBJCOPY) $@
 endif
 
 ifeq (${TARG}, _a32)
 $(MODULE_FILE): $(libvendor_shared_objs)
 	@echo "[ LD ] $@ LIB_DIR=$(LIB_DIR)"
 	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections  -o $@ \
-		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group  \
+		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group $(LIB_VENDOR_FLAGS) \
 		$(LIBCOMPILER_RT_BUILTINS) --end-group -nostdlib
+	$(VER)$(OBJCOPY) $@
 endif

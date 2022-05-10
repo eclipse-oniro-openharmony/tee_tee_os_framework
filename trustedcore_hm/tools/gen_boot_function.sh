@@ -1,6 +1,6 @@
 #!/bin/bash
 # function belong to gen_boot_image.
-# Copyright Huawei Technologies Co., Ltd. 2010-2019. All rights reserved.
+# Copyright Huawei Technologies Co., Ltd. 2010-2022. All rights reserved.
 set -e
 function pad8_name()
 {
@@ -71,26 +71,29 @@ do_others() {
         if [ "${chip_type}" == "es" ]; then
             CC_PLATFORM_ES="_es"
         fi
-    ${CC} ${SDK_CPPFLAGS} -I"${PWD}"/libs/libplatdrv/platform/common/include/ \
-            -I"${PWD}"/libs/libplatdrv/platform/libthirdparty_drv/include/platform/${TARGET_BOARD_PLATFORM}${CC_PLATFORM_ES}/ \
-            -I"${PLAT_CFG_DIR}"/ \
-            -I"${PLAT_COMMON_DIR}"/include/ \
-            -I${TOPDIR}/kernel/elfloader/include/ \
-            -I${TOPDIR}/kernel/libuart/ \
-            -I${TOPDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \
-            -I${TOPDIR}/prebuild/hm-teeos-local-release/headers/kernel/include/arch/arm/uapi/ \
-            -I${OUTPUTDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \
-            -I${OUTPUTDIR}/prebuild/hm-teeos-local-release/headers/kernel/include/arch/arm/uapi/ \
-            -Wall -Wextra -Werror -Wformat=2 -c \
-            -o "${LINKER_DIR}/plat_cfg.o" \
-            ""${PLAT_CFG_DIR}"/plat_cfg.c"
+        if [ "${CONFIG_NO_PLATCFG_EMBEDDED}" != "true" ]; then
+            ${CC} ${SDK_CPPFLAGS} -I"${PWD}"/libs/libplatdrv/platform/common/include/ \
+                -I"${PWD}"/libs/libplatdrv/platform/libthirdparty_drv/include/platform/${TARGET_BOARD_PLATFORM}${CC_PLATFORM_ES}/ \
+                -I"${PLAT_CFG_DIR}"/ \
+                -I"${PLAT_COMMON_DIR}"/include/ \
+                -I${TOPDIR}/kernel/elfloader/include/ \
+                -I${TOPDIR}/kernel/libuart/ \
+                -I${TOPDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \
+                -I${TOPDIR}/prebuild/hm-teeos-local-release/headers/kernel/include/arch/arm/uapi/ \
+                -I${OUTPUTDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \
+                -I${OUTPUTDIR}/prebuild/hm-teeos-local-release/headers/kernel/include/arch/arm/uapi/ \
+                -Wall -Wextra -Werror -Wformat=2 -c \
+                -o "${LINKER_DIR}/plat_cfg.o" \
+                ""${PLAT_CFG_DIR}"/plat_cfg.c"
+            LINK_PLAT_CFG="${LINKER_DIR}/plat_cfg.o"
+        fi
     fi
 
     ${LD} -T "${LINKER_DIR}/linker.lds_pp" \
     -z relro -z now -z notext -pie --apply-dynamic-relocs\
     --oformat "${FORMAT}" \
     "${ELFLOADER_DIR}/elfloader.o" "${TEMP_DIR}/archive.o" \
-    "${LINKER_DIR}/plat_cfg.o" \
+    "${LINK_PLAT_CFG}" \
     "${KERNEL_OUTDIR}"/libklibc.a "${KERNEL_OUTDIR}"/libhardware.a "${KERNEL_OUTDIR}"/libuart.a \
     -o "${OUTPUT_FILE}" \
         || fail

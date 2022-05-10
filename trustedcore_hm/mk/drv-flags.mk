@@ -37,6 +37,11 @@ DRV_LDFLAGS += -u __vsyscall_ptr --gc-sections -pie -z relro -z now
 DRV_LDFLAGS += -L$(LIB_DIR)
 DRV_LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LIBS:%=-l%) $(RUNTIME_LIB_FLAG) --end-group
 DRV_LDFLAGS +=  -nostdlib -u $(ENTRY_POINT) -e $(ENTRY_POINT) -z max-page-size=0x1000
+
+ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
+DRV_LDFLAGS += -z separate-loadable-segments
+endif
+
 ifeq ($(CONFIG_GCOV),y)
 ifeq ($(ARCH),aarch64)
 DRV_LDFLAGS += -lllvm_gcov

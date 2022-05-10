@@ -92,7 +92,7 @@ static int32_t generate_random(const struct crypto_drv_ops_t *ops, struct memref
 int32_t generate_random_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *generate_random_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -100,7 +100,7 @@ int32_t generate_random_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &generate_random_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -108,12 +108,15 @@ int32_t generate_random_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)generate_random_share_buf, ioctl_args->buf_len, ioctl_args->buf,
+        ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(generate_random_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return CRYPTO_SUCCESS;
 }
@@ -125,11 +128,8 @@ static int32_t get_entropy_ops(const struct crypto_drv_ops_t *ops, struct memref
         return CRYPTO_NOT_SUPPORTED;
     }
 
-    void *buffer = NULL;
-    size_t size;
-
-    buffer = (void *)(uintptr_t)buf_arg->buffer;
-    size = buf_arg->size;
+    size_t size = buf_arg->size;
+    void *buffer = (void *)(uintptr_t)buf_arg->buffer;
 
     int32_t ret = do_power_on(ops);
     if (ret != CRYPTO_SUCCESS)
@@ -147,7 +147,7 @@ static int32_t get_entropy_ops(const struct crypto_drv_ops_t *ops, struct memref
 int32_t get_entropy_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
-    uint8_t *share_buf = NULL;
+    uint8_t *get_entropy_share_buf = NULL;
     struct memref_t *buf_arg = NULL;
 
     if (check_hal_params_is_invalid(drv, args, args_len, ops))
@@ -155,7 +155,7 @@ int32_t get_entropy_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &get_entropy_share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -163,12 +163,14 @@ int32_t get_entropy_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-    ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
+#ifndef DATA_FALLTHROUGH
+    ret = copy_to_client((uintptr_t)get_entropy_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
-    driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
+    driver_free_share_mem_and_buf_arg(get_entropy_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
     return CRYPTO_SUCCESS;
 }

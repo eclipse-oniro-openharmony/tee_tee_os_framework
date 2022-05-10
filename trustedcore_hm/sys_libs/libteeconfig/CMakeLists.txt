@@ -36,7 +36,8 @@ list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include/kernel
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/drivers/include
-    ${PLATFORM_DIR}/common/tee_config
+    ${PROJECT_SOURCE_DIR}/drivers/base_mgr/tee_misc_driver/src
+    ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
     ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/include/platform/${TARGET_BOARD_PLATFORM}
 )
@@ -47,9 +48,21 @@ if ("${CONFIG_TEE_MISC_DRIVER_64BIT}" STREQUAL "true" OR "${CONFIG_TEE_MISC_DRIV
     )
 endif()
 
+if ("${CONFIG_SUPPORT_GET_DIEID}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        CONFIG_SUPPORT_GET_DIEID
+    )
+endif()
+
 if ("${CONFIG_HSM}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         TEE_SUPPORT_HSM
+    )
+endif()
+
+if ("${CONFIG_DYN_CONF}" STREQUAL "true")
+    list(APPEND TEE_C_DEFINITIONS
+        TEE_SUPPORT_DYN_CONF
     )
 endif()
 
@@ -63,15 +76,22 @@ list(APPEND TEE_C_FLAGS
     ${TRUSTEDCORE_PLATFORM_FLAGS}
 )
 
+if("${CONFIG_TEST_CA_CHECK}" STREQUAL "y")
+    set(TEST_CA_CHECK_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/tee_test_config/tee_test_calist.c
+    )
+endif()
+
 tee_add_library(teeconfig STATIC
     SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/antiroot.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/drvcalls.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/mem_config.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/tee_config.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/tee_drv_client.c
-    ${PLATFORM_DIR}/common/tee_config/teeos_config.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/drv_hal/antiroot.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/drv_hal/drvcalls.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/drv_hal/tee_drv_client.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/tee_config/tee_config.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/tee_config/tee_config_hal.c
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config/product_config.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/tee_config/product_config_hal.c
+    ${TEST_CA_CHECK_SRC}
 
     COMPILE_TOOL
     clang

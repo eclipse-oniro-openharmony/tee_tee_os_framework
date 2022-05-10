@@ -12,6 +12,7 @@ include $(TOPDIR)/mk/var.mk
 include $(TOPDIR)/mk/plat.mk
 
 inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(PREBUILD_DIR)/headers/ddk
 inc-flags += -I$(TOPDIR)/drivers/common
 inc-flags += -I$(LIBS_DIR)/libplatdrv/platform/common/include
 inc-flags += -I$(LIBS_DIR)/libplatdrv/platform/common/crypto
@@ -85,6 +86,7 @@ include $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/modules/timer_co
 drv_timer_c_files += $(CFILES)
 
 LIBS := c_shared${TARG} \
+    io${TARG} \
     teeos${TARG} \
     teemem${TARG} \
     hwi${TARG} \
@@ -97,12 +99,8 @@ LIBS := c_shared${TARG} \
     ac_policy${TARG}
 
 # sanitity will disable gc-section, need to add all dependence libs
-ifeq ($(CONFIG_KASAN),y)
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
-LIBS += boringssl${TARG}
-else
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 LIBS += openssl${TARG}
-endif
 endif
 
 ENTRY_POINT := main
@@ -110,7 +108,7 @@ DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
 
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
-	drv_timer_LDFLAGS += -execute-only
+	drv_timer_LDFLAGS += --execute-only
 endif
 endif
 

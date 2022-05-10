@@ -16,7 +16,6 @@
 #include <dlfcn.h>
 #include <sre_log.h>
 #include "drv_random.h"
-#include "ccmgr_hm.h"
 #include "crypto_syscall.h"
 #include "crypto_syscall_ec.h"
 #include "crypto_syscall_hash.h"
@@ -27,6 +26,7 @@
 #include "crypto_syscall_cipher.h"
 #include "crypto_syscall_oemkey.h"
 #include "crypto_syscall_derive_key.h"
+#include "crypto_syscall_pm.h"
 
 struct crypto_drv_ops_t *g_drv_entry = NULL;
 #define DRV_NAME   "/tafs/libhardware_crypto_drv.so"
@@ -98,12 +98,8 @@ static crypto_syscall_func g_crypto_func_list[] = {
     [SWI_ID_INDEX(IOCTRL_CRYPTO_MAX)]                  = NULL
 };
 
-int32_t crypto_ioctl_func(const struct drv_data *drv, uint32_t cmd,
-    unsigned long args, uint32_t args_len)
+static int32_t check_drv_entry(void)
 {
-    if (drv == NULL)
-        return CRYPTO_BAD_PARAMETERS;
-
     if (g_drv_entry == NULL) {
         int32_t ret = load_drv_hardware();
         if (ret != CRYPTO_SUCCESS) {
@@ -111,6 +107,19 @@ int32_t crypto_ioctl_func(const struct drv_data *drv, uint32_t cmd,
             return ret;
         }
     }
+
+    return CRYPTO_SUCCESS;
+}
+
+int32_t crypto_ioctl_func(const struct drv_data *drv, uint32_t cmd,
+    unsigned long args, uint32_t args_len)
+{
+    if (drv == NULL)
+        return CRYPTO_BAD_PARAMETERS;
+
+    int32_t ret = check_drv_entry();
+    if (ret != CRYPTO_SUCCESS)
+        return ret;
 
     bool check = (cmd <= IOCTRL_CRYPTO_BASE || cmd >= IOCTRL_CRYPTO_MAX ||
         g_crypto_func_list[SWI_ID_INDEX(cmd)] == NULL);
@@ -120,3 +129,20 @@ int32_t crypto_ioctl_func(const struct drv_data *drv, uint32_t cmd,
     return g_crypto_func_list[SWI_ID_INDEX(cmd)](drv, args, args_len, g_drv_entry);
 }
 
+int32_t crypto_ioctl_suspend(void)
+{
+    int32_t ret = check_drv_entry();
+    if (ret != CRYPTO_SUCCESS)
+        return ret;
+
+    return crypto_mgr_suspend_call(g_drv_entry);
+}
+
+int32_t crypto_ioctl_resume(void)
+{
+    int32_t ret = check_drv_entry();
+    if (ret != CRYPTO_SUCCESS)
+        return ret;
+
+    return crypto_mgr_resume_call(g_drv_entry);
+}

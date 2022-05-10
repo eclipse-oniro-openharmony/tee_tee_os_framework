@@ -37,6 +37,7 @@ endif
 
 # Source files required to build the target
 platdrv_c_files := src/main.c           \
+		src/tc_drv.c            \
 		src/stub.c              \
 		src/drv_pal.c           \
 		src/sre_dev_relcb.c     \
@@ -44,11 +45,17 @@ platdrv_c_files := src/main.c           \
 		src/platdrv.c           \
 		src/param_check.c       \
 		src/sys_modem.c         \
+		src/sre_hwi.c       \
 		src/drv_cache_flush.c   \
 		src/platdrv_hash.c      \
 		src/rand_update.c       \
 		$(TOPDIR)/drivers/common/drv_call_check.c \
-		$(TOPDIR)/drivers/common/drv_pm_check.c
+		$(TOPDIR)/drivers/common/drv_pm_check.c \
+		$(TOPDIR)/sys_libs/libdrv_shared/src/io_operations.c
+
+ifeq ($(CONFIG_DRIVER_DYN_MOD), true)
+platdrv_c_files += src/drv_mod.c
+endif
 
 platdrv_c_files += platform/common/crypto/crypto_syscall.c \
 		platform/common/crypto/crypto_syscall_ae.c \
@@ -114,12 +121,8 @@ ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(PREBUILD_HEADER)/openssl
 endif
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), boringssl)
-inc-flags += -I$(PREBUILD_HEADER)/boringssl
-endif
-
 LIBS += agent${TARG} hwi${TARG} c_shared${TARG} agent_base${TARG} crypto${TARG}
-LIBS += timer${TARG} ac${TARG} mmgr${TARG} hongmeng${TARG} ipc${TARG}
+LIBS += timer${TARG} ac${TARG} hongmeng${TARG} ipc${TARG} io${TARG}
 LIBS += teemem${TARG} teeconfig${TARG} teeos${TARG} crypto_hal${TARG}
 ifeq ($(CONFIG_DX_ENABLE), true)
 LIBS += dx_cc7${TARG}
@@ -134,35 +137,30 @@ LIBS += hmdrv_stub${TARG}
 LIBS += drv_frame${TARG}
 LIBS += ac_policy${TARG}
 LIBS += fileio${TARG}
-LIBS += drv_shared${TARG}
 
 # sanitity will disable gc-section, need to add all dependence libs
 ifeq ($(CONFIG_KASAN),y)
 LIBS += ccmgr${TARG} hmdrv${TARG}
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
-LIBS += boringssl${TARG}
-else
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 LIBS += openssl${TARG}
 endif
 endif
 
 include $(TOPDIR)/mk/drv-common.mk
+
+ALIAS_FILE  := alias.txt
+ALIAS_SYM := $(shell cat $(ALIAS_FILE) | awk '{print "-D"$$1}' | tr "\n" " ")
 # k->u function rename
-flags += -DSRE_HuntByName=ipc_hunt_by_name           \
-	   -DSRE_MsgSnd=ipc_msg_snd                   \
-	   -DSRE_MsgQSend=ipc_msg_qsend               \
-	   -DSRE_MsgQRecv=ipc_msg_q_recv               \
-	   -Dv8_dma_flush_range=__dma_flush_range      \
-	   -Dv7_dma_clean_range=__dma_clean_range      \
-	   -Dv7_flush_kern_cache_all=flush_cache_all   \
-	   -Dunmap=munmap                              \
-	   -Dgic_spi_notify=fake_gic_spi_notify        \
-	   -DSRE_TaskSelf=task_caller
+flags += $(ALIAS_SYM)
 
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
 ifeq ($(CONFIG_GCOV),y)
 $(BUILD_DIR)/src/%.o: c-flags += -g --coverage
+endif
+
+ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
+platdrv_LDFLAGS += -z separate-loadable-segments
 endif
 
 # for DECLARE_TC_DRV, prevent ".tc_drv_descs" section from being merged
@@ -172,7 +170,7 @@ endif
 
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
-	platdrv_LDFLAGS += -execute-only
+	platdrv_LDFLAGS += --execute-only
 endif
 endif
 

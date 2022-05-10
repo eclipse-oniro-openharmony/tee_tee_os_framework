@@ -36,20 +36,20 @@ $(INSTALL_FILE): $(BUILD_DIR)/$(TARGET)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@cp -rf $< $@
 ifeq ($(CONFIG_ARCH_AARCH64),y)
-LIBS := cpio hongmeng ramfs debug syscalls fileio pathmgr \
-	ac security ccmgr_hm hmlog ac_policy agent_base ipc
+LIBS := hongmeng ramfs debug syscalls pathmgr \
+	ac security hmlog ac_policy ipc
 ifeq ($(CONFIG_FILEMGR_EMBEDDED), y)
-LIBS += c_sysmgr vfs_sysmgr mmgr_sysmgr mmgr
+LIBS += c_sysmgr vfs_sysmgr mmgr_sysmgr mmgr fileio syscalls_sysmgr
 else
 LIBS += c vfs mmgr
 endif
 TARGET_ARCH := $(TARGET_ARCH_64)
 GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A64)
 else
-LIBS := cpio_a32 hongmeng_a32 ramfs_a32 debug_a32 syscalls_a32 fileio_a32 pathmgr_a32 \
-	ac_a32 security_a32 ccmgr_hm_a32 hmlog_a32 ac_policy_a32 agent_base_a32 ipc_a32
+LIBS := hongmeng_a32 ramfs_a32 debug_a32 syscalls_a32 pathmgr_a32 \
+	ac_a32 security_a32 hmlog_a32 ac_policy_a32 ipc_a32
 ifeq ($(CONFIG_FILEMGR_EMBEDDED), y)
-LIBS += c_sysmgr_a32 vfs_sysmgr_a32 mmgr_sysmgr_a32 mmgr_a32
+LIBS += c_sysmgr_a32 vfs_sysmgr_a32 mmgr_sysmgr_a32 mmgr_a32 fileio_a32 syscalls_sysmgr_a32
 else
 LIBS += c_a32 vfs_a32 mmgr_a32
 endif
@@ -86,7 +86,7 @@ hmfilemgr_c-flags  += $(gcc-plugin-c-flags)
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
 ifeq (${CONFIG_ENABLE_XOM},y)
-filemgr_LDFLAGS += -execute-only
+filemgr_LDFLAGS += --execute-only
 filemgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-$(TEE_ARCH).lds
 else
 filemgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-unxom-$(TEE_ARCH).lds
@@ -117,6 +117,7 @@ endif
 $(BUILD_DIR)/$(TARGET): $(hm_filemgr_objects) $(hmfilemgr_dep_libs)
 	@echo "[ LD ] $@"
 	$(VER) $(LD) $(hm_filemgr_objects) $(hmsysmgr_lib) $(filemgr_LDFLAGS) -o $@
+	$(VER) $(OBJCOPY) $@
 	if [ "$(CONFIG_USER_DEBUG_BUILD)" != "y" ]; then $(STRIP) --strip-debug $@; fi
 
 $(BUILD_DIR)/src/get_ramfs_data.o: $(CURDIR)/src/get_ramfs_data.c $(BOOTIMG)

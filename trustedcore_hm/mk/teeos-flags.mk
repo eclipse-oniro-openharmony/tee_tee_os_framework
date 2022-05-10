@@ -25,7 +25,11 @@ ifeq (${CONFIG_USER_CFLAGS},)
     CXXFLAGS += $(WARNINGS:%=-W%) -nostdinc -std=gnu++14
 
     ifeq (${CONFIG_USER_OPTIMIZATION_Os},y)
-        C_OPTIM_FLAGS += -Oz
+        ifeq ($(CONFIG_LIVEPATCH_ENABLE),y)
+            C_OPTIM_FLAGS += -Os
+        else
+            C_OPTIM_FLAGS += -Oz
+        endif
     endif
     ifeq (${CONFIG_USER_OPTIMIZATION_O0},y)
         C_OPTIM_FLAGS += -O0
@@ -202,8 +206,8 @@ endif
 endif
 
 ifeq (${TARGET_IS_ARM32},y)
-	CFLAGS = ${A32_CFLAGS}
-	CXXFLAGS = ${A32_CXXFLAGS}
+	CFLAGS += ${A32_CFLAGS}
+	CXXFLAGS += ${A32_CXXFLAGS}
 ifeq ($(strip $(NOCFI)),y) # HM_NOTE: filter-out is abused here
 	CFLAGS := $(filter-out $(GCC_A32_PLUGINS_CFLAGS),$(CFLAGS))
 	CXXFLAGS := $(filter-out $(G++_A32_PLUGINS_CFLAGS),$(CXXFLAGS))

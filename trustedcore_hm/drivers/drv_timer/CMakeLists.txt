@@ -16,6 +16,7 @@ if ("${ARCH}" STREQUAL "arm")
 endif()
 
 list(APPEND TEE_INCLUDE_PATH
+    ${PREBUILD_DIR}/headers/ddk
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/drivers/common
     ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include
@@ -116,6 +117,7 @@ endif()
 if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND DRV_TIMER_LIBRARIES
         c_shared
+        io
         teeos
         teemem
         hwi
@@ -135,6 +137,7 @@ if ("${ARCH}" STREQUAL "aarch64")
 else()
     list(APPEND DRV_TIMER_LIBRARIES
         c_shared_a32
+        io_a32
         teeos_a32
         teemem_a32
         hwi_a32
@@ -153,22 +156,22 @@ else()
     )
 endif()
 
-if ("${CONFIG_KASAN}" STREQUAL "y")
-    if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-        list(APPEND DRV_TIMER_LIBRARIES
-            boringssl
-        )
-    else()
-        list(APPEND DRV_TIMER_LIBRARIES
-            openssl
-        )
-    endif()
+if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "openssl")
+    list(APPEND DRV_TIMER_LIBRARIES
+        openssl
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND DRV_TIMER_LDFLAGS
+        -Wl,-z,separate-loadable-segments
+    )
 endif()
 
 if ("${ARCH}" STREQUAL "aarch64")
     if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
         list(APPEND DRV_TIMER_LDFLAGS
-            -Wl,-execute-only
+            -Wl,--execute-only
         )
     endif()
     list(APPEND DRV_TIMER_LDFLAGS
@@ -224,3 +227,4 @@ tee_add_executable(drv_timer.elf
 
     ${IF_INSTALL}
 )
+

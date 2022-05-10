@@ -7,7 +7,6 @@
 #include <errno.h>
 #include <cs.h>
 #include <kernel/cspace.h>
-#include <hongmeng.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/usrsyscall_new_ext.h>
 #include <ac.h>

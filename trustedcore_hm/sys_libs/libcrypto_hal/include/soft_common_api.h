@@ -14,6 +14,7 @@
 #define AES_TEN_ROUNDS_KEY_SIZE      16
 #define AES_TWELVE_ROUNDS_KEY_SIZE   24
 #define AES_FOURTEEN_ROUNDS_KEY_SIZE 32
+#define SM4_GCM_KEY_SIZE             16
 #define AES_MAX_KEY_SIZE             64
 #define DES_KEY_SIZE                 8
 #define DES3_KEY_SIZE                24
@@ -46,4 +47,8 @@ void free_cipher_context(uint64_t *ctx);
 void free_hmac_context(uint64_t *ctx);
 int32_t soft_crypto_ctx_copy(const struct ctx_handle_t *src_ctx, struct ctx_handle_t *dest_ctx);
 int32_t get_boring_nid_by_tee_curve(uint32_t tee_domain, uint32_t *nid);
+int32_t get_openssl_rand(unsigned char *buf, int num);
+#ifdef OPENSSL_ENABLE
+void free_openssl_drbg_mem(void);
+#endif
 #endif

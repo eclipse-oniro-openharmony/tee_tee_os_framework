@@ -63,6 +63,12 @@ if ("${BUILD_TA}" STREQUAL "y")
     endif()
 endif()
 
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+list(APPEND COMMON_LDFLAGS
+    -Wl,-z,separate-loadable-segments
+)
+endif()
+
 if (NOT DEFINED "${TARGET_IS_HOST}")
     if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
         if (NOT DEFINED "${CONFIG_GCOV}")
