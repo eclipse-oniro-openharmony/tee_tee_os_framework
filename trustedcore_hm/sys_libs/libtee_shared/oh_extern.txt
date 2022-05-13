@@ -122,6 +122,7 @@ TEE_OpenTASession
 TEE_CloseTASession
 TEE_InvokeTACommand
 TEE_GetSessionType
+tee_get_session_type
 
 TEE_GetPropertyAsString
 TEE_GetPropertyAsBool
@@ -151,9 +152,13 @@ tee_drv_ioctl
 tee_drv_close
 get_heap_usage
 TEE_EXT_ROOT_UuidDeriveKey
+tee_ext_root_uuid_derive_key
 TEE_EXT_DeriveTAPlatfromKeys
+tee_ext_derive_ta_platfrom_keys
 TEE_EXT_DeriveTARootKey
+tee_ext_derive_ta_root_key
 TEE_EXT_GetDeviceUniqueId
+tee_ext_get_device_unique_id
 tee_hal_get_provision_key
 g_debug_prefix
 
@@ -418,12 +423,14 @@ hm_drv_call_new
 __get_platform_chip
 get_die_id_size
 TEE_EXT_GetDeviceUniqueId
+tee_ext_get_device_unique_id
 get_libvendor_shared_handle
 tee_print
 tee_map_sharemem
 get_global_handle
 set_global_handle
 tee_secure_img_release_verify
+ac_generate_dyn_uuid_data
 ac_add_dynamic_policy
 ac_del_dynamic_policy
 task_unmap
@@ -438,25 +445,30 @@ ac_init_simple
 tee_init
 get_tlv_sharedmem
 
-#ifdef CONFIG_OFF_DRV_TIMER
-__init_startup_time_kernel
-__adjust_sys_time
-__get_startup_time
-release_timer_event
+#ifndef CONFIG_OFF_DRV_TIMER
+renew_hmtimer_job_handler
 hm_timer_init
-set_ta_timer_permission
 #endif
 
-SRE_TimerEventCreate
-SRE_TimerEventStart
-SRE_TimerEventStop
-SRE_TimerEventDestroy
-__SRE_SwMsleep
-tee_timer_drv_init
-SRE_ReadTimestamp
-__get_sys_date_time
+sleep
+nanosleep
+localtime
+get_sys_data_time
+adjust_sys_time
+get_sys_rtc_time
+release_timer_event
+set_ta_timer_permission
+tee_time_event_create
+tee_time_event_destroy
+tee_time_event_start
+tee_time_event_stop
+tee_time_event_get_expire
+tee_read_time_stamp
+tee_msleep
 
 tee_internal_derive_key
+__tee_hal_get_dieid
+tee_ext_get_dieid
 tee_internal_derive_ta_plat_root_key
 tee_crypto_derive_root_key
 derive_ecc_private_key_from_huk
@@ -473,6 +485,8 @@ get_issuer_from_crl
 get_revocation_list_from_crl
 get_subject_CN
 get_subject_OU
+get_subject_x509_cn
+get_subject_x509_ou
 get_subject_public_key_new
 import_pub_from_sp
 rsa_verify_digest

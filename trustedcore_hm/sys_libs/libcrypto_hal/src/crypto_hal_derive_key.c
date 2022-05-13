@@ -1,7 +1,7 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
  * Description: Derive key Crypto API at driver adaptor.
- * Create: 2020-12-22
+* Create: 2020-12
  */
 
 #include "crypto_hal_derive_key.h"
@@ -50,7 +50,7 @@ int32_t tee_crypto_derive_root_key(uint32_t derive_type, const struct memref_t *
         tloge("Invalid params\n");
         return CRYPTO_BAD_PARAMETERS;
     }
-#if defined(CONFIG_QEMU_LITE_PLAT)
+#if defined (CONFIG_NO_PLAT_ROOT_KEY)
     (void)derive_type;
     if (data_out->buffer == 0) {
         tloge("data_out Invalid params\n");

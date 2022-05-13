@@ -227,7 +227,7 @@ static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const s
 
 intptr_t driver_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *info)
 {
-    char *reply_raw_buf = NULL;
+    struct hm_drv_reply_msg_t reply_raw_buf;
     int32_t ret;
 
     if ((p_msg_hdl == NULL) || (info == NULL) || (msg == NULL)) {
@@ -235,21 +235,12 @@ intptr_t driver_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info
         return -1;
     }
 
-    reply_raw_buf = malloc(REPLY_BUF_LEN);
-    if (reply_raw_buf == NULL) {
-        tloge("alloc reply buf:0x%x failed\n", REPLY_BUF_LEN);
-        return -1;
-    }
-
-    (void)memset_s(reply_raw_buf, REPLY_BUF_LEN, 0, REPLY_BUF_LEN);
+    (void)memset_s(&reply_raw_buf, sizeof(reply_raw_buf), 0, sizeof(reply_raw_buf));
 
     ret = driver_handle_message((struct hm_drv_req_msg_t *)msg, info,
-        (struct hm_drv_reply_msg_t *)reply_raw_buf, p_msg_hdl);
+        &reply_raw_buf, p_msg_hdl);
     if (ret != 0)
         tloge("driver handle message failed\n");
-
-    (void)memset_s(reply_raw_buf, REPLY_BUF_LEN, 0, REPLY_BUF_LEN);
-    free(reply_raw_buf);
 
     return ret;
 }

@@ -9,11 +9,8 @@
 #include <string.h>
 
 #define EI_NIDENT  16
-#define SHN_UNDEF  0
-#define STT_FUNC   2
 #define SHT_SYMTAB 2
 #define SHT_STRTAB 3
-#define SHT_NOBITS 8
 
 #define MAX_ALLOC_SIZE 0xa000000
 #define MAX_EH_SHNUM   0xfff0
@@ -31,7 +28,6 @@
 #define EI_CLASS   4
 #define ELFCLASS32 1
 #define ELFCLASS64 2
-
 
 struct elf_shdr {
     uint32_t sh_name;      /* Section name (string tbl index) */
@@ -79,20 +75,6 @@ struct elf_ehdr {
     uint16_t eh_shentsize;       /* Section header table entry size */
     uint16_t eh_shnum;           /* Section header table entry count */
     uint16_t eh_shstrndx;        /* Section header string table index */
-};
-
-struct elf_sym {
-    uint32_t st_name;  /* Symbol name (string tbl index) */
-    uint8_t st_info;   /* Symbol type and binding */
-    uint8_t st_other;  /* Symbol visibility */
-    uint16_t st_shndx; /* Section index */
-#ifdef aarch64
-    uint64_t st_value; /* Symbol value */
-    uint64_t st_size;  /* Symbol size */
-#else
-    uint32_t st_value;       /* Symbol value */
-    uint32_t st_size;        /* Symbol size */
-#endif
 };
 
 static struct elf_ehdr *g_elf_head = NULL;
@@ -261,8 +243,8 @@ static int32_t read_elf_section_head(void)
 static int32_t read_sym_tab(const struct elf_shdr *sec_entry)
 {
     int32_t ret;
-    uint32_t symtab_offset = sec_entry->sh_offset;
-    uint32_t sym_tab_size  = sec_entry->sh_size;
+    uint32_t symtab_offset = (uint32_t)sec_entry->sh_offset;
+    uint32_t sym_tab_size  = (uint32_t)sec_entry->sh_size;
 
     if (sym_tab_size > MAX_ALLOC_SIZE || sym_tab_size == 0) {
         printf("symtab size is invalid\n");
@@ -316,7 +298,7 @@ static int32_t read_str_tab(const struct elf_shdr *sec_entry)
 {
     int32_t ret;
     /* read the rtosck strtab out */
-    uint32_t strtab_offset = sec_entry->sh_offset;
+    uint32_t strtab_offset = (uint32_t)sec_entry->sh_offset;
 
     if (sec_entry->sh_size > MAX_ALLOC_SIZE || sec_entry->sh_size == 0) {
         printf("strtab size is invalid\n");

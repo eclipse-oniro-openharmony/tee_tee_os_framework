@@ -61,8 +61,10 @@ intptr_t driver_pm_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_i
     cref_t msg_hdl = *p_msg_hdl;
     uint16_t msg_id = ((hm_msg_header *)msg)->send.msg_id;
 
-    if (check_msg_invalid(msg_id, msg_hdl, msg, info))
+    if (check_msg_invalid(msg_id, msg_hdl, msg, info)) {
+        hm_error("check pm msg failed\n");
         return -1;
+    }
 
     tee_drv_pm_cmd_handle(msg_id);
 
@@ -80,14 +82,13 @@ intptr_t driver_pm_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_i
      */
     static cref_t timer_cref = 0;
     ret = pm_forward_msg_to_other_drv(msg_id, TIMER_PATH, &timer_cref);
-    if (ret != 0) {
+    if (ret != 0)
         hm_error("pm forward msg to drv timer failed 0x%x\n", ret);
-        return -1;
-    }
 
     ret = hm_driver_pm_return_to_ree(msg_id);
     if (ret != 0)
         return -1;
+
 #endif
 
     hm_info("tee drv server handle PM msg 0x%x done\n", msg_id);

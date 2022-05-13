@@ -2,9 +2,7 @@
 global:
 
 #ifdef CONFIG_OFF_DRV_TIMER
-__init_startup_time_kernel;
-__adjust_sys_time;
-__get_startup_time;
+adjust_sys_time;
 release_timer_event;
 hm_timer_init;
 set_ta_timer_permission;

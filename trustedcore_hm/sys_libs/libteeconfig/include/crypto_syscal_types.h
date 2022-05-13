@@ -61,18 +61,6 @@ struct sm4_param_t {
     uint32_t alg;
 };
 
-struct cdrm_params {
-    uint8_t *pkey;
-    uint32_t pkey_len;
-    uint8_t *iv;
-    uint32_t iv_len;
-    uint8_t *input_buffer;
-    uint32_t input_len;
-    uint8_t *output_buffer;
-    uint32_t *output_len;
-    void *context;
-    uint32_t alg;
-};
 struct decrypt_wraper_t {
     uint32_t hash_func;
     uint32_t l_len;

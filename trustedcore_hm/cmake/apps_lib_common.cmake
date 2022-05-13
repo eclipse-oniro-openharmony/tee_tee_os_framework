@@ -35,8 +35,14 @@ list(APPEND TEE_C_FLAGS
 
 if ("${ARCH}" STREQUAL "aarch64")
     if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
-        set(LIB_VENDOR_FLAGS -Wl,-execute-only)
+        set(LIB_VENDOR_FLAGS -Wl,--execute-only)
     endif()
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND LIB_VENDOR_FLAGS
+        -Wl,-z,separate-loadable-segments
+    )
 endif()
 
 if ("${CONFIG_DX_ENABLE}" STREQUAL "true")

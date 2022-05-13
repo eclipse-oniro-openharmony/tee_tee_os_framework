@@ -122,7 +122,7 @@ static uint32_t get_seed()
     uint32_t time = 0;
 
     /* plat_io_regions index 2 is trng for ascend */
-    paddr_t trng_addr = g_plat_cfg.plat_io_regions[1].start;
+    paddr_t trng_addr = g_plat_cfg.extend_datas_io.plat_io_regions[1].start;
 
     do {
         tmp_rand = rand_read32(trng_addr + 0xf0);

@@ -6,6 +6,6 @@
 #define CHIP_INFO_H
 #include <stdint.h>
 
-int __tee_hal_get_dieid(uint32_t *in_buffer);
+int tee_ext_get_dieid(uint32_t *in_buffer);
 
 #endif

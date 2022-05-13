@@ -15,7 +15,7 @@ ifeq ($(CONFIG_MERGE_HUK_SSA),y)
 ssa_c_files += $(TOPDIR)/framework/huk_service/src/huk_service_config.c
 endif
 
-inc-flags += -I$(PLATFORM_DIR)/common/tee_config
+inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 ifeq ($(CONFIG_MERGE_HUK_SSA),y)
 inc-flags += -I$(TOPDIR)/framework/huk_service/include

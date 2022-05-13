@@ -325,7 +325,7 @@ void timer_event_handler(uint32_t timer_id)
         if (node == NULL)
             break;
 
-        timer_node = DLIST_ENTRY(node, timer_event, node);
+        timer_node = dlist_entry(node, timer_event, node);
         if (timer_node == NULL)
             break;
 
@@ -486,7 +486,7 @@ static void timer_event_execute(const timer_event *timer_node, const struct time
     }
 
     hm_debug("timer event stop:there is another timer need to execute\n");
-    next_event = DLIST_ENTRY(timer_node->node.next, timer_event, node);
+    next_event = dlist_entry(timer_node->node.next, timer_event, node);
     timer_tick_event(next_event->expires.tval64);
 }
 

@@ -2,10 +2,10 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(triple aarch64-linux-gnu)
 
-get_filename_component(GCC_TOOLCHAIN_ABS_PATH "${CMAKE_CURRENT_LIST_DIR}/../../prebuild/toolchains/gcc-linaro-aarch64-linux-gnu" ABSOLUTE)
+get_filename_component(GCC_TOOLCHAIN_ABS_PATH "${CMAKE_TOOLCHAIN_PATH}/gcc-linaro-aarch64-linux-gnu" ABSOLUTE)
 set(GCC_C_COMPILER ${GCC_TOOLCHAIN_ABS_PATH}/bin/aarch64-linux-gnu-gcc)
 
-get_filename_component(GUESS_SYSROOT "${CMAKE_CURRENT_LIST_DIR}/../../prebuild/toolchains/gcc-linaro-aarch64-linux-gnu/aarch64-linux-gnu/libc" ABSOLUTE)
+get_filename_component(GUESS_SYSROOT "${CMAKE_TOOLCHAIN_PATH}/gcc-linaro-aarch64-linux-gnu/aarch64-linux-gnu/libc" ABSOLUTE)
 set(CMAKE_SYSROOT ${GUESS_SYSROOT})
 
 set(CMAKE_C_COMPILER ${CMAKE_TOOLCHAIN_PATH}/clang+llvm/bin/clang CACHE STRING "Cross C compiler")

@@ -74,7 +74,7 @@ cref_t get_teesmc_hdlr(void);
                         goto out;                                                                   \
                     }                                                                               \
                     __mapped_ptr[i].need_cp = 1;                                                    \
-                    if (__mapped_ptr[i].len && (size != __mapped_ptr[i].len))                       \
+                    if (__mapped_ptr[i].len && ((size) != __mapped_ptr[i].len))                       \
                         tloge("weird , read and write length don't match, swi_id is %d\n", swi_id); \
                     break;                                                                          \
                 }                                                                                   \
@@ -102,7 +102,7 @@ cref_t get_teesmc_hdlr(void);
         __label__ out;                                              \
         __attribute__((unused)) int prot;                           \
         params->rdata_len = 0;                                      \
-        if ((permission & current_permissions) == permission) {     \
+        if (((permission) & (current_permissions)) == (permission)) {     \
             struct {                                                \
                 void *ptr;                                          \
                 uint32_t len;                                       \
@@ -158,7 +158,7 @@ cref_t get_teesmc_hdlr(void);
     {                                                                      \
         char need_local;                                                   \
         uint64_t __hmdrv_size = sz;                                        \
-        if (addr == 0 || __hmdrv_size == 0) {                              \
+        if ((addr) == 0 || __hmdrv_size == 0) {                              \
             /* nothing to map if "addr == 0" or "size == 0" */             \
         } else {                                                           \
             uint64_t temp_addr = 0;                                        \
@@ -170,13 +170,13 @@ cref_t get_teesmc_hdlr(void);
             int err;
 
 #define _ACCESS_CHECK_STEP2_A64(addr)                                                                              \
-    err = drv_map_from_task_under_tbac_handle((uint32_t)__pid, (uint64_t)(uintptr_t)addr, __hmdrv_size,            \
+    err = drv_map_from_task_under_tbac_handle((uint32_t)__pid, (uint64_t)(uintptr_t)(addr), __hmdrv_size,          \
                                               (uint32_t)__self_pid, (uint64_t *)&(temp_addr), &prot,               \
                                               params->job_handler);
 
-#define _ACCESS_CHECK_STEP2_A32(addr)                                                                                  \
-    err = drv_map_from_task_under_tbac((uint32_t)__pid, (uint32_t)(uintptr_t)addr, __hmdrv_size, (uint32_t)__self_pid, \
-                                       (uint32_t *)&(temp_addr), &prot, params->job_handler);
+#define _ACCESS_CHECK_STEP2_A32(addr)                                                              \
+    err = drv_map_from_task_under_tbac((uint32_t)__pid, (uint32_t)(uintptr_t)(addr), __hmdrv_size, \
+                                       (uint32_t)__self_pid, (uint32_t *)&(temp_addr), &prot, params->job_handler);
 
 #define _ACCESS_CHECK_STEP3(addr, sz, need_copy)                                                 \
     if (err != 0) {                                                                              \
@@ -186,7 +186,7 @@ cref_t get_teesmc_hdlr(void);
         goto out;                                                                                \
     }                                                                                            \
     __mapped_ptr[__mapped_ptr_cnt].pptr    = (void *)(&(addr));                                  \
-    __mapped_ptr[__mapped_ptr_cnt].ori_ptr = (uint64_t)(uintptr_t)addr;                          \
+    __mapped_ptr[__mapped_ptr_cnt].ori_ptr = (uint64_t)(uintptr_t)(addr);                        \
     __mapped_ptr[__mapped_ptr_cnt].type_len = sizeof(typeof(addr));                              \
     __mapped_ptr[__mapped_ptr_cnt].ptr     = (void *)(uintptr_t)(temp_addr);                     \
     __mapped_ptr[__mapped_ptr_cnt].len     = (uint32_t)(__hmdrv_size);                           \
@@ -195,10 +195,10 @@ cref_t get_teesmc_hdlr(void);
         tloge("ERROR: the buffer passed points to code area\n");                                 \
         goto out;                                                                                \
     }                                                                                            \
-    if (!need_copy && __hmdrv_size > 0x100000) {                                                 \
+    if (!(need_copy) && __hmdrv_size > 0x100000) {                                                 \
         tloge("INFO:buffer size too long, swi_id is %x, size is %llx\n", swi_id, __hmdrv_size);  \
     }                                                                                            \
-    if (!need_copy)                                                                              \
+    if (!(need_copy))                                                                              \
         need_local = 0;                                                                          \
     else                                                                                         \
         need_local = 1;                                                                          \

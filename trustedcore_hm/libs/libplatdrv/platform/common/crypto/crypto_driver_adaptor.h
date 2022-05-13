@@ -59,9 +59,9 @@ enum crypto_alg_type {
     CRYPTO_TYPE_SM4_CBC_PKCS7                      = 0xF0000003,
     CRYPTO_TYPE_SM4_CTR                            = 0x10000214,
     CRYPTO_TYPE_SM4_CFB128                         = 0xF0000000,
+    CRYPTO_TYPE_SM4_GCM                            = 0xF0000005,
     CRYPTO_TYPE_SM4_XTS                            = 0x10000414,
     CRYPTO_TYPE_SM4_OFB                            = 0x10000514,
-    CRYPTO_TYPE_SM4_GCM                            = 0xF0000005,
     CRYPTO_TYPE_DES_ECB_NOPAD                      = 0x10000011,
     CRYPTO_TYPE_DES_CBC_NOPAD                      = 0x10000111,
     CRYPTO_TYPE_DES3_ECB_NOPAD                     = 0x10000013,
@@ -120,7 +120,7 @@ enum crypto_alg_type {
     CRYPTO_TYPE_X25519                             = 0x80000044,
     CRYPTO_TYPE_SM2_PKE                            = 0x80000045,
     CRYPTO_TYPE_GENERATE_RANDOM                    = 0xf0000001,
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     CRYPTO_TYPE_SIP_HASH                           = 0xF0000002,
 #endif
 };

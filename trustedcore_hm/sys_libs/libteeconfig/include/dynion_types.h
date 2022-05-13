@@ -5,18 +5,18 @@
  */
 #ifndef LIBTEECONFIG_DYNION_TYPES_H
 #define LIBTEECONFIG_DYNION_TYPES_H
-#include <sre_typedef.h>
+#include <stdint.h>
 
 typedef struct ion_page_info {
-    paddr_t phys_addr;
+    uint64_t phys_addr;
     uint32_t npages;
 } tz_page_info;
 
 struct ion_sglist {
-    UINT64 sglist_size;
-    UINT64 ion_size;
-    UINT64 ion_id;
-    UINT64 info_length; // page_info number
+    uint64_t sglist_size;
+    uint64_t ion_size;
+    uint64_t ion_id;
+    uint64_t info_length; // page_info number
     tz_page_info page_info[0];
 };
 #endif /* LIBTEECONFIG_DYNION_TYPES_H */

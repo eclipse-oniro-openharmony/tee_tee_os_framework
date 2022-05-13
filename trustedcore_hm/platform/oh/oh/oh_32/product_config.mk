@@ -13,6 +13,8 @@ export ENABLE_CPP_STATIC := true
 export CONFIG_GMLIB_IMPORT := true
 export CONFIG_TEE_DRV_SERVER_64BIT := false
 export CONFIG_DYN_CONF := true
+export CONFIG_NO_VENDOR_LIB_EMBEDDED := true
+export CONFIG_LIBFUZZER_SERVICE_64BIT :=false
 
 #set drv to BLOCKLIST with no -Werror
 BLOCKLIST += ipc/sec

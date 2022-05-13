@@ -5,7 +5,7 @@
 # ramdisk tools, run on host
 # compile libs rules
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),boringssl)
+ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
 crypto_lib :=
 else
 crypto_lib :=
@@ -19,10 +19,12 @@ libvendor_shared_a32: libvendor_static_a32
 libbase_shared_a32: libccmgr libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
 libbase_shared: libccmgr libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
 
+libdrv_shared_a32: libteeconfig_a32
+libdrv_shared: libteeconfig
+
 libtui_internal_shared_a32:
 libtui_internal_shared:
 
-libgm_shared:
 libs: $(arm_libs) $(arm_sys_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(vendor_libs) $(thirdparty_libs) $(host_tools)
 	@echo "libsok"
 $(arm_libs): $(arm_pro_libs) $(arm_sys_libs) $(arm_chip_libs)
@@ -183,7 +185,7 @@ DDK_FLAG:=false
 $(STAGE_DIR)/teehm.img.elf: $(ELFLOADER_OUTDIR)/elfloader.o hmfilemgr cpio-strip
 	@echo "[GEN_IMAGE] $@"
 	$(VER) $(TOOLS)/smart-strip.sh $(boot-apps)
-	$(VER) DDK_FLAG=$(DDK_FLAG) PREBUILD_DIR=$(PREBUILD_DIR) ELFLOADER_DIR=$(ELFLOADER_OUTDIR) OUTPUTDIR=$(OUTPUTDIR)\
+	$(VER) DDK_FLAG=$(DDK_FLAG) CONFIG_NO_PLATCFG_EMBEDDED=$(CONFIG_NO_PLATCFG_EMBEDDED) PREBUILD_DIR=$(PREBUILD_DIR) ELFLOADER_DIR=$(ELFLOADER_OUTDIR) OUTPUTDIR=$(OUTPUTDIR)\
 		KERNEL_OUTDIR=$(KERNEL_OUTDIR) $(TOOLS)/gen_boot_image.sh $(KERNEL_OUTDIR)/kernel.elf $(boot-apps) $@ 2>&1 \
 		| while read line; do echo " [GEN_IMAGE] $$line"; done; \
 		exit ${PIPESTATUS[0]}
@@ -198,17 +200,14 @@ endif
 $(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
 	@echo "[Installing $@]"
 	$(VER) IMAGE_ROOT=$(STAGE_DIR) $(TOOLS)/packimg.sh \
-		$(TRUSTEDCORE_PHY_TEXT_BASE) \
 		$(TRUSTEDCORE_PLATFORM_CHOOSE) \
 		$(COMPARE_IMAGE) \
 		$(TRUSTEDCORE_CHIP_CHOOSE) \
 		$(WITH_TEEOS_ENCRYPT) \
-		$(WITH_LOG_ENCODE) \
-		$(TRUSTEDCORE_PHY_IMAGE_LOAD_BASE)
+		$(WITH_LOG_ENCODE)
 ifneq ($(CODE_CHECKER),y)
 	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/syslib/libc/clean_libc.sh  $(TOPDIR)/../../tee_os_kernel
 	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/teelib/libopenssl/clean_openssl.sh $(TOPDIR)/../../tee_os_kernel
-	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/teelib/libboringssl/clean.sh  $(TOPDIR)/../../tee_os_kernel
 
 endif
 ifneq ($(VERSION_DDK),y)

@@ -5,7 +5,7 @@
  */
 #include "drv_fd_ops.h"
 #include <securec.h>
-#include <list.h>
+#include <dlist.h>
 #include <tee_log.h>
 #include <sys_timer.h>
 #include <tee_drv_internal.h>
@@ -69,7 +69,7 @@ struct fd_node *alloc_and_init_fd_node(void)
 
     (void)memset_s(data, sizeof(*data), 0, sizeof(*data));
 
-    init_list_head(&data->data_list);
+    dlist_init(&data->data_list);
     data->fd = -1;
     data->drv = NULL;
     data->close_flag = false;
@@ -90,7 +90,7 @@ int32_t add_fd_to_drvcall_node(struct fd_node *data, struct task_node *node)
         return -1;
     }
 
-    list_add_tail(&data->data_list, &node->fd_head);
+    dlist_insert_tail(&data->data_list, &node->fd_head);
 
     ret = pthread_mutex_unlock(&node->fd_mtx);
     if (ret != 0)
@@ -114,11 +114,11 @@ struct fd_node *close_get_fd_node_with_lock(struct task_node *node, int64_t fd)
         return NULL;
     }
 
-    struct list_head *pos = NULL;
-    struct list_head *next = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *next = NULL;
     struct fd_node *temp = NULL;
-    list_for_each_safe(pos, next, &node->fd_head) {
-        temp = list_entry(pos, struct fd_node, data_list);
+    dlist_for_each_safe(pos, next, &node->fd_head) {
+        temp = dlist_entry(pos, struct fd_node, data_list);
         if (temp->fd == fd) {
             if (temp->close_flag) {
                 tloge("this fd:0x%llx has already close\n", fd);
@@ -157,7 +157,7 @@ int32_t del_fd_to_drvcall_node(struct fd_node **fnode, struct task_node *node)
     else
         tloge("something wrong, task:0x%x fd_count is zero\n", node->pid);
 
-    list_del(&data->data_list);
+    dlist_delete(&data->data_list);
 
     ret = pthread_mutex_unlock(&node->fd_mtx);
     if (ret != 0)
@@ -171,12 +171,12 @@ int32_t del_fd_to_drvcall_node(struct fd_node **fnode, struct task_node *node)
 
 static void dump_fd_node(const struct task_node *node)
 {
-    struct list_head *pos = NULL;
-    struct list_head *next = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *next = NULL;
     struct fd_node *temp = NULL;
 
-    list_for_each_safe(pos, next, &node->fd_head) {
-        temp = list_entry(pos, struct fd_node, data_list);
+    dlist_for_each_safe(pos, next, &node->fd_head) {
+        temp = dlist_entry(pos, struct fd_node, data_list);
         tlogi("\t fd:0x%llx close_flag:%d ", temp->fd, (int32_t)temp->close_flag);
         if (temp->drv != NULL && temp->drv->tlv.drv_conf != NULL)
             tlogi("\t\t drv_name:%s\n", temp->drv->tlv.drv_conf->mani.service_name);
@@ -255,11 +255,11 @@ uint32_t exception_close_handle(struct task_node *node)
         return close_fd_count;
     }
 
-    struct list_head *pos = NULL;
-    struct list_head *next = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *next = NULL;
     struct fd_node *temp = NULL;
-    list_for_each_safe(pos, next, &node->fd_head) {
-        temp = list_entry(pos, struct fd_node, data_list);
+    dlist_for_each_safe(pos, next, &node->fd_head) {
+        temp = dlist_entry(pos, struct fd_node, data_list);
         if (temp->close_flag) {
             tloge("fd:0x%llx has already call by close\n", temp->fd);
             continue;
@@ -272,7 +272,7 @@ uint32_t exception_close_handle(struct task_node *node)
         else
             tloge("something wrong, fd count is zero\n");
 
-        list_del(&temp->data_list);
+        dlist_delete(&temp->data_list);
         tlogi("clsoe fd:0x%llx in exception handle\n", temp->fd);
 
         struct task_node *dnode = temp->drv;

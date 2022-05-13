@@ -107,7 +107,6 @@ AC_DEFINE_SUBJ_BEG(pub_proc_status)
 AC_DEFINE_SUBJ_END(pub_proc_status)
 
 AC_DEFINE_SUBJ_BEG(pub_virt2phys)
-    { AC_SID_PLATDRV, 0, NULL },
     /* for test */
 #ifdef DEF_ENG
     { AC_SID_SUPER, 0, NULL },
@@ -310,34 +309,17 @@ AC_DEFINE_SUBJ_END(pub_map_nonsecure)
 #undef OPS_BEGIN
 #undef OPS_DEF
 #define OPS_BEGIN(OPS) OPS
-#ifndef AC_USE_POLICY_DB
 #define OPS_DEF(op)                                                                               \
     struct ac_static_operation ac_op_##op = { ACOP_##op, ARRAY_SIZE(ac_subj_##op), ac_subj_##op }; \
     struct ac_static_operation ac_op_pub_##op = { ACOP_##op, ARRAY_SIZE(ac_subj_pub_##op), ac_subj_pub_##op }; \
     struct ac_operation ac_op_dyn_##op   = { ACOP_##op, 0, NULL };
-#else
-#define OPS_DEF(op) { ACOP_##op, ARRAY_SIZE(ac_subj_##op), ac_subj_##op },
-    const struct ac_operation g_local_operation[] = {
-#endif
 
 #include <ops_def/all_ops_def.h>
 
-#ifdef AC_USE_POLICY_DB
-}
-;
-AC_DEFINE_ARRAY_SIZE(g_local_operation);
-#endif
-
-#ifndef AC_USE_POLICY_DB
 #define FILL_MAP(map)                                                                                  \
     struct ac_map g_ac_map_##map = { AC_MAP_##map, ARRAY_SIZE(g_ac_map_kv_##map), g_ac_map_kv_##map }; \
     struct ac_map g_ac_map_dyn_##map   = { AC_MAP_##map, 0, NULL };
-#else
-#define FILL_MAP(map) { AC_MAP_##map, ARRAY_SIZE(g_ac_map_kv_##map), g_ac_map_kv_##map },
-        const struct ac_map g_local_map[] = {
-#endif
 
-#ifndef AC_USE_POLICY_DB
 #define GET_MAP(map)                                  \
     struct ac_map *get_ac_map_##map()                 \
     {                                                 \
@@ -353,13 +335,6 @@ AC_DEFINE_ARRAY_SIZE(g_local_operation);
         *size = ARRAY_SIZE(g_ac_map_kv_##kv);                       \
         return g_ac_map_kv_##kv;                                    \
     }
-#else
-#define GET_MAP(map)                                  \
-    const ac_map *get_local_map                       \
-    {                                                 \
-        return &g_local_map;                          \
-    }
-#endif
 
 FILL_MAP(uid_to_sid)
 FILL_MAP(uuid_to_cred)
@@ -371,22 +346,5 @@ GET_MAP(name_to_sid)
 
 GET_KV(uuid_to_cred)
 GET_KV(uid_to_sid)
-
-#ifdef AC_USE_POLICY_DB
-}
-;
-AC_DEFINE_ARRAY_SIZE(g_local_map);
-#endif
-
-#ifdef AC_USE_POLICY_DB
-const struct ac_policy_db g_policy_db = {
-    ARRAY_SIZE(g_local_operation),
-    ARRAY_SIZE(g_local_map),
-    ARRAY_SIZE(g_local_cap),
-    g_local_operation,
-    g_local_map,
-    g_local_cap
-};
-#endif
 
 #endif

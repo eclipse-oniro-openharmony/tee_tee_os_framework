@@ -6,7 +6,7 @@
 #ifndef TEE_DRV_INTERNAL_H
 #define TEE_DRV_INTERNAL_H
 #include <stdint.h>
-#include <list.h>
+#include <dlist.h>
 #include <sys/hm_syscall.h>
 
 #define FD_COUNT_MAX 1024U
@@ -64,7 +64,7 @@ enum drv_msg_cmd_id {
 };
 
 struct drv_channel {
-    struct list_head drv_list;
+    struct dlist_node drv_list;
     cref_t drv_channel;
     uint32_t drv_index;
     uint32_t ref_cnt;

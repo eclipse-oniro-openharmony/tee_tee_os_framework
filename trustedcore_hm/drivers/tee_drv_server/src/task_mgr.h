@@ -9,7 +9,7 @@
 
 #include <stdint.h>
 #include <pthread.h>
-#include <list.h>
+#include <dlist.h>
 #include <tee_defines.h>
 #include <tee_driver_module.h>
 #include "drv_dispatch.h"
@@ -43,12 +43,12 @@ struct drv_task_info {
 };
 
 struct task_node {
-    struct list_head node_list;
+    struct dlist_node node_list;
     int32_t target_type; /* declare drv or ta */
     uint32_t pid;
     uint32_t ref_cnt; /* TA: register +1, unregister -1 */
     uint32_t fd_count; /* locked by fd_mtx */
-    struct list_head fd_head; /* locked by fd_mtx */
+    struct dlist_node fd_head; /* locked by fd_mtx */
     pthread_mutex_t fd_mtx;
     enum node_state state; /* drv and ta state */
     pthread_cond_t state_cond;

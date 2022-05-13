@@ -79,7 +79,7 @@ int32_t ecc_generate_keypair_call(const struct drv_data *drv, unsigned long args
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -91,9 +91,11 @@ int32_t ecc_generate_keypair_call(const struct drv_data *drv, unsigned long args
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
@@ -112,25 +114,25 @@ static int32_t ecc_encrypt_ops(const struct crypto_drv_ops_t *ops, struct memref
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *ecc_encrypt_arg = crypto_arg;
     struct memref_t data_out;
-    data_out.buffer = tmp_crypto_arg->buffer;
-    data_out.size = tmp_crypto_arg->size;
+    data_out.buffer = ecc_encrypt_arg->buffer;
+    data_out.size = ecc_encrypt_arg->size;
 
-    tmp_crypto_arg++;
+    ecc_encrypt_arg++;
     struct memref_t data_in;
-    data_in.buffer = tmp_crypto_arg->buffer;
-    data_in.size = tmp_crypto_arg->size;
+    data_in.buffer = ecc_encrypt_arg->buffer;
+    data_in.size = ecc_encrypt_arg->size;
 
-    tmp_crypto_arg++;
-    struct ecc_pub_key_t *public_key = (struct ecc_pub_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    ecc_encrypt_arg++;
+    struct ecc_pub_key_t *public_key = (struct ecc_pub_key_t *)(uintptr_t)ecc_encrypt_arg->buffer;
     ret = check_ecc_pub_key_len(public_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    ecc_encrypt_arg++;
     struct asymmetric_params_t ec_params;
-    ret = restore_attrs(&ec_params, tmp_crypto_arg);
+    ret = restore_attrs(&ec_params, ecc_encrypt_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -166,7 +168,7 @@ int32_t ecc_encrypt_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -178,9 +180,11 @@ int32_t ecc_encrypt_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
@@ -199,25 +203,25 @@ static int32_t ecc_decrypt_ops(const struct crypto_drv_ops_t *ops, struct memref
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *ecc_decrypt_arg = crypto_arg;
     struct memref_t data_out;
-    data_out.buffer = tmp_crypto_arg->buffer;
-    data_out.size = tmp_crypto_arg->size;
+    data_out.buffer = ecc_decrypt_arg->buffer;
+    data_out.size = ecc_decrypt_arg->size;
 
-    tmp_crypto_arg++;
+    ecc_decrypt_arg++;
     struct memref_t data_in;
-    data_in.buffer = tmp_crypto_arg->buffer;
-    data_in.size = tmp_crypto_arg->size;
+    data_in.buffer = ecc_decrypt_arg->buffer;
+    data_in.size = ecc_decrypt_arg->size;
 
-    tmp_crypto_arg++;
-    struct ecc_priv_key_t *private_key = (struct ecc_priv_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    ecc_decrypt_arg++;
+    struct ecc_priv_key_t *private_key = (struct ecc_priv_key_t *)(uintptr_t)ecc_decrypt_arg->buffer;
     ret = check_ecc_private_key_len(private_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    ecc_decrypt_arg++;
     struct asymmetric_params_t ec_params;
-    ret = restore_attrs(&ec_params, tmp_crypto_arg);
+    ret = restore_attrs(&ec_params, ecc_decrypt_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -229,7 +233,7 @@ static int32_t ecc_decrypt_ops(const struct crypto_drv_ops_t *ops, struct memref
     }
 
     if (data_out.size > crypto_arg->size) {
-        hm_error("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
+        hm_error("new data out size > origin size! origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
         ret = CRYPTO_ERROR_OUT_OF_MEMORY;
         goto end;
     }
@@ -253,7 +257,7 @@ int32_t ecc_decrypt_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -265,9 +269,11 @@ int32_t ecc_decrypt_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
@@ -286,25 +292,25 @@ static int32_t ecc_sign_digest_ops(const struct crypto_drv_ops_t *ops, struct me
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *ecc_sign_digest_arg = crypto_arg;
     struct memref_t signature;
-    signature.buffer = tmp_crypto_arg->buffer;
-    signature.size = tmp_crypto_arg->size;
+    signature.buffer = ecc_sign_digest_arg->buffer;
+    signature.size = ecc_sign_digest_arg->size;
 
-    tmp_crypto_arg++;
+    ecc_sign_digest_arg++;
     struct memref_t digest;
-    digest.buffer = tmp_crypto_arg->buffer;
-    digest.size = tmp_crypto_arg->size;
+    digest.buffer = ecc_sign_digest_arg->buffer;
+    digest.size = ecc_sign_digest_arg->size;
 
-    tmp_crypto_arg++;
-    struct ecc_priv_key_t *private_key = (struct ecc_priv_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    ecc_sign_digest_arg++;
+    struct ecc_priv_key_t *private_key = (struct ecc_priv_key_t *)(uintptr_t)ecc_sign_digest_arg->buffer;
     ret = check_ecc_private_key_len(private_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    ecc_sign_digest_arg++;
     struct asymmetric_params_t ec_params;
-    ret = restore_attrs(&ec_params, tmp_crypto_arg);
+    ret = restore_attrs(&ec_params, ecc_sign_digest_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -341,7 +347,7 @@ int32_t ecc_sign_digest_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -353,9 +359,11 @@ int32_t ecc_sign_digest_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
@@ -374,25 +382,25 @@ static int32_t ecc_verify_digest_ops(const struct crypto_drv_ops_t *ops, struct 
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    struct memref_t *tmp_crypto_arg = crypto_arg;
+    struct memref_t *ecc_verify_digest_arg = crypto_arg;
     struct memref_t signature;
-    signature.buffer = tmp_crypto_arg->buffer;
-    signature.size = tmp_crypto_arg->size;
+    signature.buffer = ecc_verify_digest_arg->buffer;
+    signature.size = ecc_verify_digest_arg->size;
 
-    tmp_crypto_arg++;
+    ecc_verify_digest_arg++;
     struct memref_t digest;
-    digest.buffer = tmp_crypto_arg->buffer;
-    digest.size = tmp_crypto_arg->size;
+    digest.buffer = ecc_verify_digest_arg->buffer;
+    digest.size = ecc_verify_digest_arg->size;
 
-    tmp_crypto_arg++;
-    struct ecc_pub_key_t *public_key = (struct ecc_pub_key_t *)(uintptr_t)tmp_crypto_arg->buffer;
+    ecc_verify_digest_arg++;
+    struct ecc_pub_key_t *public_key = (struct ecc_pub_key_t *)(uintptr_t)ecc_verify_digest_arg->buffer;
     ret = check_ecc_pub_key_len(public_key);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
-    tmp_crypto_arg++;
+    ecc_verify_digest_arg++;
     struct asymmetric_params_t ec_params;
-    ret = restore_attrs(&ec_params, tmp_crypto_arg);
+    ret = restore_attrs(&ec_params, ecc_verify_digest_arg);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -418,7 +426,7 @@ int32_t ecc_verify_digest_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 

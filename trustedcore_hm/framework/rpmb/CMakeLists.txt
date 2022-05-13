@@ -5,7 +5,7 @@ include(apps_subcommon)
 
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${PLATFORM_DIR}/common/tee_config
+    ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
     ${PROJECT_SOURCE_DIR}/vendor/ascend/libvendor_shared/src/libhsm_client/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libcrypto_hal/include
@@ -52,18 +52,6 @@ endif()
 if ("${CONFIG_HSM}" STREQUAL "true")
     list(APPEND TEE_C_FLAGS
         -DTEE_SUPPORT_HSM
-    )
-endif()
-
-if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-    list(APPEND TEE_C_FLAGS
-        -DBORINGSSL_ENABLE
-    )
-endif()
-
-if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-    list(APPEND TEE_INCLUDE_PATH
-        ${PREBUILD_DIR}/headers/boringssl
     )
 endif()
 
@@ -116,3 +104,4 @@ tee_add_executable(rpmb.elf
 
     ${IF_INSTALL}
 )
+

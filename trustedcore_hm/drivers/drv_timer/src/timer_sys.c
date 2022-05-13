@@ -30,8 +30,8 @@ static void get_system_time(struct tee_time_t *time)
     uint64_t time_value;
 
     time_value = (uint64_t)timer_stamp_value_read();
-    time->seconds = UPPER_32_BITS(time_value);
-    time->millis = LOWER_32_BITS(time_value) / NS_PER_MSEC;
+    time->seconds = (int32_t)UPPER_32_BITS(time_value);
+    time->millis = (int32_t)LOWER_32_BITS(time_value) / NS_PER_MSEC;
 }
 
 void adjust_sys_time(const struct tee_time_t *time)
@@ -46,6 +46,7 @@ void adjust_sys_time(const struct tee_time_t *time)
         return;
     }
 
+    get_system_time(&g_startup_sys_time);
     if (time->seconds < g_startup_sys_time.seconds) {
         hm_error("invalid time value, please check\n");
         return;
@@ -191,17 +192,20 @@ void gen_sys_date_time(const uint32_t rtc_time, struct tee_date_t *time)
     }
 
     idays = tdays;
-    time->year = year;
+    time->year = (int32_t)year;
     time->hour = (int32_t)(rem_secs / SECSPERHOUR);
     rem_secs %= SECSPERHOUR;
     time->min = (int32_t)(rem_secs / SECSPERMIN);
     time->seconds = (int32_t)(rem_secs % SECSPERMIN);
     ip = g_mon_lengths[is_leap_year(year)];
+    time->month = 0;
 
-    for (time->month = 0; (idays >= ip[time->month]) && (time->month < MONSPERYEAR); ++(time->month))
-        idays -= ip[time->month];
-
-    ++time->month;
+    for (int i = 0; i < MONSPERYEAR; i++) {
+        time->month++;
+        if (idays < ip[i])
+            break;
+        idays -= ip[i];
+    }
     time->day = (int32_t)(idays + 1);
 }
 
@@ -237,7 +241,7 @@ uint32_t drv_get_sys_date_time(struct tee_date_t *time_date)
  * This function is used in tee_log.c for print time in log.
  * Keep consistent with libtimer.
  */
-void __get_sys_date_time(tee_date_time_kernel *time_date)
+void get_sys_date_time(tee_date_time_kernel *time_date)
 {
     uint32_t ret;
     if (time_date == NULL) {

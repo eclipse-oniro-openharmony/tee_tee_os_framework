@@ -8,12 +8,12 @@
 #include <securec.h>
 #include <errno.h>
 #include <tee_log.h>
-#include <list.h>
+#include <dlist.h>
 #include <ta_framework.h>
 #include <tee_sharemem.h>
 
 #ifdef TEE_SUPPORT_DYN_CONF
-int32_t handle_conf_node_to_obj(struct list_head **pos, handler_conf_to_obj handle, void *obj, uint32_t obj_size)
+int32_t handle_conf_node_to_obj(struct dlist_node **pos, handler_conf_to_obj handle, void *obj, uint32_t obj_size)
 {
     struct conf_node_t *node = NULL;
     uint64_t total_size;
@@ -26,7 +26,7 @@ int32_t handle_conf_node_to_obj(struct list_head **pos, handler_conf_to_obj hand
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    node = list_entry(*pos, struct conf_node_t, head);
+    node = dlist_entry(*pos, struct conf_node_t, head);
     if (node == NULL || node->size >= MAX_IMAGE_LEN || node->size == 0) {
         tloge("node is invalied\n");
         return TEE_ERROR_BAD_PARAMETERS;
@@ -34,9 +34,9 @@ int32_t handle_conf_node_to_obj(struct list_head **pos, handler_conf_to_obj hand
 
     total_size = node->size;
 
-    *pos = list_next(*pos);
+    *pos = dlist_get_next(*pos);
     while (1) {
-        node = list_entry(*pos, struct conf_node_t, head);
+        node = dlist_entry(*pos, struct conf_node_t, head);
         if (node == NULL || node->size >= MAX_IMAGE_LEN || node->size == 0) {
             tloge("node is invalied\n");
             return TEE_ERROR_BAD_PARAMETERS;
@@ -53,7 +53,7 @@ int32_t handle_conf_node_to_obj(struct list_head **pos, handler_conf_to_obj hand
         if (tmp_size >= total_size)
             break;
 
-        *pos = list_next(*pos);
+        *pos = dlist_get_next(*pos);
     }
 
     return TEE_SUCCESS;
@@ -139,7 +139,7 @@ static int32_t push_conf_queue(struct conf_queue_t *conf_queue, uint32_t tag, ui
     conf_node->size = size;
     conf_node->value = value;
 
-    list_add_tail(&conf_node->head, &conf_queue->queue);
+    dlist_insert_tail(&conf_node->head, &conf_queue->queue);
 
     return TEE_SUCCESS;
 }
@@ -212,12 +212,12 @@ static int32_t parse_dyn_conf(struct conf_queue_t *conf_queue, const char *start
 
 static void free_conf_queue(const struct conf_queue_t *conf_queue)
 {
-    struct list_head *pos = NULL;
-    struct list_head *n = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *n = NULL;
 
-    list_for_each_safe(pos, n, &conf_queue->queue) {
-        struct conf_node_t *conf_node = list_entry(pos, struct conf_node_t, head);
-        list_del(&conf_node->head);
+    dlist_for_each_safe(pos, n, &conf_queue->queue) {
+        struct conf_node_t *conf_node = dlist_entry(pos, struct conf_node_t, head);
+        dlist_delete(&conf_node->head);
         free(conf_node);
     }
 }
@@ -232,9 +232,9 @@ void unregister_conf(handler_uninstall_obj uninstall_obj_func, void *obj, uint32
     uninstall_obj_func(obj, obj_size);
 }
 
-uint32_t get_num_of_tag(const struct conf_queue_t *conf_queue, uint32_t tag)
+uint16_t get_num_of_tag(const struct conf_queue_t *conf_queue, uint32_t tag)
 {
-    struct list_head *pos = NULL;
+    struct dlist_node *pos = NULL;
     uint32_t count = 0;
 
     if (conf_queue == NULL) {
@@ -242,8 +242,8 @@ uint32_t get_num_of_tag(const struct conf_queue_t *conf_queue, uint32_t tag)
         return 0;
     }
 
-    list_for_each(pos, &conf_queue->queue) {
-        struct conf_node_t *conf_node = list_entry(pos, struct conf_node_t, head);
+    dlist_for_each(pos, &conf_queue->queue) {
+        struct conf_node_t *conf_node = dlist_entry(pos, struct conf_node_t, head);
         if (conf_node->tag == tag)
             count++;
     }
@@ -296,16 +296,16 @@ static int32_t check_target_type_invalied(uint32_t size, const char *value)
     return TEE_ERROR_GENERIC;
 }
 
-int32_t check_item_chip_type(const struct list_head *now, uint32_t chip_type_tag)
+int32_t check_item_chip_type(const struct dlist_node *now, uint32_t chip_type_tag)
 {
     if (now == NULL) {
         tloge("valid params while check item chip type\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    struct list_head *tmp = NULL;
-    list_for_each(tmp, now) {
-        struct conf_node_t *conf_node = list_entry(tmp, struct conf_node_t, head);
+    struct dlist_node *tmp = NULL;
+    dlist_for_each(tmp, now) {
+        struct conf_node_t *conf_node = dlist_entry(tmp, struct conf_node_t, head);
         if (conf_node == NULL)
             break;
 
@@ -376,7 +376,7 @@ int32_t register_conf(const struct dyn_conf_t *dyn_conf, handler_install_obj ins
     int32_t ret;
     char *buff = NULL;
     struct conf_queue_t conf_queue = {
-        .queue = LIST_HEAD_INIT(conf_queue.queue),
+        .queue = dlist_head_init(conf_queue.queue),
     };
 
     if (obj == NULL || dyn_conf == NULL ||
@@ -434,14 +434,14 @@ void unregister_conf(handler_uninstall_obj uninstall_obj_func, void *obj, uint32
     (void)obj_size;
 }
 
-uint32_t get_num_of_tag(const struct conf_queue_t *conf_queue, uint32_t tag)
+uint16_t get_num_of_tag(const struct conf_queue_t *conf_queue, uint32_t tag)
 {
     (void)conf_queue;
     (void)tag;
     return 0;
 }
 
-int32_t handle_conf_node_to_obj(struct list_head **pos, handler_conf_to_obj handle, void *obj, uint32_t obj_size)
+int32_t handle_conf_node_to_obj(struct dlist_node **pos, handler_conf_to_obj handle, void *obj, uint32_t obj_size)
 {
     (void)pos;
     (void)handle;

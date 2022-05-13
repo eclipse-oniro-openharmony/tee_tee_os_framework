@@ -97,9 +97,9 @@ typedef struct process_fds {
     struct dlist_node list_node;
 } process_fds_t;
 
-static DLIST_HEAD(g_process_fds);
+static dlist_head(g_process_fds);
 static uint8_t g_process_fds_bitmap[(VFS_MAX_FD_CNT + OFFSET) >> MOVE_BIT] = { 0 };
-static struct list_head g_fss_head = LIST_HEAD_INIT(g_fss_head);
+static dlist_head(g_fss_head);
 
 /* Find one unused fd from the pool and mark it as being in use */
 static int32_t fd_alloc(void)
@@ -162,7 +162,7 @@ void vfs_data_init(struct vfs_data *data, const char *path, const struct vfs_ops
  */
 int32_t vfs_add_fs(struct vfs_data *data)
 {
-    struct list_head *pos = NULL;
+    struct dlist_node *pos = NULL;
 
     /* Verify that things are reasonable */
     if (data == NULL)
@@ -178,8 +178,8 @@ int32_t vfs_add_fs(struct vfs_data *data)
         return -EINVAL;
     }
 
-    list_for_each(pos, &g_fss_head) {
-        struct vfs_data *cur = list_entry(pos, struct vfs_data, fss);
+    dlist_for_each(pos, &g_fss_head) {
+        struct vfs_data *cur = dlist_entry(pos, struct vfs_data, fss);
         if (strncmp(data->fs_root, cur->fs_root, strlen(cur->fs_root)) >= 0) {
             hm_error("paths must be in reverse lexographic order\n");
             hm_error("i.e. %s should proceed %s\n", cur->fs_root, data->fs_root);
@@ -187,7 +187,7 @@ int32_t vfs_add_fs(struct vfs_data *data)
         }
     }
 
-    list_add_tail(&data->fss, &g_fss_head);
+    dlist_insert_tail(&data->fss, &g_fss_head);
 
     return HM_OK;
 }
@@ -200,7 +200,7 @@ int32_t vfs_add_fs(struct vfs_data *data)
  */
 static struct vfs_data *vfs_data_find(int32_t at_fd, const char *pathname)
 {
-    struct list_head *pos          = NULL;
+    struct dlist_node *pos          = NULL;
     struct vfs_data *last_vfs_data = NULL;
     process_fds_t *process_fd = NULL;
     /*
@@ -221,8 +221,8 @@ static struct vfs_data *vfs_data_find(int32_t at_fd, const char *pathname)
 
     last_vfs_data = NULL;
 
-    list_for_each(pos, &g_fss_head) {
-        struct vfs_data *vfs_data = list_entry(pos, struct vfs_data, fss);
+    dlist_for_each(pos, &g_fss_head) {
+        struct vfs_data *vfs_data = dlist_entry(pos, struct vfs_data, fss);
         size_t len = strlen(vfs_data->fs_root);
         if (strncmp(vfs_data->fs_root, pathname, len) == HM_OK && (pathname[len] == '/' || pathname[len] == '\0'))
             return vfs_data;

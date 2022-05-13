@@ -7,10 +7,9 @@
 #include <securec.h>
 #include <tee_log.h>
 #include <tee_mem_mgmt_api.h>
+#include "crypto_wrapper.h"
 
 #define UPPER_BOUND   5
-int32_t get_next_tlv(uint32_t *type, uint32_t *header_len, const uint8_t *buf, uint32_t buf_len);
-
 /*
  * Process SEQUENCES: signature, issuer, thisUpdate, nextUpdate, revokedCertificates and crlExtensions,
  * for TBS SEQUENCES are subject and subjectPublicKeyInfo
@@ -153,9 +152,9 @@ static int32_t crl_get_entry(const uint8_t *seq, uint32_t seq_len, cert_list_ent
         /* Process serial number */
         if ((len = get_next_tlv_helper(&hlen, inner_ptr, inner_len, TYPE_INTEGER)) < 0)
             return -1;
-        if (memcpy_s(curr_entry->serial, sizeof(curr_entry->serial), inner_ptr + hlen, len) != EOK)
+        if (memcpy_s(curr_entry->serial, sizeof(curr_entry->serial), inner_ptr, len + hlen) != EOK)
             return -1;
-        curr_entry->serial_size = (uint32_t)len;
+        curr_entry->serial_size = (uint32_t)len + hlen;
         inner_ptr += (hlen + (uint32_t)len);
         inner_len -= (hlen + (uint32_t)len);
 

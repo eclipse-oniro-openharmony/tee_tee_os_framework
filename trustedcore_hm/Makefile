@@ -147,7 +147,8 @@ $(HDR_INSTALL_DIR)/.timestamp:
 		($(MAKE) -C sys_libs/$$l ARCH=aarch64 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done
 	@echo "before tools ${EXPORT_HDRS}"
-	$(VER) cp $(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h $(HDR_INSTALL_DIR)/
+	$(VER) if [ -f "$(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h" ] ; then \
+	cp $(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h $(HDR_INSTALL_DIR)/; fi;
 	touch $(HDR_INSTALL_DIR)/.timestamp
 
 ## install libs:
@@ -183,7 +184,6 @@ clean: clean_links
 	@rm -rf prebuild/hm-teeos-release/tools/scrambled_syms/scrambled_drv_timer_syms.txt
 	@rm -rf prebuild/hm-teeos-release/tools/scrambled_syms/scrambled_platdrv_syms.txt
 	@rm -rf prebuild/hm-teeos-release/tools/ramfsmkimg
-	@rm -rf prebuild/hm-teeos-release/tools/ramfsdump
 clober: clean
 	@rm -rf prebuild/toolchains
 

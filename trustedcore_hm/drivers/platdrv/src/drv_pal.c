@@ -10,7 +10,7 @@
 #include <sys/hmapi_ext.h>
 #include <sys/usrsyscall_new_ext.h>
 #include <hm_mman_ext.h>
-#include <hm_unistd.h>
+#include <hm_getpid.h>
 #include <mem_ops.h>
 #include <mem_ops_ext.h>
 #include <drv_mem.h>

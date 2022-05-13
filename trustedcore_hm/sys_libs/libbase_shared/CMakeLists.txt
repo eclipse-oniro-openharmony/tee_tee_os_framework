@@ -38,10 +38,6 @@ if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
     list(APPEND BASE_SHARED_LIBS
         mbedtls
     )
-elseif ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-    list(APPEND BASE_SHARED_LIBS
-        boringssl
-    )
 else()
     list(APPEND BASE_SHARED_LIBS
         openssl
@@ -78,7 +74,13 @@ list(APPEND BASE_SHARED_LINKER_FLAGS
 
 if ("${ARCH}" STREQUAL "aarch64" AND "${CONFIG_ENABLE_XOM}" STREQUAL "y")
     list(APPEND BASE_SHARED_LINKER_FLAGS
-        -Wl,-execute-only
+        -Wl,--execute-only
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND BASE_SHARED_LINKER_FLAGS
+        -Wl,-z,separate-loadable-segments
     )
 endif()
 

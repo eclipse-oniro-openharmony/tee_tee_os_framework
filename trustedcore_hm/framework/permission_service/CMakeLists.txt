@@ -6,8 +6,9 @@ include(apps_feature_macro)
 
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${PLATFORM_DIR}/common/tee_config
+    ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
+    ${PROJECT_SOURCE_DIR}/drivers/base_mgr/tee_misc_driver/src
 )
 
 if ("${CONFIG_DYNLINK}" STREQUAL "y")
@@ -32,6 +33,30 @@ else()
     )
 endif()
 
+if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
+    if ("${ARCH}" STREQUAL "aarch64")
+        list(APPEND PERMISSION_SERVICE_LIBRARIES
+            tcmgr
+        )
+    else()
+        list(APPEND PERMISSION_SERVICE_LIBRARIES
+            tcmgr_a32
+        )
+    endif()
+endif()
+
+if ("${CONFIG_LIVEPATCH_ENABLE}" STREQUAL "y")
+    if ("${ARCH}" STREQUAL "aarch64")
+        list(APPEND PERMISSION_SERVICE_LIBRARIES
+            livepatch
+        )
+    else()
+        list(APPEND PERMISSION_SERVICE_LIBRARIES
+            livepatch_a32
+        )
+    endif()
+endif()
+
 if ("${CONFIG_PUBKEY_SHAREMEM}" STREQUAL "true")
     list(APPEND TEE_C_FLAGS
         -DCONFIG_PUBKEY_SHAREMEM
@@ -50,10 +75,32 @@ if (${index} GREATER -1)
     endif()
 endif()
 
+if ("${CONFIG_CMS_CAHASH_AUTH}" STREQUAL "y")
+    list(APPEND PERMISSION_SERVICE_LIBRARIES
+        cmscbb tee_cmscbb
+    )
+    list(APPEND TEE_C_SOURCES
+         src/auth/tee_auth_sign_cms.c
+     )
+    list(APPEND TEE_INCLUDE_PATH
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/auth/tee_auth_sign_cms.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../sys_libs/libtee_cmscbb/include
+    )
+else()
+    list(APPEND TEE_C_SOURCES
+        src/auth/tee_auth_sign_rsa.c
+    )
+    list(APPEND TEE_INCLUDE_PATH
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/auth/tee_auth_sign_rsa.h
+    )
+endif()
+
 tee_add_executable(permission_service.elf
     SOURCES
     src/root_cert_info.c
     src/ta_permission_config.c
+    src/ca_hashfile_config.c
+    ${TEE_C_SOURCES}
 
     COMPILE_TOOL
     clang

@@ -7,7 +7,7 @@
 #include <securec.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/usrsyscall_new_ext.h>
-#include <hm_unistd.h>
+#include <hm_getpid.h>
 #include <mem_ops.h>
 #include <legacy_mem_ext.h>
 #include <limits.h>
@@ -195,7 +195,7 @@ static int32_t timer_classic_wait_handler(void *priv_data)
         hm_error("send notify message failed\n");
         return TMR_DRV_ERROR;
     }
-
+    hm_yield();
     timer_node->state &= ~TIMER_STATE_EXECUTING;
     ret = hm_ipc_release_path(timer_node->path_name, timer_node->timer_channel);
     if (ret != TMR_DRV_SUCCESS)
@@ -659,9 +659,8 @@ uint32_t timer_event_start(timer_event *timer_node, timeval_t *time, const struc
     if (timer_node->timer_class == TIMER_RTC)
         timer_id = TIMER_INDEX_RTC;
 
-    if ((time->tval.nsec > (NS_PER_SECONDS - 1)) ||
-        (time->tval.nsec < 0) ||
-        ((uint32_t)(time->tval.sec) > MAX_VALUE_SIGNED_32BIT))
+    if ((time->tval.nsec > (NS_PER_SECONDS - 1)) || (time->tval.nsec < 0) ||
+        (time->tval.sec < 0) || (time->tval.sec == 0 && time->tval.nsec == 0))
         return OS_ERRNO_TIMER_INTERVAL_INVALID;
 
     temp_time.tval64 = timer_stamp_value_read();
@@ -790,7 +789,7 @@ void timer_event_handler(uint32_t timer_id)
         if (node == NULL)
             break;
 
-        timer_node = DLIST_ENTRY(node, timer_event, node);
+        timer_node = dlist_entry(node, timer_event, node);
         if (timer_node == NULL)
             break;
 
@@ -817,8 +816,8 @@ void timer_event_handler(uint32_t timer_id)
 static timer_event *find_next_node(const struct dlist_node *timer_node1,
                                    const struct dlist_node *timer_node2, uint32_t timer_id)
 {
-    timer_event *new_event1 = DLIST_ENTRY(timer_node1, timer_event, node);
-    timer_event *new_event2 = DLIST_ENTRY(timer_node2, timer_event, node);
+    timer_event *new_event1 = dlist_entry(timer_node1, timer_event, node);
+    timer_event *new_event2 = dlist_entry(timer_node2, timer_event, node);
 
     if (dlist_empty(timer_node1)) {
         hm_error("new_event1 is null\n");
@@ -871,15 +870,15 @@ static void timer_event_execute(const timer_event *timer_node, const struct time
 #ifdef SOFT_RTC_TICK
     if (timer_node->node.next == &clock_info->active) {
         g_timer_cpu_info.expires_next[timer_id].tval64 = TIMEVAL_MAX;
-        next_event = DLIST_ENTRY(clock_info_temp->active.next, timer_event, node);
+        next_event = dlist_entry(clock_info_temp->active.next, timer_event, node);
     } else if (dlist_empty(&clock_info_temp->active)) {
         g_timer_cpu_info.expires_next[TIMER_INDEX_TIMER - timer_id].tval64 = TIMEVAL_MAX;
-        next_event = DLIST_ENTRY(timer_node->node.next, timer_event, node);
+        next_event = dlist_entry(timer_node->node.next, timer_event, node);
     } else {
         next_event = find_next_node(timer_node->node.next, clock_info_temp->active.next, timer_id);
     }
 #else
-    next_event = DLIST_ENTRY(timer_node->node.next, timer_event, node);
+    next_event = dlist_entry(timer_node->node.next, timer_event, node);
 #endif
     timer_tick_event(next_event->expires.tval64, next_event->timer_class);
 }
@@ -980,10 +979,10 @@ static void recycle_timer_event(const TEE_UUID *uuid, const struct timer_clock_i
     timer_event *tmp_node = NULL;
     uint32_t ret;
 
-    for (timer_node = DLIST_FIRST_ENTRY(&clock_info->avail, timer_event, c_node);
+    for (timer_node = dlist_first_entry(&clock_info->avail, timer_event, c_node);
          &(timer_node->c_node) != (&clock_info->avail);) {
         tmp_node = timer_node;
-        timer_node = DLIST_NEXT_ENTRY(timer_node, timer_event, c_node);
+        timer_node = dlist_next_entry(timer_node, timer_event, c_node);
 
         if (memcmp(uuid, (&tmp_node->timer_attr.uuid), sizeof(tmp_node->timer_attr.uuid)) != 0)
             continue;

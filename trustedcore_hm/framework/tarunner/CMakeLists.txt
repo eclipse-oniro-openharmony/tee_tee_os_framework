@@ -39,7 +39,13 @@ endif()
 
 if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
     list(APPEND TARUNNER_LDFLAGS
-        -Wl,-execute-only
+        -Wl,--execute-only
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND TARUNNER_LDFLAGS
+        -Wl,-z,separate-loadable-segments
     )
 endif()
 
@@ -49,7 +55,10 @@ if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     )
 endif()
 
-if ("${TRUSTEDCORE_CHIP_CHOOSE}" STREQUAL "WITH_CHIP_HI1951" OR "${TRUSTEDCORE_CHIP_CHOOSE}" STREQUAL "WITH_CHIP_HI1981")
+if ("${TRUSTEDCORE_CHIP_CHOOSE}" STREQUAL "WITH_CHIP_HI1951"
+        OR "${TRUSTEDCORE_CHIP_CHOOSE}" STREQUAL "WITH_CHIP_HI1981"
+        OR "${TRUSTEDCORE_CHIP_CHOOSE}" STREQUAL "WITH_CHIP_HI1911"
+        )
     list(APPEND TARUNNER_LDFLAGS
         -Wl,--export-dynamic
     )

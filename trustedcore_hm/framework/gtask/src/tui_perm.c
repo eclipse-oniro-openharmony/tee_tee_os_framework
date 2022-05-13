@@ -8,7 +8,6 @@
 #include <tee_defines.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_reserve.h>
-#include <product_uuid.h>
 #include "product_uuid_public.h"
 
 #if (defined TEE_SUPPORT_TUI_64BIT || defined TEE_SUPPORT_TUI_32BIT)

@@ -6,6 +6,7 @@
 #include "timer_interrupt.h"
 #include <hmlog.h>
 #include <sre_hwi.h>
+#include <drv_hwi_share.h>
 #include <drv_module.h>
 #include <secure_gic_common.h>
 #include <register_ops.h>
@@ -80,7 +81,7 @@ uint32_t timer_interrupt_enable_all(void)
      * so there is no need to invoke secure_distributor_enable()
      */
     for (i = 0; i < ARRAY_SIZE(g_timer_hwi); i++) {
-        ret = SRE_HwiEnable(g_timer_hwi[i]);
+        ret = sys_hwi_enable(g_timer_hwi[i]);
         if (ret != SRE_OK) {
             hm_error("enable irq %u failed\n", g_timer_hwi[i]);
             return TMR_DRV_ERROR;
@@ -97,7 +98,7 @@ uint32_t timer_hwi_resume_all(void)
 
     /* When S/R gic registers changed, so set the target cpu when resume */
     for (i = 0; i < ARRAY_SIZE(g_timer_hwi); i++) {
-        ret = SRE_HwiResume(g_timer_hwi[i], DEFAULT_HWI_PRI, INT_SECURE);
+        ret = sys_hwi_resume(g_timer_hwi[i], DEFAULT_HWI_PRI, INT_SECURE);
         if (ret != TMR_DRV_SUCCESS) {
             hm_error("resume irq %u failed\n", g_timer_hwi[i]);
             return TMR_DRV_ERROR;
@@ -112,8 +113,11 @@ static uint32_t secure_timer_handler_init(void)
     uint32_t ret;
 
 #ifndef TIMER_FREE_RUNNING_FIQ_DISABLE
-    ret = SRE_HwiCreate(FREE_RUNNING_FIQ_NUMBLER, HWI_DEF_PRIORITY, INT_SECURE,
-                        (HWI_PROC_FUNC)timer_free_running_fiq_handler, INT_FUN_ARG);
+    ret = sys_hwi_create(FREE_RUNNING_FIQ_NUMBLER,
+        HWI_DEF_PRIORITY,
+        INT_SECURE,
+        (HWI_PROC_FUNC)timer_free_running_fiq_handler,
+        INT_FUN_ARG);
     if (ret != SRE_OK) {
         hm_error("Create Free Running failed!\n");
         return TMR_DRV_ERROR;
@@ -121,8 +125,8 @@ static uint32_t secure_timer_handler_init(void)
 #endif
 
 #ifdef TIMER_EVENT_SUPPORT
-    ret = SRE_HwiCreate(TICK_TIMER_FIQ_NUMBLER, HWI_DEF_PRIORITY, INT_SECURE,
-                        (HWI_PROC_FUNC)timer_oneshot_fiq_handler, INT_FUN_ARG);
+    ret = sys_hwi_create(
+        TICK_TIMER_FIQ_NUMBLER, HWI_DEF_PRIORITY, INT_SECURE, (HWI_PROC_FUNC)timer_oneshot_fiq_handler, INT_FUN_ARG);
     if (ret != SRE_OK) {
         hm_error("Create one shot fiq handler failed!\n");
         return TMR_DRV_ERROR;
@@ -130,8 +134,11 @@ static uint32_t secure_timer_handler_init(void)
 #endif
 
 #if (defined CONFIG_RTC_TIMER) && (!defined SOFT_RTC_IRQ_DISABLE)
-    ret = SRE_HwiCreate(SECURE_RTC_FIQ_NUMBLER, HWI_DEF_PRIORITY, INT_SECURE,
-                        (HWI_PROC_FUNC)timer_rtc_oneshot_fiq_handler, INT_FUN_ARG);
+    ret = sys_hwi_create(SECURE_RTC_FIQ_NUMBLER,
+        HWI_DEF_PRIORITY,
+        INT_SECURE,
+        (HWI_PROC_FUNC)timer_rtc_oneshot_fiq_handler,
+        INT_FUN_ARG);
     if (ret != SRE_OK) {
         hm_error("Create rtc one shot fiq handler failed!\n");
         return TMR_DRV_ERROR;
@@ -147,7 +154,7 @@ static uint32_t secure_timer_interrupt_enable(void)
 
     /* enable GIC */
 #ifndef TIMER_FREE_RUNNING_FIQ_DISABLE
-    ret = SRE_HwiEnable(FREE_RUNNING_FIQ_NUMBLER);
+    ret = sys_hwi_enable(FREE_RUNNING_FIQ_NUMBLER);
     if (ret != SRE_OK) {
         hm_error("Failed to enable hwi num=%d\n", FREE_RUNNING_FIQ_NUMBLER);
         return TMR_DRV_ERROR;
@@ -155,7 +162,7 @@ static uint32_t secure_timer_interrupt_enable(void)
 #endif
 
 #ifdef TIMER_EVENT_SUPPORT
-    ret = SRE_HwiEnable(TICK_TIMER_FIQ_NUMBLER);
+    ret = sys_hwi_enable(TICK_TIMER_FIQ_NUMBLER);
     if (ret != SRE_OK) {
         hm_error("Failed to enable hwi num=%d\n", TICK_TIMER_FIQ_NUMBLER);
         return TMR_DRV_ERROR;
@@ -164,7 +171,7 @@ static uint32_t secure_timer_interrupt_enable(void)
 
 #ifdef CONFIG_RTC_TIMER
 #ifndef SOFT_RTC_IRQ_DISABLE
-    ret = SRE_HwiEnable(SECURE_RTC_FIQ_NUMBLER);
+    ret = sys_hwi_enable(SECURE_RTC_FIQ_NUMBLER);
     if (ret != SRE_OK) {
         hm_error("Failed to enable hwi num=%d\n", SECURE_RTC_FIQ_NUMBLER);
         return TMR_DRV_ERROR;

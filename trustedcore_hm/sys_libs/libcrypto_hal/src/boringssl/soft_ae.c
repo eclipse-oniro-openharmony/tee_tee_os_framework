@@ -7,7 +7,6 @@
 #include "soft_ae.h"
 #include <securec.h>
 #include <tee_log.h>
-#include "tee_gmssl_api.h"
 #include "soft_common_api.h"
 #include "ae_common.h"
 #include "soft_err.h"
@@ -22,7 +21,8 @@ static bool check_param_is_invalid(uint32_t alg_type, const struct symmerit_key_
         return true;
     }
 
-    check = ((alg_type != CRYPTO_TYPE_AES_CCM) && (alg_type != CRYPTO_TYPE_AES_GCM));
+    check = ((alg_type != CRYPTO_TYPE_AES_CCM) && (alg_type != CRYPTO_TYPE_AES_GCM) &&
+             (alg_type != CRYPTO_TYPE_SM4_GCM));
     if (check) {
         tloge("Invalid AE algorithm, algorithm=0x%x", alg_type);
         return true;
@@ -143,7 +143,7 @@ static int32_t soft_ae_crypto_final(struct ctx_handle_t *ctx, const struct memre
             return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
         }
     }
-    if (ctx->alg_type == CRYPTO_TYPE_AES_GCM) {
+    if (ctx->alg_type == CRYPTO_TYPE_AES_GCM || ctx->alg_type == CRYPTO_TYPE_SM4_GCM) {
         final_len = (int32_t)(data_out->size) - dest_len_temp;
         rc = EVP_CipherFinal_ex(ae_ctx, out_buffer + dest_len_temp, &final_len);
         if (rc != BORINGSSL_OK) {
@@ -157,11 +157,6 @@ static int32_t soft_ae_crypto_final(struct ctx_handle_t *ctx, const struct memre
     }
     data_out->size = (uint32_t)(dest_len_temp + final_len);
     return CRYPTO_SUCCESS;
-}
-
-static bool is_sm4_ae_algorithm(uint32_t alg)
-{
-    return (alg == CRYPTO_TYPE_SM4_GCM) ? true : false;
 }
 
 static int32_t ae_final_chek_param(struct ctx_handle_t *ctx, const struct memref_t *data_in,
@@ -186,9 +181,6 @@ int32_t soft_crypto_ae_dec_final(struct ctx_handle_t *ctx, const struct memref_t
     if (ae_final_chek_param(ctx, data_in, tag_in, data_out) != CRYPTO_SUCCESS)
         return CRYPTO_BAD_PARAMETERS;
 
-    if (is_sm4_ae_algorithm(ctx->alg_type))
-        return gm_ae_dec_final(ctx, data_in, tag_in, data_out);
-
     int32_t ret = set_expected_tag(ctx, (uint8_t *)(uintptr_t)(tag_in->buffer), tag_in->size);
     if (ret != CRYPTO_SUCCESS) {
         tloge("Evp ae set expected tag data failed");
@@ -209,8 +201,6 @@ int32_t soft_crypto_ae_enc_final(struct ctx_handle_t *ctx, const struct memref_t
     if (ae_final_chek_param(ctx, data_in, tag_out, data_out) != CRYPTO_SUCCESS)
         return CRYPTO_BAD_PARAMETERS;
 
-    if (is_sm4_ae_algorithm(ctx->alg_type))
-        return gm_ae_enc_final(ctx, data_in, data_out, tag_out);
     uint32_t actual_tag_len = ctx->tag_len;
     if (tag_out->size < actual_tag_len) {
         tloge("The input tag buffer length is too small\n");
@@ -254,8 +244,6 @@ int32_t soft_crypto_ae_init(struct ctx_handle_t *ctx, const struct symmerit_key_
     if (ctx == NULL)
         return CRYPTO_BAD_PARAMETERS;
 
-    if (is_sm4_ae_algorithm(ctx->alg_type))
-        return gm_ae_init(ctx, key, ae_init_param);
     if (check_param_is_invalid(ctx->alg_type, key, ae_init_param)) {
         tloge("The input param is invalid");
         return CRYPTO_BAD_PARAMETERS;
@@ -293,8 +281,6 @@ int32_t soft_crypto_ae_update_aad(struct ctx_handle_t *ctx, const struct memref_
     if (check)
         return CRYPTO_BAD_PARAMETERS;
 
-    if (is_sm4_ae_algorithm(ctx->alg_type))
-        return gm_ae_update_aad(ctx, aad_data);
     int32_t out_len = 0;
     EVP_CIPHER_CTX *ae_ctx = (EVP_CIPHER_CTX *)(uintptr_t)(ctx->ctx_buffer);
     int32_t rc = EVP_CipherUpdate(ae_ctx, NULL, &out_len, (uint8_t *)(uintptr_t)(aad_data->buffer),
@@ -318,8 +304,6 @@ int32_t soft_crypto_ae_update(struct ctx_handle_t *ctx, const struct memref_t *d
         return CRYPTO_BAD_PARAMETERS;
     }
 
-    if (is_sm4_ae_algorithm(ctx->alg_type))
-        return gm_ae_update(ctx, data_in, data_out);
     uint8_t *in_buffer = (uint8_t *)(uintptr_t)data_in->buffer;
     uint8_t *out_buffer = (uint8_t *)(uintptr_t)data_out->buffer;
 

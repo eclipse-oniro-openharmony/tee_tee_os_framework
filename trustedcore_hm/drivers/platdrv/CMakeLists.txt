@@ -8,6 +8,7 @@ include(apps_feature_macro)
 
 list(APPEND TEE_C_SOURCES
     src/main.c
+    src/tc_drv.c
     src/stub.c
     src/drv_pal.c
     src/sre_dev_relcb.c
@@ -15,13 +16,21 @@ list(APPEND TEE_C_SOURCES
     src/platdrv.c
     src/param_check.c
     src/sys_modem.c
+    src/sre_hwi.c
     src/drv_cache_flush.c
     src/platdrv_hash.c
     src/rand_update.c
     ${PROJECT_SOURCE_DIR}/drivers/common/drv_call_check.c
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/platdrv/drv_hash_init.c
     ${PROJECT_SOURCE_DIR}/drivers/common/drv_pm_check.c
+    ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_shared/src/io_operations.c
 )
+
+if ("${CONFIG_DRIVER_DYN_MOD}" STREQUAL "true")
+    list(APPEND TEE_C_SOURCES
+        src/drv_mod.c
+    )
+endif()
 
 list(APPEND TEE_C_SOURCES
     platform/common/crypto/crypto_syscall.c
@@ -134,11 +143,11 @@ if ("${ARCH}" STREQUAL "aarch64")
         agent
         hwi
         c_shared
+        io
         agent_base
         crypto
         timer
         ac
-        mmgr
         hongmeng
         syscalls
         ipc
@@ -150,7 +159,7 @@ if ("${ARCH}" STREQUAL "aarch64")
     )
     if ("${TARGET_BOARD_PLATFORM}" STREQUAL "mt6885")
         list(APPEND PLATDRV_LIBRARIES
-            boringssl
+            openssl
             ccmgr
             hmdrv
         )
@@ -165,11 +174,11 @@ else()
         agent_a32
         hwi_a32
         c_shared_a32
+        io_a32
         agent_base_a32
         crypto_a32
         timer
         ac_a32
-        mmgr_a32
         hongmeng_a32
         syscalls_a32
         ipc_a32
@@ -181,7 +190,7 @@ else()
     )
     if ("${TARGET_BOARD_PLATFORM}" STREQUAL "mt6885")
         list(APPEND PLATDRV_LIBRARIES
-            boringssl
+            openssl
             ccmgr
             hmdrv_a32
         )
@@ -217,7 +226,6 @@ list(APPEND PLATDRV_LIBRARIES
     hmdrv_stub
     drv_frame
     ac_policy
-    drv_shared
 )
 
 if ("${CONFIG_KASAN}" STREQUAL "y")
@@ -225,30 +233,34 @@ if ("${CONFIG_KASAN}" STREQUAL "y")
         ccmgr
         hmdrv
     )
-    if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-        list(APPEND PLATDRV_LIBRARIES
-            boringssl
-        )
-    else()
+    if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "openssl")
         list(APPEND PLATDRV_LIBRARIES
             openssl
         )
     endif()
 endif()
 
+set(ALIAS_FILE
+    alias.txt
+)
+
+execute_process(
+    COMMAND cat ${CMAKE_CURRENT_SOURCE_DIR}/${ALIAS_FILE}
+    COMMAND awk "{ print \"-D\"$$1 }"
+    COMMAND tr "\n" " "
+    OUTPUT_VARIABLE ALIAS_SYM
+)
+
 list(APPEND TEE_C_FLAGS
-    -DSRE_HuntByName=ipc_hunt_by_name
-    -DSRE_MsgSnd=ipc_msg_snd
-    -DSRE_MsgQSend=ipc_msg_qsend
-    -DSRE_MsgQRecv=ipc_msg_q_recv
-    -Dv8_dma_flush_range=__dma_flush_range
-    -Dv7_dma_clean_range=__dma_clean_range
-    -Dv7_flush_kern_cache_all=flush_cache_all
-    -Dunmap=munmap
-    -Dgic_spi_notify=fake_gic_spi_notify
-    -DSRE_TaskSelf=task_caller
+    ${ALIAS_SYM}
     ${TRUSTEDCORE_LOCAL_CFLAGS}
 )
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND PLATDRV_LDFLAGS
+        -Wl,-z,separate-loadable-segments
+    )
+endif()
 
 if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND PLATDRV_LDFLAGS
@@ -256,7 +268,7 @@ if ("${ARCH}" STREQUAL "aarch64")
     )
     if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
         list(APPEND PLATDRV_LDFLAGS
-            -Wl,-execute-only
+            -Wl,--execute-only
         )
     endif()
 else()

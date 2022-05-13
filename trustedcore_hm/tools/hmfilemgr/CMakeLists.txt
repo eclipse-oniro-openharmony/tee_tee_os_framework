@@ -1,18 +1,14 @@
 if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND HMFILEMGR_LIBRARIES
-        cpio
         hongmeng
         ramfs
         debug
         syscalls
-        fileio
         pathmgr
         ac
         security
-        ccmgr_hm
         hmlog
         ac_policy
-        agent_base
         ipc
         -lhmfilemgr
         hwsecurec
@@ -24,6 +20,8 @@ if ("${ARCH}" STREQUAL "aarch64")
             vfs_sysmgr
             mmgr_sysmgr
             mmgr
+            fileio
+            syscalls_sysmgr
         )
     else()
         list(APPEND HMFILEMGR_LIBRARIES
@@ -34,19 +32,15 @@ if ("${ARCH}" STREQUAL "aarch64")
     endif()
 else()
     list(APPEND HMFILEMGR_LIBRARIES
-        cpio_a32
         hongmeng_a32
         ramfs_a32
         debug_a32
         syscalls_a32
-        fileio_a32
         pathmgr_a32
         ac_a32
         security_a32
-        ccmgr_hm_a32
         hmlog_a32
         ac_policy
-        agent_base_a32
         ipc_a32
         -lhmfilemgr
         hwsecurec
@@ -58,6 +52,8 @@ else()
             vfs_sysmgr_a32
             mmgr_sysmgr_a32
             mmgr_a32
+            fileio_a32
+            syscalls_sysmgr_a32
         )
     else()
         list(APPEND HMFILEMGR_LIBRARIES
@@ -95,7 +91,13 @@ list(APPEND HMFILEMGR_C_FLAGS
 
 if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
     list(APPEND HMFILEMGR_LD_FLAGS
-        -Wl,-execute-only
+        -Wl,--execute-only
+    )
+endif()
+
+if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
+    list(APPEND HMFILEMGR_LD_FLAGS
+        -Wl,-z,separate-loadable-segments
     )
 endif()
 

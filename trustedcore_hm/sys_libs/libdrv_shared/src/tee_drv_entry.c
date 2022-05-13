@@ -20,8 +20,8 @@
 #include "drv_pm.h"
 #ifdef CRYPTO_MGR_SERVER_ENABLE
 #include "drv_random.h"
-#include "ccmgr_hm.h"
 #include "crypto_manager.h"
+#include <rnd_seed.h>
 #endif
 
 static msg_pid_t g_drv_mgr_pid;

@@ -6,7 +6,7 @@ DRIVER := gtask${TARG}.elf
 SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/var.mk
-
+include $(TOPDIR)/mk/plat.mk
 ifeq ($(CONFIG_DYN_TA_FORMAT),1)
 flags += -DDYN_TA_SUPPORT_V1
 flags += -DDYN_TA_SUPPORT_V2
@@ -23,12 +23,17 @@ endif
 gtask_c_files := $(wildcard src/*.c)
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gtask/include
 inc-flags += -I$(TOPDIR)/framework/gtask/src/
-inc-flags += -I$(PLATFORM_DIR)/common/tee_config
+inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/src/tee_config
+inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
+inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)
+flags += -DCONFIG_TA_SIGN_CDC
+else ifeq ($(product_type), cdc_ace)
+$(info product type is cdc_ace)
 flags += -DCONFIG_TA_SIGN_CDC
 else ifeq ($(product_name), mdc)
 $(info product type is mdc)
@@ -54,16 +59,19 @@ gtask_c_files := $(filter-out $(FILTEROUT_CFILES), $(gtask_c_files))
 LIBS := gtask${TARG}       \
     c_shared${TARG}        \
     tee_shared${TARG}      \
-    teeos${TARG}           \
+    permission_service${TARG} \
     teemem${TARG}          \
     hmdrv${TARG}           \
     ac${TARG}              \
     teeconfig${TARG}       \
     ac_policy${TARG}       \
-    vendor_static${TARG}   \
     dynconfmgr${TARG}      \
     dynconfbuilder${TARG}  \
     spawn_common${TARG}
+
+ifneq ($(CONFIG_NO_VENDOR_LIB_EMBEDDED), true)
+LIBS += vendor_static${TARG}
+endif
 
 LIBS += base_shared${TARG}
 
@@ -73,23 +81,20 @@ LIBS += elf_verify${TARG} \
     whitebox${TARG}
 endif
 
+ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
+LIBS += tcmgr$(TARG)
+endif
+
+ifeq ($(CONFIG_LIVEPATCH_ENABLE), y)
+LIBS += livepatch${TARG}
+endif
+
 ifeq ($(CONFIG_SMCMGR_EMBEDDED), y)
 LIBS += teesmcmgr${TARG}
 endif
 
 ifeq ($(CONFIG_SSA_EMBEDDED), y)
 LIBS += ssagent${TARG}
-endif
-
-ifeq ($(CONFIG_CMS_CAHASH_AUTH),y)
-LIBS += tee_cmscbb${TARG} cmscbb${TARG}
-gtask_c_files += $(wildcard src/ascend/auth/tee_auth_sign_cms.c)
-inc-flags += -I$(TOPDIR)/framework/gtask/src/ascend/auth
-inc-flags += -I$(TOPDIR)/sys_libs/libtee_cmscbb/include
-inc-flags += -I$(PREBUILD_HEADER)/openssl
-else
-gtask_c_files += $(wildcard src/higeneric/auth/tee_auth_sign_rsa.c)
-inc-flags += -I$(TOPDIR)/framework/gtask/src/higeneric/auth/tee_auth_sign_rsa.h
 endif
 
 ifeq ($(CONFIG_SSA_EMBEDDED), y)

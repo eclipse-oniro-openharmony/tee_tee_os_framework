@@ -315,4 +315,5 @@ uint32_t dxcc_dh_get_secret_key_adaptr(uint8_t *client_prvkey_ptr, size_t client
     uint8_t *server_pubkey_ptr, size_t serverpub_keysize, uint8_t *prime_ptr, size_t primesize,
     dx_dh_user_pub_key_t *tmp_pubkey_ptr, dx_dh_prime_data_t *tmpprime_data_ptr,
     uint8_t *secretKey_ptr, uint16_t *secret_keysize_ptr);
+int32_t read_entropy_data(void *buffer, size_t size);
 #endif

@@ -7,24 +7,28 @@ OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm",
 	      "elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(_start)
+SEARCH_DIR("=/home/tcwg-buildslave/workspace/tcwg-make-release/builder_arch/amd64/label/tcwg-x86_64-build/target/arm-linux-gnueabi/_build/builds/destdir/x86_64-unknown-linux-gnu/arm-linux-gnueabi/lib"); SEARCH_DIR("=/usr/local/lib"); SEARCH_DIR("=/lib"); SEARCH_DIR("=/usr/lib");
+
 PHDRS
 {
-    phdr    PT_PHDR PHDRS                   FLAGS (4);
-    rodata  PT_LOAD FILEHDR PHDRS           FLAGS (4);
-    text    PT_LOAD                         FLAGS (5);
-    xtext   PT_LOAD                         FLAGS (1);
-    data    PT_LOAD                         FLAGS (6);
-    dynamic PT_DYNAMIC                      FLAGS (6);
-    stack   PT_GNU_STACK                    FLAGS (6);
-    relro   0x6474e552                      FLAGS (4);
+    phdr    PT_PHDR                             PHDRS       FLAGS (4);
+    rodata  PT_LOAD                     FILEHDR PHDRS       FLAGS (4);
+    text    PT_LOAD                                         FLAGS (5);
+    xtext   PT_LOAD                                         FLAGS (1);
+    smee    0x65656d73   AT(smee_start)                     FLAGS (6);
+    data    PT_LOAD                                         FLAGS (6);
+    dynamic PT_DYNAMIC                                      FLAGS (6);
+    relro   0x6474e552                                      FLAGS (4);
+    stack   PT_GNU_STACK                                    FLAGS (6);
 }
-SEARCH_DIR("=/home/tcwg-buildslave/workspace/tcwg-make-release/builder_arch/amd64/label/tcwg-x86_64-build/target/arm-linux-gnueabi/_build/builds/destdir/x86_64-unknown-linux-gnu/arm-linux-gnueabi/lib"); SEARCH_DIR("=/usr/local/lib"); SEARCH_DIR("=/lib"); SEARCH_DIR("=/usr/lib");
+
 SECTIONS
 {
   /* Read-only sections, merged into text segment: */
   /* This should be the first section after program headers */
   PROVIDE (__executable_start = 0);
   . = SIZEOF_HEADERS;
+  _start = .;
   .magic : { *(.magic) } : rodata
   .note.gnu.build-id : { *(.note.gnu.build-id) }
   .hash           : { *(.hash) }
@@ -74,7 +78,14 @@ SECTIONS
       *(.rela.plt)
     }
 
-  .rodata         : { *(.rodata .rodata.* .gnu.linkonce.r.*) }
+  .rodata         :
+  {
+    *(.rodata .rodata.* .gnu.linkonce.r.*)
+    . = ALIGN(16);
+    PROVIDE (__start___llvm_prf_names = .);
+    *(__llvm_prf_names)
+    PROVIDE (__stop___llvm_prf_names = .);
+  }
   .rodata1        : { *(.rodata1) }
   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) }
    PROVIDE_HIDDEN (__exidx_start = .);
@@ -118,11 +129,17 @@ SECTIONS
   PROVIDE (_etext = .);
   PROVIDE (etext = .);
 
+  . = ALIGN(0x1000);
+  PROVIDE_HIDDEN (smee_start = .);
+  .smee : ALIGN(0x1000)
+  {
+    *(sram_protection_section)
+    *(smee* .smee* .*smee)
+  } : smee
+
   /* Adjust the address for the data segment.  We want to adjust up to
      the same address within the page on the next page up.  */
   . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE));
-  /* Exception handling  */
-  . = ALIGN(0x1000);
   /* Thread Local Storage sections  */
   .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) } : data
   .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
@@ -136,7 +153,7 @@ SECTIONS
     KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
     KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
     PROVIDE_HIDDEN (__init_array_end = .);
-  }
+  } : data : relro
   .fini_array     :
   {
     PROVIDE_HIDDEN (__fini_array_start = .);
@@ -182,6 +199,15 @@ SECTIONS
   {
     PROVIDE (__data_start = .);
     *(.data .data.* .gnu.linkonce.d.*)
+    PROVIDE (__start___llvm_prf_cnts = .);
+    *(__llvm_prf_cnts)
+    PROVIDE (__stop___llvm_prf_cnts = .);
+    PROVIDE (__start___llvm_prf_data = .);
+    *(__llvm_prf_data)
+    PROVIDE (__stop___llvm_prf_data = .);
+    PROVIDE (__start___llvm_prf_vnds = .);
+    *(__llvm_prf_vnds);
+    PROVIDE (__stop___llvm_prf_vnds = .);
     SORT(CONSTRUCTORS)
   } : data
   .data1          : { *(.data1) }

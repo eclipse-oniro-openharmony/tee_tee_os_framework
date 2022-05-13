@@ -6,7 +6,7 @@
 #include "drv_operations.h"
 #include <stdint.h>
 #include <securec.h>
-#include <list.h>
+#include <dlist.h>
 #include <ipclib.h>
 #include <procmgr_ext.h>
 #include <tee_log.h>
@@ -26,7 +26,7 @@ static struct drv_cmd_perm g_cmd_perm = {
     .base_vaddr = NULL,
     .cmd_num = 0,
 };
-static struct list_head g_drv_node = LIST_HEAD_INIT(g_drv_node);
+static struct dlist_node g_drv_node = dlist_head_init(g_drv_node);
 static pthread_mutex_t g_drv_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
 
 static uint8_t g_fd_bitmap[(FD_COUNT_MAX) >> MOVE_BIT];
@@ -100,11 +100,11 @@ static struct drv_task *alloc_and_add_drv_task(uint32_t pid)
 
     (void)memset_s(new_task, sizeof(*new_task), 0, sizeof(*new_task));
 
-    init_list_head(&new_task->task_list);
+    dlist_init(&new_task->task_list);
     new_task->task_pid = pid;
     new_task->task_count = 0;
     new_task->ref_cnt = DRV_TASK_OPEN_REF_CNT_STEP;
-    init_list_head(&new_task->data_head);
+    dlist_init(&new_task->data_head);
 
     int32_t ret = robust_mutex_init(&new_task->task_mtx);
     if (ret != 0) {
@@ -113,7 +113,7 @@ static struct drv_task *alloc_and_add_drv_task(uint32_t pid)
         return NULL;
     }
 
-    list_add_tail(&new_task->task_list, &g_drv_node);
+    dlist_insert_tail(&new_task->task_list, &g_drv_node);
 
     return new_task;
 }
@@ -151,12 +151,12 @@ static struct drv_task *find_and_get_drv_task_locked(uint32_t pid, bool open)
         return task;
     }
 
-    struct list_head *pos = NULL;
-    struct list_head *next = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *next = NULL;
     struct drv_task *temp = NULL;
 
-    list_for_each_safe(pos, next, &g_drv_node) {
-        temp = list_entry(pos, struct drv_task, task_list);
+    dlist_for_each_safe(pos, next, &g_drv_node) {
+        temp = dlist_entry(pos, struct drv_task, task_list);
         if (temp->task_pid == pid) {
             find_flag = true;
             tlogd("find pid:%u\n", pid);
@@ -208,7 +208,7 @@ static void put_drv_task_locked(struct drv_task *task, uint32_t put_cnt)
         task->ref_cnt = task->ref_cnt - put_cnt;
 
     if (task->ref_cnt == 0) {
-        list_del(&task->task_list);
+        dlist_delete(&task->task_list);
         free_flag = true;
     }
 
@@ -274,12 +274,12 @@ static struct fd_data *find_fd_data(int32_t fd, const struct tee_uuid *uuid, con
 {
     struct fd_data *data = NULL;
 
-    struct list_head *pos = NULL;
-    struct list_head *next = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *next = NULL;
     struct fd_data *temp = NULL;
 
-    list_for_each_safe(pos, next, &task->data_head) {
-        temp = list_entry(pos, struct fd_data, data_list);
+    dlist_for_each_safe(pos, next, &task->data_head) {
+        temp = dlist_entry(pos, struct fd_data, data_list);
         if (temp->drv.fd == fd) {
             /*
              * compare uuid to avoid this case:
@@ -365,7 +365,7 @@ static struct fd_data *find_and_del_fd_data_locked(int32_t fd,
     }
 
     dec_task_count(task);
-    list_del(&data->data_list);
+    dlist_delete(&data->data_list);
 
 unlock_task_mtx:
     ret = pthread_mutex_unlock(&task->task_mtx);
@@ -534,7 +534,7 @@ static struct fd_data *alloc_fd_data(uint32_t caller_taskid, const struct tee_dr
     uint64_t *args = (uint64_t *)(uintptr_t)params->args;
 
     *fd_out = fd;
-    init_list_head(&data->data_list);
+    dlist_init(&data->data_list);
     data->drv.fd = fd;
     data->drv.taskid = caller_taskid;
     data->drv.private_data = NULL;
@@ -556,7 +556,7 @@ static int64_t add_fd_data_locked(struct fd_data *data, struct drv_task *task)
         return -1;
     }
 
-    list_add_tail(&data->data_list, &task->data_head);
+    dlist_insert_tail(&data->data_list, &task->data_head);
 
     ret = pthread_mutex_unlock(&task->task_mtx);
     if (ret != 0)
@@ -992,12 +992,12 @@ int64_t driver_close(uint64_t fd, const struct tee_drv_param *params)
 
 static void task_dump_fd(const struct drv_task *task)
 {
-    struct list_head *pos = NULL;
-    struct list_head *next = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *next = NULL;
     struct fd_data *temp = NULL;
 
-    list_for_each_safe(pos, next, &task->data_head) {
-        temp = list_entry(pos, struct fd_data, data_list);
+    dlist_for_each_safe(pos, next, &task->data_head) {
+        temp = dlist_entry(pos, struct fd_data, data_list);
         tloge("\t fd:%d ref_cnt:%u", temp->drv.fd, temp->ref_cnt);
     }
 }
@@ -1019,8 +1019,8 @@ static void task_dump_fd_locked(struct drv_task *task)
 
 void driver_dump(void)
 {
-    struct list_head *pos = NULL;
-    struct list_head *next = NULL;
+    struct dlist_node *pos = NULL;
+    struct dlist_node *next = NULL;
     struct drv_task *temp = NULL;
 
     tloge("***** driver dump fd begin *****\n");
@@ -1030,8 +1030,8 @@ void driver_dump(void)
         return;
     }
 
-    list_for_each_safe(pos, next, &g_drv_node) {
-        temp = list_entry(pos, struct drv_task, task_list);
+    dlist_for_each_safe(pos, next, &g_drv_node) {
+        temp = dlist_entry(pos, struct drv_task, task_list);
         tloge("task_pid:%u task_count:%u ref_cnt:%u\n", temp->task_pid, temp->task_count, temp->ref_cnt);
         task_dump_fd_locked(temp);
     }

@@ -3,14 +3,10 @@
  * Description: soft engine of boringssl
  * Create: 2019-11-07
  */
-#ifdef CRYPTO_SUPPORT_AES_WRAPPER
 #include <openssl/aes.h>
-#endif
 #include <securec.h>
 #include <tee_log.h>
 #include "crypto_wrapper.h"
-
-#ifdef CRYPTO_SUPPORT_AES_WRAPPER
 
 #define AES_KEY_128 16
 #define AES_KEY_256 32
@@ -34,7 +30,7 @@ TEE_Result aes_key_wrap(struct cdrm_params *params)
         return TEE_ERROR_GENERIC;
     }
 
-    int32_t rc      = AES_set_encrypt_key(params->pkey, params->pkey_len * BYTE_TO_BIT, &aes_key);
+    int32_t rc = AES_set_encrypt_key(params->pkey, params->pkey_len * BYTE_TO_BIT, &aes_key);
     if (rc != 0) {
         tloge("set KEK error, rc = %d\n", rc);
         return TEE_ERROR_GENERIC;
@@ -80,16 +76,3 @@ TEE_Result aes_key_unwrap(struct cdrm_params *params)
     *(params->output_len) = rc;
     return TEE_SUCCESS;
 }
-#else
-TEE_Result aes_key_wrap(struct cdrm_params *params)
-{
-    (void)params;
-    return TEE_ERROR_NOT_SUPPORTED;
-}
-
-TEE_Result aes_key_unwrap(struct cdrm_params *params)
-{
-    (void)params;
-    return TEE_ERROR_NOT_SUPPORTED;
-}
-#endif

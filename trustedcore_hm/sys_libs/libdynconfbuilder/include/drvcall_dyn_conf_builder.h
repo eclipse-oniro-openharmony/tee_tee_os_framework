@@ -60,6 +60,6 @@ int32_t init_drvcall_conf(struct drvcall_perm_apply_t *drvcall_perm_apply,
 
 void free_drvcall_perm(struct drvcall_perm_apply_t *drvcall_perm);
 
-int32_t build_drvcall_perm_apply(struct list_head **pos, const struct conf_node_t *node,
+int32_t build_drvcall_perm_apply(struct dlist_node **pos, const struct conf_node_t *node,
                                  void *obj, uint32_t obj_size);
 #endif

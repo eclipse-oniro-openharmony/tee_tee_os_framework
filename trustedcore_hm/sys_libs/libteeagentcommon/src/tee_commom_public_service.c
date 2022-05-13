@@ -18,7 +18,6 @@
 #include "tee_init.h"
 #include "securec.h"
 #include "ipclib.h"
-#include "tee_c_env.h"
 #include "tee_internal_task_pub.h"
 
 #define WEAK            __attribute__((weak))
@@ -161,7 +160,6 @@ static TEE_Result set_service_caller_info(uint32_t task_id, uint32_t cmd)
 static void tee_common_init(int init_build)
 {
     if (init_build == 0) {
-        cinit00();
         clear_ta_bss();
         _init();
     }
@@ -197,7 +195,7 @@ static int32_t get_ipc_native_args(const char *task_name, struct tee_service_ipc
 
     ipc_args->channel = ch;
     ipc_args->recv_buf = req_msg;
-    ipc_args->recv_len = sizeof(*req_msg);
+    ipc_args->recv_len = (unsigned long)sizeof(*req_msg);
     return 0;
 }
 

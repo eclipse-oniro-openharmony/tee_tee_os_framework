@@ -9,7 +9,7 @@
 
 #include <stdint.h>
 #include <pthread.h>
-#include <list.h>
+#include <dlist.h>
 #include <tee_defines.h>
 #include <tee_driver_module.h>
 #include "drv_dispatch.h"
@@ -23,7 +23,7 @@ struct drvcall_conf_t {
 };
 
 struct fd_node {
-    struct list_head data_list;
+    struct dlist_node data_list;
     int64_t fd;
     struct task_node *drv;
     bool close_flag;

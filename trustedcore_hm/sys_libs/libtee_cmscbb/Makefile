@@ -12,8 +12,16 @@ libtee_cmscbb_c_files += $(wildcard src/*.c)
 
 ifeq ($(CONFIG_TA_CMS_SIGNATURE),y)
 ifeq (${TARG}, )
-flags += -DSUPPORT_UPDATE_CRL
+ENABLE_CMS_SIGNATURE := true
 endif
+endif
+
+ifeq ($(CONFIG_CMS_CAHASH_AUTH),y)
+ENABLE_CMS_SIGNATURE := true
+endif
+
+ifeq ($(ENABLE_CMS_SIGNATURE),true)
+flags += -DSUPPORT_UPDATE_CRL
 endif
 
 include $(TOPDIR)/mk/lib-common.mk

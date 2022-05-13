@@ -12,7 +12,7 @@
 static int32_t get_oemkey_ops(const struct crypto_drv_ops_t *ops, struct memref_t *buf_arg)
 {
     if (ops->get_oemkey == NULL) {
-        hm_error("hardware engine get entropy fun is null\n");
+        hm_error("hardware engine get oemkey fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -46,7 +46,7 @@ int32_t get_oemkey_call(const struct drv_data *drv, unsigned long args,
 
     struct crypto_ioctl *ioctl_args = (struct crypto_ioctl *)(uintptr_t)args;
 
-    int32_t ret = prepare_hard_engine_params(&share_buf, &buf_arg, ioctl_args);
+    int32_t ret = prepare_hard_engine_params(drv->taskid, &share_buf, &buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
         return ret;
 
@@ -54,12 +54,14 @@ int32_t get_oemkey_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
+#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
+#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
-    return CRYPTO_SUCCESS;
+    return ret;
 }

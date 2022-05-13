@@ -100,7 +100,7 @@ struct ramfs_fd_state *fd_state_of(struct vfs_ramfs_data *ramfs, int32_t fd, uin
 static struct ramfs_fd_state *fd_alloc(struct vfs_ramfs_data *ramfs, uint32_t cidx)
 {
     uint32_t i;
-    for (i = 0; i < ARRAY_SIZE(ramfs->fd_state); i++) {
+    for (i = 0; i < array_size(ramfs->fd_state); i++) {
         if (!trylockw(&ramfs->fd_state[i].lock))
             continue;
         if (!ramfs->fd_state[i].used) {
@@ -133,7 +133,7 @@ static void fd_free(struct vfs_ramfs_data *ramfs, struct ramfs_fd_state *fd_stat
 
 void ramfs_init(struct vfs_ramfs_data *ramfs_data, const char *root, void *img, size_t img_size)
 {
-    if (ramfs_data == NULL)
+    if (ramfs_data == NULL || root == NULL)
         hm_panic("ramfs_init: ramfs_data is null\n");
 
     (void)img_size;
@@ -168,7 +168,7 @@ int32_t ramfs_fini(const struct vfs_ramfs_data *ramfs_data)
 void ramfs_cleanup_fd(uint32_t cidx, const struct vfs_data *vfs_data)
 {
     struct vfs_ramfs_data *ramfs = container_of(vfs_data, struct vfs_ramfs_data, data);
-    for (uint32_t i = 0; i < ARRAY_SIZE(ramfs->fd_state); i++) {
+    for (uint32_t i = 0; i < array_size(ramfs->fd_state); i++) {
         if (ramfs->fd_state[i].used && (ramfs->fd_state[i].cidx == cidx))
             ramfs->fd_state[i].used = false;
     }

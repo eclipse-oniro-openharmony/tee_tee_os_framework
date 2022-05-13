@@ -12,10 +12,15 @@ include $(TOPDIR)/mk/asan.mk
 inc-flags += -I$(TEE_SECUREC_DIR)/include
 INCLUDE_PATH += $(PREBUILD_DIR)/headers/
 INCLUDE_PATH += $(TOPDIR)/tools/
+INCLUDE_PATH += $(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/inse_crypto/
 
 # all target flags for both c & c++ compiler
 ifneq ($(TARGET_IS_HOST),y)
+ifeq ($(CONFIG_LIVEPATCH_ENABLE),y)
+flags += -Os
+else
 flags += -Oz
+endif
 else
 #gcc optimization flags
 flags += -Os
@@ -47,11 +52,15 @@ endif
 endif
 endif
 flags += -fno-builtin
+flags += -D__FILE__=0 -Wno-builtin-macro-redefined
 
 ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 flags += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 endif
 
+ifeq ($(CONFIG_LIBFUZZER_SERVICE_64BIT), true)
+flags += -DTEE_SUPPORT_LIBFUZZER
+endif
 # all target for c++ compiler
 cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
 

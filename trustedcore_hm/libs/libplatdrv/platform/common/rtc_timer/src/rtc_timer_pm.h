@@ -12,9 +12,6 @@
 int32_t rtc_timer_suspend(void);
 int32_t rtc_timer_resume(void);
 
-int32_t rtc_timer_suspend_s4(void);
-int32_t rtc_timer_resume_s4(void);
-
 #define TIMER_SUSPEND_S3 0
 #define TIMER_SUSPEND_S4 1
 #define TIMER_RESUME_S3  0

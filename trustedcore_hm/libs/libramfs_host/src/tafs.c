@@ -88,7 +88,7 @@ static inline struct tafs_inode *inode_of(uint32_t ino)
 /* alloc a new inode, rfree in fd_free, use .used to store if valid */
 static struct fd_state *fd_alloc(struct vfs_tafs_data *tafs, uint32_t cidx)
 {
-    for (uint32_t i = 0; i < ARRAY_SIZE(tafs->fd_state); i++) {
+    for (uint32_t i = 0; i < array_size(tafs->fd_state); i++) {
         if (!trylockw(&tafs->fd_state[i].lock))
             continue;
         if (!tafs->fd_state[i].used) {
@@ -111,7 +111,7 @@ static struct fd_state *fd_alloc(struct vfs_tafs_data *tafs, uint32_t cidx)
 /* check if fd is in valid range */
 static bool fd_valid(const struct vfs_tafs_data *tafs, int32_t fd)
 {
-    return ((fd >= 0) && ((uint32_t)fd < ARRAY_SIZE(tafs->fd_state)));
+    return ((fd >= 0) && ((uint32_t)fd < array_size(tafs->fd_state)));
 }
 
 /*
@@ -168,7 +168,7 @@ void tafs_cleanup_fd(uint32_t cidx, const struct vfs_data *vfs_data)
 {
     struct vfs_tafs_data *tafs = container_of(vfs_data, struct vfs_tafs_data, data);
 
-    for (uint32_t i = 0; i < ARRAY_SIZE(tafs->fd_state); i++) {
+    for (uint32_t i = 0; i < array_size(tafs->fd_state); i++) {
         if (tafs->fd_state[i].used && (tafs->fd_state[i].cidx == cidx)) {
             struct tafs_inode *inode = inode_of(tafs->fd_state[i].inum);
             if (inode != NULL)
@@ -240,7 +240,7 @@ static inline int32_t fd_of(const struct vfs_tafs_data *tafs, const struct fd_st
 static struct tafs_inode *inode_find(const char *path, bool write)
 {
     hm_debug("find name is '%s'\n", path);
-    for (uint32_t i = 0; i < ARRAY_SIZE(g_inodes); i++) {
+    for (uint32_t i = 0; i < array_size(g_inodes); i++) {
         /*
          * Compare before trylock, skip if it is not our target to avoid
          * making a concurrent real user fail. Race condition that it becomes
@@ -404,7 +404,7 @@ static int32_t tafs_print_fsinfo(struct vfs_data *vfs_data)
 {
     int32_t tafs_total_size = 0;
     (void)(vfs_data);
-    for (uint32_t i = 0; i < ARRAY_SIZE(g_inodes); i++) {
+    for (uint32_t i = 0; i < array_size(g_inodes); i++) {
         if (strnlen(g_inodes[i].filename, TAFS_NAME_LEN) > 0) {
             tafs_total_size += g_inodes[i].data_len;
             hm_error("tafs name=%s size=%zu xip_state=%d\n", g_inodes[i].filename, g_inodes[i].data_len,

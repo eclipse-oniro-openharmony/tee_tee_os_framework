@@ -21,7 +21,9 @@
 #define CRYPTO_DATA_OUT_OFFSET_0    0
 #define CRYPTO_DATA_OUT_OFFSET_1    1
 #define CRYPTO_E_VALUE_OFFSET_1     1
+#define CRYPTO_TAG_OUT_OFFSET_1     1
 #define CRYPTO_TAG_OUT_OFFSET_2     2
+#define CRYPTO_IV_OFFSET_1          1
 #define CRYPTO_IV_OFFSET_2          2
 #define CRYPTO_IV_OFFSET_3          3
 #define CRYPTO_PARAM_COUNT_1        1
@@ -32,11 +34,17 @@
 #define CRYPTO_PARAM_COUNT_MAX      5
 #define SHARE_MEMORY_MAX_SIZE       (10 * 1024 * 1024) /* shared mem max size 10M */
 #define INVALID_MEMORY_SIZE         0xFFFFFFFF
+#define MAX_CRYPTO_CTX_SIZE   (1024 * 1024)
+#define DATA_SIZE_MAX         512
 
 struct crypto_ioctl {
     uint64_t buf;
     uint32_t buf_len;
     uint32_t total_nums;
+    uint8_t data_1[DATA_SIZE_MAX];
+    uint8_t data_2[DATA_SIZE_MAX];
+    uint32_t data_size_1;
+    uint32_t data_size_2;
     uint32_t arg1;
     uint32_t arg2;
     uint32_t arg3;
@@ -94,5 +102,8 @@ enum crypto_hal {
 };
 
 int32_t crypto_ioctl_func(const struct drv_data *drv, uint32_t cmd, unsigned long args, uint32_t args_len);
+uint8_t *get_ctx_ctx_buf(void);
+int32_t crypto_ioctl_suspend(void);
+int32_t crypto_ioctl_resume(void);
 
 #endif

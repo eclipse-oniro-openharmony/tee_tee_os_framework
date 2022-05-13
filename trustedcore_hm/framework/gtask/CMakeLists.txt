@@ -33,16 +33,21 @@ list(APPEND TEE_C_SOURCES
     src/gtask_para_config.c
     src/tee_task_config.c
     src/tui_perm.c
+    src/tee_img_black_table.c
     src/tee_img_v2_allowed_table.c
     src/task_register.c
+    src/gtask_config_hal.c
+    src/gtask_config.c
 )
 
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${PLATFORM_DIR}/common/tee_config
+    ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/gtask/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeagentcommon_client/include
+    ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include
+    ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/src/tee_config
 )
 
 if ("${CONFIG_HUANGLONG_LOAD_KEY_3072}" STREQUAL "y")
@@ -52,6 +57,10 @@ if ("${CONFIG_HUANGLONG_LOAD_KEY_3072}" STREQUAL "y")
 endif()
 
 if ("${product_type}" STREQUAL "cdc")
+    list(APPEND TEE_C_FLAGS
+        -DCONFIG_TA_SIGN_CDC
+    )
+elseif ("${product_type}" STREQUAL "cdc_ace")
     list(APPEND TEE_C_FLAGS
         -DCONFIG_TA_SIGN_CDC
     )
@@ -99,13 +108,12 @@ if ("${ARCH}" STREQUAL "aarch64")
         c_shared
         tee_shared
         base_shared
-        teeos
+        permission_service
         teemem
         hmdrv
         ac
         teeconfig
         ac_policy
-        vendor_static
         dynconfmgr
         dynconfbuilder
         spawn_common
@@ -118,19 +126,54 @@ else()
         gtask_a32
         c_shared_a32
         base_shared
-        teeos_a32
+        permission_service_a32
         teemem_a32
         hmdrv_a32
         ac_a32
         teeconfig
         ac_policy
-        vendor_static
         dynconfmgr
         dynconfbuilder
         spawn_common
     )
     if (NOT ("${CONFIG_APP_TEE_PERM}" STREQUAL "y" OR "${CONFIG_APP_TEE_PERM_A32}" STREQUAL "y"))
         list(APPEND GTASK_LIBRARIES elf_verify_a32 elf_verify_key whitebox_a32)
+    endif()
+endif()
+
+if (NOT "${CONFIG_NO_VENDOR_LIB_EMBEDDED}" STREQUAL "true")
+    if ("${ARCH}" STREQUAL "aarch64")
+        list(APPEND GTASK_LIBRARIES
+            vendor_static
+        )
+    else()
+        list(APPEND GTASK_LIBRARIES
+            vendor_static
+        )
+    endif()
+endif()
+
+if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
+    if ("${ARCH}" STREQUAL "aarch64")
+        list(APPEND GTASK_LIBRARIES
+            tcmgr
+        )
+    else()
+        list(APPEND GTASK_LIBRARIES
+            tcmgr_a32
+        )
+    endif()
+endif()
+
+if ("${CONFIG_LIVEPATCH_ENABLE}" STREQUAL "y")
+    if ("${ARCH}" STREQUAL "aarch64")
+        list(APPEND GTASK_LIBRARIES
+            livepatch
+        )
+    else()
+        list(APPEND GTASK_LIBRARIES
+            livepatch_a32
+        )
     endif()
 endif()
 
@@ -170,27 +213,6 @@ if ("${CONFIG_TERMINAL_DRV_SUPPORT}" STREQUAL "y")
     )
 endif()
 
-if ("${CONFIG_CMS_CAHASH_AUTH}" STREQUAL "y")
-    list(APPEND GTASK_LIBRARIES
-        cmscbb tee_cmscbb
-    )
-    list(APPEND TEE_C_SOURCES
-        src/ascend/auth/tee_auth_sign_cms.c
-    )
-    list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ascend/auth/tee_auth_sign_cms.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../sys_libs/libtee_cmscbb/include
-        ${PREBUILD_DIR}/headers/openssl
-    )
-else()
-    list(APPEND TEE_C_SOURCES
-        src/higeneric/auth/tee_auth_sign_rsa.c
-    )
-    list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/higeneric/auth/tee_auth_sign_rsa.h
-    )
-endif()
-
 list(APPEND GTASK_LDFLAGS
     -Wl,-z,text
     -Wl,-z,noexecstack
@@ -201,6 +223,7 @@ if ("${ARCH}" STREQUAL "aarch64")
     )
 else()
     list(APPEND GTASK_LDFLAGS
+        -Wl,--allow-shlib-undefined
         -Wl,--dynamic-linker=libc_shared_a32.so
         ../../sys_libs/libtee_shared/libtee_shared_a32.so
     )

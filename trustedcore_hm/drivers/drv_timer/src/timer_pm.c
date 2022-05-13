@@ -5,7 +5,6 @@
  */
 #include "timer_pm.h"
 #include <hmlog.h>
-#include <hongmeng.h>
 #include <sre_hwi.h>
 #include "timer_hw.h"
 #include "timer_reg.h"
@@ -47,6 +46,9 @@ static uint64_t get_resume_value(void)
     (void)expires_rtc;
 #endif
 
+    if (expires_timer.tval.sec == INT32_POSITIVE_MAX)
+        return TIMER_VALUE_INVALID;
+
     if (expires_timer.tval64 <= now.tval64)
         return MIN_CLOCK_CYCLES;
 
@@ -64,8 +66,10 @@ static uint64_t get_resume_value(void)
 static void timer_value_resume(void)
 {
     uint64_t user_time_val = get_resume_value();
-    timer_set_value(TICK_TIMER_BASE, TICK_TIMER_NUM, MODE_ONESHOT, user_time_val);
-    timer_enable(TICK_TIMER_BASE, TICK_TIMER_NUM);
+    if (user_time_val != TIMER_VALUE_INVALID) {
+        timer_set_value(TICK_TIMER_BASE, TICK_TIMER_NUM, MODE_ONESHOT, user_time_val);
+        timer_enable(TICK_TIMER_BASE, TICK_TIMER_NUM);
+    }
 }
 #endif
 

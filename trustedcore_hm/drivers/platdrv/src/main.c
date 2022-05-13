@@ -13,13 +13,11 @@
 #include <libdrv_frame.h>
 #include <procmgr_ext.h>
 #include <tee_defines.h>
-#include <tee_config.h>
 #include <hmlog.h>
+#include <rnd_seed.h>
 #include "platdrv_io_map.h"
 #include "platdrv.h"
-#include "ccmgr_hm.h"
 #include "rand_update.h"
-
 #include "drv_thread.h"
 #include "platdrv_hash.h"
 #ifdef TEE_SUPPORT_M_DRIVER
@@ -75,28 +73,6 @@ static int32_t platdrv_framework_init(void)
 
     drv_hash_map();
     return 0;
-}
-
-/* each dependent driver has a white table for uuid-libname */
-bool is_modload_perm_valid(const TEE_UUID *uuid, const char *name)
-{
-    const struct drvlib_load_caller_info *info_list = get_drvlib_load_caller_infos();
-    const uint32_t nr = get_drvlib_load_caller_nums();
-    uint32_t i;
-
-    if (uuid == NULL || name == NULL) {
-        hm_error("input params is invalid\n");
-        return false;
-    }
-
-    hm_debug("uuid is 0x%x is calling %s\n", uuid->timeLow, name);
-    for (i = 0; i < nr; i++) {
-        if (memcmp(&info_list[i].uuid, uuid, sizeof(*uuid)) == 0 &&
-            strcmp(info_list[i].name, name) == 0)
-            return true;
-    }
-
-    return false;
 }
 
 #ifdef TEE_SUPPORT_M_DRIVER

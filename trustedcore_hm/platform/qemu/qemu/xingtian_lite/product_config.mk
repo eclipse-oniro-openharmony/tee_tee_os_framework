@@ -15,6 +15,8 @@ export CONFIG_SSA_64BIT := true
 export CONFIG_CRYPTO_SUPPORT_X509 := false
 export CONFIG_CRYPTO_ECC_WRAPPER := false
 export CONFIG_CRYPTO_AES_WRAPPER := false
+export CONFIG_DYN_SRV_MULTI_THREAD_DISABLE := true
+export CONFIG_LIBFUZZER_SERVICE_64BIT :=false
 #set hisi_drv to BLOCKLIST with no -Werror
 BLOCKLIST += trngdriver_lib
 export BLOCKLIST

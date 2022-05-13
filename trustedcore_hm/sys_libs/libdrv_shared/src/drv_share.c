@@ -5,7 +5,6 @@
  */
 
 #include "drv_io_share.h"
-#include "drv_hwi_share.h"
 #include "drv_addr_share.h"
 #include "drv_map_share.h"
 #include "iomgr_ext.h"
@@ -25,38 +24,7 @@ int32_t iounmap(uintptr_t pddr, const void *addr)
 
 uint64_t drv_virt_to_phys(uintptr_t addr)
 {
-    return __virt_to_phys(addr);
-}
-
-uint32_t sys_hwi_create(uint32_t hwi_num, uint16_t hwi_prio, uint16_t mode,
-                        HWI_PROC_FUNC handler, uint32_t args)
-{
-    return SRE_HwiCreate(hwi_num, hwi_prio, mode, handler, args);
-}
-
-uint32_t sys_hwi_resume(uint32_t hwi_num, uint16_t hwi_prio, uint16_t mode)
-{
-    return SRE_HwiResume(hwi_num, hwi_prio, mode);
-}
-
-uint32_t sys_hwi_delete(uint32_t hwi_num)
-{
-    return SRE_HwiDelete(hwi_num);
-}
-
-uint32_t sys_hwi_disable(uint32_t hwi_num)
-{
-    return SRE_HwiDisable(hwi_num);
-}
-
-uint32_t sys_hwi_enable(uint32_t hwi_num)
-{
-    return SRE_HwiEnable(hwi_num);
-}
-
-int32_t sys_hwi_notify(uint32_t hwi_num)
-{
-    return SRE_HwiNotify(hwi_num);
+    return tee_virt_to_phys(addr);
 }
 
 static int32_t get_drv_caller_taskid(uint32_t *taskid)
@@ -113,7 +81,7 @@ int32_t tee_map_secure(paddr_t paddr, uint64_t size, uintptr_t *vaddr, cache_mod
         hm_error("vaddr is null\n");
         return -1;
     }
-    mode_type.secure_mode = secure;
+    mode_type.secure_mode = SECURE;
     mode_type.cache_mode = cache_mode;
 
     ret = tee_map_phy(paddr, size, &temp_addr, &mode_type, MAP_SECURE);
@@ -140,7 +108,7 @@ int32_t tee_map_nonsecure(paddr_t paddr, uint64_t size, uintptr_t *vaddr, cache_
         return -1;
     }
 
-    mode_type.secure_mode = non_secure;
+    mode_type.secure_mode = NON_SECURE;
     mode_type.cache_mode = cache_mode;
 
     ret = tee_map_phy(paddr, size, &temp_addr, &mode_type, MAP_NONSECURE);

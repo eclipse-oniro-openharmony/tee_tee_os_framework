@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
  * Description: elfloader init
  * create user && kernel vspace pagetable, map uart device
  * Create: 2021-03
@@ -74,7 +74,9 @@
  */
 BEGIN_FUNC(_start)
     ldr r5, =g_ns_info
+    mov r6, r0
     virt_to_phys
+    mov r0, r6
     stmia r5, {r0-r3}
     bl enable_cpacr
     bl enable_fpu
@@ -138,9 +140,11 @@ BEGIN_FUNC(copy_plat_cfg)
     sub r5, r5, #8
     mov r0, r5
     ldr r5, =g_plat_cfg
+    mov r6, r0
     virt_to_phys
+    mov r0, r6
     mov r2, r5
-    add r0, r0, r1
+    add r4, r0, r1
 copy_cfg:
     ldr r3, [r0]
     str r3, [r2]

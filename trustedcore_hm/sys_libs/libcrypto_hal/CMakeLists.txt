@@ -1,6 +1,5 @@
 add_custom_target(libcrypto_hal_headers
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include ${HDR_L_DIR}
-	COMMAND ${CMAKE_COMMAND} -E copy ${PREBUILD_DIR}/headers/gmssl/openssl/sm3.h ${HDR_L_DIR}
     VERBATIM)
 
 include(apps_lib_common)
@@ -57,15 +56,16 @@ if ("${CONFIG_CRYPTO_SUPPORT_UNSAFE_DH}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS CRYPTO_SSL_SUPPORT_UNSAFE_DH=1)
 endif()
 
+if ("${CONFIG_DATA_FALLTHROUGH}" STREQUAL "y")
+    list(APPEND TEE_C_DEFINITIONS
+        DATA_FALLTHROUGH
+    )
+endif()
+
 if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
     list(APPEND TEE_C_DEFINITIONS MBEDTLS_ENABLE)
     list(APPEND TEE_INCLUDE_PATH
         ${PREBUILD_DIR}/headers/mbedtls
-    )
-elseif ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "boringssl")
-    list(APPEND TEE_C_DEFINITIONS BORINGSSL_ENABLE)
-    list(APPEND TEE_INCLUDE_PATH
-        ${PREBUILD_DIR}/headers/boringssl
     )
 else()
     list(APPEND TEE_C_DEFINITIONS OPENSSL_ENABLE)
@@ -124,9 +124,22 @@ set(CRYPTOHAL_SRCS
     src/crypto_hal_hmac.c
     src/crypto_hal_cipher.c
     src/crypto_hal_derive_key.c
-    src/crypto_ext_api.c
     src/crypto_alg_config.c
 )
+
+if ("${CONFIG_CIPHER_ENABLE}" STREQUAL "true")
+    set(CRYPTOHAL_SRCS
+        ${CRYPTOHAL_SRCS}
+        src/crypto_ext_api.c
+        src/tee_chinadrm_gmssl_api.c
+    )
+else()
+    set(CRYPTOHAL_SRCS
+        ${CRYPTOHAL_SRCS}
+        src/crypto_ext_api_stub.c
+        src/tee_chinadrm_gmssl_api_stub.c
+    )
+endif()
 
 if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS CRYPTO_MGR_SERVER_ENABLE)
@@ -167,7 +180,7 @@ else ()
         src/boringssl/soft_hash.c
         src/boringssl/soft_hmac.c
         src/boringssl/soft_err.c
-        src/tee_gmssl_api.c
+        src/boringssl/soft_gmssl.c
         src/tee_chinadrm_gmssl_api.c
     )
 endif()

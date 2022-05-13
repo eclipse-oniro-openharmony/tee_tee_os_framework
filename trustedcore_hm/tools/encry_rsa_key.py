@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # encrypt rsa priv key
 # Copyright Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+"""Description:image encrypto genrate key
+"""
 
 
 import os
@@ -16,12 +18,14 @@ G_OEM_KEY = b""
 
 
 def aes_encrypt(key, iv, content):
+    """aes encrypto for content"""
     cipher = AES.new(key, AES.MODE_CBC, iv)
     encrypt_bytes = cipher.encrypt(content)
     return encrypt_bytes
 
 
 def encrypt_rsa_key():
+    """get rsa key for encrypto image"""
     rsa_key = RSA.import_key(open("KeyRsaPriv.pem").read())
 
     if os.path.exists("tz_encry_rsa.h"):
@@ -75,6 +79,7 @@ def encrypt_rsa_key():
 
 
 def main():
+    """main entry"""
     encrypt_rsa_key()
 
 if __name__ == '__main__':

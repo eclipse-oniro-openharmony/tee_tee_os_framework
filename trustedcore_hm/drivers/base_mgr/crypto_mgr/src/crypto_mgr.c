@@ -15,13 +15,55 @@
 #include "crypto_mgr_syscall.h"
 #include <sre_log.h>
 #include "drv_random.h"
-#include "ccmgr_hm.h"
+#include "crypto_driver_adaptor.h"
 
 const char *g_debug_prefix = "crypto_mgr";
+uint8_t *g_src_ctx_buf = NULL;
+uint8_t *g_dest_ctx_buf = NULL;
+static int32_t g_src_fd = 0;
+static int32_t g_dest_fd = 0;
+
+#define TYPE_DRV_OPEN   2
 
 int32_t crypto_mgr_init(void)
 {
     return 0;
+}
+
+uint8_t *get_ctx_ctx_buf(void)
+{
+    return g_src_ctx_buf;
+}
+
+static int32_t crypto_ioctl_alloc_ctx_buf(struct drv_data *drv, uint32_t cmd, unsigned long args, uint32_t args_len)
+{
+    uint32_t ctx_size = crypto_ioctl_func(drv, IOCTRL_CRYPTO_GET_CTX_SIZE, args, args_len);
+    bool check = ((ctx_size <= 0) || (ctx_size > MAX_CRYPTO_CTX_SIZE));
+    if (check) {
+        hm_error("Get ctx size failed, ctx size=%d\n", ctx_size);
+        return CRYPTO_BAD_PARAMETERS;
+    }
+    uint8_t *ctx_buffer = (uint8_t *)malloc_coherent((size_t)ctx_size);
+    if (ctx_buffer == NULL) {
+        hm_error("Malloc ctx buffer failed, ctx size=%d\n", ctx_size);
+        return CRYPTO_OVERFLOW;
+    }
+    if (memset_s(ctx_buffer, (size_t)ctx_size, 0, (size_t)ctx_size) != EOK) {
+        hm_error("memset ctx buffer failed\n");
+        free(ctx_buffer);
+        return CRYPTO_ERROR_SECURITY;
+    }
+
+    drv->private_data = ctx_buffer;
+    if (cmd == 0) {
+        g_src_ctx_buf = ctx_buffer;
+        g_src_fd = drv->fd;
+    } else {
+        g_dest_ctx_buf = ctx_buffer;
+        g_dest_fd = drv->fd;
+    }
+
+    return CRYPTO_SUCCESS;
 }
 
 int64_t crypto_mgr_ioctl(struct drv_data *drv, uint32_t cmd, unsigned long args, uint32_t args_len)
@@ -30,10 +72,17 @@ int64_t crypto_mgr_ioctl(struct drv_data *drv, uint32_t cmd, unsigned long args,
         hm_error("ioctl invalid drv\n");
         return -1;
     }
-
-    int32_t ret = crypto_ioctl_func(drv, cmd, args, args_len);
+    int32_t ret;
+    if (cmd == IOCTRL_CRYPTO_CTX_COPY) {
+        ret = crypto_ioctl_alloc_ctx_buf(drv, cmd, args, args_len);
+        if (ret != CRYPTO_SUCCESS) {
+            hm_error("crypto_ioctl_alloc_ctx_buf fail\n");
+            return -1;
+        }
+    }
+    ret = crypto_ioctl_func(drv, cmd, args, args_len);
     if (ret != 0)
-        hm_error("crypto mgr ioctl fail cmd 0x%x, ret0x%x\n", cmd, ret);
+        hm_info("crypto mgr ioctl fail cmd 0x%x, ret0x%x\n", cmd, ret);
 
     hm_info("mgr ioctl load 0x%x ret 0x%x\n", cmd, ret);
 
@@ -47,15 +96,21 @@ int64_t crypto_mgr_open(struct drv_data *drv, unsigned long args, uint32_t args_
         return -1;
     }
 
-    if (args == 0 && args_len == 0) {
-        hm_error("input NULL param\n");
+    if (args == 0 && args_len == 0)
         return 0;
-    }
 
     if (args_len < sizeof(uint32_t) || args == 0) {
         hm_error("open invalid drv\n");
         return -1;
     }
+
+    /* get the drv ability */
+    if (args_len == sizeof(uint32_t) + TYPE_DRV_OPEN) {
+        int32_t ret = crypto_ioctl_alloc_ctx_buf(drv, 0, args, sizeof(uint32_t));
+        if (ret != CRYPTO_SUCCESS)
+            return -1;
+    }
+
     return 0;
 }
 
@@ -67,8 +122,19 @@ int64_t crypto_mgr_close(struct drv_data *drv)
     }
 
     if (drv->private_data != NULL) {
-        hm_error("free private data in close\n");
         free(drv->private_data);
+        drv->private_data = NULL;
+        if (g_src_fd == drv->fd) {
+            if (g_dest_ctx_buf == NULL) {
+                g_src_ctx_buf = NULL;
+                g_src_fd = 0;
+            } else {
+                g_src_ctx_buf = g_dest_ctx_buf;
+                g_dest_ctx_buf = NULL;
+                g_src_fd = g_dest_fd;
+                g_dest_fd = 0;
+            }
+        }
     }
 
     return 0;
@@ -76,12 +142,14 @@ int64_t crypto_mgr_close(struct drv_data *drv)
 
 int32_t crypto_mgr_suspend(void)
 {
-    return 0;
+    hm_debug("crypto_mgr_suspend\n");
+    return crypto_ioctl_suspend();
 }
 
 int32_t crypto_mgr_resume(void)
 {
-    return 0;
+    hm_debug("crypto_mgr_resume\n");
+    return crypto_ioctl_resume();
 }
 
 tee_driver_declare(crypto_mgr, crypto_mgr_init, crypto_mgr_open, crypto_mgr_ioctl, crypto_mgr_close, \

@@ -1,5 +1,5 @@
 set(PREBUILD_TOOLCHAIN
-    ${PROJECT_SOURCE_DIR}/prebuild/toolchains/clang+llvm
+    ${CMAKE_TOOLCHAIN_PATH}/clang+llvm
 )
 set(LLVM_LIB
     ${PREBUILD_TOOLCHAIN}/lib

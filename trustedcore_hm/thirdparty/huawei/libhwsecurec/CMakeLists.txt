@@ -82,10 +82,35 @@ set(HWSECUREC_CFLAGS
     -fno-builtin-strlcpy
 )
 
+if ("${ARCH}" STREQUAL "arm")
+    if ("${CONFIG_THUMB_SUPPORT}" STREQUAL "y")
+        list(APPEND HWSECUREC_CFLAGS
+            -mthumb
+        )
+    endif()
+
+    if ("${CONFIG_ARM_CORTEX_A15}" STREQUAL "y")
+        list(APPEND HWSECUREC_CFLAGS
+            -march=armv7ve
+        )
+    endif()
+
+    if ("${CONFIG_ARM_CORTEX_A53}" STREQUAL "y")
+        list(APPEND HWSECUREC_CFLAGS
+            -march=armv8-a
+        )
+    endif()
+else()
+    list(APPEND HWSECUREC_CFLAGS
+        -march=armv8-a
+    )
+endif()
+
 set(HWSECUREC_INCLUDES
     ${HWSECUREC_INCLUDES}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../thirdparty/huawei/libhwsecurec/include/libhwsecurec
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../thirdparty/huawei/libhwsecurec/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../tee_os_kernel/libs/syslib/libc/include/arch/$(ARCH)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../open_source/musl/musl-1.2.0/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../open_source/musl/musl-1.2.0/arch/${ARCH}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../open_source/musl/musl-1.2.0/arch/generic

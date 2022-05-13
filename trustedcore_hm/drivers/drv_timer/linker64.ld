@@ -250,14 +250,14 @@ SECTIONS
    *(.dynbss)
    *(.bss .bss.* .gnu.linkonce.b.*)
    *(COMMON)
-   . = ALIGN(. != 0 ? 32 / 8 : 1);
+   . = ALIGN(. != 0 ? 64 / 8 : 1);
   }
   _bss_end__ = . ;
   __bss_end__ = . ;
-  . = ALIGN(4);
+  . = ALIGN(64 / 8);
 
   . = SEGMENT_START("ldata-segment", .);
-  . = ALIGN(32 / 8);
+  . = ALIGN(64 / 8);
   __end__ = . ;
   _end = .;
   PROVIDE (end = .);

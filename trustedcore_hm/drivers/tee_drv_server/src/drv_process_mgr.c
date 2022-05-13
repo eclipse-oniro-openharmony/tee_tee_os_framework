@@ -125,13 +125,13 @@ static int32_t drv_name_to_path(const struct drv_spawn_param *drv_param, char *d
 {
     bool base_drv_flag = get_base_drv_flag(drv_param->drv_name, strlen(drv_param->drv_name));
     if (base_drv_flag) {
-        int32_t ret = snprintf_s(drv_path, path_len, (path_len -  1), "/%s%s", drv_param->drv_name, ".elf");
+        int32_t ret = snprintf_s(drv_path, path_len, (path_len - 1), "/%s%s", drv_param->drv_name, ".elf");
         if (ret < 0) {
             tloge("get drv path failed\n");
             return -1;
         }
     } else {
-        int32_t ret = snprintf_s(drv_path, path_len, (path_len -  1), "%s/%s%s",
+        int32_t ret = snprintf_s(drv_path, path_len, (path_len - 1), "%s/%s%s",
                                  TAFS_MOUNTPOINT, drv_param->drv_name, ".elf");
         if (ret < 0) {
             tloge("get drv path failed\n");

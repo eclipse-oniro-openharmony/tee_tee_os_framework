@@ -4,27 +4,18 @@
  * Create: 2019-05-20
  */
 #include <stdbool.h>
-#ifdef CRYPTO_SSL_SUPPORT_X509
 #include <openssl/sha.h>
 #include <openssl/rsa.h>
 #include <openssl/x509v3.h>
 #include <openssl/x509.h>
 #include <openssl/ec.h>
-#ifdef BORINGSSL_ENABLE
-#include <openssl/nid.h>
-#include <openssl/digest.h>
-#else
 #include <openssl/obj_mac.h>
 #include <openssl/evp.h>
-#endif
-#endif
 #include <securec.h>
 #include <tee_log.h>
 #include "crypto_inner_interface.h"
 #define TLV_TAG       0x30
 #define EXTENSION_TAG 0xa3
-
-#ifdef CRYPTO_SSL_SUPPORT_X509
 
 static int32_t tbs_ele_tlv_type_check(const uint8_t *cert, uint32_t cert_len, const uint8_t **tbs, uint32_t *tbs_len)
 {
@@ -172,6 +163,7 @@ int32_t get_tbs_element(uint8_t **elem, uint32_t elem_id, const uint8_t *cert, u
     tbs += ((uint32_t)len + hlen);
     return tbs_ele_proc(tbs, tbs_len, elem_id, elem);
 }
+
 static int cert_set_issuer_name(X509 *x, const uint8_t *issuer_tlv, uint32_t issuer_tlv_len)
 {
     X509_NAME *issuer_name = NULL;
@@ -188,6 +180,7 @@ static int cert_set_issuer_name(X509 *x, const uint8_t *issuer_tlv, uint32_t iss
     }
     return 0;
 }
+
 static int cert_set_time(X509 *x, const validity_period_t *valid)
 {
     int ret;
@@ -216,6 +209,7 @@ static int cert_set_time(X509 *x, const validity_period_t *valid)
     }
     return 0;
 }
+
 static int cert_set_pub_key(X509 *x, const uint8_t *subject_public_key, uint32_t subject_public_key_len)
 {
     EVP_PKEY *pub_key = NULL;
@@ -233,6 +227,7 @@ static int cert_set_pub_key(X509 *x, const uint8_t *subject_public_key, uint32_t
     }
     return 0;
 }
+
 static int cert_set_ext(X509 *x, const uint8_t *attestation_ext, uint32_t attestation_ext_len)
 {
     int ret                           = -1;
@@ -398,9 +393,9 @@ static int cert_do_sign(X509 *x, uint32_t hash, void *priv_sign, uint32_t key_ty
 
 static int cert_set_usage(X509 *x, uint32_t key_usage_sign_bit, uint32_t key_usage_encrypt_bit)
 {
-    char *sign_only_usage     = "digitalSignature";
-    char *encrypt_only_usage  = "keyEncipherment, dataEncipherment";
-    char *sign_encrypto_usage = "digitalSignature, keyEncipherment, dataEncipherment";
+    char *sign_only_usage     = "critical, digitalSignature";
+    char *encrypt_only_usage  = "critical, keyEncipherment, dataEncipherment";
+    char *sign_encrypto_usage = "critical, digitalSignature, keyEncipherment, dataEncipherment";
     X509_EXTENSION *ext       = NULL;
     X509V3_CTX ctx;
     X509V3_set_ctx_nodb(&ctx);
@@ -427,6 +422,7 @@ static int cert_set_usage(X509 *x, uint32_t key_usage_sign_bit, uint32_t key_usa
     }
     return 0;
 }
+
 static int cert_set_serial_number(X509 *x)
 {
     uint8_t root_ser[] = { 0x01 };
@@ -452,6 +448,7 @@ static int cert_set_serial_number(X509 *x)
     }
     return 0;
 }
+
 static int cert_set_subject(X509 *x, const uint8_t *cn)
 {
     int ret;
@@ -473,6 +470,7 @@ error:
     X509_NAME_free(subject_name);
     return ret;
 }
+
 struct attestation_cert_st {
     const validity_period_t *valid;
     const uint8_t *issuer_tlv;
@@ -597,37 +595,3 @@ int32_t create_attestation_cert(uint8_t *cert, uint32_t cert_len, const validity
     X509_free(x);
     return ret;
 }
-#else
-int32_t get_tbs_element(uint8_t **elem, uint32_t elem_id, const uint8_t *cert, uint32_t cert_len)
-{
-    (void)elem;
-    (void)elem_id;
-    (void)cert;
-    (void)cert_len;
-    return -1;
-}
-
-int32_t create_attestation_cert(uint8_t *cert, uint32_t cert_len, const validity_period_t *valid,
-                                const uint8_t *issuer_tlv, uint32_t issuer_tlv_len,
-                                const uint8_t *subject_public_key, uint32_t subject_public_key_len,
-                                const uint8_t *attestation_ext, uint32_t attestation_ext_len, void *priv_sign,
-                                uint32_t key_usage_sign_bit, uint32_t key_usage_encrypt_bit, uint32_t key_type,
-                                uint32_t hash)
-{
-    (void)cert;
-    (void)cert_len;
-    (void)valid;
-    (void)issuer_tlv;
-    (void)issuer_tlv_len;
-    (void)subject_public_key;
-    (void)subject_public_key_len;
-    (void)attestation_ext;
-    (void)attestation_ext_len;
-    (void)priv_sign;
-    (void)key_usage_sign_bit;
-    (void)key_usage_encrypt_bit;
-    (void)key_type;
-    (void)hash;
-    return -1;
-}
-#endif

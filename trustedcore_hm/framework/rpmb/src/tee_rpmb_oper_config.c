@@ -8,7 +8,6 @@
 #include <securec.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_log.h>
-#include <hm/hongmeng.h>
 #include "platform_get.h"
 #include <mem_ops_ext.h>
 #include <tee_ext_api.h>
@@ -20,14 +19,10 @@
 #include <hsm_rpmb_api.h>
 #endif
 #include <openssl/hmac.h>
-#ifdef BORINGSSL_ENABLE
-#include <openssl/cipher.h>
-#else
 #include <openssl/ossl_typ.h>
 #include <hmac/hmac_local.h>
 #include <openssl/evp.h>
 #include <evp/evp_local.h>
-#endif
 #include <hmdrv.h>
 #include <sre_syscalls_id.h>
 #include <boot_sharedmem.h>
@@ -259,7 +254,7 @@ static TEE_Result tee_rpmb_key_init(uint8_t *dataout, uint32_t *size)
         return TEE_ERROR_SHORT_BUFFER;
 
     if (!g_ccm_key_ready) {
-        cc_ret = TEE_EXT_ROOT_DeriveKey2((uint8_t *)derive_data, strlen(derive_data),
+        cc_ret = tee_ext_root_derive_key2((uint8_t *)derive_data, strlen(derive_data),
             g_rpmb_ccm_key, sizeof(g_rpmb_ccm_key));
         if (cc_ret != TEE_SUCCESS) {
             tloge("cmac derive key failed, ret = 0x%x\n", cc_ret);
@@ -272,7 +267,7 @@ static TEE_Result tee_rpmb_key_init(uint8_t *dataout, uint32_t *size)
     if (rc != EOK)
         return TEE_ERROR_SECURITY;
 
-    *size = sizeof(g_rpmb_ccm_key);
+    *size = (uint32_t)sizeof(g_rpmb_ccm_key);
     return TEE_SUCCESS;
 }
 
@@ -394,9 +389,9 @@ static TEE_Result aes_ccm_encrypt(const uint8_t *key, const uint8_t *src_data, u
     TEE_GenerateRandom(nonce, sizeof(nonce));
 
     encrypt_st.nonce     = nonce;
-    encrypt_st.nonce_len = sizeof(nonce);
+    encrypt_st.nonce_len = (uint32_t)sizeof(nonce);
     encrypt_st.tag       = tag;
-    encrypt_st.tag_len   = sizeof(tag);
+    encrypt_st.tag_len   = (uint32_t)sizeof(tag);
 
     date_st.src_len      = src_len;
     date_st.src_data     = (uint8_t *)src_data;
@@ -419,7 +414,7 @@ static TEE_Result aes_ccm_encrypt(const uint8_t *key, const uint8_t *src_data, u
         tloge("copy tag failed!\n");
         return TEE_ERROR_SECURITY;
     }
-    *dest_len = src_len + sizeof(nonce) + sizeof(tag);
+    *dest_len = src_len + (uint32_t)sizeof(nonce) + (uint32_t)sizeof(tag);
     return TEE_SUCCESS;
 }
 
@@ -427,7 +422,7 @@ static TEE_Result tee_rpmb_key_encrypt(const uint8_t *src_data, uint32_t src_len
                                        uint8_t *dest_data, uint32_t *dest_len)
 {
     uint8_t key[RPMB_KEY_MAC_SIZE] = { 0 }; /* MUST be 128, 192 or 256 bits */
-    uint32_t key_len = sizeof(key);
+    uint32_t key_len = (uint32_t)sizeof(key);
     TEE_Result ret;
 
     /* get a aes-256 key derived by 'derivedata' and 'DX_ROOT_KEY' */
@@ -459,16 +454,16 @@ static TEE_Result aes_ccm_decrypt(const uint8_t *key, const uint8_t *src_data, u
     struct crypt_data_st date_st = { 0 };
     uint32_t decrypt_buff_len;
 
-    if (src_len < (sizeof(tag) + sizeof(nonce))) {
+    if (src_len < (uint32_t)(sizeof(tag) + sizeof(nonce))) {
         tloge("src len is too short!\n");
         return TEE_ERROR_SHORT_BUFFER;
     }
-    if (*dest_len < src_len - (sizeof(tag) + sizeof(nonce))) {
+    if (*dest_len < src_len - (uint32_t)(sizeof(tag) + sizeof(nonce))) {
         tloge("dest len is too short!\n");
         return TEE_ERROR_SHORT_BUFFER;
     }
 
-    decrypt_buff_len = src_len - (sizeof(nonce) + sizeof(tag));
+    decrypt_buff_len = src_len - (uint32_t)(sizeof(nonce) + sizeof(tag));
     rc = memcpy_s(nonce, sizeof(nonce), src_data + decrypt_buff_len, sizeof(nonce));
     if (rc != EOK) {
         tloge("memory copy nonce error!\n");
@@ -482,9 +477,9 @@ static TEE_Result aes_ccm_decrypt(const uint8_t *key, const uint8_t *src_data, u
     }
 
     encrypt_st.nonce     = nonce;
-    encrypt_st.nonce_len = sizeof(nonce);
+    encrypt_st.nonce_len = (uint32_t)sizeof(nonce);
     encrypt_st.tag       = tag;
-    encrypt_st.tag_len   = sizeof(tag);
+    encrypt_st.tag_len   = (uint32_t)sizeof(tag);
 
     date_st.src_len      = decrypt_buff_len;
     date_st.src_data     = (uint8_t *)src_data;
@@ -505,7 +500,7 @@ static TEE_Result tee_rpmb_key_decrypt(const uint8_t *src_data, uint32_t src_len
                                        uint8_t *dest_data, uint32_t *dest_len)
 {
     uint8_t key[RPMB_KEY_MAC_SIZE] = { 0 }; /* MUST be 128, 192 or 256 bits */
-    uint32_t key_len = sizeof(key);
+    uint32_t key_len = (uint32_t)sizeof(key);
     TEE_Result ret;
 
     ret = tee_rpmb_key_init(key, &key_len);
@@ -564,14 +559,14 @@ static TEE_Result tee_rpmb_get_info(void)
     TEE_Result ret;
 
     g_u_rai.data_addr = (uintptr_t)g_u_key_info;
-    g_u_rai.data_len  = sizeof(g_u_key_info);
+    g_u_rai.data_len  = (uint32_t)sizeof(g_u_key_info);
     g_u_rai.ret       = (uint32_t)TEE_ERROR_GENERIC;
 
 #if defined(WITH_CHIP_SHAOLINGUN)
     ret = ext_tee_flash_get_rpmb_info(&g_u_rai, sizeof(g_u_rai));
 #else
     /* data_addr should be phys addr, otherwise bl31 cannot access it. */
-    g_u_rai.data_addr = (uint32_t)__virt_to_phys((uintptr_t)g_u_key_info);
+    g_u_rai.data_addr = (uint32_t)tee_virt_to_phys((uintptr_t)g_u_key_info);
     ret = tee_rpmb_get_info_from_atf(&g_u_rai);
     /* wh: after this call, we should resume the virt addr, thus rpmb can use it. */
     g_u_rai.data_addr = (uintptr_t)g_u_key_info;
@@ -595,7 +590,7 @@ static TEE_Result tee_rpmb_get_chip_info(uint32_t key_type)
     TEE_Result ret;
     uint32_t res_code;
     uint8_t tmp_buff[RPMB_ROOTKEY_SIZE_MAX] = { 0 };
-    uint32_t tmp_buff_len = sizeof(tmp_buff);
+    uint32_t tmp_buff_len = (uint32_t)sizeof(tmp_buff);
 
     tee_rpmb_clear_chip_info();
 
@@ -641,7 +636,7 @@ static TEE_Result tee_rpmb_get_rootkey_data(uint8_t *data, uint32_t *size, uint3
     TEE_Result ret;
     uint32_t stat;
     uint8_t tmp_buff[RPMB_ROOTKEY_SIZE_MAX] = { 0 };
-    uint32_t tmp_buff_len = sizeof(tmp_buff);
+    uint32_t tmp_buff_len = (uint32_t)sizeof(tmp_buff);
 
     if (data == NULL || size == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
@@ -657,7 +652,7 @@ static TEE_Result tee_rpmb_get_rootkey_data(uint8_t *data, uint32_t *size, uint3
     }
 
     if (key_type == RPMB_ACCESS_KEY) {
-        tmp_buff_len = sizeof(tmp_buff);
+        tmp_buff_len = (uint32_t)sizeof(tmp_buff);
         stat = rpmb_keyinfo_info_read((char *)tmp_buff, &tmp_buff_len);
         if (stat == RPMB_KEY_INFO_READY) {
             ret = tee_rpmb_key_decrypt(tmp_buff, tmp_buff_len, data, size);
@@ -686,7 +681,7 @@ static TEE_Result tee_rpmb_key_prepare_access(uint8_t *key_prepare, uint32_t key
     errno_t rc;
     TEE_Result ret;
     uint8_t data[RPMB_ROOTKEY_SIZE_MAX] = { 0 };
-    uint32_t datalen = sizeof(data);
+    uint32_t datalen = (uint32_t)sizeof(data);
 
     if (key_len < RPMB_KEY_MAC_SIZE)
         return TEE_ERROR_GENERIC;

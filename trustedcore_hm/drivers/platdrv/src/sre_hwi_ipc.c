@@ -34,7 +34,7 @@ struct task_hwi_info {
 };
 
 static pthread_mutex_t g_ipc_lock;
-DLIST_HEAD(g_stactive_task_hwilist);
+dlist_head(g_stactive_task_hwilist);
 
 /*
  * CODEREVIEW CHECKLIST

@@ -35,8 +35,15 @@ list(APPEND TEE_C_SOURCES
     src/crypto_ioctl/crypto_syscall_oemkey.c
     src/crypto_ioctl/crypto_syscall_random.c
     src/crypto_ioctl/crypto_syscall_rsa.c
+    src/crypto_ioctl/crypto_syscall_pm.c
     src/crypto_mgr.c
 )
+
+if ("${CONFIG_DATA_FALLTHROUGH}" STREQUAL "y")
+    list(APPEND TEE_C_DEFINITIONS
+        DATA_FALLTHROUGH
+    )
+endif()
 
 tee_add_executable(crypto_mgr.elf
     SOURCES
@@ -51,6 +58,12 @@ tee_add_executable(crypto_mgr.elf
 
     PRIVATE_INCLUDES
     ${TEE_INCLUDE_PATH}
+
+    C_COMPILER_DEFINITIONS
+    ${TEE_C_DEFINITIONS}
+
+    CPP_COMPILER_DEFINITIONS
+    ${TEE_C_DEFINITIONS}
 
     LD_FLAGS
     ${DRV_LDFLAGS}

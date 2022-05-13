@@ -37,6 +37,6 @@ static inline void clear_bitmap(uint8_t *bitmap, uint32_t bit_max, uint32_t bit)
     if ((bitmap == NULL) || (bit >= bit_max))
         return;
 
-    bitmap[bit >> MOVE_BIT] = (bitmap[bit >> MOVE_BIT]) & (~(uint8_t)(0x1 << (bit % INDEX_MAX)));
+    bitmap[bit >> MOVE_BIT] = (bitmap[bit >> MOVE_BIT]) & ((uint8_t)(~(uint8_t)(0x1 << (bit % INDEX_MAX))));
 }
 #endif

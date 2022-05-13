@@ -44,7 +44,12 @@ struct platform_info g_plat_cfg = {
 #endif
     ,
     /* at most PLAT_MAX_DEVIO_REGIONS (128) regions */
-    .plat_io_regions        = {
-        { 0, 0 } /* this is terminator */
+    .extend_datas_io = {
+        .extend_magic = 0,
+        .extend_length = 0,
+        .extend_paras = {0},
+        .plat_io_regions        = {
+            { 0, 0 } /* this is terminator */
+        }
     }
 };

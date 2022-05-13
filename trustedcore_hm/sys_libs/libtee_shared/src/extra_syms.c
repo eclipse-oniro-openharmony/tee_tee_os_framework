@@ -4,8 +4,15 @@
  * Create: 2020-03-20
  */
 #include <stdbool.h>
+#include <tee_defines.h>
+#include <stdint.h>
 #include "internal.h"
+#include "sre_task.h"
+#include "tamgr_ext.h" /* get_selfpid */
+#include "ipclib.h" /* SRE_PID_ERR */
+#include "hm_mman.h" /* dump_free_mem */
 
+#define MEM_USAGE_OK 1
 /*
  * DO NOT CHANGE THE NAME OF _cfi_disabled VARIABLE
  * THE SYMBOL OF THIS VARIABLE HAS ALREADY BEEN EXPORTED TO RELEASE VERSION SDK
@@ -19,6 +26,12 @@ void __aeabi_unwind_cpp_pr0(void)
 }
 #endif
 
+uint32_t get_mem_usage(bool show)
+{
+    /* Heap is uncommited lazily, cannot use heap size to judge mem leak; for backward compatibility */
+    (void)show;
+    return MEM_USAGE_OK;
+}
 void hm_yield()
 {
     hmapi_yield();
@@ -62,6 +75,53 @@ unsigned int get_value()
     return 0;
 }
 
+/*
+ * CODEREVIEW CHECKLIST
+ * ARG:
+ *   - puwTaskPID: NULL checked
+ * RET:
+ *   - hm_getpid() return value checked
+ * CODEREVIEW CHECKLIST by Jiuyue Ma <majiuyue@huawei.com>
+ */
+uint32_t __SRE_TaskSelf(uint32_t *puwTaskPID)
+{
+    uint32_t self;
+
+    if (puwTaskPID == NULL)
+        return OS_ERRNO_TSK_PTR_NULL;
+
+    self = get_selfpid();
+    if (self == SRE_PID_ERR)
+        return OS_ERRNO_TSK_ID_INVALID;
+
+    *puwTaskPID = self;
+
+    return 0;
+}
+
+/*
+ * CODEREVIEW CHECKLIST
+ * ARG:
+ *   - ucPtNo: unused parameter
+ * RET:
+ *   - dump_free_mem() return value checked
+ *   - return value semantics changed: usage -> total free
+ * CODEREVIEW CHECKLIST by Jiuyue Ma <majiuyue@huawei.com>
+ */
+uint32_t __SRE_MemUsageGet(uint8_t ucPtNo)
+{
+    (void)ucPtNo;
+
+    size_t freemem = 0;
+    if (dump_free_mem(&freemem) != 0)
+        return 0;
+    return (uint32_t)freemem;
+}
+
+void cinit00(void)
+{
+}
+
 bool is_support_tui(void)
 {
 #if (defined TEE_SUPPORT_TUI_64BIT || defined TEE_SUPPORT_TUI_32BIT)
@@ -70,6 +130,13 @@ bool is_support_tui(void)
     return false;
 #endif
 }
+
+#if (defined CONFIG_RPMB_64BIT || defined CONFIG_RPMB_32BIT)
+TEE_Result TEE_EXT_TA_version_check(uint32_t ta_version)
+{
+    return tee_ext_ta_version_check(ta_version);
+}
+#endif
 
 #ifdef __aarch64__
 const char *g_debug_prefix = "libtee_shared";

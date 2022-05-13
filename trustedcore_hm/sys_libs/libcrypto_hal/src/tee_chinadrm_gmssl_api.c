@@ -1,21 +1,18 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- * Description: implament GP API using boringssl
+ * Description: chinadrm api using gmssl
  * Create: 2019-11-21
  */
 #include "tee_chinadrm_gmssl_api.h"
 #include <tee_crypto_api.h>
 #include <tee_log.h>
 #include <ccmgr_ops.h>
-#ifdef DX_ENABLE
 #include <cdrmr_cipher.h>
-#endif
 
 #define POWER_ON     1
 #define POWER_OFF    2
 #define HIGH_PROFILE 0
 
-#ifdef DX_ENABLE
 static int32_t set_eps(void)
 {
     if (!TEE_SupportCdrmEnhance()) {
@@ -29,7 +26,6 @@ static int32_t set_eps(void)
     }
     return TEE_SUCCESS;
 }
-#endif
 
 int32_t cdrm_eps_sm2_sign(void *priv_key, uint8_t *input, uint32_t input_len, void *signature)
 {
@@ -38,7 +34,6 @@ int32_t cdrm_eps_sm2_sign(void *priv_key, uint8_t *input, uint32_t input_len, vo
         tloge("invalid params");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-#ifdef DX_ENABLE
     int32_t ret = set_eps();
     if (ret != TEE_SUCCESS)
         return ret;
@@ -46,9 +41,6 @@ int32_t cdrm_eps_sm2_sign(void *priv_key, uint8_t *input, uint32_t input_len, vo
     ret = __cc_eps_sm2_sign(priv_key, input, input_len, signature);
     (void)TEE_EPS_Ctrl(POWER_OFF, HIGH_PROFILE);
     return ret;
-#else
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }
 
 int32_t cdrm_eps_sm2_verify(void *public_key, uint8_t *input, uint32_t input_len, void *signature)
@@ -58,7 +50,6 @@ int32_t cdrm_eps_sm2_verify(void *public_key, uint8_t *input, uint32_t input_len
         tloge("invalid params");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-#ifdef DX_ENABLE
     int32_t ret = set_eps();
     if (ret != TEE_SUCCESS)
         return ret;
@@ -66,9 +57,6 @@ int32_t cdrm_eps_sm2_verify(void *public_key, uint8_t *input, uint32_t input_len
     ret = __cc_eps_sm2_verify(public_key, input, input_len, signature);
     (void)TEE_EPS_Ctrl(POWER_OFF, HIGH_PROFILE);
     return ret;
-#else
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }
 
 int32_t cdrm_eps_sm2_encrypt(void *public_key, uint8_t *input, uint32_t input_len, void *cipher, uint32_t clen)
@@ -78,7 +66,6 @@ int32_t cdrm_eps_sm2_encrypt(void *public_key, uint8_t *input, uint32_t input_le
         tloge("invalid params");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-#ifdef DX_ENABLE
     int32_t ret = set_eps();
     if (ret != TEE_SUCCESS)
         return ret;
@@ -86,11 +73,8 @@ int32_t cdrm_eps_sm2_encrypt(void *public_key, uint8_t *input, uint32_t input_le
     ret = __cc_eps_sm2_encrypt(public_key, input, input_len, cipher, clen);
     (void)TEE_EPS_Ctrl(POWER_OFF, HIGH_PROFILE);
     return ret;
-#else
-    (void)clen;
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }
+
 int32_t cdrm_eps_sm2_decrypt(void *priv_key, uint8_t *output, uint32_t *output_len, void *cipher, uint32_t clen)
 {
     bool check = (priv_key == NULL || output == NULL || output_len == NULL || *output_len == 0 || cipher == NULL);
@@ -98,7 +82,6 @@ int32_t cdrm_eps_sm2_decrypt(void *priv_key, uint8_t *output, uint32_t *output_l
         tloge("invalid params");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-#ifdef DX_ENABLE
     int32_t ret = set_eps();
     if (ret != TEE_SUCCESS)
         return ret;
@@ -106,13 +89,8 @@ int32_t cdrm_eps_sm2_decrypt(void *priv_key, uint8_t *output, uint32_t *output_l
     ret = __cc_eps_sm2_decrypt(priv_key, output, output_len, cipher, clen);
     (void)TEE_EPS_Ctrl(POWER_OFF, HIGH_PROFILE);
     return ret;
-#else
-    (void)clen;
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }
 
-#ifdef DX_ENABLE
 static void cdrm_eps_params_transfor(struct cdrm_trans_params *dst_data, const struct cdrm_params *src_data)
 {
     dst_data->pkey = (uintptr_t)src_data->pkey;
@@ -126,7 +104,6 @@ static void cdrm_eps_params_transfor(struct cdrm_trans_params *dst_data, const s
     dst_data->context = (uintptr_t)src_data->context;
     dst_data->alg = src_data->alg;
 }
-#endif
 
 int32_t cdrm_eps_sm4_crypto(uint32_t algorithm, uint32_t mode, struct cdrm_params *params)
 {
@@ -139,7 +116,6 @@ int32_t cdrm_eps_sm4_crypto(uint32_t algorithm, uint32_t mode, struct cdrm_param
         tloge("params Invalid");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-#ifdef DX_ENABLE
     int32_t ret = set_eps();
     if (ret != TEE_SUCCESS)
         return ret;
@@ -153,11 +129,6 @@ int32_t cdrm_eps_sm4_crypto(uint32_t algorithm, uint32_t mode, struct cdrm_param
     }
     (void)TEE_EPS_Ctrl(POWER_OFF, HIGH_PROFILE);
     return ret;
-#else
-    (void)algorithm;
-    (void)data;
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }
 
 TEE_Result cdrm_eps_sm4_config(void **context, uint32_t *context_len, struct cdrm_params *params)
@@ -170,7 +141,6 @@ TEE_Result cdrm_eps_sm4_config(void **context, uint32_t *context_len, struct cdr
         tloge("params Invalid");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-#ifdef DX_ENABLE
     int32_t ret = set_eps();
     if (ret != TEE_SUCCESS)
         return (TEE_Result)ret;
@@ -188,12 +158,8 @@ TEE_Result cdrm_eps_sm4_config(void **context, uint32_t *context_len, struct cdr
         return ret;
     }
     *context = puser_ctx;
-    *context_len = sizeof(*puser_ctx);
+    *context_len = (uint32_t)sizeof(*puser_ctx);
     return TEE_SUCCESS;
-#else
-    (void)data;
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }
 
 TEE_Result cdrm_eps_sm4_cenc_decrypt(void *context, uint8_t *input, uint32_t input_len,
@@ -207,7 +173,6 @@ TEE_Result cdrm_eps_sm4_cenc_decrypt(void *context, uint8_t *input, uint32_t inp
         tloge("invalid params");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-#ifdef DX_ENABLE
     struct cdrm_params params = { 0 };
     params.input_buffer       = input;
     params.input_len          = input_len;
@@ -217,8 +182,4 @@ TEE_Result cdrm_eps_sm4_cenc_decrypt(void *context, uint8_t *input, uint32_t inp
     cdrm_eps_params_transfor(&data, &params);
     TEE_Result ret = (TEE_Result)__cc_eps_sm4_cenc_decrypt(context, &data);
     return ret;
-#else
-    (void)data;
-    return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }

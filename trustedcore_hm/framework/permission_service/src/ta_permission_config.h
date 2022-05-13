@@ -6,7 +6,6 @@
 #ifndef PERMSRV_TA_PERMISSION_CONFIG
 #define PERMSRV_TA_PERMISSION_CONFIG
 
-#include <product_uuid.h>
 #include "product_uuid_public.h"
 #include "tee_defines.h"
 #include "tee_reserve.h"

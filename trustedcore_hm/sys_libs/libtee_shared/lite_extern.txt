@@ -16,7 +16,6 @@ get_tlv_sharedmem
 
 cfi_disabled
 localtime
-__sre_get_rtc_time
 agent_work_unlock
 obtain_agent_work_lock
 TEE_EXT_GetAgentBuffer
@@ -24,14 +23,12 @@ tee_agent_lock
 tee_agent_unlock
 tee_get_agent_buffer
 tee_send_agent_cmd
+tee_unlink_lib
 
 /* the following apis are externed for gtask dynamic link tee_shared library*/
 get_device_id_prop
-SRE_Timer_Drv_Init
-SRE_ReadTimestamp
-__init_startup_time_kernel
-__adjust_sys_time
-__get_startup_time
+tee_read_time_stamp
+adjust_sys_time
 /* the above apis are externed for gtask dynamic link tee_shared library*/
 /* for signature verify */
 get_effective_size
@@ -108,6 +105,9 @@ TEE_EPS_Ctrl
 TEE_Ext_CreatePersistentObject
 TEE_Ext_OpenPersistentObject
 TEE_Ext_DeleteAllObjects
+tee_ext_create_persistent_object
+tee_ext_open_persistent_object
+tee_ext_delete_all_objects
 #endif
 #ifdef TEE_FS_OPER
 faccess
@@ -161,6 +161,7 @@ task_map_from_task_handle
 task_unmap
 task_map_phy_mem
 TEE_EXT_ROOT_UuidDeriveKey
+tee_ext_root_uuid_derive_key
 get_class_oem_huk
 get_class_ecc_key
 derive_ecc_private_key_from_huk
@@ -175,6 +176,8 @@ ecc_verify_digest
 create_attestation_cert
 get_subject_CN
 get_subject_OU
+get_subject_x509_cn
+get_subject_x509_ou
 import_pub_from_sp
 get_serial_number_from_cert
 get_issuer_from_cert
@@ -183,6 +186,8 @@ derive_private_key_from_secret
 get_issuer_from_crl
 TEE_EXT_crl_cert_process
 TEE_EXT_ta_ctrl_list_process
+tee_ext_crl_cert_process
+tee_ext_ta_ctrl_list_process
 tee_ext_get_manage_info
 
 __cfi_chk_fail
@@ -190,6 +195,7 @@ __SRE_TaskSelf
 cinit00
 g_dx_content_path_addr
 SLog
+slog
 get_value
 uart_cprintf
 uart_printf_func
@@ -252,13 +258,10 @@ TEE_Wait
 TEE_GetTAPersistentTime
 TEE_SetTAPersistentTime
 TEE_GetREETime
-TEE_GetREETimeStr
 get_sys_rtc_time
-__gen_sys_date_time
-__get_sys_date_time
-__SRE_SwMsleep
-SRE_DelayMs
-SRE_DelayUs
+gen_sys_date_time
+get_sys_date_time
+tee_msleep
 TEE_OpenTASession
 TEE_CloseTASession
 TEE_InvokeTACommand
@@ -266,39 +269,38 @@ TEE_GetCancellationFlag
 TEE_UnmaskCancellation
 TEE_MaskCancellation
 TEE_GetSessionType
+tee_get_session_type
 __dump_backtraces
 TEE_EXT_GetDeviceUniqueId
+tee_ext_get_device_unique_id
 
-__get_secure_rtc_time
-TEE_EXT_CreateTimer
-TEE_EXT_DestoryTimer
-TEE_EXT_GetTimerExpire
-TEE_EXT_GetTimerRemain
-TEE_ANTI_ROOT_CreateTimer
-TEE_ANTI_ROOT_DestoryTimer
-__SRE_TimerEventCreate
-__SRE_TimerEventStart
-__SRE_TimerEventStop
-__SRE_TimerEventDestroy
-__SRE_TimerGetExpire
-__SRE_TimerCheck
+tee_time_event_create
+tee_time_event_destroy
+tee_time_event_start
+tee_time_event_stop
+tee_time_event_check
+tee_time_event_get_expire
 TEE_EXT_DeriveTAPlatfromKeys
+tee_ext_derive_ta_platfrom_keys
 TEE_EXT_DeriveTARootKey
+tee_ext_derive_ta_root_key
 ecc_derive_public_key
 TEE_EXT_AES_CRYPTO
+tee_ext_aes_crypto
 TEE_EXT_HASH
+tee_ext_hash
 TEE_EXT_ROOT_DeriveKey2
+tee_ext_root_derive_key2
 TEE_EXT_GetCallerInfo
+tee_ext_get_caller_info
 TEE_EXT_IsDeviceRooted
+tee_ext_is_device_rooted
 TEE_EXT_DeviceRootStatus
+tee_ext_device_root_status
 __SRE_ReadRootStatus
+tee_read_root_status
 __SRE_WriteRootStatus
-SRE_TimerEventStart
-SRE_TimerEventStop
-SRE_TimerEventCreate
-SRE_TimerEventDestroy
 release_timer_event
-__SRE_ReadTimestamp
 
 /* tee_symbol_ext */
 __get_target_product
@@ -310,6 +312,9 @@ tee_get_usermode
 TEE_EXT_GetSfsCapability
 TEE_EXT_GetSeCapability
 TEE_EXT_GetTUICapability
+tee_ext_get_sfs_capability
+tee_ext_get_se_capability
+tee_ext_get_tui_capability
 engine_power_on
 tee_ext_kdf_func
 engine_power_off
@@ -331,6 +336,8 @@ EVP_aes_256_cbc
 
 TEE_EXT_InitTAAttest
 TEE_EXT_GetTAAttest
+tee_ext_init_ta_attest
+tee_ext_get_ta_attest
 tee_common_service_sec_flash_allowed
 DSA_SIG_new
 DSA_SIG_free
@@ -342,6 +349,8 @@ load_otrp_ta
 #endif
 tee_crypto_hmac
 tee_internal_derive_key
+__tee_hal_get_dieid
+tee_ext_get_dieid
 tee_internal_provision_key
 tee_internal_derive_ta_plat_root_key
 /* secure memory end */

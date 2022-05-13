@@ -25,6 +25,11 @@ list(APPEND TEE_C_FLAGS
     -fno-common
 )
 
+list(APPEND TEE_C_FLAGS
+    -D__FILE__="0"
+    -Wno-builtin-macro-redefined
+)
+
 if ("${CONFIG_HW_SECUREC_MIN_MEM}" STREQUAL "y")
     list(APPEND TEE_C_FLAGS
         -DSECUREC_WARP_OUTPUT=1

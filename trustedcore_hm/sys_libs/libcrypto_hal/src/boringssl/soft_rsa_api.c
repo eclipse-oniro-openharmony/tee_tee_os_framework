@@ -5,9 +5,6 @@
 */
 
 #include "soft_rsa_api.h"
-#ifdef BORINGSSL_ENABLE
-#include <openssl/cipher.h>
-#endif
 #include <openssl/rsa.h>
 #include <openssl/bn.h>
 #include <openssl/evp.h>
@@ -275,7 +272,7 @@ static const EVP_MD *get_mgf1_algorithm(const struct asymmetric_params_t *params
 
 static int32_t get_hash_nid_from_algorithm(uint32_t algorithm, int32_t *hash_nid)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     crypto_uint2uint algorithm_to_hash_nid[] = {
         { CRYPTO_TYPE_RSASSA_PKCS1_V1_5_MD5, NID_md5 },
         { CRYPTO_TYPE_RSASSA_PKCS1_V1_5_SHA1, NID_sha1 },
@@ -295,7 +292,7 @@ static int32_t get_hash_nid_from_algorithm(uint32_t algorithm, int32_t *hash_nid
         { CRYPTO_TYPE_RSAES_PKCS1_OAEP_MGF1_SHA384, NID_sha384 },
         { CRYPTO_TYPE_RSAES_PKCS1_OAEP_MGF1_SHA512, NID_sha512 }
     };
-    uint32_t total_map_num = sizeof(algorithm_to_hash_nid) / sizeof(crypto_uint2uint);
+    size_t total_map_num = sizeof(algorithm_to_hash_nid) / sizeof(crypto_uint2uint);
     for (; i < total_map_num; i++) {
         if (algorithm_to_hash_nid[i].src == algorithm) {
             *hash_nid = (int32_t)algorithm_to_hash_nid[i].dest;
@@ -743,7 +740,7 @@ static int32_t check_rsa_decrypt_destlen(uint32_t dest_len, int32_t padding, uin
 
 static bool check_is_rsa_pss_sign_algorithm(uint32_t algorithm)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     uint32_t algorithm_set[] = {
         CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_MD5,
         CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_SHA1,
@@ -752,7 +749,7 @@ static bool check_is_rsa_pss_sign_algorithm(uint32_t algorithm)
         CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_SHA384,
         CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_SHA512
     };
-    uint32_t total_set_num = sizeof(algorithm_set) / sizeof(uint32_t);
+    size_t total_set_num = sizeof(algorithm_set) / sizeof(uint32_t);
     for (; i < total_set_num; i++) {
         if (algorithm_set[i] == algorithm)
             return true;
@@ -763,7 +760,7 @@ static bool check_is_rsa_pss_sign_algorithm(uint32_t algorithm)
 
 static uint32_t get_pss_salt_len_from_algorithm(uint32_t algorithm)
 {
-    uint32_t i = 0;
+    size_t i = 0;
     crypto_uint2uint algorithm_to_salt_len[] = {
         { CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_MD5,    MD5_OUTPUT_LEN },
         { CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_SHA1,   SHA1_OUTPUT_LEN },
@@ -772,7 +769,7 @@ static uint32_t get_pss_salt_len_from_algorithm(uint32_t algorithm)
         { CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_SHA384, SHA384_OUTPUT_LEN },
         { CRYPTO_TYPE_RSASSA_PKCS1_PSS_MGF1_SHA512, SHA512_OUTPUT_LEN }
     };
-    uint32_t total_map_num = sizeof(algorithm_to_salt_len) / sizeof(crypto_uint2uint);
+    size_t total_map_num = sizeof(algorithm_to_salt_len) / sizeof(crypto_uint2uint);
     for (; i < total_map_num; i++) {
         if (algorithm_to_salt_len[i].src == algorithm)
             return algorithm_to_salt_len[i].dest;
@@ -803,17 +800,6 @@ static int32_t do_rsa_sign_pss(RSA *rsa_key, const EVP_MD *md,
         return CRYPTO_BAD_PARAMETERS;
     }
 
-#ifdef BORINGSSL_ENABLE
-    size_t signature_size = signature->size;
-    int rc = RSA_sign_pss_mgf1(rsa_key, &signature_size, (uint8_t *)(uintptr_t)(signature->buffer), em_len,
-        (uint8_t *)(uintptr_t)(digest->buffer),
-        digest->size, md, md, salt_len);
-    if (rc != BORINGSSL_OK || signature_size > UINT32_MAX) {
-        tloge("Rsa sign pss failed, err=%d\n", get_soft_crypto_error(CRYPTO_BAD_PARAMETERS));
-        return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
-    }
-    signature->size = (uint32_t)signature_size;
-#else
     uint8_t *em_buf = TEE_Malloc(em_len, 0);
     if (em_buf == NULL) {
         tloge("Malloc em buf failed, em_len=%u\n", em_len);
@@ -834,7 +820,6 @@ static int32_t do_rsa_sign_pss(RSA *rsa_key, const EVP_MD *md,
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
     signature->size = (uint32_t)out_len;
-#endif
     return CRYPTO_SUCCESS;
 }
 
@@ -952,14 +937,6 @@ static int32_t do_rsa_verify_pss(RSA *rsa_key, const EVP_MD *md,
     uint8_t *digest_buffer = (uint8_t *)(uintptr_t)(digest->buffer);
     uint8_t *signature_buffer = (uint8_t *)(uintptr_t)(signature->buffer);
 
-#ifdef BORINGSSL_ENABLE
-    int rc = RSA_verify_pss_mgf1(rsa_key, digest_buffer, digest->size, md, md, salt_len,
-        signature_buffer, signature->size);
-    if (rc != BORINGSSL_OK) {
-        tloge("Rsa pss verify digest failed, rc=%d\n", rc);
-        return get_soft_crypto_error(CRYPTO_SIGNATURE_INVALID);
-    }
-#else
     uint32_t em_len = (uint32_t)RSA_size(rsa_key);
     if (em_len > MAX_SOFT_ASYMMETRIC_KEY_SIZE) {
         tloge("keysize is Invalid");
@@ -983,7 +960,6 @@ static int32_t do_rsa_verify_pss(RSA *rsa_key, const EVP_MD *md,
         tloge("Rsa pss verify failed, rc=%d\n", rc);
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
-#endif
     return CRYPTO_SUCCESS;
 }
 

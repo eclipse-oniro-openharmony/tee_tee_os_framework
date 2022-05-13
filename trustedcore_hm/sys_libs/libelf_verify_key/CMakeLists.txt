@@ -51,13 +51,14 @@ endif()
 
 list(APPEND TEE_C_SOURCES
     src/ta_load_config.c
-    src/ta_load_key.c
+    src/wb_tool_root_key.c
     src/check_ta_version.c
     src/wb_tool_256_root_key.c
 )
 
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/drivers/base_mgr/tee_misc_driver/src
     ${PLATFORM_DIR}/common/tee_config
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/gtask/include
@@ -65,17 +66,18 @@ list(APPEND TEE_INCLUDE_PATH
 
 if ("${CONFIG_GENERIC_LOAD_KEY}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES
-        src/higeneric/ta_key_data.c
-        src/higeneric/wb_tool_128_root_key.c
-        src/higeneric/ta_verify_key.c
+        src/common/ta_load_key.c
+        src/common/higeneric/ta_key_data.c
+        src/common/higeneric/wb_tool_128_root_key.c
+        src/common/higeneric/ta_verify_key.c
     )
     list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/higeneric
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/higeneric
     )
     if (NOT "${ENABLE_TA_LOAD_WHITE_BOX_KEY}" STREQUAL "true")
         if (NOT "${CONFIG_DYN_TA_FORMAT}" STREQUAL "1")
             list(REMOVE_ITEM TEE_C_SOURCES
-                src/higeneric/wb_tool_128_root_key.c
+                src/common/higeneric/wb_tool_128_root_key.c
             )
         endif()
         list(REMOVE_ITEM TEE_C_SOURCES
@@ -86,11 +88,9 @@ endif()
 
 if ("${CONFIG_PUBKEY_SHAREMEM}" STREQUAL "true")
     list(APPEND TEE_C_SOURCES
-        src/common/ta_key_data.c
-        src/common/ta_verify_key.c
-    )
-    list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+        src/sharemem/ta_key_data.c
+        src/sharemem/ta_verify_key.c
+        src/sharemem/ta_load_key.c
     )
     list(APPEND TEE_C_FLAGS
         -DCONFIG_PUBKEY_SHAREMEM
@@ -99,23 +99,25 @@ endif()
 
 if ("${CONFIG_KUNPENG_LOAD_KEY}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES
-        src/kunpeng/ta_key_data.c
-        src/kunpeng/ta_verify_key.c
+        src/common/ta_load_key.c
+        src/common/kunpeng/ta_key_data.c
+        src/common/kunpeng/ta_verify_key.c
     )
     list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/kunpeng
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/kunpeng/ecies_keys
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/kunpeng
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/kunpeng/ecies_keys
     )
 endif()
 
 if ("${CONFIG_ASCEND_LOAD_KEY}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES
-        src/ascend/ta_key_data.c
-        src/ascend/ta_verify_key.c
+        src/common/ta_load_key.c
+        src/common/ascend/ta_key_data.c
+        src/common/ascend/ta_verify_key.c
     )
     list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ascend
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/ascend/ecies_keys
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/ascend
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/ascend/ecies_keys
     )
     if ("${product_type}" STREQUAL "mdc")
         list(APPEND TEE_C_FLAGS
@@ -130,18 +132,23 @@ endif()
 
 if ("${CONFIG_HUANGLONG_LOAD_KEY_3072}" STREQUAL "y")
     list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/huanglong/ecies_keys
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/huanglong/ecies_keys
     )
 endif()
 
 if ("${CONFIG_OH_LOAD_KEY}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES
-        src/openharmony/ta_verify_key.c
-        src/common/ta_key_data.c
+        src/common/ta_load_key.c
+        src/common/openharmony/ta_verify_key.c
+        src/common/openharmony/ta_key_data.c
     )
 endif()
 
 if ("${product_type}" STREQUAL "cdc")
+    list(APPEND TEE_C_FLAGS
+        -DCONFIG_TA_SIGN_CDC
+    )
+elseif ("${product_type}" STREQUAL "cdc_ace")
     list(APPEND TEE_C_FLAGS
         -DCONFIG_TA_SIGN_CDC
     )
@@ -167,12 +174,27 @@ elseif ("${CONFIG_HUANGLONG_LOAD_KEY_3072}" STREQUAL "y")
     )
 endif()
 
+if ("${CONFIG_TA_CMS_SIGNATURE}" STREQUAL "y")
+    list(APPEND TEE_C_SOURCES
+        src/common/ct/ta_cms_signature_verify.c
+    )
+    list(APPEND TEE_INCLUDE_PATH
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/ct
+        ${CMAKE_CURRENT_SOURCE_DIR}/../libtee_cmscbb/include
+        ${PREBUILD_DIR}/headers/openssl
+    )
+    list(APPEND TEE_C_FLAGS
+        -DSUPPORT_UPDATE_CRL
+    )
+endif()
+
 list(APPEND TEE_C_FLAGS
     -fstack-protector-all
 )
 
 if ("${CONFIG_PLAT_HUANGLONG}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES
+        src/common/ta_load_key.c
         ${PROJECT_SOURCE_DIR}/platform/huanglong/ta_load/tee_ta_load.c
     )
 endif()
@@ -186,7 +208,6 @@ list(REMOVE_ITEM TEE_C_FLAGS "-fsplit-lto-unit")
 tee_add_library(elf_verify_key STATIC
     SOURCES
     ${TEE_C_SOURCES}
-    src/ta_load_key.c
 
     COMPILE_TOOL
     clang

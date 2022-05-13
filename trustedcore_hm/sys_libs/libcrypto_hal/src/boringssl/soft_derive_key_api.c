@@ -5,13 +5,8 @@
 */
 
 #include "soft_derive_key_api.h"
-#ifdef BORINGSSL_ENABLE
-#include <openssl/curve25519.h>
-#include <openssl/digest.h>
-#else
 #include <ec/ec_local.h>
 #include <crypto/evp.h>
-#endif
 #include <openssl/ecdh.h>
 #include <openssl/evp.h>
 #include <securec.h>

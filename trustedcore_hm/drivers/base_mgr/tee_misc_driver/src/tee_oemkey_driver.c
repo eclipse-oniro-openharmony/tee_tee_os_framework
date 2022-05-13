@@ -16,6 +16,8 @@
 #include "drv_sharedmem.h"
 #include "tee_drv_client.h"
 #include "base_drv_node.h"
+#include "crypto_mgr_syscall.h"
+#include "drv_sharedmem.h"
 
 static int32_t oemkey_check_valid(struct tee_oemkey_info *secinfo)
 {
@@ -106,7 +108,7 @@ static int32_t tee_crypto_get_oemkey(void *buf, uint32_t size)
         return -1;
     }
     const char *drv_name = TEE_CRYPTO_DRIVER_NAME;
-    uint32_t args = (uint32_t)(&drv_name);
+    uint32_t args = (uint32_t)(uintptr_t)(&drv_name);
 
     uint64_t fd = tee_drv_open(drv_name, &args, sizeof(args));
     if (fd <= 0) {
@@ -123,16 +125,30 @@ static int32_t tee_crypto_get_oemkey(void *buf, uint32_t size)
     return ret;
 }
 
+static struct tee_oemkey_info *g_secinfo = NULL;
+
 static int32_t tee_sharemem_get_oemkey(struct tee_oemkey_info *secinfo)
 {
-    uint32_t size = sizeof(*secinfo);
+    uint32_t size = sizeof(struct tee_oemkey_info);
+    int32_t ret;
 
-    int32_t ret = get_tlv_shared_mem(SHARED_MEM_SECBOOT, strlen(SHARED_MEM_SECBOOT), secinfo, &size, true);
-    if (ret != 0) {
-        tloge("get certkey failed\n");
-        return -1;
+    if (g_secinfo == NULL) {
+        g_secinfo = (struct tee_oemkey_info *)malloc(sizeof(struct tee_oemkey_info));
+        if (g_secinfo == NULL)
+            return -1;
+        ret = get_tlv_shared_mem(SHARED_MEM_OEMKEY, strlen(SHARED_MEM_OEMKEY), g_secinfo, &size, true);
+        if (ret != TLV_SHAREDMEM_SUCCESS) {
+            tloge("get certkey failed\n");
+            free(g_secinfo);
+            g_secinfo = NULL;
+            return -1;
+        }
     }
 
+    if (memcpy_s(secinfo, sizeof(struct tee_oemkey_info), g_secinfo, size) != EOK) {
+        tloge("copy buf secinfo failed\n");
+        return -1;
+    }
     ret = oemkey_check_valid(secinfo);
     if (ret != 0) {
         tloge("get info fail\n");

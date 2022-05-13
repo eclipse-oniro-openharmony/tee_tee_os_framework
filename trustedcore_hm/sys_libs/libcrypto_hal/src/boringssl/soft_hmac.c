@@ -5,12 +5,12 @@
  */
 #include "soft_hmac.h"
 #include <openssl/hmac.h>
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
 #include <crypto/siphash.h>
 #include <siphash/siphash_local.h>
 #endif
 #include <tee_log.h>
-#include "tee_gmssl_api.h"
+#include "soft_gmssl.h"
 #include "soft_common_api.h"
 #include "soft_err.h"
 
@@ -22,7 +22,7 @@ static const uint32_t g_algorithm_hmac[] = {
     CRYPTO_TYPE_HMAC_SHA384,
     CRYPTO_TYPE_HMAC_SHA512,
     CRYPTO_TYPE_HMAC_SM3,
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     CRYPTO_TYPE_SIP_HASH,
 #endif
 };
@@ -50,7 +50,7 @@ static const EVP_MD *get_hmac_evp(uint32_t algorithm)
     return NULL;
 }
 
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
 static int32_t sip_hash_mac_init(struct ctx_handle_t *ctx, const struct symmerit_key_t *key)
 {
     if (key->key_size != SIPHASH_KEY_SIZE) {
@@ -95,7 +95,7 @@ int32_t soft_crypto_hmac_init(struct ctx_handle_t *ctx, const struct symmerit_ke
     if (ctx->alg_type == CRYPTO_TYPE_HMAC_SM3)
         return sm3_mac_init(ctx, key);
 
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     if (ctx->alg_type == CRYPTO_TYPE_SIP_HASH)
         return sip_hash_mac_init(ctx, key);
 #endif
@@ -131,7 +131,7 @@ int32_t soft_crypto_hmac_init(struct ctx_handle_t *ctx, const struct symmerit_ke
     return CRYPTO_SUCCESS;
 }
 
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
 static int32_t sip_hash_mac_update(struct ctx_handle_t *ctx, const struct memref_t *data_in)
 {
     if (data_in->size == 0) {
@@ -158,7 +158,7 @@ int32_t soft_crypto_hmac_update(struct ctx_handle_t *ctx, const struct memref_t 
     if (ctx->alg_type == CRYPTO_TYPE_HMAC_SM3)
         return sm3_mac_update(ctx, data_in);
 
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     if (ctx->alg_type == CRYPTO_TYPE_SIP_HASH)
         return sip_hash_mac_update(ctx, data_in);
 #endif
@@ -172,7 +172,7 @@ int32_t soft_crypto_hmac_update(struct ctx_handle_t *ctx, const struct memref_t 
     return CRYPTO_SUCCESS;
 }
 
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
 static int32_t sip_hash_mac_computefinal(struct ctx_handle_t *ctx, struct memref_t *data_out)
 {
     if (data_out->size < SIP_HASH_OUTPUT_LEN) {
@@ -219,7 +219,7 @@ int32_t soft_crypto_hmac_dofinal(struct ctx_handle_t *ctx, struct memref_t *data
     if (ctx->alg_type == CRYPTO_TYPE_HMAC_SM3)
         return sm3_mac_computefinal(ctx, data_out);
 
-#ifdef CONFIG_CRYPTO_SUPPORT_SIPHASH
+#ifndef MBEDTLS_ENABLE
     if (ctx->alg_type == CRYPTO_TYPE_SIP_HASH)
         return sip_hash_mac_computefinal(ctx, data_out);
 #endif

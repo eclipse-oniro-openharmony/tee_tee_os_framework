@@ -1060,8 +1060,8 @@ int main(int32_t argc __attribute__((unused)), char **tee_size, char **tee_addr)
 #if defined(CONFIG_ASCEND_PLATFORM)
 #define TIMER0_INDEX 0
 #define TRNG_INDEX   1
-    map_devices(g_plat_cfg.plat_io_regions[TIMER0_INDEX].start);
-    map_devices(g_plat_cfg.plat_io_regions[TRNG_INDEX].start);
+    map_devices(g_plat_cfg.extend_datas_io.plat_io_regions[TIMER0_INDEX].start);
+    map_devices(g_plat_cfg.extend_datas_io.plat_io_regions[TRNG_INDEX].start);
 #endif
 
 #ifdef CONFIG_ARCH_AARCH64

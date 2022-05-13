@@ -39,10 +39,10 @@ static bool pwrap_timeout_ns(uint64_t start_time_ns, uint64_t timeout_time_ns)
 
     /* check if timeout */
     if (timeout_time_ns <= elapse_time) {
-        hm_error("[PWRAP] Timeout start time: %lld\n", start_time_ns);
-        hm_error("[PWRAP] Timeout cur time: %lld\n", cur_time);
-        hm_error("[PWRAP] Timeout elapse time: %lld\n", elapse_time);
-        hm_error("[PWRAP] Timeout set timeout: %lld\n", timeout_time_ns);
+        hm_error("[PWRAP] Timeout start time: %llu\n", start_time_ns);
+        hm_error("[PWRAP] Timeout cur time: %llu\n", cur_time);
+        hm_error("[PWRAP] Timeout elapse time: %llu\n", elapse_time);
+        hm_error("[PWRAP] Timeout set timeout: %llu\n", timeout_time_ns);
         return true;
     }
 

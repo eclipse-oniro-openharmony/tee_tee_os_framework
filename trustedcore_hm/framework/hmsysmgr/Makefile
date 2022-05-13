@@ -26,11 +26,26 @@ $(eval $(call eval_extracted_objs,$(MODULE_FOLDER),$(AR_FILE),$(BUILD_DIR)))
 $(eval $(call eval_extract_ar,$(BUILD_DIR),$(TARGET_FILE),$(AR_FILE)))
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
-LIBS := debug syscalls hongmeng c_sysmgr fileio mmgr_sysmgr pathmgr security \
-	vfs_sysmgr ac security ipc ccmgr_hm hmlog ac_policy asan_sysmgr mmgr agent_base
+LIBS := debug syscalls syscalls_sysmgr cs_sysmgr c_sysmgr fileio mmgr_sysmgr pathmgr security \
+	vfs_sysmgr ac hmlog ac_policy asan_sysmgr
+
+ifeq ($(CONFIG_SRAM_PROTECTION),y)
+LIBS += openssl
+endif
+
 else
-LIBS := debug_a32 syscalls_a32 hongmeng_a32 c_sysmgr_a32 fileio_a32 mmgr_sysmgr_a32 pathmgr_a32 security_a32\
-	vfs_sysmgr_a32 ac_a32 security_a32 ipc_a32 ccmgr_hm_a32 hmlog_a32 ac_policy_a32 asan_sysmgr_a32 mmgr_a32 agent_base_a32
+LIBS := debug_a32 syscalls_a32 syscalls_sysmgr_a32 cs_sysmgr_a32 c_sysmgr_a32 fileio_a32 mmgr_sysmgr_a32 pathmgr_a32 security_a32\
+	vfs_sysmgr_a32 ac_a32 hmlog_a32 ac_policy_a32 asan_sysmgr_a32
+
+ifeq ($(CONFIG_SRAM_PROTECTION),y)
+LIBS += openssl_a32
+endif
+
+endif
+
+
+ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
+LIBS += mem_measure${TARG} openssl${TARG}
 endif
 
 include $(TOPDIR)/mk/asan.mk
@@ -54,7 +69,7 @@ endif
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
 ifeq (${CONFIG_ENABLE_XOM},y)
-hmsysmgr_LDFLAGS += -execute-only
+hmsysmgr_LDFLAGS += --execute-only
 hmsysmgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-$(TEE_ARCH).lds
 else
 hmsysmgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-unxom-$(TEE_ARCH).lds
@@ -88,6 +103,7 @@ $(TARGET_FILE): $(AR_FILE) $(hmsysmgr_dep_libs)
 	@echo "[ LD ] $@"
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(VER) $(LD) $(hmsysmgr_extracted_objs) $(hmsysmgr_LDFLAGS) -o $@
+	$(VER) $(OBJCOPY) $@
 	if [ "$(CONFIG_USER_DEBUG_BUILD)" != "y" ]; then $(STRIP) --strip-debug $@; fi
 
 $(INSTALL_FILE): $(TARGET_FILE)

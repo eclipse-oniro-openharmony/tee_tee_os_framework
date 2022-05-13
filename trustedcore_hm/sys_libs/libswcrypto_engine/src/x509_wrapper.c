@@ -5,19 +5,14 @@
  */
 #include <string.h>
 #include <tee_log.h>
-#ifdef CRYPTO_SSL_SUPPORT_X509
-#ifndef BORINGSSL_ENABLE
 #include <rsa/rsa_local.h>
 #include <openssl/ossl_typ.h>
-#endif
 #include <openssl/x509.h>
 #include <openssl/rsa.h>
 #include <securec.h>
-#endif
 #include "crypto_wrapper.h"
 #include "crypto_inner_interface.h"
 
-#ifdef CRYPTO_SSL_SUPPORT_X509
 static uint8_t g_rsa_key_oid[] = { 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01 };
 static uint8_t g_ecc_key_oid[] = { 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x2, 0x1 };
 
@@ -186,15 +181,10 @@ static int get_ecc_pub_from_cert_helper(ecc_pub_key_t *ecc_pub, const EC_GROUP *
         tloge("all bn ctx failed");
         goto clean;
     }
-#ifdef BORINGSSL_ENABLE
-    if (BN_num_bytes(x) <= sizeof(ecc_pub->x) && BN_num_bytes(y) <= sizeof(ecc_pub->y)) {
-        ecc_pub->x_len = BN_bn2bin(x, ecc_pub->x);
-        ecc_pub->y_len = BN_bn2bin(y, ecc_pub->y);
-#else
+
     if ((uint32_t)BN_num_bytes(x) <= sizeof(ecc_pub->x) && (uint32_t)BN_num_bytes(y) <= sizeof(ecc_pub->y)) {
         ecc_pub->x_len = (uint32_t)BN_bn2bin(x, ecc_pub->x);
         ecc_pub->y_len = (uint32_t)BN_bn2bin(y, ecc_pub->y);
-#endif
         ret = 0;
     } else {
         tloge("ec pub buffer too small");
@@ -275,7 +265,7 @@ int import_pub_from_sp(void *pub, const uint8_t *in, uint32_t inlen)
     }
 }
 
-static int __get_subject_public_key(uint8_t *pub, uint32_t pub_size,
+static int public_get_subject_public_key(uint8_t *pub, uint32_t pub_size,
     bool check_size, const uint8_t *cert, uint32_t cert_len)
 {
     X509 *cert_x509 = NULL;
@@ -318,13 +308,13 @@ clean:
 
 int get_subject_public_key_new(uint8_t *pub, uint32_t pub_size, const uint8_t *cert, uint32_t cert_len)
 {
-    return __get_subject_public_key(pub, pub_size, true, cert, cert_len);
+    return public_get_subject_public_key(pub, pub_size, true, cert, cert_len);
 }
 
 /* this is not safe, but it's an export API */
 int get_subject_public_key(uint8_t *pub, const uint8_t *cert, uint32_t cert_len)
 {
-    return __get_subject_public_key(pub, 0, false, cert, cert_len);
+    return public_get_subject_public_key(pub, 0, false, cert, cert_len);
 }
 
 int get_validity_from_cert(validity_period_t *vd, uint8_t *cert, uint32_t cert_len)
@@ -343,13 +333,7 @@ int get_validity_from_cert(validity_period_t *vd, uint8_t *cert, uint32_t cert_l
         tloge("d2i x509 cert failed");
         goto clean;
     }
-#ifdef BORINGSSL_ENABLE
-    bool check = (cert_x509->cert_info == NULL || cert_x509->cert_info->validity == NULL);
-    if (check) {
-        tloge("copy start time failed");
-        goto clean;
-    }
-#endif
+
     time = X509_get_notBefore(cert_x509);
     if (memcpy_s(vd->start, sizeof(vd->start), ASN1_STRING_data(time), ASN1_STRING_length(time))) {
         tloge("copy start time failed");
@@ -370,7 +354,7 @@ clean:
     return ret;
 }
 
-static int __get_subject_by_name(uint8_t *buff, uint32_t len, const char *name, const uint8_t *cert, uint32_t cert_len)
+static int get_subject_by_name(uint8_t *buff, uint32_t len, const char *name, const uint8_t *cert, uint32_t cert_len)
 {
     X509 *cert_x509       = NULL;
     X509_NAME *x_name     = NULL;
@@ -411,14 +395,24 @@ clean:
     return ret;
 }
 
+int get_subject_x509_cn(uint8_t *name, uint32_t name_size, const uint8_t *cert, uint32_t cert_len)
+{
+    return get_subject_by_name(name, name_size, "CN", cert, cert_len);
+}
+
 int get_subject_CN(uint8_t *name, uint32_t name_size, const uint8_t *cert, uint32_t cert_len)
 {
-    return __get_subject_by_name(name, name_size, "CN", cert, cert_len);
+    return get_subject_x509_cn(name, name_size, cert, cert_len);
+}
+
+int get_subject_x509_ou(uint8_t *name, uint32_t name_size, const uint8_t *cert, uint32_t cert_len)
+{
+    return get_subject_by_name(name, name_size, "OU", cert, cert_len);
 }
 
 int get_subject_OU(uint8_t *name, uint32_t name_size, const uint8_t *cert, uint32_t cert_len)
 {
-    return __get_subject_by_name(name, name_size, "OU", cert, cert_len);
+    return get_subject_x509_ou(name, name_size, cert, cert_len);
 }
 
 int get_serial_number_from_cert(uint8_t *serial_number, uint32_t serial_number_size, uint8_t *cert, uint32_t cert_len)
@@ -491,109 +485,3 @@ clean:
 
     return ret;
 }
-#else
-int x509_crl_validate(uint8_t *cert, uint32_t cert_len, uint8_t *parent_key, uint32_t parent_key_len)
-{
-    (void)cert;
-    (void)cert_len;
-    (void)parent_key;
-    (void)parent_key_len;
-    tloge("mix system do not support x509 crl validate\n");
-    return -1;
-}
-
-int x509_cert_validate(uint8_t *cert, uint32_t cert_len, uint8_t *parent_key, uint32_t parent_key_len)
-{
-    (void)cert;
-    (void)cert_len;
-    (void)parent_key;
-    (void)parent_key_len;
-    tloge("mix system do not support x509 cert validate\n");
-    return -1;
-}
-
-int get_keytype_from_sp(const uint8_t *in, uint32_t inlen)
-{
-    (void)in;
-    (void)inlen;
-    tloge("mix system do not support get keytype from sp\n");
-    return -1;
-}
-
-int import_pub_from_sp(void *pub, const uint8_t *in, uint32_t inlen)
-{
-    (void)pub;
-    (void)in;
-    (void)inlen;
-    tloge("mix system do not support import pub from sp\n");
-    return -1;
-}
-
-int32_t get_subject_public_key(uint8_t *pub, const uint8_t *cert, uint32_t cert_len)
-{
-    (void)pub;
-    (void)cert;
-    (void)cert_len;
-    tloge("mix system do not support get subject public key\n");
-    return -1;
-}
-
-int get_validity_from_cert(validity_period_t *vd, uint8_t *cert, uint32_t cert_len)
-{
-    (void)vd;
-    (void)cert;
-    (void)cert_len;
-    tloge("mix system do not support get validity from cert\n");
-    return -1;
-}
-
-int32_t get_subject_CN(uint8_t *name, uint32_t name_size, const uint8_t *cert, uint32_t cert_len)
-{
-    (void)name;
-    (void)name_size;
-    (void)cert;
-    (void)cert_len;
-    tloge("mix system do not support get subject CN\n");
-    return -1;
-}
-
-int32_t get_subject_OU(uint8_t *name, uint32_t name_size, const uint8_t *cert, uint32_t cert_len)
-{
-    (void)name;
-    (void)name_size;
-    (void)cert;
-    (void)cert_len;
-    tloge("mix system do not support get subject OU\n");
-    return -1;
-}
-
-int get_serial_number_from_cert(uint8_t *serial_number, uint32_t serial_number_size, uint8_t *cert, uint32_t cert_len)
-{
-    (void)serial_number;
-    (void)serial_number_size;
-    (void)cert;
-    (void)cert_len;
-    tloge("mix system do not support get serial number from cert\n");
-    return -1;
-}
-
-int get_issuer_from_cert(uint8_t *issuer, uint32_t issuer_size, uint8_t *crl, uint32_t crl_len)
-{
-    (void)issuer;
-    (void)issuer_size;
-    (void)crl;
-    (void)crl_len;
-    tloge("mix system do not support get issuer from cert\n");
-    return -1;
-}
-
-int32_t get_subject_public_key_new(uint8_t *pub, uint32_t pub_size, const uint8_t *cert, uint32_t cert_len)
-{
-    (void)pub;
-    (void)pub_size;
-    (void)cert;
-    (void)cert_len;
-    tloge("mix system do not support get subject public key new\n");
-    return -1;
-}
-#endif

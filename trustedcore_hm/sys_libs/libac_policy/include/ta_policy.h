@@ -9,16 +9,11 @@
 
 #include "ac_policy.h"
 
-#ifndef AC_USE_POLICY_DB
 #define GET_MAP_DEF(map)                                 \
 struct ac_map* get_ac_map_##map();                       \
 struct ac_map* get_ac_dyn_map_##map();
 #define GET_KV_DEF(kv)                                   \
 struct ac_map_key_value *get_kv_##kv(uint32_t *size);
-#else
-#define GET_MAP_DEF(map)                                 \
-const ac_map* get_local_map();
-#endif
 
 GET_MAP_DEF(uid_to_sid)
 GET_MAP_DEF(uuid_to_cred)

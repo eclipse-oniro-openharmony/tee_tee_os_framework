@@ -7,7 +7,7 @@
 #include <openssl/md5.h>
 #include <openssl/sha.h>
 #include <tee_log.h>
-#include "tee_gmssl_api.h"
+#include "soft_gmssl.h"
 #include "soft_common_api.h"
 
 struct digest_config {

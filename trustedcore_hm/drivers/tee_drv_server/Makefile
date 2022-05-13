@@ -67,13 +67,12 @@ inc-flags += -I$(TOPDIR)/platform/common/tee_config/
 inc-flags += -I$(TOPDIR)/drivers/common
 
 #inc-flags += -I$(TOPDIR)../../hm-teeos/libs/syslib/libsyscalls/include
-LIBS += hwi${TARG} c_shared${TARG}
-LIBS += timer${TARG} ac${TARG} mmgr${TARG} hongmeng${TARG} syscalls${TARG} ipc${TARG}
+LIBS += c_shared${TARG}
+LIBS += timer${TARG} ac${TARG}
 LIBS += teemem${TARG} teeos${TARG} spawn_common${TARG}
 
 ENTRY_POINT := main
 DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
-LIBS += hmdrv_stub${TARG}
 LIBS += drv_frame${TARG}
 LIBS += ac_policy${TARG}
 LIBS += drv_shared${TARG}
@@ -96,7 +95,7 @@ tee_drv_server_LDFLAGS += --whole-archive -lteeconfig${TARG} --no-whole-archive
 
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
-	tee_drv_server_LDFLAGS += -execute-only
+	tee_drv_server_LDFLAGS += --execute-only
 endif
 endif
 

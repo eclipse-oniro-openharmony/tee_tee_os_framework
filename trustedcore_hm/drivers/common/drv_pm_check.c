@@ -22,7 +22,7 @@ static bool check_msg_id_invalid(uint16_t msg_id)
 
 static bool check_sender_invalid(const struct hmcap_message_info *info, pid_t auth_pid)
 {
-    pid_t sender_pid = info->src_cred.pid;
+    pid_t sender_pid = (pid_t)info->src_cred.pid;
     if (sender_pid != auth_pid) {
         printf("suspend/resume cannot call by 0x%x auth_pid:0x%x\n", sender_pid, auth_pid);
         return true;

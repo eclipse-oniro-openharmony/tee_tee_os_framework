@@ -1,5 +1,3 @@
 # xingtian_a32 chip compile rules
-# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+# Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
 TRUSTEDCORE_CHIP_CHOOSE := WITH_CHIP_XINGTIAN_A32_LITE
-TRUSTEDCORE_PHY_TEXT_BASE := 0x10008000
-TRUSTEDCORE_PHY_IMAGE_LOAD_BASE := 0x10800000

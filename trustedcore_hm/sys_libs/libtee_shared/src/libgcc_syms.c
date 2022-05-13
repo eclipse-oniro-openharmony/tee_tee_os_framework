@@ -27,3 +27,12 @@ sym(addvsi3);
 sym(negvsi2);
 sym(mulvsi3);
 sym(subvsi3);
+
+/*
+ * This function is used to skip the "input module has no datalayout" compilation error,
+ * when llvm12 is used in the CMake compilation framework.
+ */
+int skip_compiler_no_datalayout_error()
+{
+    return 0;
+}

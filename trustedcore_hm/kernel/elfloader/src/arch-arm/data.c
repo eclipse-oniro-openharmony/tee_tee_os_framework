@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
  * Description: elfloader data handle
  * Create: 2020-12
  */
@@ -9,6 +9,7 @@
 #include <data.h>
 #include <elfloader.h>
 #include <mmu.h>
+#include <uart_register.h>
 #include <arch/smp/smp.h>
 #include <arch/machine/hardware.h>
 
@@ -19,6 +20,13 @@ int g_boot_num_app = 1;
 
 HM_SPINLOCK(g_elfloader_lock);
 
+/* .uart_type invalid initialization, because g_plat_cfg must not linked to bss section */
+#ifdef NO_PLATCFG_EMBEDDED
+struct platform_info g_plat_cfg = {
+    .boot_args_size = 0x0,
+    .uart_type = UART_DISABLE_FLAG,
+};
+#endif
 /*
  * elf binary info that initialized by elfloader-main.c
  * and used by Hong Meng kernel init

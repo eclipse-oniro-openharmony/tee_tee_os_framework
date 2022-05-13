@@ -11,7 +11,6 @@
 #include <security_cap_def.h>
 #include <security_ops.h>
 #include <tee_common.h> /* uuid */
-#include <product_uuid.h> /* uuid */
 #include "product_uuid_public.h" /* uuid */
 #include <tee_reserve.h> /* uuid */
 #include <tee_defines.h> /* TEE_UUID */

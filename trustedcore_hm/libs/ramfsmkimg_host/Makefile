@@ -24,9 +24,11 @@ CPPFLAGS += -I$(TOPDIR)/libs/libramfs_host/include
 CPPFLAGS += -I$(TOPDIR)/libs/ramfsmkimg_host/include
 CPPFLAGS += -I$(PREBUILD_HEADER)/host
 CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi
+CPPFLAGS += -I$(PREBUILD_HEADER)/inner_sdk/hmapi
 CPPFLAGS += -I$(TEE_SECUREC_DIR)/include
 CPPFLAGS += -I$(PREBUILD_HEADER)/libc/hm
 CPPFLAGS += -I$(PREBUILD_HEADER)/kernel/uapi
+CPPFLAGS += -I$(PREBUILD_HEADER)/kernel/arch/arm/uapi
 CPPFLAGS += -I$(PREBUILD_HEADER)
 CPPFLAGS += -I$(PREBUILD_HEADER)/libc/arch/aarch64
 CPPFLAGS += -I$(PREBUILD_HEADER)/libc
@@ -44,12 +46,8 @@ ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 CFLAGS += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 endif
 
-LDFLAGS += -L$(OUTPUTDIR)/aarch64/obj/aarch64/libramfs_host
-LDFLAGS += -L$(OUTPUTDIR)/aarch64/obj/aarch64/libvfs_host
 LDFLAGS += -L$(OUTPUTDIR)/aarch64/obj/aarch64/libhwsecurec_host
 LDFLAGS += -L/usr/lib/x86_64-linux-gnu
-LDFLAGS += -lramfs_host
-LDFLAGS += -lvfs_host
 LDFLAGS += -lhwsecurec_host
 
 C_SRCS := $(wildcard $(TOPDIR)/libs/ramfsmkimg_host/src/*.c)

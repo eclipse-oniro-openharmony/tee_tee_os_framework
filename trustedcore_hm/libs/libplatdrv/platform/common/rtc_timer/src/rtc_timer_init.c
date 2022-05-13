@@ -32,8 +32,8 @@ int32_t rtc_timer_init(void)
 DECLARE_TC_DRV(
     rtc_timer,
     0,
-    0,
-    0,
+    rtc_timer_suspend,
+    rtc_timer_resume,
     TC_DRV_MODULE_INIT,
     rtc_timer_init,
     NULL,

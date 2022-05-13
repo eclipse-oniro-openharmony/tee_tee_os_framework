@@ -22,6 +22,11 @@ static int32_t check_g_rnd_ptr(void)
     return CRYPTO_SUCCESS;
 }
 
+static int32_t get_entropy(void *buffer, size_t size)
+{
+    return read_entropy_data(buffer, size);
+}
+
 static int32_t generate_random(void *buffer, size_t size)
 {
     if ((buffer == NULL) || (size == 0)) {
@@ -1497,7 +1502,7 @@ const static struct crypto_ops_t g_crypto_ops = {
     dh_generate_key,
     dh_derive_key,
     generate_random,
-    NULL,
+    get_entropy,
     derive_root_key,
     NULL
 };

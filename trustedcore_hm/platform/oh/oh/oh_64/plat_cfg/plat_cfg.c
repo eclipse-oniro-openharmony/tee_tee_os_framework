@@ -47,10 +47,15 @@ struct platform_info g_plat_cfg = {
 
     .spi_num_for_notify     = SPI_NUM,
     /* at most PLAT_MAX_DEVIO_REGIONS (128) regions */
-    .plat_io_regions        = {
-        { OS_TIMER0_REG,        OS_TIMER0_REG + OS_TIMER0_REG_SIZE },
-        { OS_TIMER1_REG,        OS_TIMER1_REG + OS_TIMER1_REG_SIZE },
-        { UART_ADDR,            UART_ADDR + UART_ADDR_SIZE },
-        { 0, 0 } /* this is terminator */
+    .extend_datas_io = {
+        .extend_magic = 0,
+        .extend_length = 0,
+        .extend_paras = {0},
+        .plat_io_regions        = {
+            { OS_TIMER0_REG,        OS_TIMER0_REG + OS_TIMER0_REG_SIZE },
+            { OS_TIMER1_REG,        OS_TIMER1_REG + OS_TIMER1_REG_SIZE },
+            { UART_ADDR,            UART_ADDR + UART_ADDR_SIZE },
+            { 0, 0 } /* this is terminator */
+        }
     }
 };

@@ -53,5 +53,11 @@ struct ctx_handle_t {
     uint64_t fd;
 };
 
+struct drv_memref_t {
+    uint64_t buffer;
+    uint32_t size;
+    bool need_copy;
+};
+
 bool check_ctx_size(uint32_t engine, uint32_t alg_type, uint32_t ctx_size, uint32_t driver_ability);
 #endif

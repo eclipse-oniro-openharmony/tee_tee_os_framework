@@ -12,4 +12,5 @@ uint32_t get_hashfile_max_size(void);
 
 uint32_t get_mailbox_size(void);
 
+uint32_t get_res_mem_size(void);
 #endif

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
  * Description: access generic timer
- * Create: 2021-7-29
+ * Create: 2022-04-22
  */
 #ifndef LIBTIMER_GENERIC_TIMER_H
 #define LIBTIMER_GENERIC_TIMER_H

@@ -9,7 +9,7 @@
 #include <api/mm_common.h>
 #include <drv_module.h>
 #include <drv_pal.h>
-#include <hm_unistd.h>
+#include <hm_getpid.h>
 #include <libhwsecurec/securec.h>
 #include <malloc.h>
 #include <mem_drv_map.h>
@@ -92,7 +92,7 @@ static void access_check_end(struct buffer_map *buf_map)
     }
 
     if (buf_map->vm_addr != 0)
-        task_unmap((uint32_t)drv_pid, (uintptr_t)buf_map->vm_addr, (uint32_t)buf_map->len);
+        (void)task_unmap((uint32_t)drv_pid, (uintptr_t)buf_map->vm_addr, (uint32_t)buf_map->len);
 }
 
 static bool access_write_right_check(const struct buffer_map *buf_map, uint32_t size)
@@ -260,7 +260,7 @@ static void reset_drv_state(void)
     uint32_t caller_pid = 0;
     (void)task_caller(&caller_pid);
 
-    g_drv_state.tp_cfg.drv_pid        = drv_pid;
+    g_drv_state.tp_cfg.drv_pid        = (uint32_t)drv_pid;
     g_drv_state.tp_cfg.caller_pid     = caller_pid;
     g_drv_state.fb_cfg.cfg.drv_pid    = drv_pid;
     g_drv_state.fb_cfg.cfg.caller_pid = caller_pid;
@@ -299,7 +299,8 @@ static int32_t set_config(struct drv_param *params, struct buffer_map *buf_map)
         return -1;
     }
 
-    struct tui_config *cfg = (void *)access_check(buf_map, args[0], sizeof(*cfg), params, true);
+    struct tui_config *cfg = (void *)access_check(buf_map, (uintptr_t)args[0],
+        sizeof(*cfg), params, true);
     if (cfg == NULL) {
         tloge("input is invalid");
         return -1;
@@ -357,7 +358,8 @@ static int32_t init_ttf_mem_info(struct drv_param *params, struct buffer_map *bu
     }
     uint32_t size = sizeof(struct tui_ion_sglist_k) + sizeof(struct tui_page_info_k);
 
-    struct tui_ion_sglist_k *ttf_sglist = (void *)access_check(buf_map, args[0], size, params, true);
+    struct tui_ion_sglist_k *ttf_sglist = (void *)access_check(buf_map, (uintptr_t)args[0],
+        size, params, true);
     if (ttf_sglist == NULL) {
         tloge("input is invalid");
         return -1;
@@ -419,7 +421,8 @@ static int32_t map_ttf_mem(struct drv_param *params, struct buffer_map *buf_map)
         return -1;
     }
 
-    struct map_node *ttf = (void *)access_check(buf_map, args[0], sizeof(*ttf), params, true);
+    struct map_node *ttf = (void *)access_check(buf_map, (uintptr_t)args[0],
+        sizeof(*ttf), params, true);
     if (ttf == NULL) {
         tloge("input is invalid");
         return -1;
@@ -438,7 +441,7 @@ static int32_t map_ttf_mem(struct drv_param *params, struct buffer_map *buf_map)
     ttf->vm_addr = 0;
     if (g_drv_state.ttf.cfg.mode == SECURE_ENABLE) {
         ttf->vm_addr   = g_drv_state.ttf.cfg.vm_addr;
-        ttf->file_size = g_drv_state.ttf.cfg.file_size;
+        ttf->file_size = (int32_t)g_drv_state.ttf.cfg.file_size;
     }
 
     tlogi("map font mem success");
@@ -469,9 +472,11 @@ static int32_t get_hisi_panel_info(struct drv_param *params, struct buffer_map *
         return -1;
     }
 #ifdef TEE_SUPPORT_TUI_MTK_DRIVER
-    struct panel_info *panel = (void *)access_check(buf_map, args[0], sizeof(*panel), params, true);
+    struct panel_info *panel = (void *)access_check(buf_map, (uintptr_t)args[0],
+        sizeof(*panel), params, true);
 #else
-    struct hisi_panel_info *panel = (void *)access_check(buf_map, args[0], sizeof(*panel), params, true);
+    struct hisi_panel_info *panel = (void *)access_check(buf_map, (uintptr_t)args[0],
+        sizeof(*panel), params, true);
 #endif
     if (panel == NULL) {
         tloge("input is invalid");
@@ -532,7 +537,8 @@ static int32_t set_fold_screen(struct drv_param *params, struct buffer_map *buf_
     if (get_init_step() == INIT_OVER)
         return -1;
 
-    struct tui_panel_info_k *panel = (void *)access_check(buf_map, args[0], sizeof(*panel), params, true);
+    struct tui_panel_info_k *panel = (void *)access_check(buf_map, (uintptr_t)args[0],
+        sizeof(*panel), params, true);
     if (panel == NULL) {
         tloge("input is invalid");
         return -1;
@@ -574,7 +580,8 @@ static int32_t get_cur_panel(struct drv_param *params, struct buffer_map *buf_ma
         return -1;
     }
 
-    struct tui_panel_info_k *panel = (void *)access_check(buf_map, args[0], sizeof(*panel), params, true);
+    struct tui_panel_info_k *panel = (void *)access_check(buf_map, (uintptr_t)args[0],
+        sizeof(*panel), params, true);
     if (panel == NULL) {
         tloge("input is invalid");
         return -1;
@@ -614,7 +621,8 @@ static int32_t tui_pan_display_sec(struct drv_param *params, struct buffer_map *
         return -1;
     }
 
-    struct dss_layer *layer = (void *)access_check(buf_map, args[0], sizeof(*layer), params, true);
+    struct dss_layer *layer = (void *)access_check(buf_map, (uintptr_t)args[0],
+        sizeof(*layer), params, true);
     if (layer == NULL) {
         tloge("input is invalid");
         return -1;
@@ -626,7 +634,8 @@ static int32_t tui_pan_display_sec(struct drv_param *params, struct buffer_map *
 
     struct buffer_map buf_map_fb = { 0 };
     access_check_prepare(&buf_map_fb, buf_map->swi_id);
-    layer->img.vir_addr = access_check(&buf_map_fb, (uintptr_t)layer->img.vir_addr, layer->img.buf_size, params, false);
+    layer->img.vir_addr = access_check(&buf_map_fb, (uintptr_t)layer->img.vir_addr,
+        layer->img.buf_size, params, false);
     if (layer->img.vir_addr == 0) {
         tloge("access check img vir error");
         return -1;
@@ -672,8 +681,8 @@ static int32_t thp_ioctl(struct drv_param *params, struct buffer_map *buf_map)
         return -1;
     }
 
-    uint32_t cmd = args[0];
-    void *arg    = (void *)access_check(buf_map, args[1], sizeof(struct ts_info), params, true);
+    uint32_t cmd = (uint32_t)args[0];
+    void *arg    = (void *)access_check(buf_map, (uintptr_t)args[1], sizeof(struct ts_info), params, true);
     if (arg == NULL && args[1] != 0) {
         tloge("input is invalid");
         return -1;
@@ -713,7 +722,7 @@ static int32_t tui_timer_create(struct drv_param *params, struct buffer_map *buf
         return -1;
     }
 
-    timeval_t *interval = (void *)access_check(buf_map, args[0], sizeof(*interval), params, true);
+    timeval_t *interval = (void *)access_check(buf_map, (uintptr_t)args[0], sizeof(*interval), params, true);
     if (interval == NULL) {
         tloge("input is invalid");
         return -1;
@@ -721,7 +730,7 @@ static int32_t tui_timer_create(struct drv_param *params, struct buffer_map *buf
 
     uint32_t caller_pid = 0;
     (void)task_caller(&caller_pid);
-    return timer_node_create(*interval, args[1], caller_pid);
+    return (int32_t)timer_node_create(*interval, (enum tui_drv_msg)args[1], caller_pid);
 }
 
 static int32_t tui_timer_delete(struct drv_param *params, struct buffer_map *buf_map)
@@ -741,7 +750,7 @@ static int32_t tui_timer_delete(struct drv_param *params, struct buffer_map *buf
         return -1;
     }
 
-    timer_node_destroy(args[0]);
+    timer_node_destroy((enum tui_drv_msg)args[0]);
     return 0;
 }
 
@@ -762,7 +771,7 @@ static int32_t tui_timer_start(struct drv_param *params, struct buffer_map *buf_
         return -1;
     }
 
-    timer_node_start(args[0]);
+    timer_node_start((enum tui_drv_msg)args[0]);
     return 0;
 }
 
@@ -779,7 +788,7 @@ static int32_t tui_timer_stop(struct drv_param *params, struct buffer_map *buf_m
         return -1;
     }
 
-    timer_node_stop(args[0]);
+    timer_node_stop((enum tui_drv_msg)args[0]);
     return 0;
 }
 
@@ -849,22 +858,22 @@ static int32_t push_hash_info(struct drv_param *params, struct buffer_map *buf_m
     }
 
     if (args[BUFFER_NUM] == TTF_NORMAL_TYPE) {
-        char *nomal_ttf = (void *)access_check(buf_map, args[0], sizeof(g_nomal_ttf_sha), params, true);
+        char *nomal_ttf = (void *)access_check(buf_map, (uintptr_t)args[0], sizeof(g_nomal_ttf_sha), params, true);
         if (nomal_ttf == NULL) {
             tloge("input is invalid");
             return -1;
         }
-        if (memcpy_s(g_nomal_ttf_sha, sizeof(g_nomal_ttf_sha), nomal_ttf, args[1]) != EOK) {
+        if (memcpy_s(g_nomal_ttf_sha, sizeof(g_nomal_ttf_sha), nomal_ttf, (size_t)args[1]) != EOK) {
             tloge("tui font hash failed");
             return -1;
         }
     } else if (args[BUFFER_NUM] == TTF_CONVERGENCE_TYPE) {
-        char *revert_ttf = (void *)access_check(buf_map, args[0], sizeof(g_reserve_ttf_sha), params, true);
+        char *revert_ttf = (void *)access_check(buf_map, (uintptr_t)args[0], sizeof(g_reserve_ttf_sha), params, true);
         if (revert_ttf == NULL) {
             tloge("input is invalid");
             return -1;
         }
-        if (memcpy_s(g_reserve_ttf_sha, sizeof(g_reserve_ttf_sha), revert_ttf, args[1]) != EOK) {
+        if (memcpy_s(g_reserve_ttf_sha, sizeof(g_reserve_ttf_sha), revert_ttf, (size_t)args[1]) != EOK) {
             tloge("tui font hash failed");
             return -1;
         }
@@ -893,7 +902,8 @@ static int32_t get_hash_info(struct drv_param *params, struct buffer_map *buf_ma
     }
 
     if (args[BUFFER_NUM] == TTF_NORMAL_TYPE) {
-        char *nomal_ttf = (void *)access_check(buf_map, args[0], sizeof(g_nomal_ttf_sha), params, true);
+        char *nomal_ttf = (void *)access_check(buf_map, (uintptr_t)args[0],
+                                               sizeof(g_nomal_ttf_sha), params, true);
         if (nomal_ttf == NULL) {
             tloge("input is invalid");
             return -1;
@@ -909,7 +919,8 @@ static int32_t get_hash_info(struct drv_param *params, struct buffer_map *buf_ma
             return -1;
         }
     } else if (args[BUFFER_NUM] == TTF_CONVERGENCE_TYPE) {
-        char *revert_ttf = (void *)access_check(buf_map, args[0], sizeof(g_reserve_ttf_sha), params, true);
+        char *revert_ttf = (void *)access_check(buf_map, (uintptr_t)args[0],
+                                                sizeof(g_reserve_ttf_sha), params, true);
         if (revert_ttf == NULL) {
             tloge("input is invalid");
             return -1;
@@ -920,7 +931,8 @@ static int32_t get_hash_info(struct drv_param *params, struct buffer_map *buf_ma
             return -1;
         }
 
-        if (memcpy_s(revert_ttf, sizeof(g_reserve_ttf_sha), g_reserve_ttf_sha, args[1]) != EOK) {
+        if (memcpy_s(revert_ttf, sizeof(g_reserve_ttf_sha),
+                     g_reserve_ttf_sha, (size_t)args[1]) != EOK) {
             tloge("tui font hash failed");
             return -1;
         }
@@ -967,7 +979,7 @@ static int32_t syscall_common(int32_t swi_id, struct drv_param *params, uint64_t
 }
 
 struct syscall_node {
-    int32_t swi_id;
+    enum tui_sw_syscall_id swi_id;
     uint64_t expect_perm;
     helper_t func;
 };

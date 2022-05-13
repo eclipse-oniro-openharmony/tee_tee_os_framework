@@ -114,7 +114,6 @@ struct key_type_tag_info {
 
 bool is_wb_protecd_ta_key(void);
 TEE_Result get_ta_load_key(struct key_data *key);
-TEE_Result get_wb_tool_key(struct wb_tool_key *tool_key);
 TEE_Result query_ta_verify_pubkey(const struct ta_verify_key *all_key, size_t all_key_num,
     struct ta_verify_key *query_key);
 #endif

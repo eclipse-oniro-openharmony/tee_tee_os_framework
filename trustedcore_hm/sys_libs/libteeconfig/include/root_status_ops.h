@@ -5,8 +5,8 @@
  */
 #ifndef ROOT_STATUS_OPS_H
 #define ROOT_STATUS_OPS_H
-#include "sre_typedef.h"
+#include <stdint.h>
 
-UINT32 __SRE_ReadRootStatus();
-int __SRE_WriteRootStatus(UINT32 status);
+uint32_t tee_read_root_status();
+int __SRE_WriteRootStatus(uint32_t status);
 #endif /* ROOT_STATUS_OPS_H */

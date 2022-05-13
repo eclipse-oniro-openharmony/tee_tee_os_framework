@@ -7,7 +7,6 @@
 #include <securec.h>
 #include <tee_inner_uuid.h>
 #include <tee_mem_mgmt_api.h>
-#include <product_uuid.h>
 #include "product_uuid_public.h"
 #include <tee_log.h>
 

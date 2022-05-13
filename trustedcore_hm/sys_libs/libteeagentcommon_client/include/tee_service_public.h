@@ -10,16 +10,6 @@ typedef void (*func_ptr)(void);
 
 #include "tee_defines.h"
 
-#define SEC_FLASH_TASK_NAME "task_sec_flash"
-#define BIO_TASK_NAME "task_bioservice"
-#define ROT_TASK_NAME "task_rotservice"
-#define ART_TASK_NAME "task_artservice"
-#define HSM_TASK_NAME "task_hsmservice"
-#define VLTMMSRV_TASK_NAME "task_vltmm_service"
-#define CRYPTO_AGENT_TASK_NAME "task_cryptoagent_service"
-#define TEST_SERVICE_TASK_NAME "test_service"
-#define TEST_SERVICE_TASK_NAME_A64 "test_service_a64"
-
 /* don't allow to edit these files */
 #define TEE_SERVICE_MSG_QUEUE_SIZE 100
 typedef struct {

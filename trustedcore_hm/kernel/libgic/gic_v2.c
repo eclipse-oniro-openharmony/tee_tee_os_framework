@@ -147,7 +147,7 @@ static void gic_set_irq_priority(uint32_t irq, uint8_t prio)
     /* clear old priority */
     new_prio = old_prio & ~(INT_PRIO_MASK << irq_bit);
     /* set new priorty */
-    new_prio |= (prio << irq_bit);
+    new_prio |= ((uint32_t)prio << irq_bit);
     write32_dist_reg(GICD_IPRIORITYRn + irq_base, new_prio);
     gic_dsb(sy);
 

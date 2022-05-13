@@ -9,6 +9,8 @@
 
 #if (TRUSTEDCORE_CHIP_CHOOSE == WITH_CHIP_HI1981)
 #include <timer_reg_hi1981.h>
+#elif (TRUSTEDCORE_CHIP_CHOOSE == WITH_CHIP_HI1911)
+#include <timer_reg_hi1911.h>
 #else
 #include <timer_reg_hi1951.h>
 #endif

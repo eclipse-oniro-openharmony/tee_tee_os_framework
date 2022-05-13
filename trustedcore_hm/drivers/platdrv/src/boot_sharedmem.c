@@ -6,7 +6,6 @@
 #include "boot_sharedmem.h"
 #include <securec.h>
 #include "tee_log.h"
-#include "plat_cfg.h"
 #include "sre_syscalls_id.h"
 #include "sys/mman.h"
 #include "shared_mem_api.h"
@@ -58,6 +57,26 @@ static uint32_t g_teeos_sharedmem_size[] = {
     TEEOS_SHAREDMEM_MODULE_SIZE_128K,
     TEEOS_SHAREDMEM_MODULE_SIZE_4K
 };
+
+int32_t get_sharedmem_dynamic(uint32_t *buffer, uint32_t size)
+{
+    bool check = (buffer == NULL || size == 0 || size > TEEOS_SHAREDMEM_MODULE_SIZE_4K);
+    if (check) {
+        tloge("input param error");
+        return -1;
+    }
+    uint32_t temp_size = size;
+    int32_t ret = get_sharedmem_from_kernel((void *)buffer, (void *)&temp_size, (uint64_t)GET_SHAREDMEM_TYPE_DYNAMIC);
+    if (ret != 0) {
+        tloge("get avbinfo from kernel failed, ret=%d", ret);
+        return ret;
+    }
+    if (temp_size != size) {
+        tloge("getted info is empty or size error");
+        return -1;
+    }
+    return ret;
+}
 
 int32_t get_shared_mem_info(enum sharedmem_types type, uint32_t *buffer, uint32_t size)
 {
@@ -116,7 +135,14 @@ static int32_t sharedmem_syscall(int swi_id, struct drv_param *params, uint64_t 
             ACCESS_CHECK_A64(args[0], args[1]);
             ACCESS_WRITE_RIGHT_CHECK(args[0], args[1]);
         }
+#ifdef CONFIG_SHAREDMEM_SUPPORT_DYNAMIC
+        if ((uint64_t)args[3] == (uint64_t)GET_SHAREDMEM_TYPE_DYNAMIC)
+            ret = (uint32_t)get_sharedmem_dynamic((uint32_t *)(uintptr_t)args[0], (uint32_t)args[1]);
+        else
+            ret = (uint32_t)get_shared_mem_info(args[2], (uint32_t *)(uintptr_t)args[0], (uint32_t)args[1]);
+#else
         ret = (uint32_t)get_shared_mem_info(args[2], (uint32_t *)(uintptr_t)args[0], (uint32_t)args[1]);
+#endif
         args[0] = ret;
         SYSCALL_END;
 

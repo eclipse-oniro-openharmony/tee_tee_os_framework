@@ -77,6 +77,7 @@ $(2): $$($(1)_objs) $$($(1)_dep_libs)
 	$$(VER)$$(LD) $$($(1)_objs) $$($(1)_extracted_objs) $$(TA_LDFLAGS) --build-id=none \
 	$(if $(findstring se_service, $(2)) if $(findstring permission_service, $(2)),, -rdynamic) \
 	$$($(1)_LDFLAGS) -o $$@
+	$$(OBJCOPY) $$@
 endef
 define eval_drivers
 $(2): $$($(1)_objs) $$($(1)_dep_libs)
@@ -85,6 +86,7 @@ $(2): $$($(1)_objs) $$($(1)_dep_libs)
 	$$(VER)$$(LD) $$($(1)_objs) $$($(1)_extracted_objs) $$(DRV_LDFLAGS) --build-id=none \
 	$(if $(findstring tarunner_a32, $(2)) if $(findstring gtask_a32, $(2)),, -rdynamic) \
 	$$($(1)_LDFLAGS) -o $$@
+	$$(OBJCOPY) $$@
 endef
 endif
 
@@ -126,11 +128,13 @@ CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/drivers/platdrv/platform/kirin/hdcp_wf
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/tee_sharedmem/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/crypto/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/ccdriver_lib/*.c)
+CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/libthirdparty_drv/include/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/framework/gtask/src/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/tui_drv/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/include/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/crypto/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/seccfg/*.c)
+CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/sys_apps/storage/src/task_storage/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/drivers/platdrv/src/drm/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/common/gatekeeper/*.c)
 CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/sys_libs/libta_magic_a32/src/*.c)
@@ -209,7 +213,7 @@ CHOOSE_OPTIONS += $(wildcard $(ROOT_PATH)/libs/libplatdrv/platform/kirin/mesp_de
 CHOOSE_OPTIONS_2 := ta_magic.c
 CHOOSE_OPTIONS_2 += $(wildcard $(ROOT_PATH)/sys_libs/libta_magic_a32/src/*.c)
 
-FILTER_MODULE := open_source libgmssl libboringssl openssl austin
+FILTER_MODULE := open_source openssl austin
 FILTER_MODULE += secisp kds bdkernel task_secboot sre_dev_relcb eSE touchscreen npu_v100 video_decrypt
 
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -Wformat=2 -fsigned-char -fno-strict-aliasing \

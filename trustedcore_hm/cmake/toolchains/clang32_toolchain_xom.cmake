@@ -2,10 +2,10 @@ set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 set(triple arm-linux-gnueabi)
 
-get_filename_component(GCC_TOOLCHAIN_ABS_PATH "${CMAKE_CURRENT_LIST_DIR}/../../prebuild/toolchains/gcc-linaro-arm-linux-gnueabi" ABSOLUTE)
+get_filename_component(GCC_TOOLCHAIN_ABS_PATH "${CMAKE_TOOLCHAIN_PATH}/gcc-linaro-arm-linux-gnueabi" ABSOLUTE)
 set(GCC_C_COMPILER ${GCC_TOOLCHAIN_ABS_PATH}/bin/arm-linux-gnueabi-gcc)
 
-get_filename_component(GUESS_SYSROOT "${CMAKE_CURRENT_LIST_DIR}/../../prebuild/toolchains/gcc-linaro-arm-linux-gnueabi/arm-linux-gnueabi/libc" ABSOLUTE)
+get_filename_component(GUESS_SYSROOT "${CMAKE_TOOLCHAIN_PATH}/gcc-linaro-arm-linux-gnueabi/arm-linux-gnueabi/libc" ABSOLUTE)
 set(CMAKE_SYSROOT ${GUESS_SYSROOT})
 
 set(CMAKE_C_COMPILER ${CMAKE_TOOLCHAIN_PATH}/xom/bin/clang-xom CACHE STRING "Cross C compiler")

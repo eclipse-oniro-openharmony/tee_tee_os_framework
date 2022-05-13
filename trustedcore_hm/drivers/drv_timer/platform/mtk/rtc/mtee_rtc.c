@@ -58,7 +58,7 @@ int32_t rtc_month_days(uint32_t month, uint32_t year)
 {
     /* days per month during a year */
     unsigned char rtc_days_in_month[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-    return rtc_days_in_month[month] + (is_leap_year(year) && month == 1);
+    return rtc_days_in_month[month] + (is_leap_year(year) && (month == 1));
 }
 
 /*
