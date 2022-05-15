@@ -8,7 +8,7 @@
 #define HIGHS (ONES * (UCHAR_MAX/2+1))
 #define HASZERO(x) ((x)-ONES & ~(x) & HIGHS)
 
-__attribute__((no_sanitize_address))size_t strlcpy(char *d, const char *s, size_t n)
+size_t strlcpy(char *d, const char *s, size_t n)
 {
 	char *d0 = d;
 	size_t *wd;

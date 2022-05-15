@@ -5,7 +5,6 @@
 
 int pthread_getattr_np(pthread_t t, pthread_attr_t *a)
 {
-#ifndef CONFIG_LIBFUZZER
 	*a = (pthread_attr_t){0};
 	a->_a_detach = t->detach_state>=DT_DETACHED;
 	a->_a_guardsize = t->guard_size;
@@ -21,6 +20,5 @@ int pthread_getattr_np(pthread_t t, pthread_attr_t *a)
 			l += PAGE_SIZE;
 		a->_a_stacksize = l;
 	}
-#endif
 	return 0;
 }

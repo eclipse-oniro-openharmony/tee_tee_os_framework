@@ -1,8 +1,6 @@
 #ifndef _PTHREAD_IMPL_H
 #define _PTHREAD_IMPL_H
 
-#include <autoconf.h>
-#include <stdint.h>
 #include <pthread.h>
 #include <signal.h>
 #include <errno.h>
@@ -14,28 +12,32 @@
 #include "futex.h"
 
 #define pthread __pthread
-#define __clock_gettime clock_gettime
 
 struct pthread {
+	/* Part 1 -- these fields may be external or
+	 * internal (accessed via asm) ABI. Do not change. */
 	struct pthread *self;
-	void **dtv, *unused1, *unused2;
+	uintptr_t *dtv;
+	struct pthread *prev, *next; /* non-ABI */
 	uintptr_t sysinfo;
 	uintptr_t canary, canary2;
-	uint64_t tid, pid, cref;
-	int tsd_used, errno_val;
-	volatile int cancel, canceldisable, cancelasync;
-	int detached;
+
+	/* Part 2 -- implementation details, non-ABI. */
+	int tid;
+	int errno_val;
+	volatile int detach_state;
+	volatile int cancel;
+	volatile unsigned char canceldisable, cancelasync;
+	unsigned char tsd_used:1;
+	unsigned char dlerror_flag:1;
 	unsigned char *map_base;
 	size_t map_size;
-	size_t guard_size;
 	void *stack;
 	size_t stack_size;
-	void *start_arg;
-	void *(*start)(void *);
+	size_t guard_size;
 	void *result;
 	struct __ptcb *cancelbuf;
 	void **tsd;
-	volatile int dead;
 	struct {
 #ifdef CONFIG_ARCH_AARCH64
 		uint64_t head;
@@ -47,29 +49,32 @@ struct pthread {
 		uint32_t pending;
 #endif
 	} robust_list;
-	int unblock_cancel;
 	volatile int timer_id;
 	locale_t locale;
-	volatile int killlock[2];
-	volatile int exitlock[2];
-	volatile int startlock[2];
-	unsigned long sigmask[_NSIG / 8 / sizeof(long)];
+	volatile int killlock[1];
 	char *dlerror_buf;
-	int dlerror_flag;
 	void *stdio_locks;
+
+	/* Part 3 -- the positions of these fields relative to
+	 * the end of the structure is external and internal ABI. */
 	uintptr_t canary_at_end;
-	void **dtv_copy;
+	uintptr_t *dtv_copy;
+
+    /* Part 4 -- hongmeng expand args */
+    uint64_t cref;
+    void *start_arg;
+    void *(*start)(void *);
+};
+
+enum {
+	DT_EXITING = 0,
+	DT_JOINABLE,
+	DT_DETACHED,
 };
 
 struct __timer {
 	int timerid;
 	pthread_t thread;
-};
-
-struct mutex_link {
-	volatile void *next;
-	volatile void *prev;
-	volatile void *m;
 };
 
 #define __SU (sizeof(size_t)/sizeof(int))
@@ -114,16 +119,7 @@ struct mutex_link {
 #define _b_waiters2 __u.__vi[4]
 #define _b_inst __u.__p[3]
 
-// NOTE: __pthread_self is used by musl libc itself.
-//       pthread_arch.h implement __pthread_self function as static inline function.
-//       But we have different behavior on Hongmeng OS.
-//       SO we won't include this header file, but implement __pthread_self ourself.
-pthread_t pthread_self();
-
-static inline pthread_t __pthread_self()
-{
-	return pthread_self();
-}
+#include <pthread_ext.h>
 
 #ifndef CANARY
 #define CANARY canary
@@ -150,7 +146,6 @@ static inline pthread_t __pthread_self()
 	 0x80000000 })
 
 void *__tls_get_addr(tls_mod_off_t *);
-hidden void *__tls_get_new(tls_mod_off_t *);
 hidden int __init_tp(void *);
 hidden void *__copy_tls(unsigned char *);
 hidden void __reset_tls();
@@ -178,14 +173,12 @@ hidden void __unmapself(void *, size_t);
 hidden int __timedwait(volatile int *, int, clockid_t, const struct timespec *, int);
 hidden int __timedwait_cp(volatile int *, int, clockid_t, const struct timespec *, int);
 hidden void __wait(volatile int *, volatile int *, int, int);
-
 static inline void __wake(volatile void *addr, int cnt, int priv)
 {
 	if (priv) priv = FUTEX_PRIVATE;
-	if (cnt < 0) cnt = INT_MAX;
-	if (__syscall(SYS_futex, (intptr_t)addr, FUTEX_WAKE | (unsigned)priv, cnt) == -ENOSYS)
-		if (__syscall(SYS_futex, (intptr_t)addr, FUTEX_WAKE, cnt) == -ENOSYS)
-			return;
+	if (cnt<0) cnt = INT_MAX;
+	__syscall(SYS_futex, addr, FUTEX_WAKE|priv, cnt) != -ENOSYS ||
+	__syscall(SYS_futex, addr, FUTEX_WAKE, cnt);
 }
 static inline void __futexwait(volatile void *addr, int val, int priv)
 {
@@ -201,7 +194,6 @@ hidden void __inhibit_ptc(void);
 hidden void __tl_lock(void);
 hidden void __tl_unlock(void);
 hidden void __tl_sync(pthread_t);
-hidden int __pthread_attr_copy(pthread_attr_t *a, const pthread_attr_t *b);
 
 extern hidden volatile int __thread_list_lock;
 
@@ -218,46 +210,6 @@ extern hidden unsigned __default_guardsize;
 #define DEFAULT_STACK_MAX (8<<20)
 #define DEFAULT_GUARD_MAX (1<<20)
 
-#define PTHREAD_ATTR_FLAG_DETACHED 0x00000001
-#define PTHREAD_ATTR_FLAG_INHERIT 0x00000004
-#define PTHREAD_ATTR_FLAG_EXPLICIT 0x00000008
-#define PTHREAD_ATTR_FLAG_SHADOW 0x00010000
-
-// SCHED need to keep with hongmeng kernel.
-#define SCHED_NORMAL 0
-
 #define __ATTRP_C11_THREAD ((void*)(uintptr_t)-1)
-
-#ifdef __LP64__
-#define __convert2uint64(ptr) ((uint64_t)(uintptr_t)(ptr));
-#else
-#define __convert2uint64(ptr) ((uint64_t)(uintptr_t)(ptr) & 0xFFFFFFFFULL)
-#endif
-
-static inline void *__convert2ptr(uintptr_t addr)
-{
-	return (void *)addr;
-}
-
-extern int __libc_start_main(int argc, char *argv[], char *envp[]);
-extern void __libc_init_tls();
-
-enum start_args {
-	START_ARGS_ARGV = 0,
-	START_ARGS_ENVP,
-	START_ARGS_PARATBL
-};
-enum start_dyn_param {
-	PARA_RANDOM = 0,
-	PARA_AUXH_BASE,
-	PARA_AUX_PHDR,
-	PARA_AUX_PHNUM,
-	PARA_AUX_PHENT,
-	PARA_TCB_CREF,
-	PARA_SYSMGR_CREF,
-	PARA_END
-};
-#define MODEL32_TCB_REF_HIG	PARA_SYSMGR_CREF
-#define MODEL32_TCB_REF_LOW	PARA_TCB_CREF
 
 #endif

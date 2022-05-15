@@ -1,8 +1,13 @@
-#include <stdio.h>
+#include <signal.h>
+#include <stdint.h>
+#include "syscall.h"
+#include "pthread_impl.h"
 
-// stubbed raise api which we have not implemented
-int raise(int sig __attribute__((unused)))
+int raise(int sig)
 {
-	printf("Warning: raise is not supported yet\n");
-	return -1;
+	sigset_t set;
+	__block_app_sigs(&set);
+	int ret = syscall(SYS_tkill, __pthread_self()->tid, sig);
+	__restore_sigs(&set);
+	return ret;
 }

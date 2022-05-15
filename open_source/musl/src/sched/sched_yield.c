@@ -1,8 +1,7 @@
 #include <sched.h>
-#include <sys/usrsyscall.h>
+#include "syscall.h"
 
-int sched_yield(void)
+int sched_yield()
 {
-	hm_yield();
-	return 0;
+	return syscall(SYS_sched_yield);
 }

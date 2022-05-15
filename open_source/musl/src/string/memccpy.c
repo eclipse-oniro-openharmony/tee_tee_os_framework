@@ -7,7 +7,7 @@
 #define HIGHS (ONES * (UCHAR_MAX/2+1))
 #define HASZERO(x) ((x)-ONES & ~(x) & HIGHS)
 
-__attribute__((no_sanitize_address))void *memccpy(void *restrict dest, const void *restrict src, int c, size_t n)
+void *memccpy(void *restrict dest, const void *restrict src, int c, size_t n)
 {
 	unsigned char *d = dest;
 	const unsigned char *s = src;

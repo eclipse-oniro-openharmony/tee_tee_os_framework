@@ -1,13 +1,11 @@
 #include <sys/resource.h>
 #include <errno.h>
 #include "syscall.h"
-#include "pthread_impl.h"
 
 #define FIX(x) do{ if ((x)>=SYSCALL_RLIM_INFINITY) (x)=RLIM_INFINITY; }while(0)
 
 int getrlimit(int resource, struct rlimit *rlim)
 {
-#ifndef CONFIG_LIBFUZZER
 	unsigned long k_rlim[2];
 	int ret = syscall(SYS_prlimit64, 0, resource, 0, rlim);
 	if (!ret) {
@@ -23,17 +21,6 @@ int getrlimit(int resource, struct rlimit *rlim)
 	FIX(rlim->rlim_cur);
 	FIX(rlim->rlim_max);
 	return 0;
-#else
-    switch (resource) {
-    case RLIMIT_STACK:
-        rlim->rlim_cur = DEFAULT_STACK_SIZE;
-        rlim->rlim_max = DEFAULT_STACK_SIZE;
-        break;
-    default:
-        return -1;
-    }
-    return 0;
-#endif
 }
 
 weak_alias(getrlimit, getrlimit64);

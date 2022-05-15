@@ -122,6 +122,3 @@ void *memcpy(void *restrict dest, const void *restrict src, size_t n)
 	for (; n; n--) *d++ = *s++;
 	return dest;
 }
-
-void *asm_memcpy(void *restrict dest, const void *restrict src, size_t n)
-	__attribute__((alias("memcpy")));

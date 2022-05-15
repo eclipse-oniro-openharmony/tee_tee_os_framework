@@ -2,20 +2,11 @@
 #define _STDIO_IMPL_H
 
 #include <stdio.h>
-#include "sys/syscall.h"
-
-// NEED_struct_iovec should before alltypes.h
-#define __NEED_struct_iovec
-#define __NEED_off_t
-#include <bits/alltypes.h>
+#include "syscall.h"
 
 #define UNGET 8
 
-// maybe need replace __lockfile/__unlockfile with true implementation
-#define __lockfile(f) (1)
-#define __unlockfile(f) do {} while (0)
-
-#define FFINALLOCK(f) ((void)((f)->lock>=0 ? __lockfile((f)) : 0))
+#define FFINALLOCK(f) ((f)->lock>=0 ? __lockfile((f)) : 0)
 #define FLOCK(f) int __need_unlock = ((f)->lock>=0 ? __lockfile((f)) : 0)
 #define FUNLOCK(f) do { if (__need_unlock) __unlockfile((f)); } while (0)
 
@@ -54,33 +45,20 @@ struct _IO_FILE {
 	off_t shlim, shcnt;
 	FILE *prev_locked, *next_locked;
 	struct __locale_struct *locale;
-	/*
-	 * The following three fields is used to be compatible with
-	 * the legacy struct stdio_file.
-	 */
-	void (*free)(FILE *);
-	int buf_policy;
-	int outbuf_used;
 };
 
 extern hidden FILE *volatile __stdin_used;
 extern hidden FILE *volatile __stdout_used;
 extern hidden FILE *volatile __stderr_used;
 
+hidden int __lockfile(FILE *);
+hidden void __unlockfile(FILE *);
+
 hidden size_t __stdio_read(FILE *, unsigned char *, size_t);
 hidden size_t __stdio_write(FILE *, const unsigned char *, size_t);
 hidden size_t __stdout_write(FILE *, const unsigned char *, size_t);
 hidden off_t __stdio_seek(FILE *, off_t, int);
 hidden int __stdio_close(FILE *);
-
-// hongmeng console functions
-size_t console_read(FILE *, void *, size_t);
-size_t console_write(FILE *, void *, size_t);
-int console_seek(FILE *, off_t, int);
-int console_close(FILE *);
-
-size_t stdio_internal_refuse_write(FILE *file, const unsigned char *data,
-				   size_t num_bytes_orig);
 
 hidden size_t __string_read(FILE *, unsigned char *, size_t);
 
@@ -132,8 +110,5 @@ hidden void __getopt_msg(const char *, const char *, const char *, size_t);
 /* Caller-allocated FILE * operations */
 hidden FILE *__fopen_rb_ca(const char *, FILE *, unsigned char *, size_t);
 hidden int __fclose_ca(FILE *);
-
-extern void __reset_stdin(void);
-extern void __reset_stdout(void);
 
 #endif

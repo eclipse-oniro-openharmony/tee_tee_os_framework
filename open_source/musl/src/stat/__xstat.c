@@ -19,11 +19,7 @@ int __lxstat(int ver, const char *path, struct stat *buf)
 
 int __xstat(int ver, const char *path, struct stat *buf)
 {
-#ifndef CONFIG_LIBFUZZER
 	return stat(path, buf);
-#else
-	return 0;
-#endif
 }
 
 weak_alias(__fxstat, __fxstat64);

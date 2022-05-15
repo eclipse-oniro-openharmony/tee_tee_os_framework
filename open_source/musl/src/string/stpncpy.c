@@ -7,7 +7,7 @@
 #define HIGHS (ONES * (UCHAR_MAX/2+1))
 #define HASZERO(x) ((x)-ONES & ~(x) & HIGHS)
 
-__attribute__((no_sanitize_address))char *__stpncpy(char *restrict d, const char *restrict s, size_t n)
+char *__stpncpy(char *restrict d, const char *restrict s, size_t n)
 {
 #ifdef __GNUC__
 	typedef size_t __attribute__((__may_alias__)) word;

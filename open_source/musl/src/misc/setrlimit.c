@@ -38,14 +38,12 @@ static void do_setrlimit(void *p)
 
 int setrlimit(int resource, const struct rlimit *rlim)
 {
-#ifndef CONFIG_LIBFUZZER
 	struct ctx c = { .res = resource, .rlim = rlim, .err = -1 };
 	__synccall(do_setrlimit, &c);
 	if (c.err) {
 		if (c.err>0) errno = c.err;
 		return -1;
 	}
-#endif
 	return 0;
 }
 

@@ -176,6 +176,103 @@ int SM4_set_key(const uint8_t *key, SM4_KEY *ks)
     return 1;
 }
 
+#define GET32(pc)  (                    \
+    ((uint32_t)(pc)[0] << 24) ^         \
+    ((uint32_t)(pc)[1] << 16) ^         \
+    ((uint32_t)(pc)[2] <<  8) ^         \
+    ((uint32_t)(pc)[3]))
+
+#define S32(A)                      \
+    ((SM4_S[((A) >> 24)       ] << 24) ^     \
+     (SM4_S[((A) >> 16) & 0xff] << 16) ^     \
+     (SM4_S[((A) >>  8) & 0xff] <<  8) ^     \
+     (SM4_S[((A))       & 0xff]))
+
+#define ROT32(x,i)                  \
+    (((x) << i) | ((x) >> (32-i)))
+
+#define L32_(x)                 \
+    ((x) ^                  \
+     ROT32((x), 13) ^            \
+     ROT32((x), 23))
+
+#define ENC_ROUND(x0, x1, x2, x3, x4, i) \
+    x4 = x1 ^ x2 ^ x3 ^ *(CK + i); \
+    x4 = S32(x4); \
+    x4 = x0 ^ L32_(x4); \
+    *(rk + i) = x4
+
+#define ROUNDS(x0, x1, x2, x3, x4)      \
+    ROUND(x0, x1, x2, x3, x4, 0);       \
+    ROUND(x1, x2, x3, x4, x0, 1);       \
+    ROUND(x2, x3, x4, x0, x1, 2);       \
+    ROUND(x3, x4, x0, x1, x2, 3);       \
+    ROUND(x4, x0, x1, x2, x3, 4);       \
+    ROUND(x0, x1, x2, x3, x4, 5);       \
+    ROUND(x1, x2, x3, x4, x0, 6);       \
+    ROUND(x2, x3, x4, x0, x1, 7);       \
+    ROUND(x3, x4, x0, x1, x2, 8);       \
+    ROUND(x4, x0, x1, x2, x3, 9);       \
+    ROUND(x0, x1, x2, x3, x4, 10);      \
+    ROUND(x1, x2, x3, x4, x0, 11);      \
+    ROUND(x2, x3, x4, x0, x1, 12);      \
+    ROUND(x3, x4, x0, x1, x2, 13);      \
+    ROUND(x4, x0, x1, x2, x3, 14);      \
+    ROUND(x0, x1, x2, x3, x4, 15);      \
+    ROUND(x1, x2, x3, x4, x0, 16);      \
+    ROUND(x2, x3, x4, x0, x1, 17);      \
+    ROUND(x3, x4, x0, x1, x2, 18);      \
+    ROUND(x4, x0, x1, x2, x3, 19);      \
+    ROUND(x0, x1, x2, x3, x4, 20);      \
+    ROUND(x1, x2, x3, x4, x0, 21);      \
+    ROUND(x2, x3, x4, x0, x1, 22);      \
+    ROUND(x3, x4, x0, x1, x2, 23);      \
+    ROUND(x4, x0, x1, x2, x3, 24);      \
+    ROUND(x0, x1, x2, x3, x4, 25);      \
+    ROUND(x1, x2, x3, x4, x0, 26);      \
+    ROUND(x2, x3, x4, x0, x1, 27);      \
+    ROUND(x3, x4, x0, x1, x2, 28);      \
+    ROUND(x4, x0, x1, x2, x3, 29);      \
+    ROUND(x0, x1, x2, x3, x4, 30);      \
+    ROUND(x1, x2, x3, x4, x0, 31)
+
+void SM4_gcm_set_key(SM4_KEY *ks, const uint8_t *key)
+{
+    /*
+     * Family Key
+     */
+    static const uint32_t FK[4] =
+        { 0xa3b1bac6, 0x56aa3350, 0x677d9197, 0xb27022dc };
+
+    /*
+     * Constant Key
+     */
+    static const uint32_t CK[32] = {
+        0x00070E15, 0x1C232A31, 0x383F464D, 0x545B6269,
+        0x70777E85, 0x8C939AA1, 0xA8AFB6BD, 0xC4CBD2D9,
+        0xE0E7EEF5, 0xFC030A11, 0x181F262D, 0x343B4249,
+        0x50575E65, 0x6C737A81, 0x888F969D, 0xA4ABB2B9,
+        0xC0C7CED5, 0xDCE3EAF1, 0xF8FF060D, 0x141B2229,
+        0x30373E45, 0x4C535A61, 0x686F767D, 0x848B9299,
+        0xA0A7AEB5, 0xBCC3CAD1, 0xD8DFE6ED, 0xF4FB0209,
+        0x10171E25, 0x2C333A41, 0x484F565D, 0x646B7279
+    };
+
+    uint32_t *rk = ks->rk;
+    uint32_t K[5];
+
+    K[0] = load_u32_be(key, 0) ^ FK[0];
+    K[1] = load_u32_be(key, 1) ^ FK[1];
+    K[2] = load_u32_be(key, 2) ^ FK[2];
+    K[3] = load_u32_be(key, 3) ^ FK[3];
+    uint32_t x0, x1, x2, x3, x4;
+
+#define ROUND ENC_ROUND
+    ROUNDS(K[0], K[1], K[2], K[3], K[4]);
+
+    K[0] = K[1] = K[2] = K[3] = K[4] = 0;
+}
+
 #define SM4_RNDS(k0, k1, k2, k3, F)          \
       do {                                   \
          B0 ^= F(B1 ^ B2 ^ B3 ^ ks->rk[k0]); \

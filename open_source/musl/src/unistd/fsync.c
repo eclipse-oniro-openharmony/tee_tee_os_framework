@@ -1,8 +1,7 @@
-#include <stdio.h>
+#include <unistd.h>
+#include "syscall.h"
 
-/* This file currently provides function stubs for porting purpose */
 int fsync(int fd)
 {
-	printf("fsync stubbed\n");
-	return 0;
+	return syscall_cp(SYS_fsync, fd);
 }
