@@ -11,14 +11,14 @@
 typedef Elf32_Ehdr Ehdr;
 typedef Elf32_Phdr Phdr;
 typedef Elf32_Sym Sym;
-#define R_TYPE(x) ((int)((x)&255))
+#define R_TYPE(x) ((x)&255)
 #define R_SYM(x) ((x)>>8)
 #define R_INFO ELF32_R_INFO
 #else
 typedef Elf64_Ehdr Ehdr;
 typedef Elf64_Phdr Phdr;
 typedef Elf64_Sym Sym;
-#define R_TYPE(x) ((int)((x)&0x7fffffff))
+#define R_TYPE(x) ((x)&0x7fffffff)
 #define R_SYM(x) ((x)>>32)
 #define R_INFO ELF64_R_INFO
 #endif
@@ -73,7 +73,16 @@ struct fdpic_dummy_loadmap {
 #define DL_NOMMU_SUPPORT 0
 #endif
 
-#define IS_RELATIVE(x, s) (R_TYPE(x) == REL_RELATIVE)
+#if !DL_FDPIC
+#define IS_RELATIVE(x,s) ( \
+	(R_TYPE(x) == REL_RELATIVE) || \
+	(R_TYPE(x) == REL_SYM_OR_REL && !R_SYM(x)) )
+#else
+#define IS_RELATIVE(x,s) ( ( \
+	(R_TYPE(x) == REL_FUNCDESC_VAL) || \
+	(R_TYPE(x) == REL_SYMBOLIC) ) \
+	&& (((s)[R_SYM(x)].st_info & 0xf) == STT_SECTION) )
+#endif
 
 #ifndef NEED_MIPS_GOT_RELOCS
 #define NEED_MIPS_GOT_RELOCS 0
@@ -87,14 +96,11 @@ struct fdpic_dummy_loadmap {
 #define DYN_CNT 32
 
 typedef void (*stage2_func)(unsigned char *, size_t *);
-typedef void (*stage3_func)(size_t *);
-
-extern void __libc_start_init();
-extern void __libc_exit_fini();
 
 hidden void *__dlsym(void *restrict, const char *restrict, void *restrict);
 
 hidden void __dl_seterr(const char *, ...);
+hidden int __dl_invalid_handle(void *);
 hidden void __dl_vseterr(const char *, va_list);
 
 hidden ptrdiff_t __tlsdesc_static(), __tlsdesc_dynamic();

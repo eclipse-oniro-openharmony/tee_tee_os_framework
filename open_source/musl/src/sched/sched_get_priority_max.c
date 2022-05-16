@@ -1,13 +1,12 @@
-#include <uapi/priorities_kernel.h>
+#include <sched.h>
+#include "syscall.h"
 
-int sched_get_priority_max(int policy __attribute__((unused)))
+int sched_get_priority_max(int policy)
 {
-	// take care about policy later
-	return HM_PRIO_KERNEL_CAN_CONFIG_MAX;
+	return syscall(SYS_sched_get_priority_max, policy);
 }
 
-int sched_get_priority_min(int policy __attribute__((unused)))
+int sched_get_priority_min(int policy)
 {
-	// take care about policy later
-	return HM_PRIO_KERNEL_CAN_CONFIG_MIN;
+	return syscall(SYS_sched_get_priority_min, policy);
 }

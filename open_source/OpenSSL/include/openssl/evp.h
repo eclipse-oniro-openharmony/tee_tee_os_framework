@@ -937,6 +937,7 @@ const EVP_CIPHER *EVP_sm4_cfb128(void);
 #  define EVP_sm4_cfb EVP_sm4_cfb128
 const EVP_CIPHER *EVP_sm4_ofb(void);
 const EVP_CIPHER *EVP_sm4_ctr(void);
+const EVP_CIPHER *EVP_sm4_gcm(void);
 # endif
 
 # if OPENSSL_API_COMPAT < 0x10100000L

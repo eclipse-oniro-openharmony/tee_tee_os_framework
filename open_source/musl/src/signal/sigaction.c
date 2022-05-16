@@ -16,7 +16,6 @@ weak_alias(dummy_lock, __abort_lock);
 static int unmask_done;
 static unsigned long handler_set[_NSIG/(8*sizeof(long))];
 
-#ifndef CONFIG_LIBFUZZER
 void __get_handler_set(sigset_t *set)
 {
 	memcpy(set, handler_set, sizeof handler_set);
@@ -76,19 +75,14 @@ int __libc_sigaction(int sig, const struct sigaction *restrict sa, struct sigact
 	}
 	return __syscall_ret(r);
 }
-#endif
 
 int __sigaction(int sig, const struct sigaction *restrict sa, struct sigaction *restrict old)
 {
-#ifndef CONFIG_LIBFUZZER
 	if (sig-32U < 3 || sig-1U >= _NSIG-1) {
 		errno = EINVAL;
 		return -1;
 	}
 	return __libc_sigaction(sig, sa, old);
-#else
-    return 0;
-#endif
 }
 
 weak_alias(__sigaction, sigaction);

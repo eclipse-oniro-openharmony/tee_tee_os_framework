@@ -1,41 +1,44 @@
-#ifndef _LOCAL_LIBC_H
-#define _LOCAL_LIBC_H
+#ifndef LIBC_H
+#define LIBC_H
 
 #include <stdlib.h>
-#include <pthread.h>
 #include <stdio.h>
-#include "sys/cdefs.h"  /* for __BEGIN_DECLS */
+#include <limits.h>
 
-__BEGIN_DECLS
+struct __locale_map;
 
-#ifndef PAGE_SIZE
-#define PAGE_SIZE 4096
-#endif
-
-extern void _chk_fail(const char *func);
-
-extern void __funcs_on_exit(void);
-
-
-struct __libc {
-	void *main_thread;
-	int threaded;
-	int secure;
-	FILE *ofl_head;
-	volatile int threads_minus_1;
-};
-
-// compatible with glibc implement
 struct __locale_struct {
+	/*  compatible with glibc implement */
 	struct __locale_data *__locales[13];
 	const unsigned short int *__ctype_b;
 	const int *__ctype_tolower;
 	const int *__ctype_toupper;
 	const char *__names[13];
+    /* keep same with musl libc */
+	const struct __locale_map *cat[6];
 };
 
-typedef struct __locale_struct *__locale_t;
-typedef __locale_t locale_t;
+struct tls_module {
+	struct tls_module *next;
+	void *image;
+	size_t len, size, align, offset;
+};
+
+struct __libc {
+	int can_do_threads;
+	int threaded;
+	int secure;
+	volatile int threads_minus_1;
+	size_t *auxv;
+	struct tls_module *tls_head;
+	size_t tls_size, tls_align, tls_cnt;
+	size_t page_size;
+	struct __locale_struct global_locale;
+};
+
+#ifndef PAGE_SIZE
+#define PAGE_SIZE libc.page_size
+#endif
 
 extern hidden struct __libc __libc;
 #define libc __libc
@@ -44,11 +47,18 @@ hidden void __init_libc(char **, char *);
 hidden void __init_tls(size_t *);
 hidden void __init_ssp(void *);
 hidden void __libc_start_init(void);
+hidden void __funcs_on_exit(void);
 hidden void __funcs_on_quick_exit(void);
 hidden void __libc_exit_fini(void);
 hidden void __fork_handler(int);
 
+extern hidden size_t __hwcap;
+extern hidden size_t __sysinfo;
+extern char *__progname, *__progname_full;
+
 extern hidden const char __libc_version[];
 
+hidden void __synccall(void (*)(void *), void *);
+hidden int __setxid(int, int, int, int);
+
 #endif
-__END_DECLS

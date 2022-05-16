@@ -1,208 +1,173 @@
 #include <semaphore.h>
 #include <sys/mman.h>
 #include <limits.h>
-#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
 #include <stdarg.h>
+#include <errno.h>
+#include <time.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include "lock.h"
-#include <hm_mman.h>
-#include <fcntl.h>
-#include <string.h>
-#include <securec.h>
-#include <hmlog.h>
-#include <hm/hm_stat.h>
-
-// strchrnul is declared in string.h with _GNU_SOURCE
-// but not declared in string.h without _GNU_SOURCE
-// here need declaration. for libc internal, use __strchrnul instead
-char *__strchrnul(const char *, int);
-
-// HM shm(share memory) number is limit by 32(MAX_NUM_SHMEMFILE) in libmmgr/mman_svr.c
-// semaphore number should less than shm number
-#define HM_SEM_MAX 16
-#define PREFIX_NAME_LEN 10
-#define PREFIX_SEM_NAME "/sem/"
-#define PREFIX_SEM_NAME_LEN strlen(PREFIX_SEM_NAME)
 
 static struct {
-	int fd;
+	ino_t ino;
 	sem_t *sem;
 	int refcnt;
-} *semtab = NULL;
+} *semtab;
 static volatile int lock[1];
 
-/*
- * mapname is used in shm_open/shm_unlink in libc/musl
- * but hm_shm_open/hm_shm_unlink donot verify the name
- * so here verify the name in sem_open/sem_unlink
- * maybe move the name verifying to hm_shm later.
- */
-char *__sem_mapname(const char *name, char *buf, size_t size)
-{
-	char *p = NULL;
-	if (name == NULL || buf == NULL) {
-		errno = EINVAL;
-		return 0;
-	}
-	if (strnlen(name, NAME_MAX) == NAME_MAX) {
-		errno = ENAMETOOLONG;
-		return 0;
-	}
-	while (*name == '/')
-		/* name will not be null because strnlen has execute before */
-		name++;
-	p = __strchrnul(name, '/');
-	if (*p || p == name ||
-	    (p - name <= 2 && name[0] == '.' && p[-1] == '.')) {
-		errno = EINVAL;
-		return 0;
-	}
-
-	errno_t rc;
-	rc = memcpy_s(buf, size, PREFIX_SEM_NAME, PREFIX_SEM_NAME_LEN);
-	if (rc) {
-		errno = EINVAL;
-		return 0;
-	}
-
-	if (size <= PREFIX_SEM_NAME_LEN) {
-		errno = EINVAL;
-		return 0;
-	}
-	rc = memcpy_s(buf + PREFIX_SEM_NAME_LEN, size - PREFIX_SEM_NAME_LEN, name,
-		      (size_t)(p - name + 1));
-	if (rc) {
-		errno = EINVAL;
-		return 0;
-	}
-
-	return buf;
-}
+#define FLAGS (O_RDWR|O_NOFOLLOW|O_CLOEXEC|O_NONBLOCK)
 
 sem_t *sem_open(const char *name, int flags, ...)
 {
 	va_list ap;
-	int fd, rc, i, slot;
-	unsigned int value;
-	sem_t *sem = NULL;
-	char buf[NAME_MAX + PREFIX_NAME_LEN];
-	/* name will be check in __sem_mapname function */
-	name = __sem_mapname(name, buf, sizeof(buf));
-	if (name == NULL)
+	mode_t mode;
+	unsigned value;
+	int fd, i, e, slot, first=1, cnt, cs;
+	sem_t newsem;
+	void *map;
+	char tmp[64];
+	struct timespec ts;
+	struct stat st;
+	char buf[NAME_MAX+10];
+
+	if (!(name = __shm_mapname(name, buf)))
 		return SEM_FAILED;
 
 	LOCK(lock);
-	if (!semtab) {
-		semtab = calloc(sizeof(*semtab), HM_SEM_MAX);
-		if (!semtab) {
-			UNLOCK(lock);
-			return SEM_FAILED;
-		}
-		for (i = 0; i < HM_SEM_MAX; i++)
-			semtab[i].fd = -1;
+	/* Allocate table if we don't have one yet */
+	if (!semtab && !(semtab = calloc(sizeof *semtab, SEM_NSEMS_MAX))) {
+		UNLOCK(lock);
+		return SEM_FAILED;
 	}
 
-	for (i = 0; i < HM_SEM_MAX && semtab[i].sem; i++) {}
-	if (i == HM_SEM_MAX) {
+	/* Reserve a slot in case this semaphore is not mapped yet;
+	 * this is necessary because there is no way to handle
+	 * failures after creation of the file. */
+	slot = -1;
+	for (cnt=i=0; i<SEM_NSEMS_MAX; i++) {
+		cnt += semtab[i].refcnt;
+		if (!semtab[i].sem && slot < 0) slot = i;
+	}
+	/* Avoid possibility of overflow later */
+	if (cnt == INT_MAX || slot < 0) {
 		errno = EMFILE;
 		UNLOCK(lock);
 		return SEM_FAILED;
 	}
-	slot = i;
+	/* Dummy pointer to make a reservation */
 	semtab[slot].sem = (sem_t *)-1;
 	UNLOCK(lock);
-	fd = hm_shm_open(name, flags, S_IRWXUGO);
-	if (fd < 0) {
-		errno = ENOMEM;
+
+	flags &= (O_CREAT|O_EXCL);
+
+	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &cs);
+
+	/* Early failure check for exclusive open; otherwise the case
+	 * where the semaphore already exists is expensive. */
+	if (flags == (O_CREAT|O_EXCL) && access(name, F_OK) == 0) {
+		errno = EEXIST;
 		goto fail;
 	}
-	if ((unsigned int)flags & O_CREAT) {
-		rc = hm_shm_ftruncate(fd, sizeof(sem_t));
-		if (rc < 0) {
-			if (!hm_shm_close(fd))
-				errno = ENOMEM;
+
+	for (;;) {
+		/* If exclusive mode is not requested, try opening an
+		 * existing file first and fall back to creation. */
+		if (flags != (O_CREAT|O_EXCL)) {
+			fd = open(name, FLAGS);
+			if (fd >= 0) {
+				if (fstat(fd, &st) < 0 ||
+				    (map = mmap(0, sizeof(sem_t), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED) {
+					close(fd);
+					goto fail;
+				}
+				close(fd);
+				break;
+			}
+			if (errno != ENOENT)
+				goto fail;
+		}
+		if (!(flags & O_CREAT))
+			goto fail;
+		if (first) {
+			first = 0;
+			va_start(ap, flags);
+			mode = va_arg(ap, mode_t) & 0666;
+			value = va_arg(ap, unsigned);
+			va_end(ap);
+			if (value > SEM_VALUE_MAX) {
+				errno = EINVAL;
+				goto fail;
+			}
+			sem_init(&newsem, 1, value);
+		}
+		/* Create a temp file with the new semaphore contents
+		 * and attempt to atomically link it as the new name */
+		clock_gettime(CLOCK_REALTIME, &ts);
+		snprintf(tmp, sizeof(tmp), "/dev/shm/tmp-%d", (int)ts.tv_nsec);
+		fd = open(tmp, O_CREAT|O_EXCL|FLAGS, mode);
+		if (fd < 0) {
+			if (errno == EEXIST) continue;
 			goto fail;
 		}
+		if (write(fd, &newsem, sizeof newsem) != sizeof newsem || fstat(fd, &st) < 0 ||
+		    (map = mmap(0, sizeof(sem_t), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED) {
+			close(fd);
+			unlink(tmp);
+			goto fail;
+		}
+		close(fd);
+		e = link(tmp, name) ? errno : 0;
+		unlink(tmp);
+		if (!e) break;
+		munmap(map, sizeof(sem_t));
+		/* Failure is only fatal when doing an exclusive open;
+		 * otherwise, next iteration will try to open the
+		 * existing file. */
+		if (e != EEXIST || flags == (O_CREAT|O_EXCL))
+			goto fail;
 	}
-	sem = (sem_t *)mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_SHARED, fd,
-			    0);
-	if (sem == MAP_FAILED) {
-		if (!hm_shm_close(fd))
-			errno = ENOMEM;
-		goto fail;
-	}
+
+	/* See if the newly mapped semaphore is already mapped. If
+	 * so, unmap the new mapping and use the existing one. Otherwise,
+	 * add it to the table of mapped semaphores. */
 	LOCK(lock);
-	for (i = 0; i < HM_SEM_MAX && semtab[i].fd != fd; i++) {}
-	if (i < HM_SEM_MAX) {
-		// munmap the sem and reuse the existed sem
-		if (munmap(sem, sizeof(sem_t)))
-			hm_error("munmap failed\n");
+	for (i=0; i<SEM_NSEMS_MAX && semtab[i].ino != st.st_ino; i++);
+	if (i<SEM_NSEMS_MAX) {
+		munmap(map, sizeof(sem_t));
 		semtab[slot].sem = 0;
 		slot = i;
-		sem = semtab[i].sem;
+		map = semtab[i].sem;
 	}
-	/* for global variable will be initial by calloc function */
 	semtab[slot].refcnt++;
-	semtab[slot].sem = sem;
-	semtab[slot].fd = fd;
+	semtab[slot].sem = map;
+	semtab[slot].ino = st.st_ino;
 	UNLOCK(lock);
-	if ((unsigned int)flags & O_CREAT) {
-		va_start(ap, flags);
-		(void)va_arg(ap, mode_t);
-		value = va_arg(ap, unsigned int);
-		va_end(ap);
-		// '1' means 'share'
-		if (sem_init(sem, 1, value)) {
-			rc = hm_shm_close(fd);
-			if (rc)
-				hm_error("hm_shm_close failed, return code %d\n", rc);
-			goto fail2;
-		}
-	}
-	return sem;
+	pthread_setcancelstate(cs, 0);
+	return map;
+
 fail:
+	pthread_setcancelstate(cs, 0);
 	LOCK(lock);
 	semtab[slot].sem = 0;
-	UNLOCK(lock);
-	return SEM_FAILED;
-fail2:
-	LOCK(lock);
-	semtab[slot].refcnt--;
-	if (semtab[slot].refcnt == 0) {
-		semtab[slot].sem = 0;
-		semtab[slot].fd = -1;
-		if (munmap(sem, sizeof(sem_t)))
-			hm_error("munmap failed\n");
-	}
 	UNLOCK(lock);
 	return SEM_FAILED;
 }
 
 int sem_close(sem_t *sem)
 {
-	int i, fd;
-	int rc;
-	if (sem == NULL)
-		return -1;
+	int i;
 	LOCK(lock);
-	for (i = 0; i < HM_SEM_MAX && semtab[i].sem != sem; i++) {}
-	if (i == HM_SEM_MAX) {
-		errno = EINVAL;
-		UNLOCK(lock);
-		return -1;
-	}
-
-	fd = semtab[i].fd;
-	if (!(--semtab[i].refcnt)) {
+	for (i=0; i<SEM_NSEMS_MAX && semtab[i].sem != sem; i++);
+	if (!--semtab[i].refcnt) {
 		semtab[i].sem = 0;
-		semtab[i].fd = -1;
-		if (munmap(sem, sizeof(sem_t)))
-			hm_error("munmap failed\n");
+		semtab[i].ino = 0;
 	}
 	UNLOCK(lock);
-
-	rc = hm_shm_close(fd);
-	if (rc != 0)
-		hm_error("hm_shm_close failed, return code %d\n", rc);
-	return rc;
+	munmap(sem, sizeof *sem);
+	return 0;
 }

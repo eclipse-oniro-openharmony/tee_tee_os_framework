@@ -8,6 +8,14 @@
 
 #define LOCALE_NAME_MAX 23
 
+struct __locale_map {
+	const void *map;
+	size_t map_size;
+	char name[LOCALE_NAME_MAX+1];
+	const struct __locale_map *next;
+};
+
+extern hidden const struct __locale_map __c_dot_utf8;
 extern hidden const struct __locale_struct __c_locale;
 extern hidden const struct __locale_struct __c_dot_utf8_locale;
 
@@ -29,20 +37,9 @@ hidden char *__gettextdomain(void);
 
 #define CURRENT_LOCALE (__pthread_self()->locale)
 
+#define CURRENT_UTF8 (!!__pthread_self()->locale->cat[LC_CTYPE])
 
 #undef MB_CUR_MAX
-#define __INTRODUCED_IN(api_level) __attribute__((annotate("introduced_in=" #api_level)))
-
-#if __ANDROID_API__ >= __ANDROID_API_L__
-size_t __ctype_get_mb_cur_max(void);
 #define MB_CUR_MAX __ctype_get_mb_cur_max()
-#else
-/*
- * Pre-L we didn't have any locale support and so we were always the POSIX
- * locale. POSIX specifies that MB_CUR_MAX for the POSIX locale is 1:
- * http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/stdlib.h.html
- */
-#define MB_CUR_MAX 1
-#endif
 
 #endif

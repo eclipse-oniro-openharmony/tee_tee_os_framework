@@ -8,7 +8,7 @@
 #define HIGHS (ONES * (UCHAR_MAX/2+1))
 #define HASZERO(x) ((x)-ONES & ~(x) & HIGHS)
 
-__attribute__((no_sanitize_address)) void *memchr(const void *src, int c, size_t n)
+void *memchr(const void *src, int c, size_t n)
 {
 	const unsigned char *s = src;
 	c = (unsigned char)c;

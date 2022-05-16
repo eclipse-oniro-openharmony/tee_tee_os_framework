@@ -48,10 +48,8 @@ void closelog(void)
 
 static void __openlog()
 {
-#ifndef CONFIG_LIBFUZZER
 	log_fd = socket(AF_UNIX, SOCK_DGRAM|SOCK_CLOEXEC, 0);
 	if (log_fd >= 0) connect(log_fd, (void *)&log_addr, sizeof log_addr);
-#endif
 }
 
 void openlog(const char *ident, int opt, int facility)
@@ -83,7 +81,6 @@ static int is_lost_conn(int e)
 
 static void _vsyslog(int priority, const char *message, va_list ap)
 {
-#ifndef CONFIG_LIBFUZZER
 	char timebuf[16];
 	time_t now;
 	struct tm tm;
@@ -123,7 +120,6 @@ static void _vsyslog(int priority, const char *message, va_list ap)
 		}
 		if (log_opt & LOG_PERROR) dprintf(2, "%.*s", l-hlen, buf+hlen);
 	}
-#endif
 }
 
 static void __vsyslog(int priority, const char *message, va_list ap)

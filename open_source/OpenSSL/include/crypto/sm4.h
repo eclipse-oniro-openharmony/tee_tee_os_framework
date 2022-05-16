@@ -21,6 +21,7 @@
 # define SM4_ENCRYPT     1
 # define SM4_DECRYPT     0
 
+# define SM4_KEY_LENGTH    16
 # define SM4_BLOCK_SIZE    16
 # define SM4_KEY_SCHEDULE  32
 
@@ -29,6 +30,8 @@ typedef struct SM4_KEY_st {
 } SM4_KEY;
 
 int SM4_set_key(const uint8_t *key, SM4_KEY *ks);
+
+void SM4_gcm_set_key(SM4_KEY *ks, const uint8_t *key);
 
 void SM4_encrypt(const uint8_t *in, uint8_t *out, const SM4_KEY *ks);
 

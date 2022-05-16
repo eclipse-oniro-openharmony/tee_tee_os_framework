@@ -30,25 +30,32 @@
 
 #ifdef CONFIG_MEM_DEBUG
 volatile int memcnt_lock[2];
-uint32_t heap_used;
-uint32_t heap_alloc;
-uint32_t heap_free;
-uint32_t mmap_used;
-uint32_t mmap_alloc;
-uint32_t mmap_free;
-uint32_t mmap_times;
-uint32_t munmap_times;
-uint32_t expand_heap_times;
+uint32_t heap_used = 0;
+uint32_t heap_alloc = 0;
+uint32_t heap_free = 0;
+uint32_t mmap_used = 0;
+uint32_t mmap_alloc = 0;
+uint32_t mmap_free = 0;
+uint32_t mmap_times = 0;
+uint32_t munmap_times = 0;
+uint32_t expand_heap_times = 0;
 #endif
 
 extern free_hook_fun svm_notify_drv;
+extern void *__expand_heap_big(size_t *);
 
-#define MAX_BIN_NUM 64
+/*
+ * MMAP_THRESHOLD in musl is (0x1c00*SIZE_ALIGN), but
+ * on hongmeng, we need a much smaller threadhold.
+ */
+#undef MMAP_THRESHOLD
+#define MMAP_THRESHOLD 0x8000
+#undef RECLAIM
+#define RECLAIM 0x8000
+
 static struct {
 	volatile uint64_t binmap;
-	//struct bin bins[64];
-	struct bin bins[MAX_BIN_NUM];
-	//volatile int free_lock[2];
+	struct bin bins[64];
 	volatile int binmap_lock_m[2];
 	volatile int binmap_lock_f[2];
 } mal;
@@ -61,16 +68,17 @@ struct heap_reg {
 static int num_heap_regs;
 #define MAX_HEAP_REGS 64
 static struct heap_reg heap_regs[MAX_HEAP_REGS];
-
 int __malloc_replaced;
 
-NO_KASAN static inline void lock(volatile int *lk)
+/* Synchronization tools */
+
+static inline void lock(volatile int *lk)
 {
 	if (libc.threads_minus_1)
 		while(a_swap(lk, 1)) __wait(lk, lk+1, 1, 1);
 }
 
-NO_KASAN static inline void unlock(volatile int *lk)
+static inline void unlock(volatile int *lk)
 {
 	if (lk[0]) {
 		a_store(lk, 0);
@@ -78,21 +86,43 @@ NO_KASAN static inline void unlock(volatile int *lk)
 	}
 }
 
-NO_KASAN static inline void lock_bin(int i)
+static inline void lock_bin(int i)
 {
 	lock(mal.bins[i].lock);
 	if (!mal.bins[i].head)
 		mal.bins[i].head = mal.bins[i].tail = BIN_TO_CHUNK(i);
 }
 
-NO_KASAN static inline void unlock_bin(int i)
+static inline void unlock_bin(int i)
 {
 	unlock(mal.bins[i].lock);
 }
 
-NO_KASAN static int first_set(uint64_t x)
+static int first_set(uint64_t x)
 {
+#if 1
 	return a_ctz_64(x);
+#else
+	static const char debruijn64[64] = {
+		0, 1, 2, 53, 3, 7, 54, 27, 4, 38, 41, 8, 34, 55, 48, 28,
+		62, 5, 39, 46, 44, 42, 22, 9, 24, 35, 59, 56, 49, 18, 29, 11,
+		63, 52, 6, 26, 37, 40, 33, 47, 61, 45, 43, 21, 23, 58, 17, 10,
+		51, 25, 36, 32, 60, 20, 57, 16, 50, 31, 19, 15, 30, 14, 13, 12
+	};
+	static const char debruijn32[32] = {
+		0, 1, 23, 2, 29, 24, 19, 3, 30, 27, 25, 11, 20, 8, 4, 13,
+		31, 22, 28, 18, 26, 10, 7, 12, 21, 17, 9, 6, 16, 5, 15, 14
+	};
+	if (sizeof(long) < 8) {
+		uint32_t y = x;
+		if (!y) {
+			y = x>>32;
+			return 32 + debruijn32[(y&-y)*0x076be629 >> 27];
+		}
+		return debruijn32[(y&-y)*0x076be629 >> 27];
+	}
+	return debruijn64[(x&-x)*0x022fdd63cc95386dull >> 58];
+#endif
 }
 
 static const unsigned char bin_tab[60] = {
@@ -102,12 +132,7 @@ static const unsigned char bin_tab[60] = {
 	46,46,46,46,46,46,46,46,47,47,47,47,47,47,47,47,
 };
 
-/*
- * BUFOVF: index of bin_tab will not overflow
- *         if 32 < x < 512 ----> 0 < x/8-4 < 60
- *         if 512 <= x <= 7168(0x1c00) ----> 0 <= x/128-4 <= 52
- */
-NO_KASAN static int bin_index(size_t x)
+static int bin_index(size_t x)
 {
 	x = x / SIZE_ALIGN - 1;
 	if (x <= 32) return x;
@@ -116,10 +141,7 @@ NO_KASAN static int bin_index(size_t x)
 	return bin_tab[x/128-4] + 16;
 }
 
-/*
- * BUFOVF: bin_tab will not overflow
- */
-NO_KASAN static int bin_index_up(size_t x)
+static int bin_index_up(size_t x)
 {
 	x = x / SIZE_ALIGN - 1;
 	if (x <= 32) return x;
@@ -128,29 +150,30 @@ NO_KASAN static int bin_index_up(size_t x)
 	return bin_tab[x/128-4] + 17;
 }
 
-/*
- * BUFOVF: i is smaller than MAX_BIN_NUM
- */
-NO_KASAN void dump_bins(void)
+#if 0
+void __dump_heap(int x)
 {
+	struct chunk *c;
 	int i;
-
-	for (i = 0; i < MAX_BIN_NUM; i++) {
+	for (c = (void *)mal.heap; CHUNK_SIZE(c); c = NEXT_CHUNK(c))
+		fprintf(stderr, "base %p size %zu (%d) flags %d/%d\n",
+			c, CHUNK_SIZE(c), bin_index(CHUNK_SIZE(c)),
+			c->csize & 15,
+			NEXT_CHUNK(c)->psize & 15);
+	for (i=0; i<64; i++) {
 		if (mal.bins[i].head != BIN_TO_CHUNK(i) && mal.bins[i].head) {
-			struct chunk *c = mal.bins[i].head;
-			while (c->next != mal.bins[i].head) {
-				/* mal.bins[i].head is circular linked list
-				 * so c->next will no null */
-				printf("bin %d: size %zu\n", i, c->csize);
-				c = c->next;
-			}
-		}
+			fprintf(stderr, "bin %d: %p\n", i, mal.bins[i].head);
+			if (!(mal.binmap & 1ULL<<i))
+				fprintf(stderr, "missing from binmap!\n");
+		} else if (mal.binmap & 1ULL<<i)
+			fprintf(stderr, "binmap wrongly contains %d!\n", i);
 	}
 }
+#endif
 
 static void add_expand_record(void *addr, size_t size);
 
-NO_KASAN static bool find_prev_and_merge(const void *p, size_t n)
+static bool find_prev_and_merge(const void *p, size_t n)
 {
 	int i;
 
@@ -177,29 +200,14 @@ NO_KASAN static bool find_prev_and_merge(const void *p, size_t n)
 static bool using_big_heap = false;
 volatile int heap_lock[2];
 
-NO_KASAN void use_bigheap_policy(void)
+void use_bigheap_policy(void)
 {
 	lock(heap_lock);
 	using_big_heap = true;
 	unlock(heap_lock);
 }
 
-NO_KASAN void dump_heap_regs(void)
-{
-	int i;
-
-	lock(heap_lock);
-	for (i = 0; i < num_heap_regs; i++) {
-		printf("heap_regs[%d]: start %"PRIuPTR", end %"PRIuPTR"\n", i,
-		       heap_regs[i].start, heap_regs[i].end);
-	}
-	unlock(heap_lock);
-}
-
-/*
- * RET: failure of __expand_heap is handled
- */
-NO_KASAN static struct chunk *expand_heap(size_t n)
+static struct chunk *expand_heap(size_t n)
 {
 	static void *end;
 	void *p;
@@ -247,7 +255,7 @@ NO_KASAN static struct chunk *expand_heap(size_t n)
 	return w;
 }
 
-NO_KASAN static int adjust_size(size_t *n)
+static int adjust_size(size_t *n)
 {
 	/* Result of pointer difference must fit in ptrdiff_t. */
 	if (*n-1 > PTRDIFF_MAX - SIZE_ALIGN - PAGE_SIZE) {
@@ -267,7 +275,7 @@ NO_KASAN static int adjust_size(size_t *n)
 	return 0;
 }
 
-NO_KASAN static void unbin(struct chunk *c, int i)
+static void unbin(struct chunk *c, int i)
 {
 	if (c->prev == c->next)
 		a_and_64(&mal.binmap, ~(1ULL<<i));
@@ -277,11 +285,12 @@ NO_KASAN static void unbin(struct chunk *c, int i)
 	NEXT_CHUNK(c)->psize |= C_INUSE;
 }
 
-NO_KASAN static int alloc_fwd(struct chunk *c)
+static int alloc_fwd(struct chunk *c)
 {
-	size_t k = c->csize;
-	while (!(k & C_INUSE)) {
-		int i = bin_index(k);
+	int i;
+	size_t k;
+	while (!((k=c->csize) & C_INUSE)) {
+		i = bin_index(k);
 		lock_bin(i);
 		if (c->csize == k) {
 			unbin(c, i);
@@ -289,16 +298,16 @@ NO_KASAN static int alloc_fwd(struct chunk *c)
 			return 1;
 		}
 		unlock_bin(i);
-		k = c->csize;
 	}
 	return 0;
 }
 
-NO_KASAN static int alloc_rev(struct chunk *c)
+static int alloc_rev(struct chunk *c)
 {
-	size_t k = c->psize;
-	while (!(k & C_INUSE)) {
-		int i = bin_index(k);
+	int i;
+	size_t k;
+	while (!((k=c->psize) & C_INUSE)) {
+		i = bin_index(k);
 		lock_bin(i);
 		if (c->psize == k) {
 			unbin(PREV_CHUNK(c), i);
@@ -306,15 +315,15 @@ NO_KASAN static int alloc_rev(struct chunk *c)
 			return 1;
 		}
 		unlock_bin(i);
-		k = c->psize;
 	}
 	return 0;
 }
 
+
 /* pretrim - trims a chunk _prior_ to removing it from its bin.
  * Must be called with i as the ideal bin for size n, j the bin
  * for the _free_ chunk self, and bin j locked. */
-NO_KASAN static int pretrim(struct chunk *self, size_t n, int i, int j)
+static int pretrim(struct chunk *self, size_t n, int i, int j)
 {
 	size_t n1;
 	struct chunk *next, *split;
@@ -344,7 +353,7 @@ NO_KASAN static int pretrim(struct chunk *self, size_t n, int i, int j)
 	return 1;
 }
 
-NO_KASAN static void trim(struct chunk *self, size_t n)
+static void trim(struct chunk *self, size_t n)
 {
 	size_t n1 = CHUNK_SIZE(self);
 	struct chunk *next, *split;
@@ -362,7 +371,7 @@ NO_KASAN static void trim(struct chunk *self, size_t n)
 	__bin_chunk(split);
 }
 
-NO_KASAN void get_memusage()
+void get_memusage()
 {
 #ifdef CONFIG_MEM_DEBUG
 	pid_t pid = hm_getpid();
@@ -379,7 +388,6 @@ NO_KASAN void get_memusage()
 #endif
 }
 
-#ifndef USE_IN_SYSMGR
 /*
  * BUFOVF: mal.bins[64] for j is return value of bin_index, from 0 to 63
  *         so there will not be buf overflow
@@ -396,7 +404,7 @@ NO_KASAN void get_memusage()
  *			   pre chunk				          cur chunk
  *			   SIZE_ALIGN					  SIZE_ALIGN
  */
-NO_KASAN void *malloc(size_t n)
+void *malloc(size_t n)
 {
 	struct chunk *c;
 	__attribute__((unused)) size_t ori_len = n;
@@ -485,18 +493,11 @@ NO_KASAN void *malloc(size_t n)
 #endif
 	return CHUNK_TO_MEM(c);
 }
-#else
-/* A dummy weak malloc/calloc/realloc/free to avoid introduce other dependencies */
-WEAK void *malloc(size_t n)
-{
-    return NULL;
-}
-#endif
 
 /*
  * RET: failure of __mmap is handled
  */
-NO_KASAN void *malloc_coherent(size_t n)
+void *malloc_coherent(size_t n)
 {
 	if (n == 0)
 		return NULL;
@@ -522,10 +523,7 @@ NO_KASAN void *malloc_coherent(size_t n)
 	return CHUNK_TO_MEM(c);
 }
 
-/*
- *new patch in 22 version, waiting for checking!
- */
-NO_KASAN static size_t mal0_clear(char *p, size_t pagesz, size_t n)
+static size_t mal0_clear(char *p, size_t pagesz, size_t n)
 {
 #ifdef __GNUC__
 	typedef uint64_t __attribute__((__may_alias__)) T;
@@ -543,11 +541,7 @@ NO_KASAN static size_t mal0_clear(char *p, size_t pagesz, size_t n)
 	}
 }
 
-#ifndef USE_IN_SYSMGR
-/*
- *new patch in 22 version, waiting for checking!
- */
-NO_KASAN void *calloc(size_t m, size_t n)
+void *calloc(size_t m, size_t n)
 {
 	if (n && m > (size_t)-1/n) {
 		errno = ENOMEM;
@@ -564,20 +558,8 @@ NO_KASAN void *calloc(size_t m, size_t n)
 	}
 	return memset(p, 0, n);
 }
-#else
-WEAK void *calloc(size_t m, size_t n)
-{
-    return NULL;
-}
-#endif
 
-#ifndef USE_IN_SYSMGR
-/*
- * RET: failure of memcpy_s is handled
- *      failure of malloc is handled
- * LEAK: when memcpy_s failed, allocated memory is freed
- */
-NO_KASAN void *realloc(void *p, size_t n)
+void *realloc(void *p, size_t n)
 {
 	struct chunk *self, *next;
 	size_t n0, n1;
@@ -682,12 +664,6 @@ copy_free_ret:
 	free(CHUNK_TO_MEM(self));
 	return new;
 }
-#else
-WEAK void *realloc(void *p, size_t n)
-{
-    return NULL;
-}
-#endif
 
 static int need_uncommit = 0;
 
@@ -705,7 +681,7 @@ static void do_unmap_and_notify(void *base, size_t len)
 		svm_notify_drv(base, (void *)(uintptr_t)len);
 }
 
-NO_KASAN void __bin_chunk(struct chunk *self)
+void __bin_chunk(struct chunk *self)
 {
 	struct chunk *next = NEXT_CHUNK(self);
 	size_t final_size, new_size, size;
@@ -763,8 +739,8 @@ NO_KASAN void __bin_chunk(struct chunk *self)
 		}
 	}
 
-	if (!(mal.binmap & 1ULL << (unsigned int)i))
-		a_or_64(&mal.binmap, 1ULL << (unsigned int)i);
+	if (!(mal.binmap & 1ULL<<i))
+		a_or_64(&mal.binmap, 1ULL<<i);
 
 	self->csize = final_size;
 	next->psize = final_size;
@@ -791,7 +767,7 @@ NO_KASAN void __bin_chunk(struct chunk *self)
 	unlock_bin(i);
 }
 
-NO_KASAN static void unmap_chunk(struct chunk *self)
+static void unmap_chunk(struct chunk *self)
 {
     size_t extra = self->psize;
 	char *base = (char *)self - extra;
@@ -817,14 +793,7 @@ NO_KASAN static void unmap_chunk(struct chunk *self)
 #endif
 }
 
-#ifndef USE_IN_SYSMGR
-/*
- * BUFOVF: mal.bins[64] for i is return value of bin_index, from 0 to 63
- *         so there will not be buf overflow
- * RET: failure of __munmap/hm_dump_current_stack/hm_muncommit
- *      are handled
- */
-NO_KASAN void free(void *p)
+void free(void *p)
 {
 	if (!p) return;
 
@@ -835,12 +804,8 @@ NO_KASAN void free(void *p)
 	else
 		__bin_chunk(self);
 }
-#else
-WEAK void free(void *p)
-{}
-#endif
 
-NO_KASAN static void delbin(struct chunk *local_c, struct chunk *c, int i)
+static void delbin(struct chunk *local_c, struct chunk *c, int i)
 {
 	if (local_c->prev == local_c->next)
 		a_and_64(&mal.binmap, ~(1ULL << (unsigned int)i));
@@ -850,7 +815,7 @@ NO_KASAN static void delbin(struct chunk *local_c, struct chunk *c, int i)
 	c->csize = 0 | C_INUSE;
 }
 
-NO_KASAN static struct chunk* free_last_chunk(struct chunk *self)
+static struct chunk* free_last_chunk(struct chunk *self)
 {
 	struct chunk *next = NULL;
 	size_t final_size, size;
@@ -903,7 +868,7 @@ struct expand_array {
 };
 static struct expand_array records = {0, 0, 0, {{0, 0}}};
 
-NO_KASAN static void add_expand_record(void *addr, size_t size)
+static void add_expand_record(void *addr, size_t size)
 {
 	if (records.head >= EXPAND_RECORD_NUM || records.tail >= EXPAND_RECORD_NUM) {
 		printf("records index overflow\n");
@@ -918,7 +883,7 @@ NO_KASAN static void add_expand_record(void *addr, size_t size)
 		records.tail = (records.tail + 1) % EXPAND_RECORD_NUM;
 }
 
-NO_KASAN static int do_shrink(void *addr, size_t n, bool *do_unmap)
+static int do_shrink(void *addr, size_t n, bool *do_unmap)
 {
 	int i = 0;
 	for (; i < num_heap_regs; ++i) {
@@ -950,7 +915,7 @@ NO_KASAN static int do_shrink(void *addr, size_t n, bool *do_unmap)
 	return 0;
 }
 
-NO_KASAN static int check_merge_top_heap(struct chunk *c_chunk, size_t n)
+static int check_merge_top_heap(struct chunk *c_chunk, size_t n)
 {
 	size_t c_sz = CHUNK_SIZE(c_chunk);
 	int i = bin_index(c_sz);
@@ -983,7 +948,7 @@ out_merge:
 	return -ENOMEM;
 }
 
-NO_KASAN static int shrink_top_heap_map(uint32_t head, bool *do_unmap)
+static int shrink_top_heap_map(uint32_t head, bool *do_unmap)
 {
 	int i, rc;
 	size_t n = records.entrys[head].size;
@@ -1035,7 +1000,7 @@ NO_KASAN static int shrink_top_heap_map(uint32_t head, bool *do_unmap)
 }
 
 #define REMAIN_EXPAND	2
-NO_KASAN int shrink()
+int shrink()
 {
 	if (need_uncommit)
 		return 0;
@@ -1061,7 +1026,7 @@ unlock_exit:
 	return do_unmap;
 }
 
-NO_KASAN void __malloc_donate(char *start, char *end)
+void __malloc_donate(char *start, char *end)
 {
 	size_t align_start_up = (SIZE_ALIGN-1) & (-(uintptr_t)start - OVERHEAD);
 	size_t align_end_down = (SIZE_ALIGN-1) & (uintptr_t)end;

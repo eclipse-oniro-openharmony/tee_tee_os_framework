@@ -1,8 +1,7 @@
 #include <unistd.h>
-#include <procmgr.h>
+#include "syscall.h"
 
-/* Get pid of the current thread */
-pid_t getpid()
+pid_t getpid(void)
 {
-	return hm_getpid();
+	return __syscall(SYS_getpid);
 }

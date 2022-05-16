@@ -2,9 +2,8 @@
 #include <stdint.h>
 #include <errno.h>
 #include "malloc_impl.h"
-#include <asan.h>
 
-NO_KASAN void *__memalign(size_t align, size_t len)
+void *__memalign(size_t align, size_t len)
 {
 	unsigned char *mem, *new;
 
@@ -18,22 +17,12 @@ NO_KASAN void *__memalign(size_t align, size_t len)
 		return 0;
 	}
 
-	if (!len) {
-		errno = EINVAL;
-		return NULL;
-	}
-
 	if (align <= SIZE_ALIGN)
 		return malloc(len);
 
 	if (!(mem = malloc(len + align-1)))
 		return 0;
 
-	/* mem variable has some memory here */
-	/*
-	 * Rounds up the addr @mem to the next multiple of @align (i.e. 4096, 2^12),
-	 * by adding (@align - 1)(i.e. 4095, 2^12-1) to it and clearing the lowest 12 bits.
-	 */
 	new = (void *)((uintptr_t)mem + align-1 & -align);
 	if (new == mem) return mem;
 

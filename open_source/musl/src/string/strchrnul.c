@@ -7,7 +7,7 @@
 #define HIGHS (ONES * (UCHAR_MAX/2+1))
 #define HASZERO(x) ((x)-ONES & ~(x) & HIGHS)
 
-__attribute__((no_sanitize_address))char *__strchrnul(const char *s, int c)
+char *__strchrnul(const char *s, int c)
 {
 	c = (unsigned char)c;
 	if (!c) return (char *)s + strlen(s);

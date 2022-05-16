@@ -27,6 +27,9 @@ DEFINE_RUN_ONCE_STATIC(ossl_init_ssl_base)
     fprintf(stderr, "OPENSSL_INIT: ossl_init_ssl_base: "
             "Adding SSL ciphers and digests\n");
 #endif
+#ifndef OPENSSL_NO_SM4
+    EVP_add_cipher(EVP_sm4_gcm());
+#endif
 #ifndef OPENSSL_NO_DES
     EVP_add_cipher(EVP_des_cbc());
     EVP_add_cipher(EVP_des_ede3_cbc());

@@ -1,130 +1,107 @@
-#include "libc.h"
-#include "tee_time_api.h"
+#include <time.h>
 #include <errno.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <time.h>
-#include <dlfcn.h>
-#include <lib_timer.h>
-#include <hmlog.h>
+#include "syscall.h"
+#include "atomic.h"
 
-/*
- * true time works on mobile
- * but hongmeng has no true time on qemu platform
- * so use fake time for qemu running
- * so pthread_cond_timedwait/pthread_cond_wait works with no timeout
- * but pthread_cond_timedwait/pthread_cond_wait with timeout not works
- */
-#ifdef CONFIG_PLAT_VIRT
-void __fake_time(TEE_Time *time)
+#ifdef VDSO_CGT_SYM
+
+static void *volatile vdso_func;
+
+#ifdef VDSO_CGT32_SYM
+static void *volatile vdso_func_32;
+static int cgt_time32_wrap(clockid_t clk, struct timespec *ts)
 {
-	if (time == NULL)
-		return;
-	time->seconds = 0;
-	time->millis = 0;
+	long ts32[2];
+	int (*f)(clockid_t, long[2]) =
+		(int (*)(clockid_t, long[2]))vdso_func_32;
+	int r = f(clk, ts32);
+	if (!r) {
+		/* Fallback to syscalls if time32 overflowed. Maybe
+		 * we lucked out and somehow migrated to a kernel with
+		 * time64 syscalls available. */
+		if (ts32[0] < 0) {
+			a_cas_p(&vdso_func, (void *)cgt_time32_wrap, 0);
+			return -ENOSYS;
+		}
+		ts->tv_sec = ts32[0];
+		ts->tv_nsec = ts32[1];
+	}
+	return r;
 }
-
-weak_alias(__fake_time, get_sys_rtc_time);
-weak_alias(__fake_time, TEE_GetSystemTime);
-#else
-void TEE_GetSystemTime(TEE_Time *) __attribute__((weak_import));
-void get_sys_rtc_time(TEE_Time *) __attribute__((weak_import));
 #endif
 
-static void (*g_get_system_time_hdl)(TEE_Time *time) = NULL;
-static void (*g_get_sys_rtctime_hdl)(TEE_Time *time) = NULL;
-
-static int get_timer_hdl(void)
+static int cgt_init(clockid_t clk, struct timespec *ts)
 {
-#ifdef __aarch64__
-	static const char *libtee_shared_name = "libtee_shared.so";
-#else
-	static const char *libtee_shared_name = "libtee_shared_a32.so";
+	void *p = __vdsosym(VDSO_CGT_VER, VDSO_CGT_SYM);
+#ifdef VDSO_CGT32_SYM
+	if (!p) {
+		void *q = __vdsosym(VDSO_CGT32_VER, VDSO_CGT32_SYM);
+		if (q) {
+			a_cas_p(&vdso_func_32, 0, q);
+			p = cgt_time32_wrap;
+		}
+	}
 #endif
-	static void *libtee_shared_hdl = NULL;
-
-	if (libtee_shared_hdl != NULL)
-		return 0;
-
-	libtee_shared_hdl = dlopen(libtee_shared_name, RTLD_NOW | RTLD_LOCAL);
-	if (libtee_shared_hdl == NULL) {
-		hm_error("load tee shared library failed\n");
-		return -1;
-	}
-	g_get_system_time_hdl = dlsym(libtee_shared_hdl, "TEE_GetSystemTime");
-	if (g_get_system_time_hdl == NULL) {
-		hm_error("get get system time hdl failed\n");
-		goto error;
-	}
-	g_get_sys_rtctime_hdl = dlsym(libtee_shared_hdl, "get_sys_rtc_time");
-	if (g_get_sys_rtctime_hdl == NULL) {
-		hm_error("get sys rtc time hdl failed\n");
-		goto error;
-	}
-	return 0;
-error:
-	dlclose(libtee_shared_hdl);
-	libtee_shared_hdl = NULL;
-	return -1;
+	int (*f)(clockid_t, struct timespec *) =
+		(int (*)(clockid_t, struct timespec *))p;
+	a_cas_p(&vdso_func, (void *)cgt_init, p);
+	return f ? f(clk, ts) : -ENOSYS;
 }
 
-static void get_rtc_time(TEE_Time *time)
-{
-	if (get_timer_hdl() == 0) {
-		g_get_sys_rtctime_hdl(time);
-	} else {
-		time->seconds = 0;
-		time->millis = 0;
-	}
-}
-static void get_system_time(TEE_Time *time)
-{
-	if (get_timer_hdl() == 0) {
-		g_get_system_time_hdl(time);
-	} else {
-		time->seconds = 0;
-		time->millis = 0;
-	}
-}
+static void *volatile vdso_func = (void *)cgt_init;
+
+#endif
 
 int __clock_gettime(clockid_t clk, struct timespec *ts)
 {
-	return clock_gettime(clk, ts);
+	int r;
+
+#ifdef VDSO_CGT_SYM
+	int (*f)(clockid_t, struct timespec *) =
+		(int (*)(clockid_t, struct timespec *))vdso_func;
+	if (f) {
+		r = f(clk, ts);
+		if (!r) return r;
+		if (r == -EINVAL) return __syscall_ret(r);
+		/* Fall through on errors other than EINVAL. Some buggy
+		 * vdso implementations return ENOSYS for clocks they
+		 * can't handle, rather than making the syscall. This
+		 * also handles the case where cgt_init fails to find
+		 * a vdso function to use. */
+	}
+#endif
+
+#ifdef SYS_clock_gettime64
+	r = -ENOSYS;
+	if (sizeof(time_t) > 4)
+		r = __syscall(SYS_clock_gettime64, clk, ts);
+	if (SYS_clock_gettime == SYS_clock_gettime64 || r!=-ENOSYS)
+		return __syscall_ret(r);
+	long ts32[2];
+	r = __syscall(SYS_clock_gettime, clk, ts32);
+	if (r==-ENOSYS && clk==CLOCK_REALTIME) {
+		r = __syscall(SYS_gettimeofday, ts32, 0);
+		ts32[1] *= 1000;
+	}
+	if (!r) {
+		ts->tv_sec = ts32[0];
+		ts->tv_nsec = ts32[1];
+		return r;
+	}
+	return __syscall_ret(r);
+#else
+	r = __syscall(SYS_clock_gettime, clk, ts);
+	if (r == -ENOSYS) {
+		if (clk == CLOCK_REALTIME) {
+			__syscall(SYS_gettimeofday, ts, 0);
+			ts->tv_nsec = (int)ts->tv_nsec * 1000;
+			return 0;
+		}
+		r = -EINVAL;
+	}
+	return __syscall_ret(r);
+#endif
 }
 
-int clock_gettime(clockid_t clk, struct timespec *ts)
-{
-	TEE_Time time;
-
-	if (ts == NULL) {
-		errno = EINVAL;
-		return -1;
-	}
-
-	switch (clk) {
-	case CLOCK_REALTIME:
-	case CLOCK_REALTIME_COARSE:
-		if (get_sys_rtc_time != NULL)
-			get_sys_rtc_time(&time);
-		else
-			get_rtc_time(&time);
-		ts->tv_sec = (time_t)time.seconds;
-		ts->tv_nsec = (long)time.millis * 1000000;
-		break;
-	case CLOCK_BOOTTIME:
-	case CLOCK_MONOTONIC:
-		if (TEE_GetSystemTime != NULL)
-			TEE_GetSystemTime(&time);
-		else
-			get_system_time(&time);
-		ts->tv_sec = (time_t)time.seconds;
-		ts->tv_nsec = (long)time.millis * 1000000;
-		break;
-	// NOTE: support more clock id: CLOCK_THREAD_CPUTIME_ID
-	// CLOCK_PROCESS_CPUTIME_ID
-	default:
-		errno = EINVAL;
-		return -1;
-	}
-	return 0;
-}
+weak_alias(__clock_gettime, clock_gettime);

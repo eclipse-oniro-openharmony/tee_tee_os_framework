@@ -1,18 +1,15 @@
+#define _BSD_SOURCE
 #include <sys/stat.h>
-#include <stdio.h>
+#include <errno.h>
+#include <fcntl.h>
+#include "syscall.h"
 
-// stubbed fstat api which we have not implemented
-int fstat(int fd __attribute__((unused)),
-	  struct stat *st __attribute__((unused)))
+int fstat(int fd, struct stat *st)
 {
-	printf("fstat stubbed\n");
-	return -1;
+	if (fd<0) return __syscall_ret(-EBADF);
+	return fstatat(fd, "", st, AT_EMPTY_PATH);
 }
 
-#ifdef CONFIG_LIBFUZZER
-int __xstat(int ver, const char *path, struct stat *buf)
-{
-	printf("__xstat stubbed\n");
-	return -1;
-}
+#if !_REDIR_TIME64
+weak_alias(fstat, fstat64);
 #endif
