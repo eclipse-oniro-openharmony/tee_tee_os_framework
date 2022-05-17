@@ -26,9 +26,7 @@ TA_LDFLAGS += --execute-only
 endif
 endif
 
-ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
 TA_LDFLAGS += -z separate-loadable-segments
-endif
 
 # for ld flags
 ifeq ($(ARCH),aarch64)

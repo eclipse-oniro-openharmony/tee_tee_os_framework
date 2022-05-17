@@ -213,6 +213,8 @@ CFLAGS += --std=c11 -nostdinc -nostdlib -ffreestanding \
 CPPFLAGS += -march=armv8-a -nostdinc
 LDFLAGS += -nostdlib -pie -z noexecstack -z relro -z now -z notext -z max-page-size=4096
 LDFLAGS += --build-id=none
+LDFLAGS += -L$(TEE_ARM_COMPILER_RT_DIR) -lclang_rt.builtins
+
 ASFLAGS += ${INCLUDES} -march=armv8-a
 
 ifeq ($(CONFIG_DEBUG_BUILD), y)

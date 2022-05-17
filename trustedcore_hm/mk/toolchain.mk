@@ -5,14 +5,14 @@ export GCC_TOOLCHAIN_BASEVER=7.5.0
 export GCC_TOOLCHAIN_FULLVER=7.5.0-2019.12
 export LLVM_TOOLCHAIN_BASEVER=8.0.1
 
-export TOOLCHAIN_ROOT=$(TOPDIR)/prebuild/toolchains
+export TOOLCHAIN_ROOT=$(TEE_CLANG_DIR)
 export GCC_LD_A32 := $(TOPDIR)/prebuild/toolchains/gcc-linaro-arm-linux-gnueabi/bin/arm-linux-gnueabi-ld
 export GCC_LD_A64 := $(TOPDIR)/prebuild/toolchains/gcc-linaro-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld
 
-export CLANG_TOOLCHAIN   := $(TOOLCHAIN_ROOT)/clang+llvm/bin
-export GCC_TOOLCHAIN_A32 := $(TOOLCHAIN_ROOT)/gcc-linaro-arm-eabi
-export GCC_TOOLCHAIN_A64 := $(TOOLCHAIN_ROOT)/gcc-linaro-aarch64-linux-gnu
-export GCC_TOOLCHAIN_GNUA32 := $(TOOLCHAIN_ROOT)/gcc-linaro-arm-linux-gnueabi
+export CLANG_TOOLCHAIN   := $(TOOLCHAIN_ROOT)
+export GCC_TOOLCHAIN_A32 := $(TEE_GCC_DIR)/arm/gcc-linaro-7.5.0-arm-linux-gnueabi
+export GCC_TOOLCHAIN_A64 := $(TEE_GCC_DIR)/aarch64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu
+export GCC_TOOLCHAIN_GNUA32 := $(TEE_GCC_DIR)/arm/gcc-linaro-7.5.0-arm-linux-gnueabi
 export PATH := $(CLANG_TOOLCHAIN):$(GCC_TOOLCHAIN_A32)/bin:$(GCC_TOOLCHAIN_A64)/bin:$(GCC_TOOLCHAIN_GNUA32)/bin:$(PATH)
 CROSS_COMPILE := $(CLANG_TOOLCHAIN)
 
@@ -20,7 +20,7 @@ CC      := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang
 CXX     := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang++
 AS      := $(CROSS_COMPILE)/llvm-as
 LD      := $(CROSS_COMPILE)/ld.lld
-CPP     := $(CROSS_COMPILE)/clang-cpp
+CPP     := $(TOPDIR)/kernel/clang-cpp
 # disable ar creating debug
 AR      := $(CROSS_COMPILE)/llvm-ar 2>/dev/null
 NM      := $(CROSS_COMPILE)/llvm-nm
