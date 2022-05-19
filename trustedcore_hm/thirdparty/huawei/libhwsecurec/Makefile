@@ -89,6 +89,7 @@ inc-flags += -I$(TEE_SECUREC_DIR)/include
 # stdlib headers for hm-apps source
 opensource = $(shell if [ -d $(TOPDIR)/../open_source ]; then echo "exist"; else echo "noexist"; fi)
 ifeq ("$(opensource)", "exist")
+	inc-flags += -I$(TOPDIR)/../../tee_os_kernel/libs/syslib/libc/include/arch/$(ARCH)/
 	inc-flags += -I$(TOPDIR)/../open_source/musl/include/
 	inc-flags += -I$(TOPDIR)/../open_source/musl/arch/$(ARCH)/
 	inc-flags += -I$(TOPDIR)/../open_source/musl/arch/generic/
