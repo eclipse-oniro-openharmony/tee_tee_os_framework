@@ -73,9 +73,7 @@ ifeq (${CONFIG_ENABLE_XOM},y)
 endif
 endif
 
-ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
 ld-flags += -z separate-loadable-segments
-endif
 
 ifeq (${TARG}, _a32)
 ifeq ($(xom32_enable), y)

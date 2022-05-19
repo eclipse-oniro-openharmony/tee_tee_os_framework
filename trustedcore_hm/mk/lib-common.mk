@@ -30,9 +30,7 @@ else
 endif
 endif
 
-ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
 LIB_VENDOR_FLAGS += -z separate-loadable-segments
-endif
 
 ifeq ($(CONFIG_DX_ENABLE), true)
 flags += -DDX_ENABLE

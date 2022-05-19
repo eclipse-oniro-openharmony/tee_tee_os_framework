@@ -159,9 +159,7 @@ ifeq ($(CONFIG_GCOV),y)
 $(BUILD_DIR)/src/%.o: c-flags += -g --coverage
 endif
 
-ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
 platdrv_LDFLAGS += -z separate-loadable-segments
-endif
 
 # for DECLARE_TC_DRV, prevent ".tc_drv_descs" section from being merged
 ifeq (${TARG},)

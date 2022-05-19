@@ -45,9 +45,7 @@ ifeq ($(ARCH),aarch64)
 endif
 endif
 
-ifneq ($(LLVM_TOOLCHAIN_BASEVER), 8.0.1)
 DRV_LDFLAGS += -z separate-loadable-segments
-endif
 
 ifeq ($(SVC_PARTITIAL_LINK), y)
 ifeq ($(ARCH),aarch64)
