@@ -1,7 +1,6 @@
 # driver_timer compile rule
 # Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
 DRIVER := drv_timer.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 # Use gnueabi toolchain to support relro
 ifeq (${TARG},_a32)

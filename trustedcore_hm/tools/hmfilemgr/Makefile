@@ -17,18 +17,7 @@ hm_filemgr_objects := $(BUILD_DIR)/src/get_ramfs_data.o
 
 INSTALL_FILE := $(APP_DIR)/$(TARGET)
 # default compile target
-ifeq ($(CONFIG_SCRAMBLE_SYMS), y)
-hmfilemgr_c-flags += -fvisibility=hidden
-TARGET_NAME = $(basename $(notdir $(TARGET)))
-SCRAMBLED_SYMS := $(BUILD_DIR)/scrambled_$(TARGET_NAME)_syms.txt
-$(SCRAMBLED_SYMS): $(INSTALL_FILE)
-	rm -f $(SCRAMBLED_SYMS)
-	$(SCRAMB_SYMS) $(INSTALL_FILE) $(SCRAMBLED_SYMS) "hikey_970"
-	touch $(SCRAMBLED_SYMS)
-else
-SCRAMBLED_SYMS :=
-endif
-default: $(INSTALL_FILE) $(SCRAMBLED_SYMS)
+default: $(INSTALL_FILE)
 
 # build hmfilemgr
 $(INSTALL_FILE): $(BUILD_DIR)/$(TARGET)
@@ -107,7 +96,7 @@ ifeq ($(CONFIG_GCOV),y)
 filemgr_LDFLAGS += -lllvm_gcov${TARG}
 endif
 
-ifeq ($(filter y, $(CONFIG_SCRAMBLE_SYMS) $(CONFIG_USER_DEBUG_BUILD)), )
+ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 filemgr_LDFLAGS += -s
 endif
 ifeq ($(CONFIG_SYSSERV_ASLR), y)

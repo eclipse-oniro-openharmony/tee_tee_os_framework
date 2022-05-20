@@ -181,8 +181,6 @@ clean: clean_links
 	@rm -rf $(OUTPUTDIR)
 	@rm -rf sec_trustedcore.img
 	@rm -rf tools/linker.lds_pp
-	@rm -rf prebuild/hm-teeos-release/tools/scrambled_syms/scrambled_drv_timer_syms.txt
-	@rm -rf prebuild/hm-teeos-release/tools/scrambled_syms/scrambled_platdrv_syms.txt
 	@rm -rf prebuild/hm-teeos-release/tools/ramfsmkimg
 clober: clean
 	@rm -rf prebuild/toolchains

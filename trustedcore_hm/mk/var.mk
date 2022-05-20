@@ -72,5 +72,3 @@ ifeq ($(RELEASE_SIGN), true)
 endif
 
 SECUREC_LIB := $(TEE_SECUREC_DIR)/include
-SCRAMB_SYMS := $(PREBUILD_TOOLS)/scramb_syms_host
-SCRAMB_SYMSDIR := $(PREBUILD_TOOLS)/scrambled_syms/

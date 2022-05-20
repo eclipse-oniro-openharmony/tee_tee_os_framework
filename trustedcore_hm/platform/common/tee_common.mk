@@ -17,7 +17,7 @@ hm_elfloader := elfloader
 #Compile ext_libs for hm-apps
 arm_ext_libs +=
 thirdparty_libs += libhwsecurec
-host_tools += scramb_syms_host xom
+host_tools += xom
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
 arm_open_source_libs +=

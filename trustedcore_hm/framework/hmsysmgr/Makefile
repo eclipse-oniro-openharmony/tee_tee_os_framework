@@ -88,7 +88,7 @@ endif
 
 hmsysmgr_LDFLAGS += --gc-sections -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LINK_LIBS) $(LIBCOMPILER_RT_BUILTINS) $(EH_FILE) --end-group
 hmsysmgr_LDFLAGS += -u _hm_start -e _hm_start -z max-page-size=0x1000 -nostdlib --build-id=none -z noexecstack -z now -z relro
-ifeq ($(filter y, $(CONFIG_SCRAMBLE_SYMS) $(CONFIG_USER_DEBUG_BUILD)), )
+ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 hmsysmgr_LDFLAGS += -s
 endif
 ifeq ($(CONFIG_GCOV),y)
@@ -111,15 +111,4 @@ $(INSTALL_FILE): $(TARGET_FILE)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@cp -rf $< $@
 
-ifeq ($(CONFIG_SCRAMBLE_SYMS), y)
-flags += -fvisibility=hidden
-TARGET_NAME := $(basename $(notdir $(DRIVER)))
-SCRAMBLED_SYMS = $(BUILD_DIR)/scrambled_$(TARGET_NAME)_syms.txt
-$(SCRAMBLED_SYMS): $(INSTALL_FILE)
-	rm -f $(SCRAMBLED_SYMS)
-	$(SCRAMB_SYMS) $(INSTALL_FILE) $(SCRAMBLED_SYMS) "hikey_970"
-	touch $(SCRAMBLED_SYMS)
-else
-SCRAMBLED_SYMS :=
-endif
-all: $(INSTALL_FILE) $(SCRAMBLED_SYMS)
+all: $(INSTALL_FILE)
