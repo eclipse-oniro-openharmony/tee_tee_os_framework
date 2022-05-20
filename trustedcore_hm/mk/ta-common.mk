@@ -49,7 +49,7 @@ TA_LDFLAGS += -r -d -T$(TOPDIR)/mk/ta_link.ld
 endif
 endif
 
-ifeq ($(filter y, $(CONFIG_SCRAMBLE_SYMS) $(CONFIG_USER_DEBUG_BUILD)), )
+ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 TA_LDFLAGS += -s
 endif
 

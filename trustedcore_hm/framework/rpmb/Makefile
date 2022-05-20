@@ -2,7 +2,6 @@
 
 # Targets
 DRIVER := rpmb${TARG}.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/var.mk
 rpmb_c_files += $(wildcard src/*.c)

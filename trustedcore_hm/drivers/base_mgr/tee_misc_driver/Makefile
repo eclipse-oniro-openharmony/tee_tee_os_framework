@@ -2,7 +2,6 @@
 # Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
 
 DRIVER := tee_misc_driver.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/feature-macro.mk
 include $(TOPDIR)/mk/var.mk
@@ -49,7 +48,7 @@ endif
 SVC_PARTITIAL_LINK = y
 include $(TOPDIR)/mk/svc-common.mk
 
-install: $(SCRAMBLED_SYMS)
+install:
 	@echo "tee_misc_driver strip begin"
 	@$(READELF) -W -s $(INSTALL_FILE) | grep ' FUNC ' | \
 		awk -v path=$(INSTALL_FILE) '{printf " -K "$$8} END {printf(" %s", path)}' | \

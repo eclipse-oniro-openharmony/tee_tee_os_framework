@@ -1,7 +1,6 @@
 # Copyright Huawei Technologies Co., Ltd. 2010-2019. All rights reserved.
 
 DRIVER := ssa${TARG}.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/var.mk
 

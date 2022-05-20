@@ -47,7 +47,7 @@ DRV_LDFLAGS += -lllvm_gcov_a32
 endif
 endif
 
-ifeq ($(filter y, $(CONFIG_SCRAMBLE_SYMS) $(CONFIG_USER_DEBUG_BUILD)), )
+ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 DRV_LDFLAGS += -s
 endif
 

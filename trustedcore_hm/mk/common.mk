@@ -131,21 +131,8 @@ $(INSTALL_FILE): $(TARGET_FILE)
 	touch $(INSTALL_FILE)
 endif
 
-ifeq ($(SCRAMBLE_ME), y)
-TARGET_NAME    := $(basename $(notdir $(INSTALL_FILE)))
-SCRAMBLED_SYMS := $(BUILD_DIR)/scrambled_$(TARGET_NAME)_syms.txt
-$(SCRAMBLED_SYMS): $(INSTALL_FILE) $(SCRAMB_SYMS)
-	rm -f $(SCRAMBLED_SYMS)
-	$(VER)$(SCRAMB_SYMS) $(INSTALL_FILE) $(SCRAMBLED_SYMS) "hikey_970"
-	touch $(SCRAMBLED_SYMS)
-else
-SCRAMBLED_SYMS :=
-endif
-
-scramble: $(SCRAMBLED_SYMS)
-
 # all the target
-all: target install scramble
+all: target install
 
 ## this is ugly..
 ifneq ($(EXPORT_HDRS),)

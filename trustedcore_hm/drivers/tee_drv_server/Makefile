@@ -2,7 +2,6 @@
 # Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
 
 DRIVER := tee_drv_server.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 override SOURCE_DIR:=$(TOPDIR)/drivers/tee_drv_server
 
@@ -105,7 +104,7 @@ tee_drv_server_LDFLAGS += -T$(XOM_LDS)
 endif
 endif
 
-install: $(SCRAMBLED_SYMS)
+install:
 	@echo "tee_drv_server strip begin"
 	@$(READELF) -W -s $(INSTALL_FILE) | grep ' FUNC ' | \
 		awk -v path=$(INSTALL_FILE) '{printf " -K "$$8} END {printf(" %s", path)}' | \

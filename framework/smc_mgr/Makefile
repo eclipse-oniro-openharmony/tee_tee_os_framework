@@ -54,22 +54,8 @@ CFILES :=  $(patsubst $(SOURCE_DIR)/%,%,$(wildcard $(SOURCE_DIR)/src/*.c))
 
 HDRFILES := $(wildcard $(SOURCE_DIR)/include/*)
 
-ifeq ($(CONFIG_SCRAMBLE_SYMS),y)
-
-SCRAMBLED_SYMS = $(IMAGE_ROOT)/scrambled_$(TA_NAME)_syms.txt
-
-$(BUILD_DIR)/$(TA_NAME): $(BUILD_DIR)/$(TARGETS) $(SCRAMBLED_SYMS)
-	cp $< $@
-
-$(SCRAMBLED_SYMS) : $(BUILD_DIR)/$(TARGETS)
-	rm -f $(SCRAMBLED_SYMS)
-	$(SCRAMB_SYMS) $(BUILD_DIR)/$(TARGETS) $(SCRAMBLED_SYMS) "hikey_970"
-	touch $(SCRAMBLED_SYMS)
-
-else
 $(BUILD_DIR)/$(TA_NAME): $(BUILD_DIR)/$(TARGETS)
 	cp $< $@
-endif
 
 # Libraries
 ifeq ($(CONFIG_ARCH_AARCH64),y)

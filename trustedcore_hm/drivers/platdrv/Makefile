@@ -2,7 +2,6 @@
 # Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 
 DRIVER := platdrv.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 override SOURCE_DIR:=$(TOPDIR)/drivers/platdrv
 
@@ -197,7 +196,7 @@ platdrv_LDFLAGS += --whole-archive $(LIBS_THIRD_VENDOR) -no-whole-archive
 
 # use -L 1 -s 262144 to make sure that xargs will not wrap the arguments
 
-install: $(SCRAMBLED_SYMS)
+install:
 	@echo "platdrv strip begin"
 	@$(READELF) -W -s $(INSTALL_FILE) | grep ' FUNC ' | \
 		awk -v path=$(INSTALL_FILE) '{printf " -K "$$8} END {printf(" %s", path)}' | \

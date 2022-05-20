@@ -3,7 +3,6 @@
 # DRIVER is a driver
 
 DRIVER := tarunner${TARG}.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/var.mk
 

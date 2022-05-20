@@ -1,7 +1,6 @@
 # Copyright Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
 
 DRIVER := crypto_mgr.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/var.mk
 

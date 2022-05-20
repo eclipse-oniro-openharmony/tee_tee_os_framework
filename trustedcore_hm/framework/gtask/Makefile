@@ -3,7 +3,6 @@
 # TARGET is an app
 
 DRIVER := gtask${TARG}.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/var.mk
 include $(TOPDIR)/mk/plat.mk

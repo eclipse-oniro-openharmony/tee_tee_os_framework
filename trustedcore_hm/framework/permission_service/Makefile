@@ -2,7 +2,6 @@
 
 # TARGET is an app
 TARGET := permission_service${TARG}.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
 
 include $(TOPDIR)/mk/var.mk
 
