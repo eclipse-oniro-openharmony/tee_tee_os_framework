@@ -17,11 +17,8 @@
 #include <hmlog.h>
 #include <stdbool.h>
 #include <sys/hmapi.h>
-#ifdef CONFIG_USER_PRINTING
-#define SMCMGR_STACK_SIZE  0x8000
-#else
+
 #define SMCMGR_STACK_SIZE  0x2000
-#endif
 
 #ifdef CONFIG_TEST_SMP
 #define NR_CORES 1
@@ -76,9 +73,5 @@ cref_t get_teesmc_hdlr(void);
 rref_t get_sysctrl_hdlr(void);
 rref_t get_gtask_channel_hdlr(void);
 bool   get_is_gtask_alive(void);
-
-#ifdef CONFIG_SMCMGR_EMBEDDED
-int smcmgr_main(void);
-#endif
 
 #endif

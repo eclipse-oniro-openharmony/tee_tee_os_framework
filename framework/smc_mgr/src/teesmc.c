@@ -179,11 +179,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
             err = 0;
             if (smc_buf.ops == HMCAP_TEESMC_OPS_NORMAL ||
                 smc_buf.ops == HMCAP_TEESMC_OPS_ABORT_TASK)
-#ifdef SSA_EMBEDDED
-                err = hmapi_notify(get_gtask_channel_hdlr(), (void *)&normal_msg, sizeof(normal_msg));
-#else
                 err = hmapi_notify(get_gtask_channel_hdlr(), NULL, 0);
-#endif
             if (err < 0)
                 error("failed to notify gtask, err=0x%x\n", err);
         } else if (flag) {

@@ -90,7 +90,3 @@ CFLAGS += -fvisibility=hidden
 
 ${COMPONENTS}:
 	false
-
-ifeq ($(CONFIG_SSA_EMBEDDED),y)
-CFLAGS += -DSSA_EMBEDDED
-endif
