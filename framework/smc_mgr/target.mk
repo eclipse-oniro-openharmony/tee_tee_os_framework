@@ -8,9 +8,7 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 
-ifneq ($(CONFIG_SMCMGR_EMBEDDED), y)
 apps-$(CONFIG_TEE_SUPPORT) += teesmcmgr
-endif
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
 teesmcmgr: common \

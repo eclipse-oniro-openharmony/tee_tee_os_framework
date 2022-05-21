@@ -50,13 +50,6 @@ set(TEESMCMGR_LDFLAGS
     -Wl,-z,noexecstack
 )
 
-if ("${CONFIG_SSA_EMBEDDED}" STREQUAL "y")
-       set(TEESMCMGR_CDEFS
-        ${TEESMCMGR_CDEFS}
-        SSA_EMBEDDED
-    )
-endif()
-
 if (ARCH IN_LIST SUPPORTED_ARCHS)
 tee_add_executable(teesmcmgr.elf
     SOURCES

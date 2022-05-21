@@ -74,9 +74,7 @@ rref_t get_gtask_channel_hdlr(void)
 
 static void acquire_hdlr(void)
 {
-#ifndef CONFIG_SMCMGR_EMBEDDED
     int32_t rc;
-#endif
 
     set_teesmc_hdlr(irqmgr_acquire_teesmc_hdlr());
     if (is_ref_err(g_teesmc_hdlr))
@@ -91,13 +89,11 @@ static void acquire_hdlr(void)
         fatal("acquire gtask channel returns %s\n", hmapi_strerror(ref_to_err(g_gtask_channel_hdlr)));
     set_is_gtask_alive(true);
 
-#ifndef CONFIG_SMCMGR_EMBEDDED
     rc = hm_tamgr_register("teesmcmgr");
     if (rc != 0) {
         error("tamgr registration failed\n");
         hm_exit(1);
     }
-#endif
 }
 
 static void create_smc_thread(pthread_t *smc_thread, size_t smc_thread_len, uint32_t cpu_nr)
@@ -202,28 +198,20 @@ static void get_actual_cpu_nr(int32_t *cpu_nr)
  * CODEREVIEW CHECKLIST by Wen Yuzhong <wenyuzhong1@huawei.com>
  * CODEREVIEW CHECKLIST by liujian <liujian56@huawei.com>
  */
-#ifdef CONFIG_SMCMGR_EMBEDDED
-int smcmgr_main(void)
-#else
 int main(void)
-#endif
 {
-#ifndef CONFIG_SMCMGR_EMBEDDED
     uint32_t i;
     int32_t rc;
-#endif
     int32_t cpu_nr = -1;
     pthread_t smc_thread[NR_CORES] = {0};
     pthread_t idle_thread[NR_CORES] = {0};
 
-#ifndef CONFIG_SMCMGR_EMBEDDED
     hm_mmgr_clt_init(); /* must call this before mmap&malloc. */
     rc = cs_client_init(&g_sysmgr_client, __sysmgrch);
     if (rc != 0) {
         error("cs client init failed: %d\n", rc);
         hm_exit(1);
     }
-#endif
 
     info(" --\n");
     info("| TEE SMC Manager\n");
@@ -233,7 +221,6 @@ int main(void)
     acquire_hdlr();
     create_smc_thread(smc_thread, sizeof(smc_thread), (uint32_t)cpu_nr);
     create_idle_thread(idle_thread, sizeof(idle_thread), (uint32_t)cpu_nr);
-#ifndef CONFIG_SMCMGR_EMBEDDED
     for (i = 0; i < (uint32_t)cpu_nr; i++) {
         rc = pthread_join(idle_thread[i], NULL);
         if (rc != 0) {
@@ -249,6 +236,5 @@ int main(void)
         }
     }
     fatal("teesmcmgr exited unexpectedly\n");
-#endif
     return 0;
 }
