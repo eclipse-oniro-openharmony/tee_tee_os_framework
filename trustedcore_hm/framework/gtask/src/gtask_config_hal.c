@@ -219,36 +219,6 @@ bool check_ext_agent_permission(const TEE_UUID *uuid, uint32_t agent_id)
     return false;
 }
 
-const struct dynamic_mem_uuid_item *get_dyn_mem_item_by_configid(uint32_t configid)
-{
-    uint32_t item_num = get_dyn_mem_config_num();
-    const struct dynamic_mem_uuid_item *item = get_dyn_mem_config();
-
-    if (item == NULL)
-        return NULL;
-
-    for (uint32_t i = 0; i < item_num; i++) {
-        if (item[i].configid == configid)
-            return &(item[i]);
-    }
-    return NULL;
-}
-
-const struct dynamic_mem_uuid_item *get_dyn_mem_item_by_uuid(const TEE_UUID *uuid)
-{
-    uint32_t item_num = get_dyn_mem_config_num();
-    const struct dynamic_mem_uuid_item *item = get_dyn_mem_config();
-
-    if (item == NULL || uuid == NULL)
-        return NULL;
-
-    for (uint32_t i = 0; i < item_num; i++) {
-        if (TEE_MemCompare(uuid, &(item[i].uuid), sizeof(*uuid)) == 0)
-            return &(item[i]);
-    }
-    return NULL;
-}
-
 const struct rsv_mem_pool_uuid_item *get_rsv_mem_item(uint64_t paddr, uint32_t size, uint32_t type)
 {
     uint32_t item_num = get_rsv_mem_pool_config_num();

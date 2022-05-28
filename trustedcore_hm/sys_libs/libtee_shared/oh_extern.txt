@@ -42,7 +42,6 @@ TEE_MemMove
 TEE_Realloc
 TEE_GetInstanceData
 TEE_SetInstanceData
-TEE_CheckMemoryAccessRights
 
 /* GP Cryptographic Operations API */
 TEE_SetCryptoFlag
