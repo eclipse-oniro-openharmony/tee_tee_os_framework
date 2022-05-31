@@ -162,11 +162,6 @@ add_custom_command(TARGET prepare_kernel
     COMMAND ${CMAKE_COMMAND} -E copy ${OUTPUTDIR}/kernel/elfloader.o ${BOOTFS_OUT}/elfloader.o
 )
 
-if ("taloader.elf" IN_LIST BOOTFS_FILES_IN_PREBUILD)
-    add_custom_command(TARGET prepare_bins
-        COMMAND ${CMAKE_COMMAND} -E copy ${PREBUILD_APPS}/taloader.elf ${BOOTFS_STAGE_DIR}/taloader.elf
-    )
-endif()
 if ("teesmcmgr.elf" IN_LIST BOOTFS_FILES_IN_PREBUILD)
     add_custom_command(TARGET prepare_bins
         COMMAND ${CMAKE_COMMAND} -E copy ${PREBUILD_APPS}/teesmcmgr.elf ${BOOTFS_STAGE_DIR}/teesmcmgr.elf

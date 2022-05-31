@@ -280,15 +280,15 @@ endif()
 
 list(APPEND CFI_VISIBILITY_HIDDEN ssagent rpmbagent permsrv teesmcmgr.elf)
 if ("${ARCH}" STREQUAL "aarch64")
-    list(APPEND CFI_NO_ICALL ccmgr_hm vfs ac swcrypto_engine hongmeng ta_mt zlib_64 crypto taentry taloader.elf gtask teeos ssa decouple swcrypto_engine tarunner.elf timer crypto_hal)
+    list(APPEND CFI_NO_ICALL ccmgr_hm vfs ac swcrypto_engine hongmeng ta_mt zlib_64 crypto taentry gtask teeos ssa decouple swcrypto_engine tarunner.elf timer crypto_hal)
 else()
-    list(APPEND CFI_NO_ICALL ccmgr_hm vfs ac hongmeng ta_mt zlib crypto taentry taloader.elf gtask teeos ssa decouple swcrypto_engine tarunner.elf timer crypto_hal)
+    list(APPEND CFI_NO_ICALL ccmgr_hm vfs ac hongmeng ta_mt zlib crypto taentry gtask teeos ssa decouple swcrypto_engine tarunner.elf timer crypto_hal)
     if ("${PLATFORM_NAME}" STREQUAL "mtk")
         list(APPEND CFI_NO_ICALL platdrv.elf drv_frame)
     endif()
 endif()
 
-list(APPEND XOM32_BLACK_LIST taloader.elf ta_mt mmgr_sysmgr asan_sysmgr tui_internal tui.elf thp_afe_990)
+list(APPEND XOM32_BLACK_LIST ta_mt mmgr_sysmgr asan_sysmgr tui_internal tui.elf thp_afe_990)
 ###################################################
 # Interfaces to create executatbles and libraries #
 ###################################################
