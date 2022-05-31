@@ -16,11 +16,7 @@ INCLUDE_PATH += $(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/in
 
 # all target flags for both c & c++ compiler
 ifneq ($(TARGET_IS_HOST),y)
-ifeq ($(CONFIG_LIVEPATCH_ENABLE),y)
-flags += -Os
-else
 flags += -Oz
-endif
 else
 #gcc optimization flags
 flags += -Os

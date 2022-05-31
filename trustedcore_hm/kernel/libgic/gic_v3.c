@@ -299,7 +299,6 @@ static void gic_send_sgi(uint32_t irq, uint32_t target_list)
 {
     (void)irq;
     (void)target_list;
-#if !defined(CONFIG_KUNPENG_PLATFORM_1620) && !defined(CONFIG_ASCEND_PLATFORM)
     uint32_t i;
 
     for (i = 0; i < (uint32_t)get_cpu_nr(); i++) {
@@ -323,7 +322,6 @@ static void gic_send_sgi(uint32_t irq, uint32_t target_list)
             gic_isb();
         }
     }
-#endif
 }
 
 

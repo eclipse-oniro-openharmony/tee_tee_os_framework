@@ -85,7 +85,6 @@ static int32_t param_check(int32_t argc, const char * const * argv, bool *free_u
  * they work for many TAs
  * which helps TA to extend utilities
  */
-#ifndef CONFIG_BIG_SESSION
 static bool is_agent(const char *task_name)
 {
     if ((strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == HM_OK) ||
@@ -104,17 +103,10 @@ static bool is_agent(const char *task_name)
 #endif
     return false;
 }
-#endif
 
 static bool extend_one_more_utable(const char *task_name)
 {
-#ifndef CONFIG_BIG_SESSION
     return is_agent(task_name);
-#else
-    /* if we needs open more sessions, we should extend one more utable to all TA */
-    (void)task_name;
-    return true;
-#endif
 }
 
 static const char *get_target_type_name(const struct env_param *param)

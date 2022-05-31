@@ -219,27 +219,6 @@ add_custom_target(scramble_bootfs_symbols)
 add_custom_target(scramble_hmfilemgr_symbols)
 add_custom_target(scramble_hmsysmgr_symbols)
 
-if ("${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y")
-    foreach(bootfs_file ${BOOTFS_FILES})
-        if (bootfs_file MATCHES "\.so$")
-            continue()
-        endif()
-        get_filename_component(module_name ${bootfs_file} NAME_WE)
-        set(SCRAMBLED_TXT ${HOST_BINS_DIR}/scrambled_${module_name}_syms.txt)
-        add_custom_command(TARGET scramble_bootfs_symbols
-            COMMAND ${SCRAMBLE_BIN} ${bootfs_file} ${SCRAMBLED_TXT} "hikey_970"
-        )
-    endforeach()
-    add_custom_command(TARGET scramble_hmfilemgr_symbols
-        COMMAND STRIP=${CMAKE_STRIP} ${PROJECT_SOURCE_DIR}/tools/smart-strip.sh ${PROJECT_BINARY_DIR}/tools/hmfilemgr/hmfilemgr
-        COMMAND ${SCRAMBLE_BIN} ${PROJECT_BINARY_DIR}/tools/hmfilemgr/hmfilemgr ${HOST_BINS_DIR}/scrambled_hmfilemgr_syms.txt "hikey_970"
-    )
-    add_custom_command(TARGET scramble_hmsysmgr_symbols
-        COMMAND STRIP=${CMAKE_STRIP} ${PROJECT_SOURCE_DIR}/tools/smart-strip.sh ${PROJECT_BINARY_DIR}/framework/hmsysmgr/hmsysmgr
-        COMMAND ${SCRAMBLE_BIN} ${PROJECT_BINARY_DIR}/framework/hmsysmgr/hmsysmgr ${HOST_BINS_DIR}/scrambled_hmsysmgr_syms.txt "hikey_970"
-    )
-endif()
-
 set(SCRAMBLED_KERNEL_DIR ${BOOTFS_OUT})
 
 #######
@@ -322,12 +301,7 @@ set(WITH_LOG_ENCODE false)
 set(COMPARE_IMAGE 0)
 
 set(IMAGE_NAME teehm.img.elf)
-
-if ("${CONFIG_FILEMGR_EMBEDDED}" STREQUAL "y")
-    set(BOOT_APPS ${PROJECT_BINARY_DIR}/tools/hmfilemgr/hmfilemgr)
-else()
-    set(BOOT_APPS ${PROJECT_BINARY_DIR}/tools/hmfilemgr/hmfilemgr ${PROJECT_BINARY_DIR}/framework/hmsysmgr/hmsysmgr)
-endif()
+set(BOOT_APPS ${PROJECT_BINARY_DIR}/tools/hmfilemgr/hmfilemgr ${PROJECT_BINARY_DIR}/framework/hmsysmgr/hmsysmgr)
 
 set(DDK_FLAG false)
 add_custom_target(gen_trustedcore_image

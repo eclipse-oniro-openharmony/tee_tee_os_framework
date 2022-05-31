@@ -121,13 +121,6 @@ list(APPEND TEE_DRV_SERVER_WHOLE_ARCHIVE
     teeconfig
 )
 
-if ("${CONFIG_KASAN}" STREQUAL "y")
-    list(APPEND TEE_DRV_SERVER_LIBRARIES
-        ccmgr
-        hmdrv
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TEE_DRV_SERVER_LDFLAGS
         -Wl,-z,separate-loadable-segments
@@ -137,12 +130,6 @@ endif()
 if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     list(APPEND TEE_DRV_SERVER_LDFLAGS
         -Wl,-T${XOM_LDS}
-    )
-endif()
-
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
-    list(APPEND TEE_DRV_SERVER_LDFLAGS
-        -Wl,--execute-only
     )
 endif()
 

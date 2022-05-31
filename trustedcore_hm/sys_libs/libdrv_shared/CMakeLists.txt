@@ -101,12 +101,6 @@ if ("${ARCH}" STREQUAL "arm" AND "${CONFIG_ENABLE_XOM32}" STREQUAL "y")
     )
 endif()
 
-if ("${ARCH}" STREQUAL "aarch64" AND "${CONFIG_ENABLE_XOM}" STREQUAL "y")
-    list(APPEND TEE_SHARED_LINKER_FLAGS
-        -Wl,--execute-only
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TEE_SHARED_LINKER_FLAGS
         -Wl,-z,separate-loadable-segments

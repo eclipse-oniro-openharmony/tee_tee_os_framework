@@ -27,14 +27,6 @@ else()
 endif()
 
 list(FIND PRODUCT_APPS "tcmgr_service.elf" index)
-if (${index} GREATER -1)
-    if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" AND "${ARCH}" STREQUAL "aarch64")
-        set(IF_INSTALL DO_INSTALL)
-    endif()
-    if ("${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true" AND "${ARCH}" STREQUAL "arm")
-        set(IF_INSTALL DO_INSTALL)
-    endif()
-endif()
 
 tee_add_executable(tcmgr_service.elf
     SOURCES

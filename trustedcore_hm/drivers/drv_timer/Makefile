@@ -105,12 +105,6 @@ endif
 ENTRY_POINT := main
 DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
 
-ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	drv_timer_LDFLAGS += --execute-only
-endif
-endif
-
 # for DECLARE_TC_DRV, prevent ".tc_drv_descs" section from being merged
 ifeq (${TARG},)
 drv_timer_LDFLAGS += -T$(SOURCE_DIR)/linker64.ld

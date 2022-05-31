@@ -25,19 +25,10 @@ static const TEE_UUID g_uncommit_whitelist[] = {
 #ifdef TEE_SUPPORT_AI
     TEE_SERVICE_AI,
 #endif
-#ifdef CONFIG_TEE_TEST_SVM
-    TEE_SERVICE_UT,
-#endif
-#ifdef TEE_SUPPORT_ATTESTATION_TA
-    TEE_SERVICE_ATTESTATION_TA,
-#endif
     TEE_SERVICE_PERM
 };
 
 static const TEE_UUID g_vsroot_flush_whitelist[] = {
-#ifdef CONFIG_TEE_TEST_SVM
-    TEE_SERVICE_UT,
-#endif
 #ifdef TEE_SUPPORT_AI
     TEE_SERVICE_AI
 #endif

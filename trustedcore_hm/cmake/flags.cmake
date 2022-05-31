@@ -149,13 +149,6 @@ if ("${CONFIG_USER_DEBUG_INFO}" STREQUAL "y")
     )
 endif()
 
-if ("${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")
-    set(NK_CCFLAGS
-        ${NK_CCFLAGS}
-        -g
-    )
-endif()
-
 if ("${CONFIG_USER_LINKER_GC_SECTIONS}" STREQUAL "y")
     set(NK_CCFLAGS
         ${NK_CCFLAGS}

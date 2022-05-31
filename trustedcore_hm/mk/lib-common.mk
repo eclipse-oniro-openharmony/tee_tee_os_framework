@@ -23,11 +23,7 @@ flags += -DARM_PAE=1
 flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG -DHM_DEBUG_KERNEL -DNDEBUG
 
 ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	LIB_VENDOR_FLAGS := --execute-only
-else
 	LIB_VENDOR_FLAGS :=
-endif
 endif
 
 LIB_VENDOR_FLAGS += -z separate-loadable-segments

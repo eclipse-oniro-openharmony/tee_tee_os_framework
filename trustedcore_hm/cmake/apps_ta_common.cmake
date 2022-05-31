@@ -29,10 +29,6 @@ if ("${CONFIG_DX_ENABLE}" STREQUAL "true")
     list(APPEND TEE_C_FLAGS -DDX_ENABLE)
 endif()
 
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
-    list(APPEND TA_LDFLAGS -Wl,--execute-only)
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TA_LDFLAGS
         -Wl,-z,separate-loadable-segments
@@ -88,12 +84,9 @@ endif()
 list(APPEND TA_LDFLAGS -Wl,--build-id=none)
 list(APPEND TA_LDFLAGS -Wl,-L${LIB_DIR} -Wl,-L${PREBUILD_ARCH_PLAT_LIBS})
 
-if (NOT "${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y" AND
-    NOT "${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")
-    list(APPEND TA_LDFLAGS
-        -s
-    )
-endif()
+list(APPEND TA_LDFLAGS
+    -s
+)
 
 list(REMOVE_ITEM TA_LDFLAGS "-Wl,-pie")
 list(REMOVE_ITEM TEE_LINKER_FLAGS "-Wl,-pie")

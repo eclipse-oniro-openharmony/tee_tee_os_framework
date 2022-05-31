@@ -267,11 +267,7 @@ static int adjust_size(size_t *n)
 			return 0;
 		}
 	}
-#ifdef CONFIG_KASAN
-	*n = (*n + ASAN_GUARD_CHUNK_SIZE + OVERHEAD + SIZE_ALIGN - 1) & SIZE_MASK;
-#else
 	*n = (*n + OVERHEAD + SIZE_ALIGN - 1) & SIZE_MASK;
-#endif
 	return 0;
 }
 
@@ -429,15 +425,6 @@ void *malloc(size_t n)
 		mmap_times += 1;
 		unlock(memcnt_lock);
 #endif
-#ifdef CONFIG_KASAN
-		asan_unpoison_shadow(base + SIZE_ALIGN, ori_len);
-		asan_poison_shadow(ALIGN_UP((size_t)(base + SIZE_ALIGN + ori_len),
-					    ASAN_SHADOW_SCALE_SIZE),
-				   base + len - ALIGN_UP((size_t)(base + SIZE_ALIGN + ori_len),
-							 ASAN_SHADOW_SCALE_SIZE),
-				   0xff);
-		asan_poison_shadow(base, SIZE_ALIGN, 0xff);
-#endif
 		return CHUNK_TO_MEM(c);
 	}
 
@@ -483,14 +470,6 @@ void *malloc(size_t n)
 	trim(c, n);
 	unlock(mal.binmap_lock_m);
 
-#ifdef CONFIG_KASAN
-	asan_unpoison_shadow(CHUNK_TO_MEM(c), ori_len);
-	asan_poison_shadow(ALIGN_UP((size_t)(CHUNK_TO_MEM(c) + ori_len),
-				    ASAN_SHADOW_SCALE_SIZE),
-			   CHUNK_TO_MEM(c) + CHUNK_SIZE(c) - ALIGN_UP((size_t)(CHUNK_TO_MEM(c) + ori_len),
-								      ASAN_SHADOW_SCALE_SIZE),
-			   0xff);
-#endif
 	return CHUNK_TO_MEM(c);
 }
 
@@ -597,13 +576,6 @@ void *realloc(void *p, size_t n)
 		newlen = (newlen + PAGE_SIZE-1) & -PAGE_SIZE;
 
 		if (oldlen == newlen) {
-#ifdef CONFIG_KASAN
-			asan_unpoison_shadow(p, ori_len);
-			asan_poison_shadow(ALIGN_UP((size_t)(p + ori_len), ASAN_SHADOW_SCALE_SIZE),
-					   (void *)self + CHUNK_SIZE(self) - ALIGN_UP((size_t)(p + ori_len),
-										      ASAN_SHADOW_SCALE_SIZE),
-					   0xff);
-#endif
 			return p;
 		}
 		/*
@@ -751,9 +723,6 @@ void __bin_chunk(struct chunk *self)
 	self->next->prev = self;
 	self->prev->next = self;
 
-#ifdef CONFIG_KASAN
-	asan_poison_shadow(CHUNK_TO_MEM(self), CHUNK_SIZE(self), 0xff);
-#endif
 	/* Replace middle of large chunks with fresh zero pages */
 	if (need_uncommit && reclaim) {
 		uintptr_t a = ((uintptr_t)self + SIZE_ALIGN + PAGE_SIZE - 1) & -PAGE_SIZE;

@@ -39,9 +39,7 @@ DRV_LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LIBS:%=-l%) $(RUNTIM
 DRV_LDFLAGS +=  -nostdlib -u $(ENTRY_POINT) -e $(ENTRY_POINT) -z max-page-size=0x1000
 DRV_LDFLAGS += -z separate-loadable-segments
 
-ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 DRV_LDFLAGS += -s
-endif
 
 flags += $(INCLUDES)
 

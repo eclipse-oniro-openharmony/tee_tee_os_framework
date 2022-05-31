@@ -14,22 +14,11 @@ if ("${ARCH}" STREQUAL "aarch64")
         hwsecurec
         ${COMMON_LIBGCC_COMPS}
     )
-    if ("${CONFIG_FILEMGR_EMBEDDED}" STREQUAL "y")
-        list(APPEND HMFILEMGR_LIBRARIES
-            c_sysmgr
-            vfs_sysmgr
-            mmgr_sysmgr
-            mmgr
-            fileio
-            syscalls_sysmgr
-        )
-    else()
-        list(APPEND HMFILEMGR_LIBRARIES
-            c
-            vfs
-            mmgr
-        )
-    endif()
+    list(APPEND HMFILEMGR_LIBRARIES
+        c
+        vfs
+        mmgr
+    )
 else()
     list(APPEND HMFILEMGR_LIBRARIES
         hongmeng_a32
@@ -46,22 +35,11 @@ else()
         hwsecurec
         ${COMMON_LIBGCC_COMPS}
     )
-    if ("${CONFIG_FILEMGR_EMBEDDED}" STREQUAL "y")
-        list(APPEND HMFILEMGR_LIBRARIES
-            c_sysmgr_a32
-            vfs_sysmgr_a32
-            mmgr_sysmgr_a32
-            mmgr_a32
-            fileio_a32
-            syscalls_sysmgr_a32
-        )
-    else()
-        list(APPEND HMFILEMGR_LIBRARIES
-            c_a32
-            vfs_a32
-            mmgr_a32
-        )
-    endif()
+    list(APPEND HMFILEMGR_LIBRARIES
+        c_a32
+        vfs_a32
+        mmgr_a32
+    )
 endif()
 
 list(APPEND HMFILEMGR_C_FLAGS
@@ -88,12 +66,6 @@ list(APPEND HMFILEMGR_C_FLAGS
     -include${PREBUILD_HEADER}/autoconf.h
     -DBOOTFS_IMG=${BOOTFS_OUT}/bootfs.img
 )
-
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
-    list(APPEND HMFILEMGR_LD_FLAGS
-        -Wl,--execute-only
-    )
-endif()
 
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND HMFILEMGR_LD_FLAGS
@@ -123,23 +95,14 @@ if ("${CONFIG_SYSSERV_ASLR}" STREQUAL "y")
     )
 endif()
 
-if (NOT "${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y" AND
-    NOT "${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")
-    list(APPEND HMFILEMGR_LD_FLAGS
-        -s
-    )
-endif()
+list(APPEND HMFILEMGR_LD_FLAGS
+    -s
+)
 
 if ("${BUILD_TOOL}" STREQUAL "clang")
 list(FIND PRODUCT_APPS "hmfilemgr.elf" index)
 if (${index} GREATER -1)
     set(IF_INSTALL DO_INSTALL)
-endif()
-
-if ("${CONFIG_FILEMGR_EMBEDDED}" STREQUAL "y")
-    list(APPEND HMFILEMGR_LD_FLAGS
-        ${PREBUILD_ARCH_PLAT_LIBS}/hmsysmgr.bin.a
-    )
 endif()
 
 tee_add_executable(hmfilemgr

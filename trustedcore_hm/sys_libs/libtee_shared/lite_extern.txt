@@ -46,14 +46,8 @@ get_die_id_size
 tee_task_entry
 AddCaller_TA_all
 TEE_EXT_CheckClientPerm
-#ifdef CONFIG_KUNPENG_PLATFORM_1620
-addcaller_ca_exec
-#else
 AddCaller_CA_exec
-#ifndef CONFIG_ASCEND_PLATFORM
 AddCaller_CA_apk
-#endif
-#endif
 tee_pre_init
 tee_init
 tee_exit

@@ -65,15 +65,6 @@ if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
     )
 endif()
 
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        set(DRV_LDFLAGS
-            ${DRV_LDFLAGS}
-            -Wl,--execute-only
-        )
-    endif()
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND DRV_LDFLAGS
         -Wl,-z,separate-loadable-segments
@@ -153,9 +144,6 @@ endif()
 list(APPEND DRV_LDFLAGS -Wl,--build-id=none)
 list(APPEND DRV_LDFLAGS -Wl,-hash-style=sysv)
 
-if (NOT "${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y" AND
-    NOT "${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")
-    list(APPEND DRV_LDFLAGS
-        -s
-    )
-endif()
+list(APPEND DRV_LDFLAGS
+    -s
+)

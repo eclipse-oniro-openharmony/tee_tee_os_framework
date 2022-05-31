@@ -40,13 +40,9 @@ if ("${CONFIG_DX_ENABLE}" STREQUAL "true")
 endif()
 
 if ("${CONFIG_ARCH_AARCH64}" STREQUAL "y")
-    if (NOT "${CONFIG_FILEMGR_EMBEDDED}" STREQUAL "y")
-        list(APPEND PRODUCT_RELEASE_64 hmsysmgr)
-    endif()
+    list(APPEND PRODUCT_RELEASE_64 hmsysmgr)
 else()
-    if (NOT "${CONFIG_FILEMGR_EMBEDDED}" STREQUAL "y")
-        list(APPEND PRODUCT_RELEASE_32 hmsysmgr)
-    endif()
+    list(APPEND PRODUCT_RELEASE_32 hmsysmgr)
 endif()
 
 if ("${CONFIG_GTASK_64BIT}" STREQUAL "true")
@@ -118,12 +114,6 @@ if ("${CONFIG_TUI_32BIT}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_32 tui_internal_shared)
 elseif ("${CONFIG_TUI_64BIT}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_64 tui_internal_shared)
-endif()
-if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_RELEASE_64 tcmgr_service.elf)
-endif()
-if ("${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_RELEASE_32 tcmgr_service.elf)
 endif()
 
 if ("${CONFIG_HUK_SERVICE_64BIT}" STREQUAL "true")
@@ -373,23 +363,6 @@ if ("${CONFIG_TEE_MISC_DRIVER_64BIT}" STREQUAL "false")
     )
     list(APPEND CHECK_SYMS
         tee_misc_driver.elf
-    )
-endif()
-
-if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_APPS_64
-        tcmgr_service.elf
-    )
-    list(APPEND CHECK_SYMS
-        tcmgr_service.elf
-    )
-endif()
-if ("${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_APPS_32
-        tcmgr_service.elf
-    )
-    list(APPEND CHECK_SYMS
-        tcmgr_service.elf
     )
 endif()
 

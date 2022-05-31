@@ -16,20 +16,6 @@ LIBS += elf_verify${TARG} \
     dynconfmgr${TARG}     \
     dynconfbuilder${TARG}
 
-ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
-LIBS += tcmgr$(TARG)
-endif
-
-ifeq ($(CONFIG_LIVEPATCH_ENABLE), y)
-LIBS += livepatch${TARG}
-endif
-
-ifeq ($(CONFIG_TA_CMS_SIGNATURE),y)
-ifeq (${TARG}, )
-LIBS += cmscbb tee_cmscbb${TARG}
-endif
-endif
-
 LIBS += base_shared${TARG}
 
 inc-flags += -I$(PLATFORM_DIR)/common/include

@@ -250,14 +250,8 @@ get_tbs_element;
 tee_task_entry;
 AddCaller_TA_all;
 TEE_EXT_CheckClientPerm;
-#ifdef CONFIG_KUNPENG_PLATFORM_1620
-addcaller_ca_exec;
-#else
 AddCaller_CA_exec;
-#ifndef CONFIG_ASCEND_PLATFORM
 AddCaller_CA_apk;
-#endif
-#endif
 init_non_std_property;
 TEE_GetPropertyAsString;
 TEE_GetPropertyAsBool;

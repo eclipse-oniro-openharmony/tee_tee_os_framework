@@ -76,23 +76,12 @@ LIBS += drv_frame${TARG}
 LIBS += ac_policy${TARG}
 LIBS += drv_shared${TARG}
 
-# sanitity will disable gc-section, need to add all dependence libs
-ifeq ($(CONFIG_KASAN),y)
-LIBS += ccmgr${TARG} hmdrv${TARG}
-endif
-
 include $(TOPDIR)/mk/drv-common.mk
 
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
 LIBS += hmdrv${TARG}
 tee_drv_server_LDFLAGS += --whole-archive -lteeconfig${TARG} --no-whole-archive
-
-ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	tee_drv_server_LDFLAGS += --execute-only
-endif
-endif
 
 ifeq (${TARG},_a32)
 ifeq ($(xom32_enable),y)

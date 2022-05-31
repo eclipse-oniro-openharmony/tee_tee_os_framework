@@ -80,18 +80,6 @@ LIBS += elf_verify${TARG} \
     whitebox${TARG}
 endif
 
-ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
-LIBS += tcmgr$(TARG)
-endif
-
-ifeq ($(CONFIG_LIVEPATCH_ENABLE), y)
-LIBS += livepatch${TARG}
-endif
-
-ifeq ($(CONFIG_SMCMGR_EMBEDDED), y)
-LIBS += teesmcmgr${TARG}
-endif
-
 ifeq ($(CONFIG_SSA_EMBEDDED), y)
 LIBS += ssagent${TARG}
 endif

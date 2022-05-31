@@ -153,41 +153,6 @@ if (NOT "${CONFIG_NO_VENDOR_LIB_EMBEDDED}" STREQUAL "true")
     endif()
 endif()
 
-if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES
-            tcmgr
-        )
-    else()
-        list(APPEND GTASK_LIBRARIES
-            tcmgr_a32
-        )
-    endif()
-endif()
-
-if ("${CONFIG_LIVEPATCH_ENABLE}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES
-            livepatch
-        )
-    else()
-        list(APPEND GTASK_LIBRARIES
-            livepatch_a32
-        )
-    endif()
-endif()
-
-if ("${CONFIG_SMCMGR_EMBEDDED}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES
-            teesmcmgr
-        )
-    else()
-        list(APPEND GTASK_LIBRARIES
-            teesmcmgr_a32
-        )
-    endif()
-endif()
 
 if ("${CONFIG_SSA_EMBEDDED}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES

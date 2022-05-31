@@ -23,12 +23,6 @@ if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     )
 endif()
 
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
-    list(APPEND TEE_MISC_DRIVER_LDFLAGS
-        -Wl,--execute-only
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TEE_MISC_DRIVER_LDFLAGS
         -Wl,-z,separate-loadable-segments

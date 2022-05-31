@@ -169,11 +169,6 @@ if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
 endif()
 
 if ("${ARCH}" STREQUAL "aarch64")
-    if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
-        list(APPEND DRV_TIMER_LDFLAGS
-            -Wl,--execute-only
-        )
-    endif()
     list(APPEND DRV_TIMER_LDFLAGS
         -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker64.ld
     )

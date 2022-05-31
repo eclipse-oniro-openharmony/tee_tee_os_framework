@@ -76,10 +76,6 @@ struct file_stat_entry {
     { "/bio_service.elf", 27, 1001, 00040 },
     { "/rot_service.elf", 28, 1001, 00040 },
     { "/art_service.elf", 29, 1001, 00040 },
-#ifdef CONFIG_ASCEND_PLATFORM
-    { "/hsm.elf", 30, 1001, 00040 },
-    { "/hsm_bbox.elf", 31, 1001, 00040 },
-#endif
     { "/huk_service.elf", 32, 1001, 00040 },
     { "/crypto_mgr.elf", 33, 1002, 07005 },
     { "/tcmgr_service.elf", 33, 1001, 00040 },

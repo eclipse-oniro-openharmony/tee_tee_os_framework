@@ -39,12 +39,6 @@ ld-flags := -lc$(TARG) -lhmlog$(TARG) -ltimer$(TARG)
 
 ALIAS_SYM := $(shell cat $(ALIAS_FILE) | awk '{print "--defsym="$$1}' | tr "\n" " ")
 
-ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	ld-flags += --execute-only
-endif
-endif
-
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
 ld-flags += -lmbedtls${TARG}
 else
