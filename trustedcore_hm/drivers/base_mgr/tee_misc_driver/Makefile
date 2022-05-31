@@ -29,10 +29,6 @@ inc-flags += -I$(TOPDIR)/drivers/common
 c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/src/%.o: c-flags += -g --coverage
-endif
-
 ifeq (${TARG},)
 ifeq (${CONFIG_ENABLE_XOM},y)
 	tee_misc_driver_LDFLAGS += --execute-only

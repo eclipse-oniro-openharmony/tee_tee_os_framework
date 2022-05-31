@@ -70,9 +70,6 @@ void boot_kernel(uint64_t uart_used, uint64_t elfloader_map_size)
 
     boot_args.rand_num = rand_get(g_plat_cfg.random_seed);
 
-    snapshot_record(SNAPSHOT_RECORD_BOOT_KERNEL);
-    snapshot_finish();
-
     klog(DEBUG_INFO, "ready jump to kernel from elfloader\n");
     ((init_kernel_t)(uintptr_t)g_kernel_info.virt_entry)(&boot_args);
     fail("elf-loader kernel_init should not return back to this spot! ");
@@ -85,6 +82,5 @@ void init_slave_cpus(void);
 void smp_boot(void)
 {
     init_slave_cpus();
-    snapshot_record(SNAPSHOT_RECORD_SMP_BOOT);
 }
 #endif /* CONFIG_MAX_NUM_NODES */

@@ -235,20 +235,6 @@ if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     )
 endif()
 
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND GTASK_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
-    )
-    list(APPEND GTASK_LIBRARIES
-        gcc_eh
-    )
-endif()
-
 list(REMOVE_ITEM TEE_C_FLAGS "-flto")
 list(REMOVE_ITEM TEE_C_FLAGS "-fsplit-lto-unit")
 

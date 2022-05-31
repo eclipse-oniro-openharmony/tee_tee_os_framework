@@ -2,10 +2,6 @@
 SONAME := libbase_shared$(TARG).so
 
 libbase_shared_c_files := $(wildcard src/*.c)
-ifeq ($(CONFIG_GCOV), n)
-libbase_shared_c_files := $(addprefix $(TOPDIR)/sys_libs/libbase_shared/,$(libbase_shared_c_files))
-endif
-
 include $(TOPDIR)/mk/lib-common.mk
 include $(TOPDIR)/mk/feature-macro.mk
 
@@ -40,10 +36,6 @@ ${BUILD_DIR}/$(EXPORT_FILE): $(EXPORT_FILE)
 	@${CC} ${flags} -P -E -o $@ -x c $<
 
 ld-flags := -lc$(TARG) -lhmlog$(TARG) -ltimer$(TARG)
-
-ifeq ($(CONFIG_GCOV),y)
-ld-flags += -lllvm_gcov$(TARG)
-endif
 
 ALIAS_SYM := $(shell cat $(ALIAS_FILE) | awk '{print "--defsym="$$1}' | tr "\n" " ")
 

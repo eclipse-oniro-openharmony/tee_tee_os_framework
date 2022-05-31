@@ -66,18 +66,6 @@ if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATT
     endif()
 endif()
 
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND HMSYSMGR_LIBRARIES
-            llvm_gcov
-        )
-    else()
-        list(APPEND HMSYSMGR_LIBRARIES
-            llvm_gcov_a32
-        )
-    endif()
-endif()
-
 if ("${ARCH}" STREQUAL "aarch64")
     if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
         list(APPEND HMSYSMGR_LDFLAGS

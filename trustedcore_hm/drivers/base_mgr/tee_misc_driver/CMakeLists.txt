@@ -35,17 +35,6 @@ if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     )
 endif()
 
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_MISC_DRIVER_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND TEE_MISC_DRIVER_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
-    )
-endif()
-
 list(REMOVE_ITEM TEE_C_FLAGS -fvisibility=hidden)
 list(REMOVE_ITEM TEE_C_FLAGS -flto)
 list(REMOVE_ITEM TEE_C_FLAGS -fsplit-lto-unit)

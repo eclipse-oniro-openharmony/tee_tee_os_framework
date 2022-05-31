@@ -29,17 +29,11 @@ ifeq ($(CONFIG_ARCH_AARCH64),y)
 LIBS := debug syscalls syscalls_sysmgr cs_sysmgr c_sysmgr fileio mmgr_sysmgr pathmgr security \
 	vfs_sysmgr ac hmlog ac_policy asan_sysmgr
 
-ifeq ($(CONFIG_SRAM_PROTECTION),y)
-LIBS += openssl
-endif
 
 else
 LIBS := debug_a32 syscalls_a32 syscalls_sysmgr_a32 cs_sysmgr_a32 c_sysmgr_a32 fileio_a32 mmgr_sysmgr_a32 pathmgr_a32 security_a32\
 	vfs_sysmgr_a32 ac_a32 hmlog_a32 ac_policy_a32 asan_sysmgr_a32
 
-ifeq ($(CONFIG_SRAM_PROTECTION),y)
-LIBS += openssl_a32
-endif
 
 endif
 
@@ -90,9 +84,6 @@ hmsysmgr_LDFLAGS += --gc-sections -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(L
 hmsysmgr_LDFLAGS += -u _hm_start -e _hm_start -z max-page-size=0x1000 -nostdlib --build-id=none -z noexecstack -z now -z relro
 ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 hmsysmgr_LDFLAGS += -s
-endif
-ifeq ($(CONFIG_GCOV),y)
-hmsysmgr_LDFLAGS += -lllvm_gcov${TARG}
 endif
 
 ifeq ($(CONFIG_SYSSERV_ASLR), y)

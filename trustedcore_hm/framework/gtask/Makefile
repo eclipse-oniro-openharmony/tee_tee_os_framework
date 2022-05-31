@@ -106,11 +106,6 @@ LIBS += devchip_api${TARG}
 endif
 
 DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
-ifeq ($(CONFIG_GCOV), y)
-flags += --coverage -g
-DRV_LDFLAGS += --no-gc-sections --start-group $(EH_FILE) --end-group
-LIBS += llvm_gcov${TARG}
-endif
 
 ENTRY_POINT := main
 

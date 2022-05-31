@@ -85,10 +85,6 @@ include $(TOPDIR)/mk/drv-common.mk
 
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/src/%.o: c-flags += -g --coverage
-endif
-
 LIBS += hmdrv${TARG}
 tee_drv_server_LDFLAGS += --whole-archive -lteeconfig${TARG} --no-whole-archive
 

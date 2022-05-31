@@ -71,13 +71,11 @@ endif()
 
 if (NOT DEFINED "${TARGET_IS_HOST}")
     if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-        if (NOT DEFINED "${CONFIG_GCOV}")
-            set(COMMON_CFLAGS
-                ${COMMON_CFLAGS}
-		        -flto
-		        -fsplit-lto-unit
-            )
-        endif()
+        set(COMMON_CFLAGS
+            ${COMMON_CFLAGS}
+		    -flto
+		    -fsplit-lto-unit
+        )
     endif()
 endif()
 

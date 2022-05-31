@@ -75,17 +75,10 @@ uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -Wformat=2 -fsigned-char -fno-strict-aliasing -pipe -fno-common \
                    -Wextra
 
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/%.o: %.c $(HFILES) | install-headers
-	@echo " [CC] $*.o"
-	$(Q)mkdir -p $(dir $@)
-	$(Q)$(CC) --coverage $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $(CURDIR)/$< -o $@
-else
 $(BUILD_DIR)/%.o: %.c $(HFILES) | install-headers
 	@echo " [CC] $*.o"
 	$(Q)mkdir -p $(dir $@)
 	$(Q)$(CC) $(call uniq,$(CFLAGS) $(CPPFLAGS) $(INCLUDES) $(GENERAL_OPTIONS)) -c -o $@ $<
-endif
 
 $(BUILD_DIR)/%.o: %.S $(HFILES) | install-headers
 	@echo " [ASM] $*.o"

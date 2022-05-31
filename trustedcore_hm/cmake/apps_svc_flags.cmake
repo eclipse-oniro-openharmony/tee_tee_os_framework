@@ -59,12 +59,10 @@ if ("${CONFIG_TEE_FS_OPER}" STREQUAL "y")
 endif()
 
 if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-    if (NOT "${CONFIG_GCOV}" STREQUAL "y")
-        list(APPEND TEE_C_FLAGS
-		-flto
-		-fsplit-lto-unit
-        )
-    endif()
+    list(APPEND TEE_C_FLAGS
+	-flto
+	-fsplit-lto-unit
+    )
 endif()
 
 if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
@@ -154,13 +152,6 @@ endif()
 
 list(APPEND DRV_LDFLAGS -Wl,--build-id=none)
 list(APPEND DRV_LDFLAGS -Wl,-hash-style=sysv)
-if(CONFIG_GCOV)
-    if(ARCH STREQUAL "aarch64")
-        list(APPEND TEE_LINK_LIBRARIES "gcov")
-    else()
-        list(APPEND TEE_LINK_LIBRARIES "gcov_a32")
-    endif()
-endif()
 
 if (NOT "${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y" AND
     NOT "${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")

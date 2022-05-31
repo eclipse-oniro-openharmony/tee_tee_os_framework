@@ -105,30 +105,3 @@ void ivt_el1_sync(void)
     klog(DEBUG_ERROR, "ELF-LOADER: -------------------------\n");
     fail("ELF-LOADER: We should never receive sync in elfloader\n");
 }
-
-#ifdef CONFIG_GCOV
-/* Dummy functions to make linker happy */
-void llvm_gcda_summary_info()
-{
-}
-
-void llvm_gcda_emit_arcs()
-{
-}
-
-void llvm_gcda_emit_function()
-{
-}
-
-void llvm_gcda_start_file()
-{
-}
-
-void llvm_gcov_init()
-{
-}
-
-void llvm_gcda_end_file()
-{
-}
-#endif

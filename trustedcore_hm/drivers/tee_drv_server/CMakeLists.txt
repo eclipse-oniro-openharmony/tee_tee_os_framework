@@ -27,11 +27,9 @@ list(APPEND TEE_C_FLAGS
 )
 
 if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-    if (NOT "${CONFIG_GCOV}" STREQUAL "y")
     list(APPEND TEE_DRV_SERVER_FLAGS
         -flto -fsplit-lto-unit
     )
-    endif()
 endif()
 
 if ("${WITH_ENG_VERSION}" STREQUAL "true")
@@ -145,17 +143,6 @@ endif()
 if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
     list(APPEND TEE_DRV_SERVER_LDFLAGS
         -Wl,--execute-only
-    )
-endif()
-
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_DRV_SERVER_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND TEE_DRV_SERVER_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
     )
 endif()
 

@@ -154,10 +154,6 @@ flags += $(ALIAS_SYM)
 
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/src/%.o: c-flags += -g --coverage
-endif
-
 platdrv_LDFLAGS += -z separate-loadable-segments
 
 # for DECLARE_TC_DRV, prevent ".tc_drv_descs" section from being merged

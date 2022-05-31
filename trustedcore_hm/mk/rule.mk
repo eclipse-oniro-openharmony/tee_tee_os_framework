@@ -237,22 +237,6 @@ is_abs_path = $(filter $(shell echo $1 | head -c 1),/)
 
 ## compile object file rules:
 ifneq ($(xom32_enable),y)
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/%.o: %.cpp
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CXX ] $@"
-	$(VER)$(CXX) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $(CURDIR)/$<
-
-$(BUILD_DIR)/%.o: %.cxx
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CXX ] $@"
-	$(VER)$(CXX) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $(CURDIR)/$<
-
-$(BUILD_DIR)/%.o: %.c
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CC ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(c-flags) -c -o $@ $(if $(call is_abs_path,$<),$<,$(CURDIR)/$<)
-else
 $(BUILD_DIR)/%.o: %.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CXX ] $@"
@@ -271,7 +255,6 @@ $(BUILD_DIR)/%.o: %.c
 	$(if $(if $(call check_list,$(call last_component,$@)),$(findstring $(notdir $<),$(notdir $(CHOOSE_OPTIONS_2))),"need options"),$(WARNING_OPTIONS),) \
 	$(if $(findstring modem,$<)$(findstring secureboot,$<)$(findstring eSE,$<)$(findstring libdx,$@),, -fno-common) \
 	$(flags) $(inc-flags) $(c-flags) $(GENERAL_OPTIONS))) -c -o $@ $<
-endif
 
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -282,22 +265,6 @@ $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ asm ] $@"
 	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
-else
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/%.o: %.cpp
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CXX-XOM ] $@"
-	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $(CURDIR)/$<
-
-$(BUILD_DIR)/%.o: %.cxx
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CXX-XOM ] $@"
-	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $(CURDIR)/$<
-
-$(BUILD_DIR)/%.o: %.c
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CC-XOM ] $@"
-	$(VER)$(CC-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(c-flags) -c -o $@ $(if $(call is_abs_path,$<),$<,$(CURDIR)/$<)
 else
 $(BUILD_DIR)/%.o: %.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -317,7 +284,6 @@ $(BUILD_DIR)/%.o: %.c
 	$(if $(if $(call check_list,$(call last_component,$@)),$(findstring $(notdir $<),$(notdir $(CHOOSE_OPTIONS))),"need options"),$(WARNING_OPTIONS),) \
 	$(if $(findstring modem,$<)$(findstring secureboot,$<)$(findstring eSE,$<)$(findstring libdx,$@),,-fno-common) \
 	$(flags) $(inc-flags) $(c-flags) $(GENERAL_OPTIONS))) -c -o $@ $<
-endif
 
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)

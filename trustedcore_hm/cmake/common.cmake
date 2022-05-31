@@ -114,13 +114,11 @@ endif()
 
 if (NOT DEFINED "${TARGET_IS_HOST}")
     if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-        if (NOT DEFINED "${CONFIG_GCOV}")
-            set(COMMON_CFLAGS
-                ${COMMON_CFLAGS}
-                -flto
-                -fsplit-lto-unit
-            )
-        endif()
+        set(COMMON_CFLAGS
+            ${COMMON_CFLAGS}
+            -flto
+            -fsplit-lto-unit
+        )
     endif()
 endif()
 
@@ -336,13 +334,6 @@ set(COMMON_CFLAGS
     ${COMMON_CFLAGS}
     -DARM_PAE=1
 )
-
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    set(COMMON_LDFLAGS
-        ${COMMON_LDFLAGS}
-        -Wl,-lgcov
-    )
-endif()
 
 set(COMMON_ASFLAGS
     ${COMMON_ASFLAGS}

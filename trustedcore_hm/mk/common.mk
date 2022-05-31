@@ -28,9 +28,7 @@ endif
 
 ifeq ($(TARGET_IS_HOST),)
 ifeq ($(CONFIG_LLVM_LTO),y)
-ifeq ($(CONFIG_GCOV),)
 flags += -flto -fsplit-lto-unit
-endif
 endif
 endif
 

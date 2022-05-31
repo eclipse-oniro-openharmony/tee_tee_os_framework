@@ -92,9 +92,6 @@ filemgr_LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/$(PLAT)/libhwsecure
 endif
 filemgr_LDFLAGS += --gc-sections -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LINK_LIBS) $(LIBCOMPILER_RT_BUILTINS) --end-group
 filemgr_LDFLAGS += -u _hm_start -e _hm_start -z max-page-size=0x1000 -nostdlib --build-id=none -z noexecstack -z relro -z now
-ifeq ($(CONFIG_GCOV),y)
-filemgr_LDFLAGS += -lllvm_gcov${TARG}
-endif
 
 ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 filemgr_LDFLAGS += -s

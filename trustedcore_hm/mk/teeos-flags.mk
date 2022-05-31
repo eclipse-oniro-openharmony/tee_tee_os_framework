@@ -224,18 +224,8 @@ endif
 
 CFLAGS += -DARM_PAE=1
 
-ifeq ($(CONFIG_GCOV),y)
-ifeq ($(TARGET_IS_ARM32),y)
-LDFLAGS += -lllvm_gcov_a32
-else
-LDFLAGS += -lllvm_gcov
-endif
-endif
-
 ifeq ($(TARGET_IS_HOST),)
 ifeq ($(CONFIG_LLVM_LTO),y)
-ifeq ($(CONFIG_GCOV),)
 CFLAGS += -flto -fsplit-lto-unit
-endif
 endif
 endif

@@ -36,11 +36,7 @@ static uint64_t g_image_start;
 static struct image_info g_user_info[MAX_USER_IMAGES];
 
 #define MAX_PH_LOADER_NUMBER 10
-#ifdef CONFIG_GCOV
-#define START_POOL_NEED_MEMORY addr_page_roundup(1024 * 1024 + CONFIG_PT_POOL_INIT_SIZE)
-#else
 #define START_POOL_NEED_MEMORY addr_page_roundup(CONFIG_PT_POOL_INIT_SIZE)
-#endif
 
 #define UART_KADDR_OFFSET 21
 #define COMPRESS_PROTECT_RANGE BOOT_OFFSET
@@ -784,7 +780,6 @@ static struct cpio_header *process_kernel(struct image_info *kernel_img_info,
     kernel_img_info->to_kernel_offset = kernel_img_info->virt_region_start - KERNEL_LOAD_OFFSET - \
                                         (uint64_t)(uintptr_t)_image_base_addr + BOOT_OFFSET;
     print_image_info(kernel_img_info);
-    snapshot_record(SNAPSHOT_RECORD_PROCESS_KERNEL);
 
     /*
      * All of the rest of the applications are immediately after the
@@ -857,7 +852,6 @@ static void process_boot_apps(struct cpio_header *next, vaddr_t out, struct imag
         print_image_info(ii);
         /* The next application follows this one */
     }
-    snapshot_record(SNAPSHOT_RECORD_PROCESS_BOOT_APPS);
 
     if (num_apps)
         *num_apps = i;
@@ -978,10 +972,6 @@ static void *prepare_archive(void)
     return cpio_start;
 }
 
-#ifdef CONFIG_GCOV
-extern void llvm_gcov_dump();
-#endif
-
 static void aslr_init()
 {
 #ifdef CONFIG_KERNEL_ASLR
@@ -990,7 +980,6 @@ static void aslr_init()
 #ifdef CONFIG_SYSSERV_ASLR
     get_sysserv_aslr_offset();
 #endif
-    snapshot_record(SNAPSHOT_RECORD_ASLR_INIT);
 }
 
 static uint64_t g_uart_addr_used;
@@ -1000,7 +989,6 @@ static void loader_init()
     uint64_t uart_paddr = g_plat_cfg.uart_addr;
     uint64_t uart_paddr_aligin = ALIGN_DOWN(uart_paddr, ELFLOADER_PAGE);
     g_uart_addr_used = uart_kaddr_aligin + uart_paddr - uart_paddr_aligin;
-    snapshot_start();
     /* init uart function */
     register_uart(g_plat_cfg.uart_type);
     set_uart_addr(g_uart_addr_used);
@@ -1016,7 +1004,6 @@ static void loader_init()
     if (memset(&g_elfloader_lock, 0, sizeof(struct hm_spinlock)) != 0)
         fail("memset failed\n");
 
-    snapshot_record(SNAPSHOT_RECORD_LOADER_INIT);
 }
 
 static void barrier()

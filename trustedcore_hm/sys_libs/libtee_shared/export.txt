@@ -723,18 +723,6 @@ tee_se_set_aid;
 tee_se_set_deactive;
 #endif
 
-#ifdef CONFIG_SRAM_PROTECTION
-AES_set_encrypt_key;
-CRYPTO_gcm128_encrypt;
-CRYPTO_gcm128_decrypt;
-CRYPTO_gcm128_tag;
-AES_encrypt;
-CRYPTO_gcm128_init;
-CRYPTO_gcm128_aad;
-CRYPTO_gcm128_setiv;
-CRYPTO_gcm128_release;
-#endif
-
 TEE_EXT_DeriveTAPlatfromKeys;
 tee_ext_derive_ta_platfrom_keys;
 TEE_EXT_DeriveTARootKey;

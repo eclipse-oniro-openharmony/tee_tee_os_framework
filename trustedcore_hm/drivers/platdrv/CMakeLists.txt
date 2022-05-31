@@ -283,16 +283,6 @@ else()
     endif()
 endif()
 
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND PLATDRV_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND PLATDRV_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
-    )
-endif()
 
 set(TEE_CPP_FLAGS ${TEE_C_FLAGS})
 set(TEE_CPP_INCLUDE_PATH ${TEE_INCLUDE_PATH})

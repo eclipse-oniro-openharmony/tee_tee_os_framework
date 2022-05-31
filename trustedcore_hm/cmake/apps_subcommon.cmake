@@ -19,12 +19,10 @@ endif()
 
 if (NOT "${TARGET_IS_HOST}" STREQUAL "y")
     if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-        if (NOT "${CONFIG_GCOV}" STREQUAL "y")
-            list(APPEND TEE_C_FLAGS
-                -flto
-                -fsplit-lto-unit
-            )
-        endif()
+        list(APPEND TEE_C_FLAGS
+            -flto
+            -fsplit-lto-unit
+        )
     endif()
 endif()
 
