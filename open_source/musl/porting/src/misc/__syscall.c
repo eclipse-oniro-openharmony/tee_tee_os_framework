@@ -5,9 +5,6 @@
 #include <stdint.h>
 
 #include "vsyscall/futex.h"
-#ifdef CONFIG_TA_AFFINITY
-#include "vsyscall/affinity.h"
-#endif
 
 // syscall.h define __syscall as a macro, but __syscall below should not be expanded by the macro
 // so undef __syscall
@@ -38,14 +35,6 @@ long __syscall(long syscall_num, ...)
     case SYS_set_robust_list:
         sysfunc = set_robust_list_vsyscall;
         break;
-#ifdef CONFIG_TA_AFFINITY
-    case SYS_sched_setaffinity:
-        sysfunc = setaffinity_vsyscall;
-        break;
-    case SYS_sched_getaffinity:
-        sysfunc = getaffinity_vsyscall;
-        break;
-#endif
 #endif
     default:
         /* this situation will be deal with in next step */

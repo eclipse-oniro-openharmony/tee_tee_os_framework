@@ -12,18 +12,7 @@ int pthread_setaffinity_np(pthread_t td, size_t size, const cpu_set_t *set)
     if (set == NULL)
         return -EINVAL;
 
-#ifdef CONFIG_TA_AFFINITY
-    struct pthread *thread = (struct pthread *)(uintptr_t)td;
-#ifdef __aarch64
-    return -__syscall(SYS_sched_setaffinity, (long)thread->cref, size, set);
-#else
-    return -__syscall(SYS_sched_setaffinity, (long)thread->cref,
-       (long)(thread->cref >> HIGH_TRANS_BITS), size, set);
-#endif
-
-#else
     return -__syscall(SYS_sched_setaffinity, td->tid, size, set);
-#endif
 }
 
 static int do_getaffinity(pid_t tid, size_t size, cpu_set_t *set)
@@ -39,15 +28,5 @@ int pthread_getaffinity_np(pthread_t td, size_t size, cpu_set_t *set)
     if (set == NULL)
         return -EINVAL;
 
-#ifdef CONFIG_TA_AFFINITY
-    struct pthread *thread = (struct pthread *)(uintptr_t)td;
-#ifdef __aarch64
-    return -__syscall(SYS_sched_getaffinity, thread->cref, size, set);
-#else
-    return -__syscall(SYS_sched_getaffinity, (long)thread->cref,
-        (long)(thread->cref >> HIGH_TRANS_BITS), size, set);
-#endif
-#else
     return -do_getaffinity(td->tid, size, set);
-#endif
 }
