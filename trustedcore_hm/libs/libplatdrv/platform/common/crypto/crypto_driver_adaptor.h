@@ -160,7 +160,6 @@ enum key_type_t {
     CRYPTO_KEYTYPE_USER    = 0x1,
     CRYPTO_KEYTYPE_HUK     = 0x2,
     CRYPTO_KEYTYPE_GID     = 0x3,
-    CRYPTO_KEYTYPE_RPMB    = 0x4,
 };
 
 enum crypto_key_type_id {

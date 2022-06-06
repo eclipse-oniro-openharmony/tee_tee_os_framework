@@ -32,11 +32,6 @@ uint32_t get_tee_audit_event_enabled(void)
 }
 
 const struct task_info_st g_teeos_builtin_task_infos[] = {
-#ifdef TEE_SUPPORT_RPMB_64BIT
-    { TEE_SERVICE_RPMB, RPMB_TASK_NAME, "/rpmb.elf", HM_PRIO_TEE_AGENT, true },
-#elif TEE_SUPPORT_RPMB_32BIT
-    { TEE_SERVICE_RPMB, RPMB_TASK_NAME, "/rpmb.elf", HM_PRIO_TEE_AGENT, false },
-#endif
 #ifdef TEE_SUPPORT_SSA_64BIT
     { TEE_SERVICE_SSA, SSA_SERVICE_NAME, "/ssa.elf", HM_PRIO_TEE_AGENT, true },
 #elif TEE_SUPPORT_SSA_32BIT
@@ -102,10 +97,6 @@ const struct ta_property g_teeos_service_property[] = {
       true, false, false, false, NULL, 0 },
 #endif
 #endif
-#endif
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-    { TEE_SERVICE_RPMB, DEFAULT_STACK_SIZE, DEFAULT_HEAP_SIZE * RPMB_DEFAULT_HEAP_MUL,
-      true, false, false, false, NULL, 0 },
 #endif
 #if (defined TEE_SUPPORT_HUK_SERVICE_32BIT || defined TEE_SUPPORT_HUK_SERVICE_64BIT)
 #ifdef CONFIG_MALLOC_HEAPMGR

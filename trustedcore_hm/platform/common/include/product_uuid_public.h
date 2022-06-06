@@ -134,19 +134,6 @@
 /*
  * @ingroup  TEE_CONFIG_DATA
  *
- * product line RPMB key write TA
- * 6c8cf255-ca98-439e-a98e-ade64022ecb6
- */
-#define TEE_SERVICE_RPMBKEY                                \
-    {                                                      \
-        0x6c8cf255, 0xca98, 0x439e,                        \
-        {                                                  \
-            0xa9, 0x8e, 0xad, 0xe6, 0x40, 0x22, 0xec, 0xb6 \
-        }                                                  \
-    }
-/*
- * @ingroup  TEE_CONFIG_DATA
- *
  * product line spi bus check
  * 868ccafb-794b-46c6-b5c4-9f1462de4e02
  */
@@ -748,20 +735,6 @@ fingerprint Beta save crpto image
         0x9d420a21, 0xb440, 0x473e,                        \
         {                                                  \
             0xb3, 0x54, 0xab, 0x93, 0x10, 0xe2, 0xa6, 0xd1 \
-        }                                                  \
-    }
-
-/*
- * @ingroup  TEE_CONFIG_DATA
- *
- * product line RPMB key write TA in HSM
- * 6fd66c9c-017c-4610-80da-a665a79b0662
- */
-#define TEE_SERVICE_HSM_RPMBKEY                                \
-    {                                                      \
-        0x6fd66c9c, 0x017c, 0x4610,                        \
-        {                                                  \
-            0x80, 0xda, 0xa6, 0x65, 0xa7, 0x9b, 0x06, 0x62 \
         }                                                  \
     }
 

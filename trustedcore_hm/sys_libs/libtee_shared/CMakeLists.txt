@@ -102,18 +102,6 @@ else()
     )
 endif()
 
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "true" OR "${CONFIG_RPMB_64BIT}" STREQUAL "false" OR "${CONFIG_EXPORT_RPMB_STUB}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_SHARED_LIBS
-            rpmb
-        )
-    else()
-        list(APPEND TEE_SHARED_LIBS
-            rpmb_a32
-        )
-    endif()
-endif()
-
 if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
     list(APPEND TEE_SHARED_LIBS
         mbedtls

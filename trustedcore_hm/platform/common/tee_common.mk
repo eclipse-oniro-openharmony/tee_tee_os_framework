@@ -57,13 +57,6 @@ arm_frm_drivers += ssa
 endif
 endif
 
-ifeq ($(CONFIG_RPMB_64BIT), true)
-aarch64_frm_drivers += rpmb
-endif
-ifeq ($(CONFIG_RPMB_64BIT), false)
-arm_frm_drivers += rpmb
-endif
-
 ifdef CONFIG_PERMSRV_64BIT
 ifeq ($(CONFIG_PERMSRV_64BIT), true)
 aarch64_frm_drivers += permission_service
@@ -128,18 +121,6 @@ $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf:
 	 @cp $(OUTPUTDIR)/arm/drivers/ssa_a32.elf $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf
 endif
 endif
-endif
-
-ifeq ($(CONFIG_RPMB_64BIT), true)
-product_apps += $(OUTPUTDIR)/aarch64/drivers/rpmb.elf
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/rpmb.elf
-endif
-ifeq ($(CONFIG_RPMB_64BIT), false)
-product_apps += $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
-check-syms-y += $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
-$(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf:
-	 @mkdir $(OUTPUTDIR)/arm/drivers/rpmb_a32
-	 @cp $(OUTPUTDIR)/arm/drivers/rpmb_a32.elf $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
 endif
 
 ifdef CONFIG_PERMSRV_64BIT

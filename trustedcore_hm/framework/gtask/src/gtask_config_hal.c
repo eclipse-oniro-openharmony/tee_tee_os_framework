@@ -19,7 +19,6 @@ static const TEE_UUID g_uncommit_whitelist[] = {
 #ifndef SSA_SHRINK_MEMORY
     TEE_SERVICE_SSA,
 #endif
-    TEE_SERVICE_RPMB,
     TEE_SERVICE_KEYMASTER,
     TEE_SERVICE_GATEKEEPER,
 #ifdef TEE_SUPPORT_AI

@@ -27,7 +27,6 @@ struct file_stat_entry {
     { "/tarunner_a32.elf", 2, 1001, 07005 },
     { "/tarunner.elf", 2, 1001, 07005 },
     { "/gtask.elf", 3, 1000, 07005 },
-    { "/rpmb.elf", 9, 1001, 00040 },
     { "/ssa.elf", 10, 1001, 00040 },
     { "/platdrv.elf", 4, 1001, 07005 },
     { "/drv_timer.elf", 5, 1001, 07005 },

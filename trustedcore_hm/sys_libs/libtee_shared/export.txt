@@ -666,32 +666,6 @@ tee_get_session_type;
 __dump_backtraces;
 TEE_EXT_GetDeviceUniqueId;
 tee_ext_get_device_unique_id;
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT || defined CONFIG_EXPORT_RPMB_STUB)
-TEE_RPMB_FS_Rename;
-TEE_RPMB_FS_Rm;
-TEE_RPMB_FS_Write;
-TEE_RPMB_FS_Read;
-TEE_RPMB_FS_Stat;
-TEE_RPMB_FS_StatDisk;
-TEE_RPMB_FS_Init;
-TEE_RPMB_FS_Format;
-TEE_RPMB_KEY_Status;
-TEE_RPMB_FS_Erase;
-TEE_RPMB_FS_SetAttr;
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-TEE_EXT_TA_version_check;
-tee_ext_ta_version_check;
-TEE_RPMB_ANTI_VERSION_Rollback;
-TEE_EXT_GetRpmbThreshold;
-TEE_EXT_GetRpmbCapability;
-tee_ext_get_rpmb_threshold;
-tee_ext_get_rpmb_capability;
-TEE_EXT_create_cert_req;
-TEE_EXT_verify_dev_cert;
-tee_create_cert_req;
-tee_verify_dev_cert;
-#endif
-#endif
 
 #if (defined TEE_SUPPORT_SEM || defined TEE_SUPPORT_SE_SERVICE_32BIT || defined TEE_SUPPORT_SE_SERVICE_64BIT)
 TEE_SESecureChannelOpen;
@@ -820,8 +794,6 @@ TEE_HSM_CounterInc;
 TEE_HSM_AlgCheck;
 TEE_HSM_EfuseWrite;
 TEE_HSM_CheckOutput;
-TEE_HSM_GenRpmbKey;
-TEE_HSM_GenRpmbWrappingKey;
 TEE_HSM_SOC_VERIFY;
 TEE_HSM_RIM_UpDate;
 TEE_HSM_Power_On;

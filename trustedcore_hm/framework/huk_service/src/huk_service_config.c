@@ -20,7 +20,6 @@ bool is_huk_service_compatible_plat(void)
 }
 
 static const TEE_UUID g_huk_ta_access[] = {
-    TEE_SERVICE_RPMB,
     TEE_SERVICE_SSA,
     TEE_SERVICE_KEYMASTER,
     TEE_SERVICE_GATEKEEPER,

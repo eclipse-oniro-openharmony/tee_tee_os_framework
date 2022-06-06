@@ -112,15 +112,8 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 /* hwi msg operations */
 #define HWIMSG_GROUP_PERMISSION 0x200000LL
 
-/* RPMB general operations */
-#define RPMB_GENERIC_PERMISSION 0x400000LL
-/* RPMB special operations */
-#define RPMB_SPECIFIC_PERMISSION 0x800000LL
-
 /* ANTI ROOT */
 #define ROOTSTATUS_GROUP_PERMISSION 0x1000000LL
-/* RPMB update operations */
-#define RESERVED10_GROUP_PERMISSION 0x2000000LL
 
 /* SE communication operations */
 #define SE_GROUP_PERMISSION 0x4000000LL

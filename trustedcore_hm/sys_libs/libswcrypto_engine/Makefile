@@ -11,7 +11,7 @@ inc-flags += -I$(TOPDIR)/sys_libs/libcrypto_hal/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
 inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
 inc-flags += -I$(TOPDIR)/vendor/common/include # chip_info.h
-inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi # rpmb_fcntl.h
+inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi
 inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/common/crypto
 

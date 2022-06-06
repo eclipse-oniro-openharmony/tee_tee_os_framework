@@ -6,18 +6,6 @@
 #include "ta_permission_config.h"
 #include "tee_mem_mgmt_api.h"
 
-uint32_t get_rpmb_threshold(const TEE_UUID *uuid)
-{
-    (void)uuid;
-    return 0;
-}
-
-uint64_t get_rpmb_permission(const TEE_UUID *uuid)
-{
-    (void)uuid;
-    return 0;
-}
-
 static bool ta_perm_check(const TEE_UUID *uuid_array, uint32_t array_size, const TEE_UUID *uuid)
 {
     uint32_t i;

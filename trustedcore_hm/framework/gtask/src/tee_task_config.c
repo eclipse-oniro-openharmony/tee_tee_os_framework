@@ -18,15 +18,6 @@ bool is_ssa_enable(void)
 #endif
 }
 
-bool is_rpmb_enable(void)
-{
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-    return true;
-#else
-    return false;
-#endif
-}
-
 bool is_se_service_enable(void)
 {
 #if (defined TEE_SUPPORT_SE_SERVICE_32BIT || defined TEE_SUPPORT_SE_SERVICE_64BIT)

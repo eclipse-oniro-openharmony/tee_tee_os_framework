@@ -68,13 +68,6 @@ if("${CONFIG_SSA_64BIT}")
     endif()
 endif()
 
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_RELEASE_64 rpmb.elf)
-endif()
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "false")
-    list(APPEND PRODUCT_RELEASE_32 rpmb.elf)
-endif()
-
 if ("${CONFIG_PERMSRV_64BIT}")
     if ("${CONFIG_PERMSRV_64BIT}" STREQUAL "true")
         list(APPEND PRODUCT_RELEASE_64 permission_service.elf)
@@ -141,23 +134,6 @@ if ("${CONFIG_SSA_64BIT}" STREQUAL "false")
     )
     list(APPEND CHECK_SYMS
         ssa.elf
-    )
-endif()
-
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_APPS_64
-        rpmb.elf
-    )
-    list(APPEND CHECK_SYMS
-        rpmb.elf
-    )
-endif()
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "false")
-    list(APPEND PRODUCT_APPS_32
-        rpmb.elf
-    )
-    list(APPEND CHECK_SYMS
-        rpmb.elf
     )
 endif()
 
@@ -378,8 +354,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 perso_perf_test_a64.elf
                 pki-test_a64.elf
                 receiver_a64.elf
-                rpmb_perf_test_a64.elf
-                rpmb_pkiperm_a64.elf
                 sec_storage_perf_a64.elf
                 sender_a64.elf
                 ta_api_test_a64.elf
@@ -390,7 +364,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_generate_key_perf_a64.elf
                 test_huk_service_a64.elf
                 test_permsrv_a64.elf
-                test_rpmb_a64.elf
                 test_sec_storage_a64.elf
                 test_secflash_a64.elf
                 test_session_pool_a64.elf
@@ -446,8 +419,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 platdrv_libdemo
                 platdrv_libdemo_dependent
                 receiver_a64
-                rpmb_perf_test_a64
-                rpmb_pkiperm_a64
                 sec_storage_perf_a64
                 sender_a64
                 ta_api_test_a64
@@ -459,7 +430,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_generate_key_perf_a64
                 test_huk_service_a64
                 test_permsrv_a64
-                test_rpmb_a64
                 test_sec_storage_a64
                 test_secflash_a64
                 test_session_pool_a64
@@ -526,8 +496,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 perso_perf_test.elf
                 pki-test.elf
                 receiver.elf
-                rpmb_perf_test.elf
-                rpmb_pkiperm.elf
                 sec_storage_perf.elf
                 sectest.elf
                 sender.elf
@@ -544,7 +512,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_huk_service.elf
                 test_km_rot_api.elf
                 test_permsrv.elf
-                test_rpmb.elf
                 test_sec_storage.elf
                 test_secflash.elf
                 test_session_pool.elf
@@ -600,8 +567,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 platdrv_libdemo_dependent_a32
                 pki-test
                 receiver
-                rpmb_perf_test
-                rpmb_pkiperm
                 sec_storage_perf
                 sectest
                 sender
@@ -618,7 +583,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_huk_service
                 test_km_rot_api
                 test_permsrv
-                test_rpmb
                 test_sec_storage
                 test_secflash
                 test_session_pool

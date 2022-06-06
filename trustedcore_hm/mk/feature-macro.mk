@@ -12,13 +12,6 @@ ifeq ($(CONFIG_SSA_64BIT), false)
 flags += -DTEE_SUPPORT_SSA_32BIT
 endif
 
-ifeq ($(CONFIG_RPMB_64BIT), true)
-flags += -DTEE_SUPPORT_RPMB_64BIT
-endif
-ifeq ($(CONFIG_RPMB_64BIT), false)
-flags += -DTEE_SUPPORT_RPMB_32BIT
-endif
-
 ifdef CONFIG_PERMSRV_64BIT
 ifeq ($(CONFIG_PERMSRV_64BIT), true)
 flags += -DTEE_SUPPORT_PERM_64BIT

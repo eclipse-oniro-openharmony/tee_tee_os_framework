@@ -60,7 +60,7 @@ TEE_Result TEE_EXT_SecFlashIsAvailable(uint32_t *status_info)
         }
     }
     if (*status_info != SECFLASH_IS_ABSENCE_MAGIC && *status_info != SECFLASH_NXP_EXIST_MAGIC &&
-        *status_info != SECFLASH_ST_EXIST_MAGIC && *status_info != SECFLASH_RPMB_EXIST_MAGIC) {
+        *status_info != SECFLASH_ST_EXIST_MAGIC) {
         tloge("%s status_info(0x%x) check fail\n", __func__, *status_info);
         ret = TEE_ERROR_BAD_STATE;
     }

@@ -35,7 +35,6 @@ static TEE_UUID g_sys_uuid_list[] = {
     TEE_SERVICE_PERM,
     TEE_SERVICE_SSA,
     TEE_SERVICE_KEYMASTER,
-    TEE_SERVICE_RPMB,
 };
 
 int32_t sharedmem_addr_init(void)

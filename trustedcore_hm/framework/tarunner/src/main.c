@@ -78,14 +78,12 @@ static int32_t param_check(int32_t argc, const char * const * argv, bool *free_u
 }
 
 /*
- * judge if the task is ssa rpmb or sec_flash
  * they work for many TAs
  * which helps TA to extend utilities
  */
 static bool is_agent(const char *task_name)
 {
     if ((strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_rpmb", strlen("task_rpmb") + 1) == HM_OK) ||
         (strncmp(task_name, "task_sec_flash", strlen("task_sec_flash") + 1) == HM_OK) ||
         (strncmp(task_name, "task_rotservice", strlen("task_rotservice") + 1) == HM_OK) ||
         (strncmp(task_name, "task_artservice", strlen("task_artservice") + 1) == HM_OK) ||
@@ -170,7 +168,7 @@ static int32_t init1(const char *task_name, const struct env_param *param, bool 
 
     load_info_print(task_name, param, free_uncommit);
 
-    /* Extend utable for drv or agent, such as SSA/RPMB */
+    /* Extend utable for drv or agent, such as SSA */
     if ((param->target_type == DRV_TARGET_TYPE) || extend_one_more_utable(task_name)) {
         ret = extend_utables();
         if (ret != HM_OK) {

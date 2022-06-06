@@ -278,7 +278,7 @@ if (LIBATOMIC_PATH)
     )
 endif()
 
-list(APPEND CFI_VISIBILITY_HIDDEN ssagent rpmbagent permsrv teesmcmgr.elf)
+list(APPEND CFI_VISIBILITY_HIDDEN ssagent permsrv teesmcmgr.elf)
 if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND CFI_NO_ICALL ccmgr_hm vfs ac swcrypto_engine hongmeng ta_mt zlib_64 crypto taentry gtask teeos ssa decouple swcrypto_engine tarunner.elf timer crypto_hal)
 else()

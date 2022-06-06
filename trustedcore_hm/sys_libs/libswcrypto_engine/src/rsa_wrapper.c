@@ -19,9 +19,6 @@
 #include <tee_defines.h>
 #include <tee_trusted_storage_api.h>
 #include <crypto_inner_defines.h>
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-#include <rpmb_fcntl.h>
-#endif
 
 #define RSA_MAX_KEY_SIZE      4096
 #define OPENSSL_OK            1
@@ -869,29 +866,6 @@ error:
     return ret;
 }
 
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-#define LIMB_SIZE 65536
-static int do_rpmb_file_write(const char *filename, const char *buf, unsigned int len)
-{
-    bool check = (filename == NULL) || (buf == NULL) || (len == 0);
-    if (check) {
-        tloge("param is invalid!");
-        return 0;
-    } else {
-        int ret = TEE_RPMB_FS_Write(filename, (uint8_t *)buf, len);
-        if (ret != TEE_SUCCESS) {
-            tloge("rpmb_file_write failed, ret = %d, filename = %s\n", ret, filename);
-            return 0;
-        }
-        ret = TEE_RPMB_FS_SetAttr(filename, TEE_RPMB_FMODE_NON_ERASURE);
-        if (ret != TEE_SUCCESS) {
-            tloge("TEE_RPMB_FS_SetAttr failed, ret = %d, filename = %s\n", ret, filename);
-            return 0;
-        }
-        return len;
-    }
-}
-#endif
 static TEE_ObjectHandle __ss_file_open(const char *filename, uint32_t mode)
 {
     TEE_ObjectHandle handle = NULL;
@@ -988,20 +962,8 @@ static int write_offset(const uint8_t *file_name, const huk_para_st *h)
     uint8_t bak_name[FILE_LEN] = { 0 };
     uint32_t storage_region    = 1;
     errno_t rc;
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-    if (TEE_RPMB_KEY_Status() == TEE_SUCCESS)
-        storage_region = 0;
-#endif
 
-    if (storage_region == 0) {
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-        size = do_rpmb_file_write((char *)file_name, (char *)h, sizeof(*h));
-        if (size != sizeof(*h)) {
-            tloge("do_rpmb_file_write failed");
-            return -1;
-        }
-#endif
-    } else {
+    if (storage_region != 0) {
         if (strlen((char *)file_name) > (FILE_LEN - 1 - strlen(g_sfs_prefix))) {
             tloge("file_name too long");
             return -1;
