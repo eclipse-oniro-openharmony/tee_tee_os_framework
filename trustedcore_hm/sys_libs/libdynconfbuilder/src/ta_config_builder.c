@@ -726,62 +726,6 @@ static int32_t build_ta_control_info_se_info(struct dlist_node **pos, const stru
 }
 #endif
 
-#if (defined(CONFIG_LIB_TUI) || defined(CONFIG_LIB_TUI_A32))
-static int32_t build_ta_control_info_tui_general(struct dlist_node **pos, const struct conf_node_t *node,
-                                                 void *obj, uint32_t obj_size)
-{
-    (void)pos;
-    struct config_info *cfg_info = NULL;
-    if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build tui general\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    cfg_info = (struct config_info *)obj;
-
-    switch (node->tag) {
-    case CONFIGINFO_TA_CONTROL_INFO_TUI_INFO_TUI_GENERAL_TUI_GENERAL:
-        if (node->size == 1 && node->value[0] == TLV_TRUE)
-            cfg_info->control_info.tui_info.permissions |= TUI_PERMISSION;
-        break;
-    default:
-        break;
-    }
-
-    return TEE_SUCCESS;
-}
-
-static int32_t build_ta_control_info_tui_info(struct dlist_node **pos, const struct conf_node_t *node,
-                                              void *obj, uint32_t obj_size)
-{
-    (void)pos;
-    struct config_info *cfg_info = NULL;
-    if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build tui info\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    cfg_info = (struct config_info *)obj;
-
-    switch (node->tag) {
-    case CONFIGINFO_TA_CONTROL_INFO_TUI_INFO_TUI_GENERAL:
-        if (handle_conf_node_to_obj(pos, build_ta_control_info_tui_general,
-                                    cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta control info tui info tui general failed\n");
-            return TEE_ERROR_GENERIC;
-        }
-        break;
-    default:
-        hm_debug("skip in build ta control info tui info\n");
-        if (handle_conf_node_to_obj(pos, NULL, cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS)
-            return TEE_ERROR_GENERIC;
-        break;
-    }
-
-    return TEE_SUCCESS;
-}
-#endif
-
 static int32_t build_ta_control_info_debug_status(struct dlist_node **pos, const struct conf_node_t *node,
                                                   void *obj, uint32_t obj_size)
 {
@@ -914,15 +858,6 @@ static int32_t build_ta_control_info(struct dlist_node **pos, const struct conf_
 #if defined(CONFIG_APP_TEE_SE)
     case CONFIGINFO_TA_CONTROL_INFO_SE_INFO:
         if (handle_conf_node_to_obj(pos, build_ta_control_info_se_info,
-                                    cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta control info rpmb info failed\n");
-            return TEE_ERROR_GENERIC;
-        }
-        break;
-#endif
-#if (defined(CONFIG_LIB_TUI) || defined(CONFIG_LIB_TUI_A32))
-    case CONFIGINFO_TA_CONTROL_INFO_TUI_INFO:
-        if (handle_conf_node_to_obj(pos, build_ta_control_info_tui_info,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
             hm_error("build ta control info rpmb info failed\n");
             return TEE_ERROR_GENERIC;

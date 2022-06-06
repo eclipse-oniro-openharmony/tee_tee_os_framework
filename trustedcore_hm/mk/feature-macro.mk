@@ -87,14 +87,6 @@ ifeq ($(CONFIG_SEC_FLASH), true)
 flags += -DTEE_SUPPORT_SEC_FLASH
 endif
 
-ifeq ($(CONFIG_TUI_64BIT), true)
-flags += -DTEE_SUPPORT_TUI_64BIT
-endif
-
-ifeq ($(CONFIG_TUI_32BIT), true)
-flags += -DTEE_SUPPORT_TUI_32BIT
-endif
-
 ifeq ($(CONFIG_GATEKEEPER_64BIT), true)
 flags += -DTEE_SUPPORT_GATEKEEPER_64BIT
 endif

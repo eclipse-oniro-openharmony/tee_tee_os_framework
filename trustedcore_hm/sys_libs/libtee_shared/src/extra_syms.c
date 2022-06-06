@@ -118,11 +118,7 @@ void cinit00(void)
 
 bool is_support_tui(void)
 {
-#if (defined TEE_SUPPORT_TUI_64BIT || defined TEE_SUPPORT_TUI_32BIT)
-    return true;
-#else
     return false;
-#endif
 }
 
 #if (defined CONFIG_RPMB_64BIT || defined CONFIG_RPMB_32BIT)

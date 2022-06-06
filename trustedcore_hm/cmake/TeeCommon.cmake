@@ -288,7 +288,7 @@ else()
     endif()
 endif()
 
-list(APPEND XOM32_BLACK_LIST ta_mt mmgr_sysmgr asan_sysmgr tui_internal tui.elf thp_afe_990)
+list(APPEND XOM32_BLACK_LIST ta_mt mmgr_sysmgr asan_sysmgr thp_afe_990)
 ###################################################
 # Interfaces to create executatbles and libraries #
 ###################################################

@@ -110,12 +110,6 @@ if ("${CONFIG_KMS}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_64 kms.elf)
 endif()
 
-if ("${CONFIG_TUI_32BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_RELEASE_32 tui_internal_shared)
-elseif ("${CONFIG_TUI_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_RELEASE_64 tui_internal_shared)
-endif()
-
 if ("${CONFIG_HUK_SERVICE_64BIT}" STREQUAL "true")
     list(APPEND PRODUCT_APPS_64
         huk_service.elf
@@ -176,25 +170,6 @@ if ("${CONFIG_PERMSRV_64BIT}" STREQUAL "false")
     list(APPEND PRODUCT_APPS_32
         permission_service.elf
     )
-endif()
-
-if ("${CONFIG_TUI_32BIT}" STREQUAL "true" OR "${CONFIG_TUI_64BIT}" STREQUAL "true")
-    if ("${CONFIG_TUI_32BIT}" STREQUAL "true")
-        list(APPEND PRODUCT_APPS_32
-            tui_internal_shared
-        )
-        list(APPEND CHECK_SYMS
-            libtui_internal_shared_a32.so
-        )
-    endif()
-    if ("${CONFIG_TUI_64BIT}" STREQUAL "true")
-        list(APPEND PRODUCT_APPS_64
-            tui_internal_shared
-        )
-        list(APPEND CHECK_SYMS
-            libtui_internal_shared.so
-        )
-    endif()
 endif()
 
 if ("${CONFIG_TA_64BIT}" STREQUAL "true")

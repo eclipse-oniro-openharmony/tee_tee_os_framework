@@ -98,10 +98,6 @@ else
 ld-flags += -lopenssl${TARG}
 endif
 
-ifneq ($(findstring true, $(CONFIG_TUI_64BIT)$(CONFIG_TUI_32BIT)),)
-ld-flags += -ltui$(TARG)
-endif
-
 ifeq ($(CONFIG_OTRP_SUPPORT),y)
 ld-flags += -lotrp${TARG}
 endif

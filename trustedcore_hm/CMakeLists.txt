@@ -194,13 +194,12 @@ if ("${BUILD_TOOL}" STREQUAL "clang")
     endif()
     set(TEE_SHARED_SO $<TARGET_FILE:tee_shared>)
     set(VENDOR_SHARED_SO $<TARGET_FILE:vendor_shared>)
-    set(TUI_SHARED_SO ${BOOTFS_STAGE_DIR}/libtui_internal_shared.so)
     set(BASE_SHARED_SO $<TARGET_FILE:base_shared>)
 
     foreach (b ${CANDIDATE_BINS})
         if (${b} MATCHES ".elf")
             add_custom_command(TARGET check_symbols
-                COMMAND ${PROJECT_SOURCE_DIR}/tools/check-syms.sh $<TARGET_FILE:${b}> ${C_SHARED_SO} ${TEE_SHARED_SO} ${VENDOR_SHARED_SO} ${TUI_SHARED_SO} ${DRV_SHARED_SO} ${BASE_SHARED_SO}
+                COMMAND ${PROJECT_SOURCE_DIR}/tools/check-syms.sh $<TARGET_FILE:${b}> ${C_SHARED_SO} ${TEE_SHARED_SO} ${VENDOR_SHARED_SO} ${DRV_SHARED_SO} ${BASE_SHARED_SO}
             )
         endif()
     endforeach()

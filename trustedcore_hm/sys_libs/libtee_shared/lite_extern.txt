@@ -305,10 +305,8 @@ __driver_dep_test
 tee_get_usermode
 TEE_EXT_GetSfsCapability
 TEE_EXT_GetSeCapability
-TEE_EXT_GetTUICapability
 tee_ext_get_sfs_capability
 tee_ext_get_se_capability
-tee_ext_get_tui_capability
 engine_power_on
 tee_ext_kdf_func
 engine_power_off

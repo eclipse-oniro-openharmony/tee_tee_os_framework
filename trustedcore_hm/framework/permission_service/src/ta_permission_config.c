@@ -33,11 +33,6 @@ static bool ta_perm_check(const TEE_UUID *uuid_array, uint32_t array_size, const
     return false;
 }
 
-bool check_tui_permission(const TEE_UUID *uuid)
-{
-    return ta_perm_check(g_tui_permsrv, sizeof(g_tui_permsrv) / sizeof(g_tui_permsrv[0]), uuid);
-}
-
 bool check_sem_permission(const TEE_UUID *uuid)
 {
     return ta_perm_check(g_sem_reserved_permsrv,

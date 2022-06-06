@@ -1,5 +1,0 @@
-CAUTION:
-
-libtui_internal_shared_a32/export.txt and libtui_internal_shared_a32/export.txt are independent,
-when change one of them, should change another one.
-

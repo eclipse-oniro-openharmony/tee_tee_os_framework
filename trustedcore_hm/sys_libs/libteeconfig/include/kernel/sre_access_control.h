@@ -130,8 +130,6 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 
 /* fingerprint sensor operations */
 #define FP_GROUP_PERMISSION 0x10000000LL
-/* TUI operations */
-#define TUI_GROUP_PERMISSION 0x20000000LL
 /* vsim operations */
 #define VSIM_GROUP_PERMISSION 0x40000000LL
 
@@ -232,7 +230,7 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 /* Access for all functions - ATTN this is reserved for global task
  * and other test tasks */
 #define ALL_GROUP_PERMISSION ((uint64_t) - 1)
-#define GT_PERMISSIONS (TASK_GROUP_PERMISSION | OEM_KEY_GROUP_PERMISSION| TUI_GROUP_PERMISSION | DYNAMIC_ION_PERMISSION)
+#define GT_PERMISSIONS (TASK_GROUP_PERMISSION | OEM_KEY_GROUP_PERMISSION | DYNAMIC_ION_PERMISSION)
 
 #if defined(TESTSUITE_RTOSck_UT) || defined(TESTSUITE_RTOSck_PT) || \
     defined(TESTSUITE_RTOSck_IT) // set no mem access isolation when run testsuite
