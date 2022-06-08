@@ -79,7 +79,7 @@ static void print_drv_info(const char *name)
     printf("|_______________________________________________________\n");
 }
 
-static int32_t system_init(const char *name, bool new_frame)
+static int32_t system_init(const char *name)
 {
     int32_t ret;
 
@@ -95,14 +95,6 @@ static int32_t system_init(const char *name, bool new_frame)
     if (ret != 0) {
         printf("%s: tamgr registration for platdrv failed\n", name);
         return -1;
-    }
-
-    if (!new_frame) {
-        g_sysctrl_ref = irqmgr_acquire_sysctrl_local_irq_hdlr();
-        if (is_ref_err(g_sysctrl_ref) != 0) {
-            printf("%s: get sysctrl ref error %s\n", name, hmapi_strerror(ref_to_err(g_sysctrl_ref)));
-            return -1;
-        }
     }
 
     g_teesmc_hdlr = irqmgr_acquire_teesmc_hdlr();
@@ -136,7 +128,7 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
     if (ret != 0)
         return ret;
 
-    ret = system_init(drv_frame->name, new_frame);
+    ret = system_init(drv_frame->name);
     if (ret != 0)
         return ret;
 

@@ -29,23 +29,6 @@ AC_DEFINE_SUBJ_END(pub_task_mapfile)
 AC_DEFINE_SUBJ_BEG(task_mapfile)
 AC_DEFINE_SUBJ_END(task_mapfile)
 
-AC_DEFINE_SUBJ_BEG(pub_taskmap2task)
-    { AC_SID_PLATDRV, ARRAY_SIZE(g_taskmap2task_platdrv_objs), &g_taskmap2task_platdrv_acobjs },
-    T_POLICY(taskmap2task)
-AC_DEFINE_SUBJ_END(pub_taskmap2task)
-
-AC_DEFINE_SUBJ_BEG(pub_taskmap2drv)
-    { AC_SID_PLATDRV, 0, NULL },
-    { AC_SID_DRV_TIMER, 0, NULL },
-    { AC_SID_HMCCMGR, 0, NULL },
-    T_POLICY(taskmap2drv)
-AC_DEFINE_SUBJ_END(pub_taskmap2drv)
-
-AC_DEFINE_SUBJ_BEG(pub_spawn_uuid)
-    { AC_SID_GTASK, 0, NULL },
-    T_POLICY(spawn_uuid)
-AC_DEFINE_SUBJ_END(pub_spawn_uuid)
-
 AC_DEFINE_SUBJ_BEG(pub_spawn)
     { AC_SID_GTASK, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
@@ -53,10 +36,6 @@ AC_DEFINE_SUBJ_BEG(pub_spawn)
 #endif
     T_POLICY(spawn)
 AC_DEFINE_SUBJ_END(pub_spawn)
-
-AC_DEFINE_SUBJ_BEG(pub_pmeminfo)
-    T_POLICY(pmeminfo)
-AC_DEFINE_SUBJ_END(pub_pmeminfo)
 
 AC_DEFINE_SUBJ_BEG(pub_meminfo)
     { AC_SID_GTASK, 0, NULL },
@@ -117,32 +96,6 @@ AC_DEFINE_SUBJ_BEG(pub_xip_map)
     T_POLICY(xip_map)
 AC_DEFINE_SUBJ_END(pub_xip_map)
 
-AC_DEFINE_SUBJ_BEG(pub_add_free_mem)
-    { AC_SID_GTASK, 0, NULL },
-    { AC_SID_PLATDRV, 0, NULL },
-    T_POLICY(add_free_mem)
-AC_DEFINE_SUBJ_END(pub_add_free_mem)
-
-AC_DEFINE_SUBJ_BEG(pub_adddynmemlist)
-    { AC_SID_GTASK, 0, NULL },
-    T_POLICY(adddynmemlist)
-AC_DEFINE_SUBJ_END(pub_adddynmemlist)
-
-AC_DEFINE_SUBJ_BEG(pub_del_dyn_mem_list)
-    { AC_SID_GTASK, 0, NULL },
-    T_POLICY(del_dyn_mem_list)
-AC_DEFINE_SUBJ_END(pub_del_dyn_mem_list)
-
-AC_DEFINE_SUBJ_BEG(pub_setprocsize)
-    { AC_SID_TALDR, 0, NULL },
-    T_POLICY(setprocsize)
-AC_DEFINE_SUBJ_END(pub_setprocsize)
-
-AC_DEFINE_SUBJ_BEG(pub_mmap_scatter)
-    { AC_SID_PLATDRV, 0, NULL },
-    T_POLICY(mmap_scatter)
-AC_DEFINE_SUBJ_END(pub_mmap_scatter)
-
 AC_DEFINE_SUBJ_BEG(pub_io_map)
     { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
@@ -155,11 +108,6 @@ AC_DEFINE_SUBJ_BEG(pub_irq_acquire)
     { AC_SID_DRV_TIMER, 0, NULL },
     T_POLICY(irq_acquire)
 AC_DEFINE_SUBJ_END(pub_irq_acquire)
-
-AC_DEFINE_SUBJ_BEG(pub_sysctrl_tick)
-    { AC_SID_DRV_TIMER, 0, NULL },
-    T_POLICY(sysctrl_tick)
-AC_DEFINE_SUBJ_END(pub_sysctrl_tick)
 
 AC_DEFINE_SUBJ_BEG(pub_sysctrl_local_irq)
     { AC_SID_TEESMCMGR, 0, NULL },
@@ -177,15 +125,6 @@ AC_DEFINE_SUBJ_BEG(pub_teesmc_acquire)
 #endif
     T_POLICY(teesmc_acquire)
 AC_DEFINE_SUBJ_END(pub_teesmc_acquire)
-
-AC_DEFINE_SUBJ_BEG(pub_pid2cref)
-    { AC_SID_PERF, 0, NULL },
-    T_POLICY(pid2cref)
-AC_DEFINE_SUBJ_END(pub_pid2cref)
-
-AC_DEFINE_SUBJ_BEG(pub_dumpvregion)
-    T_POLICY(dumpvregion)
-AC_DEFINE_SUBJ_END(pub_dumpvregion)
 
 AC_DEFINE_SUBJ_BEG(pub_map2task)
     { AC_SID_GTASK, ARRAY_SIZE(g_map2task_gtask_objs), &g_map2task_gtask_acobjs },
@@ -205,12 +144,6 @@ AC_DEFINE_SUBJ_BEG(pub_push_rnd)
     { AC_SID_PLATDRV, 0, NULL },
     T_POLICY(push_rnd)
 AC_DEFINE_SUBJ_END(pub_push_rnd)
-
-AC_DEFINE_SUBJ_BEG(pub_mmap_physical)
-    { AC_SID_PLATDRV, ARRAY_SIZE(g_mmap_physical_cap), &g_mmap_physical_obj_all },
-    { AC_SID_HMCCMGR, ARRAY_SIZE(g_mmap_physical_cap), &g_mmap_physical_obj_all },
-    T_POLICY(mmap_physical)
-AC_DEFINE_SUBJ_END(pub_mmap_physical)
 
 AC_DEFINE_SUBJ_BEG(pub_channel_register)
     T_POLICY(channel_register)
