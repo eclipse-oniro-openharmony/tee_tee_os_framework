@@ -27,25 +27,14 @@ $(eval $(call eval_extract_ar,$(BUILD_DIR),$(TARGET_FILE),$(AR_FILE)))
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
 LIBS := debug syscalls syscalls_sysmgr cs_sysmgr c_sysmgr fileio mmgr_sysmgr pathmgr security \
-	vfs_sysmgr ac hmlog ac_policy asan_sysmgr
+	vfs_sysmgr ac hmlog ac_policy
 
-ifeq ($(CONFIG_SRAM_PROTECTION),y)
-LIBS += openssl
-endif
 
 else
 LIBS := debug_a32 syscalls_a32 syscalls_sysmgr_a32 cs_sysmgr_a32 c_sysmgr_a32 fileio_a32 mmgr_sysmgr_a32 pathmgr_a32 security_a32\
-	vfs_sysmgr_a32 ac_a32 hmlog_a32 ac_policy_a32 asan_sysmgr_a32
-
-ifeq ($(CONFIG_SRAM_PROTECTION),y)
-LIBS += openssl_a32
-endif
-
-endif
+	vfs_sysmgr_a32 ac_a32 hmlog_a32 ac_policy_a32
 
 
-ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
-LIBS += mem_measure${TARG} openssl${TARG}
 endif
 
 include $(TOPDIR)/mk/asan.mk
@@ -62,18 +51,10 @@ LINK_LIBS += -lhwsecurec
 endif
 
 hmsysmgr_c-flags += -fPIC
-ifeq ($(CONFIG_USER_DEBUG_BUILD), y)
-hmsysmgr_c-flags += -g
-endif
 
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
-ifeq (${CONFIG_ENABLE_XOM},y)
-hmsysmgr_LDFLAGS += --execute-only
-hmsysmgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-$(TEE_ARCH).lds
-else
 hmsysmgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-unxom-$(TEE_ARCH).lds
-endif
 else
 hmsysmgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-$(TEE_ARCH).lds
 endif
@@ -88,12 +69,7 @@ endif
 
 hmsysmgr_LDFLAGS += --gc-sections -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LINK_LIBS) $(LIBCOMPILER_RT_BUILTINS) $(EH_FILE) --end-group
 hmsysmgr_LDFLAGS += -u _hm_start -e _hm_start -z max-page-size=0x1000 -nostdlib --build-id=none -z noexecstack -z now -z relro
-ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 hmsysmgr_LDFLAGS += -s
-endif
-ifeq ($(CONFIG_GCOV),y)
-hmsysmgr_LDFLAGS += -lllvm_gcov${TARG}
-endif
 
 ifeq ($(CONFIG_SYSSERV_ASLR), y)
 	hmsysmgr_LDFLAGS += -pie
@@ -104,7 +80,7 @@ $(TARGET_FILE): $(AR_FILE) $(hmsysmgr_dep_libs)
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	$(VER) $(LD) $(hmsysmgr_extracted_objs) $(hmsysmgr_LDFLAGS) -o $@
 	$(VER) $(OBJCOPY) $@
-	if [ "$(CONFIG_USER_DEBUG_BUILD)" != "y" ]; then $(STRIP) --strip-debug $@; fi
+	$(STRIP) --strip-debug $@
 
 $(INSTALL_FILE): $(TARGET_FILE)
 	@echo "[ INSTALL DRIVER ] $@"

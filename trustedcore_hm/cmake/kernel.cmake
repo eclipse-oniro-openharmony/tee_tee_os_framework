@@ -186,10 +186,3 @@ if (NOT "${CONFIG_DEBUG_BUILD}" STREQUAL "y")
         -s
     )
 endif()
-
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    set(KERNEL_CFLAGS
-        ${KERNEL_CFLAGS}
-        --coverage
-    )
-endif()

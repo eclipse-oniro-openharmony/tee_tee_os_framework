@@ -27,11 +27,9 @@ list(APPEND TEE_C_FLAGS
 )
 
 if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-    if (NOT "${CONFIG_GCOV}" STREQUAL "y")
     list(APPEND TEE_DRV_SERVER_FLAGS
         -flto -fsplit-lto-unit
     )
-    endif()
 endif()
 
 if ("${WITH_ENG_VERSION}" STREQUAL "true")
@@ -123,13 +121,6 @@ list(APPEND TEE_DRV_SERVER_WHOLE_ARCHIVE
     teeconfig
 )
 
-if ("${CONFIG_KASAN}" STREQUAL "y")
-    list(APPEND TEE_DRV_SERVER_LIBRARIES
-        ccmgr
-        hmdrv
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TEE_DRV_SERVER_LDFLAGS
         -Wl,-z,separate-loadable-segments
@@ -139,23 +130,6 @@ endif()
 if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     list(APPEND TEE_DRV_SERVER_LDFLAGS
         -Wl,-T${XOM_LDS}
-    )
-endif()
-
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
-    list(APPEND TEE_DRV_SERVER_LDFLAGS
-        -Wl,--execute-only
-    )
-endif()
-
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_DRV_SERVER_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND TEE_DRV_SERVER_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
     )
 endif()
 

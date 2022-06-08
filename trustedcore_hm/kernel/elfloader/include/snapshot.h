@@ -73,8 +73,4 @@ typedef struct snapshot_buf_head {
     uint32_t reserve;
 } SNAPSHOT_BUF_HEAD;
 
-void snapshot_start(void);
-void snapshot_record(uint32_t record);
-void snapshot_finish(void);
-
 #endif

@@ -33,36 +33,6 @@ else()
     )
 endif()
 
-if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND PERMISSION_SERVICE_LIBRARIES
-            tcmgr
-        )
-    else()
-        list(APPEND PERMISSION_SERVICE_LIBRARIES
-            tcmgr_a32
-        )
-    endif()
-endif()
-
-if ("${CONFIG_LIVEPATCH_ENABLE}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND PERMISSION_SERVICE_LIBRARIES
-            livepatch
-        )
-    else()
-        list(APPEND PERMISSION_SERVICE_LIBRARIES
-            livepatch_a32
-        )
-    endif()
-endif()
-
-if ("${CONFIG_PUBKEY_SHAREMEM}" STREQUAL "true")
-    list(APPEND TEE_C_FLAGS
-        -DCONFIG_PUBKEY_SHAREMEM
-    )
-endif()
-
 list(REMOVE_ITEM TEE_C_FLAGS "-Werror")
 
 list(FIND PRODUCT_APPS "permission_service.elf" index)

@@ -9,27 +9,13 @@ A32_CFLAGS += -g
 A32_ASFLAGS += -g
 endif
 
-ifeq ($(CONFIG_KASAN),y)
-ifneq ($(NO_KASAN),y)
-KASAN_NK_CFLAGS := -fsanitize=kernel-address -fasan-shadow-offset=$(CONFIG_APP_MMGR_LAYOUT_PROCESS_SIZE_64) --param=asan-stack=1 --param=asan-globals=1
-NK_CFLAGS += $(KASAN_NK_CFLAGS)
-else
-KASAN_NK_CFLAGS :=
-endif
-export KASAN_NK_CFLAGS
-endif
-
 C_OPTIM_FLAGS :=
 ifeq (${CONFIG_USER_CFLAGS},)
     CFLAGS += $(WARNINGS:%=-W%) -nostdinc -std=gnu11
     CXXFLAGS += $(WARNINGS:%=-W%) -nostdinc -std=gnu++14
 
     ifeq (${CONFIG_USER_OPTIMIZATION_Os},y)
-        ifeq ($(CONFIG_LIVEPATCH_ENABLE),y)
-            C_OPTIM_FLAGS += -Os
-        else
-            C_OPTIM_FLAGS += -Oz
-        endif
+        C_OPTIM_FLAGS += -Oz
     endif
     ifeq (${CONFIG_USER_OPTIMIZATION_O0},y)
         C_OPTIM_FLAGS += -O0
@@ -113,17 +99,6 @@ endif
 
 ifeq ($(CONFIG_UBSAN),y)
 A32_CFLAGS += -fsanitize=bounds-strict -fsanitize-address-use-after-scope -fsanitize-undefined-trap-on-error
-endif
-
-ifeq ($(CONFIG_KASAN),y)
-ifneq ($(NO_KASAN),y)
-	KASAN_CFLAGS := -fsanitize=kernel-address -fasan-shadow-offset=$(CONFIG_APP_MMGR_LAYOUT_PROCESS_SIZE_32) \
-		--param=asan-stack=1 --param=asan-globals=1
-	A32_CFLAGS += $(KASAN_CFLAGS)
-else
-	KASAN_CFLAGS :=
-endif
-	export KASAN_CFLAGS
 endif
 
 ifeq ($(USE_NDK_32), y)
@@ -224,18 +199,8 @@ endif
 
 CFLAGS += -DARM_PAE=1
 
-ifeq ($(CONFIG_GCOV),y)
-ifeq ($(TARGET_IS_ARM32),y)
-LDFLAGS += -lllvm_gcov_a32
-else
-LDFLAGS += -lllvm_gcov
-endif
-endif
-
 ifeq ($(TARGET_IS_HOST),)
 ifeq ($(CONFIG_LLVM_LTO),y)
-ifeq ($(CONFIG_GCOV),)
 CFLAGS += -flto -fsplit-lto-unit
-endif
 endif
 endif

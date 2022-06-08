@@ -115,27 +115,7 @@ static uint64_t random_arch_get(uint32_t seed)
 #undef LCG96_OFFSET
 }
 
-#if defined(CONFIG_ASCEND_PLATFORM)
-static uint32_t get_seed()
-{
-    uint32_t tmp_rand;
-    uint32_t time = 0;
-
-    /* plat_io_regions index 2 is trng for ascend */
-    paddr_t trng_addr = g_plat_cfg.extend_datas_io.plat_io_regions[1].start;
-
-    do {
-        tmp_rand = rand_read32(trng_addr + 0xf0);
-        if (tmp_rand != 0)
-            break;
-
-        time++;
-    } while (time < RD_RETRY_LIMIT);
-
-    return tmp_rand;
-}
-
-#elif defined(CONFIG_EL3_RANDOM)
+#if defined(CONFIG_EL3_RANDOM)
 static uintptr_t get_rand_addr_el3()
 {
     /* using last TEEOS_RANDOM_SEED_SIZE bytes of SHAREDMEM_COLORLOCK buffer in the sharemem */

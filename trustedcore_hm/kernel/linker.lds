@@ -75,10 +75,6 @@ SECTIONS
     {
         *(.dynamic)
     } : rodata : dynamic
-#ifdef CONFIG_SUPPORT_GET_IMG_TEXT
-    . = ALIGN(64K);
-    kernel_data_start = .;
-#endif
     . = DATA_SEGMENT_ALIGN (4K, 4K);
     . = ALIGN(4K);
 
@@ -118,14 +114,6 @@ SECTIONS
     .boot.rodata . :
     {
         *(.boot.rodata)
-#ifdef CONFIG_GCOV
-        . = ALIGN(8);
-        __init_array_start = .;
-        KEEP(*(.ctors))
-        KEEP(*(SORT(.init_array.*)))
-        KEEP(*(.init_array))
-        __init_array_end = .;
-#endif
     } : boot_rodata
 
     . = ALIGN(4K);

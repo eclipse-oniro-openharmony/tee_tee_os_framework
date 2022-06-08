@@ -39,12 +39,6 @@ RUNTIME_LIB_FLAG += $(EH_FILE)
 endif
 endif
 
-ifeq (${CONFIG_ENABLE_XOM},y)
-ifeq ($(ARCH),aarch64)
-	DRV_LDFLAGS += --execute-only
-endif
-endif
-
 DRV_LDFLAGS += -z separate-loadable-segments
 
 ifeq ($(SVC_PARTITIAL_LINK), y)
@@ -76,17 +70,7 @@ DRV_LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LIBS:%=-l%) $(RUNTIM
 DRV_LDFLAGS +=  -nostdlib -u $(ENTRY_POINT) -e $(ENTRY_POINT) -z max-page-size=4096
 endif #SVC_PARTITIAL_LINK
 
-ifeq ($(CONFIG_GCOV),y)
-ifeq ($(ARCH),aarch64)
-DRV_LDFLAGS += -lllvm_gcov
-else
-DRV_LDFLAGS += -lllvm_gcov_a32
-endif
-endif
-
-ifeq ($(filter y, $(CONFIG_USER_DEBUG_BUILD)), )
 DRV_LDFLAGS += -s
-endif
 
 flags += $(INCLUDES)
 

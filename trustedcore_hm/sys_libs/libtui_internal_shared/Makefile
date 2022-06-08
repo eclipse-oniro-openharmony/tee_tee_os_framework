@@ -6,11 +6,6 @@ libtui_internal_shared${TARG}_c_files := $(wildcard src/*.c)
 include $(TOPDIR)/mk/lib-common.mk
 
 LIBTUI_INTERNAL_SHARED_DFLAGS :=
-ifeq (${CONFIG_ENABLE_XOM},y)
-ifeq ($(ARCH),aarch64)
-	LIBTUI_INTERNAL_SHARED_DFLAGS := --execute-only
-endif
-endif
 
 LIBTUI_INTERNAL_SHARED_DFLAGS += -z separate-loadable-segments
 

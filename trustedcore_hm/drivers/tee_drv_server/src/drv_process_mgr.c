@@ -101,9 +101,6 @@ static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_
     hm_spawnattr_setuuid(&spawnattr, &uuid);
 
     spawnattr.ca = 0;
-#ifdef CONFIG_ENABLE_DYNION
-    spawnattr.memid = 0;
-#endif
     spawnattr.ptid = 0;
 
     const char *drv_loader = g_drv_loader;

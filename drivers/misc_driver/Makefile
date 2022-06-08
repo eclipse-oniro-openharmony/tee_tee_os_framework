@@ -2,7 +2,7 @@
 # Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
 
 DRIVER := misc_driver.elf
-SCRAMBLE_ME := $(CONFIG_SCRAMBLE_SYMS)
+SCRAMBLE_ME :=
 
 include $(TOPDIR)/mk/feature-macro.mk
 include $(TOPDIR)/mk/var.mk
@@ -29,16 +29,6 @@ inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 inc-flags += -I$(TOPDIR)/drivers/common
 c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
-
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/src/%.o: c-flags += -g --coverage
-endif
-
-ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	misc_driver_LDFLAGS += --execute-only
-endif
-endif
 
 ifeq (${TARG},_a32)
 ifeq ($(xom32_enable),y)

@@ -11,11 +11,7 @@
 #define __reg_1(x...)    #x
 #define reg(x...)    __reg_1(x)
 
-#if defined(CONFIG_ASCEND_PLATFORM) || defined(CONFIG_KUNPENG_PLATFORM_1620)
-#define SIZE_PER_GICR    CONFIG_GICR_PER_SIZE
-#else
 #define SIZE_PER_GICR    0x20000
-#endif
 #define GIC_TRY_TIMES    100000
 #define SGI_BASE    0x10000
 

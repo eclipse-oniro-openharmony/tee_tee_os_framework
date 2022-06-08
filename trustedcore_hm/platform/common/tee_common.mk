@@ -30,13 +30,9 @@ aarch64_open_source_libs +=
 aarch64_vendor_ext_libs +=
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
-ifneq ($(CONFIG_FILEMGR_EMBEDDED), y)
 aarch64_frm_drivers += hmsysmgr
-endif
 else
-ifneq ($(CONFIG_FILEMGR_EMBEDDED), y)
 arm_frm_drivers += hmsysmgr
-endif
 endif
 
 ifeq ($(CONFIG_GTASK_64BIT), true)
@@ -110,11 +106,6 @@ $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf:
 	@cp $(OUTPUTDIR)/arm/apps/huk_service_a32.elf $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
 endif
 
-ifeq ($(CONFIG_REMOTE_ATTESTATION_64BIT), true)
-aarch64_frm_drivers += tcmgr_service
-product_apps += $(OUTPUTDIR)/aarch64/apps/tcmgr_service.elf
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/apps/tcmgr_service.elf
-endif
 ifeq ($(CONFIG_REMOTE_ATTESTATION_32IT), true)
 arm_frm_drivers += tcmgr_service
 product_apps += $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf

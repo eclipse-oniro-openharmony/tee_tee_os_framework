@@ -228,18 +228,6 @@ list(APPEND PLATDRV_LIBRARIES
     ac_policy
 )
 
-if ("${CONFIG_KASAN}" STREQUAL "y")
-    list(APPEND PLATDRV_LIBRARIES
-        ccmgr
-        hmdrv
-    )
-    if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "openssl")
-        list(APPEND PLATDRV_LIBRARIES
-            openssl
-        )
-    endif()
-endif()
-
 set(ALIAS_FILE
     alias.txt
 )
@@ -266,11 +254,6 @@ if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND PLATDRV_LDFLAGS
         -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker64.ld
     )
-    if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
-        list(APPEND PLATDRV_LDFLAGS
-            -Wl,--execute-only
-        )
-    endif()
 else()
     if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y")
         list(APPEND PLATDRV_LDFLAGS
@@ -283,16 +266,6 @@ else()
     endif()
 endif()
 
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND PLATDRV_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND PLATDRV_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
-    )
-endif()
 
 set(TEE_CPP_FLAGS ${TEE_C_FLAGS})
 set(TEE_CPP_INCLUDE_PATH ${TEE_INCLUDE_PATH})

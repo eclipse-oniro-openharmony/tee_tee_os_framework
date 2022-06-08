@@ -22,12 +22,6 @@ inc-flags += -I$(TOPDIR)/drivers/include
 include $(TOPDIR)/mk/svc-common.mk
 tarunner_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so -e main
 
-ifeq (${CONFIG_ENABLE_XOM},y)
-ifeq ($(ARCH),aarch64)
-tarunner_LDFLAGS += --execute-only
-endif
-endif
-
 ifeq ($(xom32_enable),y)
 tarunner_LDFLAGS += -T $(XOM_LDS)
 endif

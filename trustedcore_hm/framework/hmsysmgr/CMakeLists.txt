@@ -52,45 +52,11 @@ else()
     )
 endif()
 
-if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND HMSYSMGR_LIBRARIES
-            mem_measure
-            openssl
-        )
-    else()
-        list(APPEND HMSYSMGR_LIBRARIES
-            mem_measure_a32
-            openssl_a32
-        )
-    endif()
-endif()
-
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND HMSYSMGR_LIBRARIES
-            llvm_gcov
-        )
-    else()
-        list(APPEND HMSYSMGR_LIBRARIES
-            llvm_gcov_a32
-        )
-    endif()
-endif()
-
 if ("${ARCH}" STREQUAL "aarch64")
-    if ("${CONFIG_ENABLE_XOM}" STREQUAL "y")
-        list(APPEND HMSYSMGR_LDFLAGS
-            --execute-only
-            --undefined=__vsyscall_ptr
-            -T${PREBUILD_TOOLS}/common/boot-app-${ARCH}.lds
-        )
-    else()
-        list(APPEND HMSYSMGR_LDFLAGS
-            --undefined=__vsyscall_ptr
-            -T${PREBUILD_TOOLS}/common/boot-app-unxom-${ARCH}.lds
-        )
-    endif()
+    list(APPEND HMSYSMGR_LDFLAGS
+        --undefined=__vsyscall_ptr
+        -T${PREBUILD_TOOLS}/common/boot-app-unxom-${ARCH}.lds
+    )
 else()
     list(APPEND HMSYSMGR_LDFLAGS
         --undefined=__vsyscall_ptr
@@ -110,12 +76,9 @@ list(APPEND HMSYSMGR_LDFLAGS
     -z now
     -z relro
 )
-if (NOT "${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y" AND
-    NOT "${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")
-    list(APPEND HMSYSMGR_LDFLAGS
-        -s
-    )
-endif()
+list(APPEND HMSYSMGR_LDFLAGS
+    -s
+)
 
 list(APPEND HMSYSMGR_LDFLAGS
     ${RUNTIMELIB_LINK_PATH}

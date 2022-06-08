@@ -2,9 +2,6 @@
 SONAME := libtee_shared$(TARG).so
 
 libtee_shared_c_files := $(wildcard src/*.c)
-ifeq ($(CONFIG_GCOV), n)
-libtee_shared_c_files := $(addprefix $(TOPDIR)/sys_libs/libtee_shared/,$(libtee_shared_c_files))
-endif
 
 inc-flags += -I$(TOPDIR)/drivers/platdrv/include # dynion.h
 inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
@@ -84,13 +81,6 @@ ld-flags := -lccmgr$(TARG) -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -la
     -lteeos$(TARG) -lpermission_service$(TARG) -lswcrypto_engine$(TARG) -ltaentry$(TARG) -lteeagentcommon_client$(TARG) -lcrypto$(TARG) \
     -lteeconfig$(TARG) -lteemem$(TARG) -lac$(TARG) -lac_policy$(TARG) -ldecouple$(TARG) -lssa$(TARG) -lhuk${TARG} -lteedynsrv$(TARG)
 
-ifeq ($(CONFIG_GCOV),y)
-ld-flags += -lllvm_gcov$(TARG)
-endif
-
-ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
-ld-flags += -ltcmgr$(TARG)
-endif
 
 ifdef CONFIG_RPMB_64BIT
 ld-flags += -lrpmb$(TARG)
@@ -121,12 +111,6 @@ ld-flags += -lse$(TARG)
 endif
 
 ALIAS_SYM := $(shell cat $(ALIAS_FILE) | awk '{print "--defsym="$$1}' | tr "\n" " ")
-
-ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	ld-flags += --execute-only
-endif
-endif
 
 ld-flags += -z separate-loadable-segments
 

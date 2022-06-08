@@ -66,7 +66,7 @@ $(STAGE_DIR)/bootfs.img: $(boot-fs-files-y) FORCE
 	done ; fi
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo " [ MAKING BOOT RAMFS ]: $@"
-	@if [ "$(CONFIG_USER_DEBUG_BUILD)" != "y" ]; then $(TOOLS)/smart-strip.sh $(boot-fs); fi
+	$(TOOLS)/smart-strip.sh $(boot-fs)
 	$(VER) $(RAMFSMKIMG) -n $(HM_BOOTFS_SIZE) -f $(BOOTFS_INI) $@ $(boot-fs-files-y)
 
 FORCE: ;

@@ -72,12 +72,6 @@ list(APPEND BASE_SHARED_LINKER_FLAGS
     ${CMAKE_CURRENT_BINARY_DIR}/${EXTERN_FILE}
 )
 
-if ("${ARCH}" STREQUAL "aarch64" AND "${CONFIG_ENABLE_XOM}" STREQUAL "y")
-    list(APPEND BASE_SHARED_LINKER_FLAGS
-        -Wl,--execute-only
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND BASE_SHARED_LINKER_FLAGS
         -Wl,-z,separate-loadable-segments

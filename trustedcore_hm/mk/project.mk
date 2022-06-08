@@ -165,9 +165,7 @@ WITH_LOG_ENCODE := false
 # Add boot-apps here
 # NOTE: boot-apps will package to kernel.elf do not need to change
 boot-apps := $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
-ifneq ($(CONFIG_FILEMGR_EMBEDDED), y)
 boot-apps += $(OUTPUTDIR)/$(TEE_ARCH)/drivers/hmsysmgr
-endif
 
 HM_APPS_TOOLS := $(TOPDIR)/tools
 HM_APPS_LIBCPIO := $(TOPDIR)/sys_libs/libcpio

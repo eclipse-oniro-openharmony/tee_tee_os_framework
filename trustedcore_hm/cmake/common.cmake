@@ -42,25 +42,6 @@ set(COMMON_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/ext_apps/hm-apps/trustedcore_hm/thirdparty/huawei/libhwsecurec/include
 )
 
-if ("${CONFIG_KASAN}" STREQUAL "y")
-    if (NOT "${NO_KASAN}" STREQUAL "y")
-        set(COMMON_NK_CFLAGS
-            ${COMMON_NK_CFLAGS}
-            -fsanitize=kernel-address
-            -fasan-shadow-offset=${CONFIG_APP_MMGR_LAYOUT_PROCESS_SIZE_64}
-            --param=asan-stack=1
-            --param=asan-globals=1
-        )
-        set(COMMON_A32_CFLAGS
-            ${COMMON_A32_CFLAGS}
-            -fsanitize=kernel-address
-            -fasan-shadow-offset=${CONFIG_APP_MMGR_LAYOUT_PROCESS_SIZE_32}
-            --param=asan-stack=1
-            --param=asan-globals=1
-        )
-    endif()
-endif()
-
 if (NOT "${CONFIG_USER_CFLAGS}" STREQUAL "y")
     set(COMMON_CFLAGS
         ${COMMON_CFLAGS}
@@ -114,13 +95,11 @@ endif()
 
 if (NOT DEFINED "${TARGET_IS_HOST}")
     if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-        if (NOT DEFINED "${CONFIG_GCOV}")
-            set(COMMON_CFLAGS
-                ${COMMON_CFLAGS}
-                -flto
-                -fsplit-lto-unit
-            )
-        endif()
+        set(COMMON_CFLAGS
+            ${COMMON_CFLAGS}
+            -flto
+            -fsplit-lto-unit
+        )
     endif()
 endif()
 
@@ -270,15 +249,6 @@ if (NOT "${TARGET_NO_LIBLOG}" STREQUAL "y")
     )
 endif()
 
-if ("${CONFIG_KASAN}" STREQUAL "y")
-    if (NOT "${NO_KASAN}" STREQUAL "y")
-        set(COMMON_LIBS
-            ${COMMON_LIBS}
-            asan
-        )
-    endif()
-endif()
-
 if ("${TARGET_IS_ARM32}" STREQUAL "y")
     if ("${CONFIG_THUMB_SUPPORT}" STREQUAL "y")
         set(COMMON_CFLAGS
@@ -337,13 +307,6 @@ set(COMMON_CFLAGS
     -DARM_PAE=1
 )
 
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    set(COMMON_LDFLAGS
-        ${COMMON_LDFLAGS}
-        -Wl,-lgcov
-    )
-endif()
-
 set(COMMON_ASFLAGS
     ${COMMON_ASFLAGS}
     -march=armv8-a
@@ -361,13 +324,10 @@ if ("${CONFIG_DEBUG_SYMBOLS}" STREQUAL "y")
     )
 endif()
 
-if (NOT "${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y" AND
-    NOT "${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")
-    set(COMMON_LDFLAGS
-        ${COMMON_LDFLAGS}
-        -s
-    )
-endif()
+set(COMMON_LDFLAGS
+    ${COMMON_LDFLAGS}
+    -s
+)
 
 set(COMMON_FLAG_CFLAGS
     ${COMMON_FLAG_CFLAGS}

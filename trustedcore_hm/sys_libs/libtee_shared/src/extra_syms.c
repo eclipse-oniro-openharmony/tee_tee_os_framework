@@ -20,12 +20,6 @@
  */
 const unsigned int g_cfi_disabled = 1;
 
-#ifdef CONFIG_GCOV
-void __aeabi_unwind_cpp_pr0(void)
-{
-}
-#endif
-
 uint32_t get_mem_usage(bool show)
 {
     /* Heap is uncommited lazily, cannot use heap size to judge mem leak; for backward compatibility */

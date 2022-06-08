@@ -153,41 +153,6 @@ if (NOT "${CONFIG_NO_VENDOR_LIB_EMBEDDED}" STREQUAL "true")
     endif()
 endif()
 
-if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES
-            tcmgr
-        )
-    else()
-        list(APPEND GTASK_LIBRARIES
-            tcmgr_a32
-        )
-    endif()
-endif()
-
-if ("${CONFIG_LIVEPATCH_ENABLE}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES
-            livepatch
-        )
-    else()
-        list(APPEND GTASK_LIBRARIES
-            livepatch_a32
-        )
-    endif()
-endif()
-
-if ("${CONFIG_SMCMGR_EMBEDDED}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES
-            teesmcmgr
-        )
-    else()
-        list(APPEND GTASK_LIBRARIES
-            teesmcmgr_a32
-        )
-    endif()
-endif()
 
 if ("${CONFIG_SSA_EMBEDDED}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES
@@ -232,20 +197,6 @@ endif()
 if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     list(APPEND GTASK_LDFLAGS
         -Wl,-T${XOM_LDS}
-    )
-endif()
-
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND GTASK_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
-    )
-    list(APPEND GTASK_LIBRARIES
-        gcc_eh
     )
 endif()
 

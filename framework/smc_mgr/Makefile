@@ -43,12 +43,6 @@ endif
 
 LDFLAGS += -u _hm_start -z noexecstack -L$(OUTPUT_LIBDIR)
 
-ifeq (${CONFIG_ENABLE_XOM},y)
-ifeq ($(CONFIG_ARCH_AARCH64),y)
-LDFLAGS += -execute-only
-endif
-endif
-
 # Source files required to build the target
 CFILES :=  $(patsubst $(SOURCE_DIR)/%,%,$(wildcard $(SOURCE_DIR)/src/*.c))
 

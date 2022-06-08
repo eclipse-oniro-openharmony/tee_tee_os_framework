@@ -159,7 +159,6 @@ void init_kernel_vspace(const struct image_info *kernel_img_info)
          pgtable_set(vptr, paddr, (pde_t *)(uintptr_t)elfloader_paddr_to_vaddr(pmd_paddr), &kernel_pt[i]);
     }
     invalidate_tlb();
-    snapshot_record(SNAPSHOT_RECORD_INIT_KERNEL_VSPACE);
 }
 
 uint64_t get_kaslr_pg_size(uint64_t map_size)

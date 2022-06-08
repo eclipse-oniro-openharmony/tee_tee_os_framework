@@ -80,18 +80,6 @@ LIBS += elf_verify${TARG} \
     whitebox${TARG}
 endif
 
-ifeq ($(findstring true, $(CONFIG_REMOTE_ATTESTATION_32BIT) $(CONFIG_REMOTE_ATTESTATION_64BIT)), true)
-LIBS += tcmgr$(TARG)
-endif
-
-ifeq ($(CONFIG_LIVEPATCH_ENABLE), y)
-LIBS += livepatch${TARG}
-endif
-
-ifeq ($(CONFIG_SMCMGR_EMBEDDED), y)
-LIBS += teesmcmgr${TARG}
-endif
-
 ifeq ($(CONFIG_SSA_EMBEDDED), y)
 LIBS += ssagent${TARG}
 endif
@@ -106,11 +94,6 @@ LIBS += devchip_api${TARG}
 endif
 
 DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
-ifeq ($(CONFIG_GCOV), y)
-flags += --coverage -g
-DRV_LDFLAGS += --no-gc-sections --start-group $(EH_FILE) --end-group
-LIBS += llvm_gcov${TARG}
-endif
 
 ENTRY_POINT := main
 

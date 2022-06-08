@@ -36,13 +36,6 @@ set(TEESMCMGR_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
-    set(TEESMCMGR_LDFLAGS
-        ${TEESMCMGR_LDFLAGS}
-        -Wl,-execute-only
-    )
-endif()
-
 set(TEESMCMGR_LDFLAGS
     ${TEESMCMGR_LDFLAGS}
     -Wl,--entry=_hm_start

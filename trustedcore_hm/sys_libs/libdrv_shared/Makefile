@@ -67,12 +67,6 @@ $(BUILD_DIR)/export.txt: export.txt
 ld-flags :=
 ld-flags += -lhwi$(TARG) -lc_shared$(TARG) -lteemem$(TARG) -lteeconfig$(TARG) -lio$(TARG)
 
-ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	ld-flags += --execute-only
-endif
-endif
-
 ld-flags += -z separate-loadable-segments
 
 ifeq (${TARG}, _a32)

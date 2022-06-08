@@ -137,14 +137,6 @@ LIBS += drv_frame${TARG}
 LIBS += ac_policy${TARG}
 LIBS += fileio${TARG}
 
-# sanitity will disable gc-section, need to add all dependence libs
-ifeq ($(CONFIG_KASAN),y)
-LIBS += ccmgr${TARG} hmdrv${TARG}
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
-LIBS += openssl${TARG}
-endif
-endif
-
 include $(TOPDIR)/mk/drv-common.mk
 
 ALIAS_FILE  := alias.txt
@@ -154,21 +146,11 @@ flags += $(ALIAS_SYM)
 
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
-ifeq ($(CONFIG_GCOV),y)
-$(BUILD_DIR)/src/%.o: c-flags += -g --coverage
-endif
-
 platdrv_LDFLAGS += -z separate-loadable-segments
 
 # for DECLARE_TC_DRV, prevent ".tc_drv_descs" section from being merged
 ifeq (${TARG},)
 platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker64.ld
-endif
-
-ifeq (${TARG},)
-ifeq (${CONFIG_ENABLE_XOM},y)
-	platdrv_LDFLAGS += --execute-only
-endif
 endif
 
 ifeq (${TARG},_a32)

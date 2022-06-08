@@ -115,45 +115,6 @@ cref_t get_teesmc_hdlr(void);
             } __mapped_ptr[16]   = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0} }; \
             int __mapped_ptr_cnt = 0;
 
-#ifdef CONFIG_KUNPENG_PLATFORM_1620
-#define SYSCALL_END                                                                                   \
-    out:                                                                                              \
-    __attribute__((unused));                                                                    \
-    for (int i = __mapped_ptr_cnt - 1; i >= 0; i--) {                                                 \
-        if (__mapped_ptr[i].pptr != (&regs->r0) && __mapped_ptr[i].pptr != NULL) {                    \
-            if (__mapped_ptr[i].type_len == sizeof(uint32_t))                                         \
-                *(uint32_t *)__mapped_ptr[i].pptr = (uint32_t)__mapped_ptr[i].ori_ptr;                \
-            else                                                                                      \
-                *(uint64_t *)__mapped_ptr[i].pptr = (uint64_t)__mapped_ptr[i].ori_ptr;                \
-        }                                                                                             \
-    }                                                                                                 \
-    for (int i = 0; i < __mapped_ptr_cnt; i++) {                                                      \
-        if ((uintptr_t)__mapped_ptr[i].ptr && __mapped_ptr[i].need_lo && __mapped_ptr[i].l_ptr &&     \
-            ((unsigned)__mapped_ptr[i].prot & PROT_WRITE)) {                                          \
-            (void)memcpy_s(__mapped_ptr[i].ptr,                                                       \
-                           __mapped_ptr[i].len,                                                       \
-                           __mapped_ptr[i].l_ptr,                                                     \
-                           __mapped_ptr[i].len);                                                      \
-        }                                                                                             \
-        if (__mapped_ptr[i].ptr)                                                                      \
-            task_unmap((uint32_t)__self_pid, (uintptr_t)__mapped_ptr[i].ptr, \
-                                      (uint32_t)__mapped_ptr[i].len);                                 \
-        if (__mapped_ptr[i].l_ptr && __mapped_ptr[i].need_lo) {                                       \
-            free(__mapped_ptr[i].l_ptr);                                                              \
-            __mapped_ptr[i].l_ptr = NULL;                                                             \
-        }                                                                                             \
-    }                                                                                                 \
-    break;                                                                                            \
-    }                                                                                                 \
-    else                                                                                              \
-    {                                                                                                 \
-        regs->r0 = OS_ERROR;                                                                          \
-        tloge("permission denied to access swi_id 0x%x.\n", swi_id);                                  \
-        AUDIT_CHECK_FAIL();                                                                           \
-        break;                                                                                        \
-    }                                                                                                 \
-    }
-#else
 #define SYSCALL_END                                                                                   \
     out:                                                                                              \
     __attribute__((unused));                                                                          \
@@ -191,7 +152,6 @@ cref_t get_teesmc_hdlr(void);
         break;                                                                                        \
     }                                                                                                 \
     }
-#endif
 
 #define _ACCESS_CHECK_STEP1(addr, sz, need_copy)                           \
     {                                                                      \
@@ -208,15 +168,9 @@ cref_t get_teesmc_hdlr(void);
             }                                                              \
             int err;
 
-#ifdef CONFIG_KUNPENG_PLATFORM_1620
-#define _ACCESS_CHECK_STEP2_A64(addr)                                                                            \
-    err = drv_map_from_task_under_tbac_handle((uint32_t)__pid, (uint64_t)addr, __hmdrv_size, (uint32_t)__self_pid, \
-                                              (uint64_t *)&(temp_addr), &prot, regs->job_handler);
-#else
 #define _ACCESS_CHECK_STEP2_A64(addr)                                                                            \
     err = drv_map_from_task_under_tbac_to32((uint32_t)__pid, (uint64_t)(addr), __hmdrv_size, (uint32_t)__self_pid, \
                                             (uint32_t *)&(temp_addr), &prot, regs->job_handler);
-#endif
 
 #define _ACCESS_CHECK_STEP2_A32(addr)                                                              \
     err = drv_map_from_task_under_tbac((uint32_t)__pid, (uint32_t)(uintptr_t)(addr), __hmdrv_size, \

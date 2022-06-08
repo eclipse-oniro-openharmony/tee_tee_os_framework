@@ -114,18 +114,6 @@ if ("${CONFIG_RPMB_64BIT}" STREQUAL "true" OR "${CONFIG_RPMB_64BIT}" STREQUAL "f
     endif()
 endif()
 
-if ("${CONFIG_REMOTE_ATTESTATION_64BIT}" STREQUAL "true" OR "${CONFIG_REMOTE_ATTESTATION_32BIT}" STREQUAL "true")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_SHARED_LIBS
-            tcmgr
-        )
-    else()
-        list(APPEND TEE_SHARED_LIBS
-            tcmgr_a32
-        )
-    endif()
-endif()
-
 if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
     list(APPEND TEE_SHARED_LIBS
         mbedtls
@@ -227,12 +215,6 @@ list(APPEND TEE_SHARED_LINKER_FLAGS
     ${CMAKE_CURRENT_BINARY_DIR}/${EXTERN_FILE}
     ${ALIAS_SYM}
 )
-
-if ("${ARCH}" STREQUAL "aarch64" AND "${CONFIG_ENABLE_XOM}" STREQUAL "y")
-    list(APPEND TEE_SHARED_LINKER_FLAGS
-        -Wl,--execute-only
-    )
-endif()
 
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TEE_SHARED_LINKER_FLAGS

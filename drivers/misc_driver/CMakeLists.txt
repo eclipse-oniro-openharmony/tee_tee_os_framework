@@ -23,26 +23,9 @@ if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
     )
 endif()
 
-if ("${CONFIG_ENABLE_XOM}" STREQUAL "y" AND "${ARCH}" STREQUAL "aarch64")
-    list(APPEND MISC_DRIVER_LDFLAGS
-        -Wl,--execute-only
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND MISC_DRIVER_LDFLAGS
         -Wl,-z,separate-loadable-segments
-    )
-endif()
-
-if ("${CONFIG_GCOV}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND MISC_DRIVER_LIBRARIES llvm_gcov)
-    else()
-        list(APPEND MISC_DRIVER_LIBRARIES llvm_gcov_a32)
-    endif()
-    list(APPEND TEE_C_FLAGS
-        --coverage
     )
 endif()
 

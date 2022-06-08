@@ -33,12 +33,10 @@ list(APPEND TEE_C_FLAGS
 )
 
 if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
-    if (NOT "${CONFIG_GCOV}" STREQUAL "y")
-        list(APPEND TEE_C_FLAGS
-            -flto
-            -fsplit-lto-unit
-        )
-    endif()
+    list(APPEND TEE_C_FLAGS
+        -flto
+        -fsplit-lto-unit
+    )
 endif()
 
 include(cxx)
@@ -57,7 +55,4 @@ list(APPEND TEE_LINKER_FLAGS
     -Wl,-z,max-page-size=0x1000
 )
 
-if (NOT "${CONFIG_SCRAMBLE_SYMS}" STREQUAL "y" AND
-    NOT "${CONFIG_USER_DEBUG_BUILD}" STREQUAL "y")
     list(APPEND DRV_LDFLAGS -s)
-endif()
