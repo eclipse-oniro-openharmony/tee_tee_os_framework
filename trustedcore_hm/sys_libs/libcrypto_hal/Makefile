@@ -63,10 +63,6 @@ ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
 c-flags += -DCRYPTO_MGR_SERVER_ENABLE
 endif
 
-ifeq ($(CONFIG_DATA_FALLTHROUGH),y)
-flags += -DDATA_FALLTHROUGH
-endif
-
 ifeq ($(CONFIG_CIPHER_ENABLE), true)
 flags += -DDX_ENABLE=1
 inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/austin/host/src/cclib

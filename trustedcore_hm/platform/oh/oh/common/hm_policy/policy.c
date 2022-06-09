@@ -125,9 +125,7 @@ AC_DEFINE_SUBJ_BEG(sysctrl_local_irq)
 AC_DEFINE_SUBJ_END(sysctrl_local_irq)
 
 AC_DEFINE_SUBJ_BEG(teesmc_acquire)
-#ifdef CONFIG_SMCMGR_EMBEDDED
-{ AC_SID_GTASK, 0, NULL }
-#endif
+
 AC_DEFINE_SUBJ_END(teesmc_acquire)
 
 AC_DEFINE_SUBJ_BEG(pid2cref)

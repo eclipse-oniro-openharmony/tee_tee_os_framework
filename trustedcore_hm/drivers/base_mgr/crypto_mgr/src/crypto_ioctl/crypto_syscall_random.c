@@ -108,12 +108,10 @@ int32_t generate_random_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)generate_random_share_buf, ioctl_args->buf_len, ioctl_args->buf,
         ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(generate_random_share_buf, ioctl_args->buf_len, buf_arg,
@@ -163,11 +161,9 @@ int32_t get_entropy_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)get_entropy_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(get_entropy_share_buf, ioctl_args->buf_len, buf_arg,

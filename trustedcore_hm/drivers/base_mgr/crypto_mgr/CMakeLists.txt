@@ -39,12 +39,6 @@ list(APPEND TEE_C_SOURCES
     src/crypto_mgr.c
 )
 
-if ("${CONFIG_DATA_FALLTHROUGH}" STREQUAL "y")
-    list(APPEND TEE_C_DEFINITIONS
-        DATA_FALLTHROUGH
-    )
-endif()
-
 tee_add_executable(crypto_mgr.elf
     SOURCES
     ${TEE_C_SOURCES}

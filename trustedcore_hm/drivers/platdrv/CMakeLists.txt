@@ -62,12 +62,6 @@ include(${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/modules/platdrv_
 include(${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/platdrv/cmake/platdrv_config.cmake)
 include(${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/platdrv/cmake/platdrv_binary.cmake)
 
-if ("${CONFIG_DATA_FALLTHROUGH}" STREQUAL "y")
-    list(APPEND TEE_C_DEFINITIONS
-        DATA_FALLTHROUGH
-    )
-endif()
-
 if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         CRYPTO_MGR_SERVER_ENABLE

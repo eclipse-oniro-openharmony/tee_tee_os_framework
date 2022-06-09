@@ -10,9 +10,7 @@ if ("${BENCHMARK}" STREQUAL "true")
     )
 endif()
 
-if (NOT "${CONFIG_SMCMGR_EMBEDDED}" STREQUAL "y")
     list(APPEND BOOTFS_FILES_IN_PREBUILD "teesmcmgr.elf")
-endif()
 
 if ("${CONFIG_DYNLINK_TEST}" STREQUAL "y")
     list(APPEND BOOTFS_FILES

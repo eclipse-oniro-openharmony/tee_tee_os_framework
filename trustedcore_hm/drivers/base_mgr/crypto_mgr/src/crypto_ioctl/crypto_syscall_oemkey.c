@@ -54,11 +54,9 @@ int32_t get_oemkey_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,

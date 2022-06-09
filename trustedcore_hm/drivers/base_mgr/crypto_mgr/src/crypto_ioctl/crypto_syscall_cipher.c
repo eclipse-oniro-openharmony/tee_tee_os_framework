@@ -121,11 +121,9 @@ int32_t cipher_update_call(const struct drv_data *drv, unsigned long args, uint3
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)cipher_update_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(cipher_update_share_buf, ioctl_args->buf_len, buf_arg,
@@ -193,12 +191,10 @@ int32_t cipher_dofinal_call(const struct drv_data *drv, unsigned long args, uint
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)cipher_dofinal_share_buf, ioctl_args->buf_len, ioctl_args->buf,
         ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(cipher_dofinal_share_buf, ioctl_args->buf_len, buf_arg,
@@ -281,11 +277,9 @@ int32_t cipher_call(const struct drv_data *drv, unsigned long args, uint32_t arg
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)cipher_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(cipher_share_buf, ioctl_args->buf_len, buf_arg,

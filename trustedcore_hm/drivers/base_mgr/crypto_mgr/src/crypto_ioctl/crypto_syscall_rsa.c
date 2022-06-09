@@ -91,12 +91,10 @@ int32_t rsa_generate_keypair_call(const struct drv_data *drv, unsigned long args
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)rsa_gen_share_buf, ioctl_args->buf_len, ioctl_args->buf,
         ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 end:
     driver_free_share_mem_and_buf_arg(rsa_gen_share_buf, ioctl_args->buf_len, buf_arg,
         ioctl_args->total_nums * sizeof(struct memref_t));
@@ -180,11 +178,9 @@ int32_t rsa_encrypt_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)rsa_encrypt_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(rsa_encrypt_share_buf, ioctl_args->buf_len, buf_arg,
@@ -269,11 +265,9 @@ int32_t rsa_decrypt_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)rsa_decrypt_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(rsa_decrypt_share_buf, ioctl_args->buf_len, buf_arg,
@@ -358,12 +352,10 @@ int32_t rsa_sign_digest_call(const struct drv_data *drv, unsigned long args,
     if (ret != CRYPTO_SUCCESS)
         goto end;
 
-#ifndef DATA_FALLTHROUGH
     ret = copy_to_client((uintptr_t)rsa_sign_share_buf, ioctl_args->buf_len, ioctl_args->buf,
         ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
         hm_error("copy to client failed. ret = %d\n", ret);
-#endif
 
 end:
     driver_free_share_mem_and_buf_arg(rsa_sign_share_buf, ioctl_args->buf_len, buf_arg,

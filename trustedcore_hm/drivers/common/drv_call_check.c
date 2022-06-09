@@ -85,7 +85,6 @@ static int32_t mmap_address_a64(struct call_params *param, uint32_t index,
     return DRV_CALL_OK;
 }
 
-#ifndef DATA_FALLTHROUGH
 static int32_t copy_driver_data(struct call_params *param, uint32_t index)
 {
     uint32_t size = param->mmaped_ptrs[index].len;
@@ -112,7 +111,6 @@ static int32_t copy_driver_data(struct call_params *param, uint32_t index)
     }
     return DRV_CALL_OK;
 }
-#endif
 
 int32_t mmap_call_param(struct call_params *param, uint32_t index)
 {
@@ -147,18 +145,11 @@ int32_t mmap_call_param(struct call_params *param, uint32_t index)
         return DRV_CALL_ERROR;
     }
 
-#ifdef DATA_FALLTHROUGH
-    if (param->addr_type == A64)
-        param->mmaped_ptrs[index].addr.addr_64 = (uint64_t)(uintptr_t)param->mmaped_ptrs[index].ptr;
-    else
-        param->mmaped_ptrs[index].addr.addr_32 = (uint32_t)(uintptr_t)param->mmaped_ptrs[index].ptr;
-#else
     ret = copy_driver_data(param, index);
     if (ret != DRV_CALL_OK) {
         tloge("copy driver data failed\n");
         return DRV_CALL_ERROR;
     }
-#endif
     return DRV_CALL_OK;
 }
 
@@ -252,7 +243,6 @@ void unmap_maped_ptrs(struct call_params *param)
     }
 
     for (uint32_t i = 0; i < param->mmaped_ptr_cnt; i++) {
-#ifndef DATA_FALLTHROUGH
         errno_t ret_s;
         if ((uintptr_t)param->mmaped_ptrs[i].ptr && param->mmaped_ptrs[i].l_ptr &&
             ((uint32_t)param->mmaped_ptrs[i].prot & PROT_WRITE)) {
@@ -269,7 +259,6 @@ void unmap_maped_ptrs(struct call_params *param)
             free(param->mmaped_ptrs[i].l_ptr);
             param->mmaped_ptrs[i].l_ptr = NULL;
         }
-#endif
         if (param->mmaped_ptrs[i].ptr)
             task_unmap((uint32_t)param->self_pid,
                 (uintptr_t)param->mmaped_ptrs[i].ptr,
