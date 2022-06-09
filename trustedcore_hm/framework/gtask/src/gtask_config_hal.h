@@ -13,8 +13,6 @@ bool ta_vsroot_flush(const TEE_UUID *uuid);
 
 int is_in_spawnlist(const char *name);
 const struct rsv_mem_pool_uuid_item *get_rsv_mem_item(uint64_t paddr, uint32_t size, uint32_t type);
-const struct dynamic_mem_uuid_item *get_dyn_mem_item_by_uuid(const TEE_UUID *uuid);
-const struct dynamic_mem_uuid_item *get_dyn_mem_item_by_configid(uint32_t configid);
 bool is_ext_agent(uint32_t agent_id);
 bool check_ext_agent_permission(const TEE_UUID *uuid, uint32_t agent_id);
 uint32_t get_build_in_services_property(const TEE_UUID *uuid, struct ta_property *property);
