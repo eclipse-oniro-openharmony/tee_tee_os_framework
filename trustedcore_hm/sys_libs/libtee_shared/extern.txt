@@ -506,9 +506,6 @@ tee_print
 tee_print_driver
 ta_print
 set_log_use_tid_flag
-__SRE_GetKMROT
-__SRE_SetKMROT
-TEE_EXT_GetRoT
 tee_ext_get_rot
 TEE_AllocateOperation
 TEE_FreeOperation
