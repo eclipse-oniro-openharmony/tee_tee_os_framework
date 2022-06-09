@@ -11,7 +11,6 @@
 #include "hm_thread.h"
 #include "atomic.h"
 #include "pthread_impl.h"
-#include <asan.h>
 #include "hm_malloc.h"
 #include "malloc_impl.h"
 
