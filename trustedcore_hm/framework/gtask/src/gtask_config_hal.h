@@ -20,8 +20,4 @@ bool is_build_in_service(const TEE_UUID *uuid);
 const struct task_info_st *get_builtin_task_info_by_index(uint32_t index);
 uint32_t get_builtin_task_nums(void);
 
-#ifdef CONFIG_AUTH_ENHANCE
-struct call_info *get_kernel_ca_item(const char *ca_name, uint32_t name_size, const TEE_UUID *uuid);
-#endif
-
 #endif

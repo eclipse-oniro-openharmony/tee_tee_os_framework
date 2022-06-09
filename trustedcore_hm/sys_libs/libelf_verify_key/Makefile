@@ -113,16 +113,6 @@ else
 libelf_verify_key_c_files := $(filter-out $(FILTEROUT_CFILES), $(libelf_verify_key_c_files))
 endif
 
-ifeq ($(CONFIG_TA_CMS_SIGNATURE),y)
-ifeq (${TARG}, )
-libelf_verify_key_c_files += $(wildcard src/common/ct/ta_cms_signature_verify.c)
-inc-flags += -I$(TOPDIR)/sys_libs/libelf_verify_key/src/common/ct
-inc-flags += -I$(TOPDIR)/sys_libs/libtee_cmscbb/include
-inc-flags += -I$(PREBUILD_HEADER)/openssl
-flags += -DSUPPORT_UPDATE_CRL
-endif
-endif
-
 include $(TOPDIR)/mk/lib-common.mk
 EXPORT_HDRS := $(wildcard include/*)
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)

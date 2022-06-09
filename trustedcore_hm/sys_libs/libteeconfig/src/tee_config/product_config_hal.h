@@ -24,11 +24,6 @@ uint32_t get_product_builtin_task_num(void);
 const struct rsv_mem_pool_uuid_item *get_rsv_mem_pool_config(void);
 uint32_t get_rsv_mem_pool_config_num(void);
 
-#ifdef CONFIG_AUTH_ENHANCE
-struct call_info *get_kernel_ca_whitelist(void);
-uint32_t get_kernel_ca_whitelist_num(void);
-#endif
-
 uint32_t get_product_service_property_num(void);
 const struct ta_property *get_product_service_property_config(void);
 

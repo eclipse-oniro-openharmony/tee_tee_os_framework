@@ -9,13 +9,6 @@ list(APPEND TEE_INCLUDE_PATH
     ${PREBUILD_DIR}/headers/openssl
 )
 
-if ("${CONFIG_CMS_CAHASH_AUTH}" STREQUAL "y")
-    set(LIBTEE_CMSCBB_CDEFS
-        ${LIBTEE_CMSCBB_CDEFS}
-        SUPPORT_UPDATE_CRL
-    )
-endif()
-
 tee_add_library(tee_cmscbb STATIC
     SOURCES
     src/cms_signature_verify.c

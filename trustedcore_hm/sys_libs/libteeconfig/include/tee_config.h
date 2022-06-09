@@ -74,26 +74,6 @@ struct drv_frame_info {
     bool is_elf;
 };
 
-#ifdef CONFIG_AUTH_ENHANCE
-struct call_info {
-    char *ca_name;
-    bool mutli_session;
-    int uid;
-    int pid;
-    TEE_UUID uuid;
-};
-
-#define INVALID_PID (-1)
-
-enum {
-    CA_ANTIROOT_IDX = 0,
-    CA_SECBOOT_IDX,
-    CA_SECMEM_IDX,
-    CA_FILEENCRY_IDX,
-    CA_HIVCODEC_IDX,
-};
-#endif
-
 struct ext_agent_uuid_item {
     TEE_UUID uuid;
     uint32_t agent_id;

@@ -236,21 +236,3 @@ const struct rsv_mem_pool_uuid_item *get_rsv_mem_item(uint64_t paddr, uint32_t s
     return NULL;
 }
 
-#ifdef CONFIG_AUTH_ENHANCE
-struct call_info *get_kernel_ca_item(const char *ca_name, uint32_t name_size, const TEE_UUID *uuid)
-{
-    uint32_t item_num = get_kernel_ca_whitelist_num();
-    struct call_info *item = get_kernel_ca_whitelist();
-
-    if (item == NULL || ca_name == NULL || uuid == NULL)
-        return NULL;
-
-    for (uint32_t i = 0; i < item_num; ++i) {
-        if ((name_size >= (uint32_t)(strlen(item[i].ca_name) + 1)) &&
-            (strncmp(item[i].ca_name, ca_name, strlen(item[i].ca_name) + 1) == 0) &&
-            (memcmp(&item[i].uuid, uuid, sizeof(TEE_UUID)) == 0))
-            return &(item[i]);
-    }
-    return NULL;
-}
-#endif

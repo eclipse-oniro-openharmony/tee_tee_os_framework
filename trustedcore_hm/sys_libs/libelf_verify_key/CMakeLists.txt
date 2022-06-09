@@ -174,20 +174,6 @@ elseif ("${CONFIG_HUANGLONG_LOAD_KEY_3072}" STREQUAL "y")
     )
 endif()
 
-if ("${CONFIG_TA_CMS_SIGNATURE}" STREQUAL "y")
-    list(APPEND TEE_C_SOURCES
-        src/common/ct/ta_cms_signature_verify.c
-    )
-    list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/common/ct
-        ${CMAKE_CURRENT_SOURCE_DIR}/../libtee_cmscbb/include
-        ${PREBUILD_DIR}/headers/openssl
-    )
-    list(APPEND TEE_C_FLAGS
-        -DSUPPORT_UPDATE_CRL
-    )
-endif()
-
 list(APPEND TEE_C_FLAGS
     -fstack-protector-all
 )

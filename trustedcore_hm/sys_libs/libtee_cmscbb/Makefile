@@ -10,16 +10,6 @@ inc-flags += -I$(PREBUILD_HEADER)/openssl
 # Source files required to build the target
 libtee_cmscbb_c_files += $(wildcard src/*.c)
 
-ifeq ($(CONFIG_TA_CMS_SIGNATURE),y)
-ifeq (${TARG}, )
-ENABLE_CMS_SIGNATURE := true
-endif
-endif
-
-ifeq ($(CONFIG_CMS_CAHASH_AUTH),y)
-ENABLE_CMS_SIGNATURE := true
-endif
-
 ifeq ($(ENABLE_CMS_SIGNATURE),true)
 flags += -DSUPPORT_UPDATE_CRL
 endif
