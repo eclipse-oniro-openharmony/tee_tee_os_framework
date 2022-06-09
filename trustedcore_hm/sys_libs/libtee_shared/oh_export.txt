@@ -424,7 +424,6 @@ __get_platform_chip;
 get_die_id_size;
 TEE_EXT_GetDeviceUniqueId;
 tee_ext_get_device_unique_id;
-get_libvendor_shared_handle;
 tee_print;
 tee_map_sharemem;
 get_global_handle;
