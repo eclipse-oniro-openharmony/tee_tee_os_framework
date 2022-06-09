@@ -28,5 +28,4 @@ irq_lock;
 irq_unlock;
 v7_dma_inv_range;
 v7_dma_flush_range;
-hm_mmap_physical;
 };
