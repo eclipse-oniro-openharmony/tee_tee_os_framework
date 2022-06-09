@@ -5,9 +5,7 @@
  */
 #include "crypto_alg_config.h"
 #include <tee_crypto_api.h>
-#ifndef MBEDTLS_ENABLE
 #include <crypto/siphash.h>
-#endif
 #include "crypto_inner_defines.h"
 #include "tee_log.h"
 
@@ -92,7 +90,6 @@ static TEE_Result check_keysize_for_hmac_sm3(uint32_t max_key_size)
     return TEE_SUCCESS;
 }
 
-#ifndef MBEDTLS_ENABLE
 static TEE_Result check_keysize_for_sip_hash(uint32_t max_key_size)
 {
     if (max_key_size != SIPHASH_KEY_SIZE * BIT_TO_BYTE)
@@ -100,7 +97,6 @@ static TEE_Result check_keysize_for_sip_hash(uint32_t max_key_size)
 
     return TEE_SUCCESS;
 }
-#endif
 
 static TEE_Result check_keysize_for_ecdsa_sha_x(uint32_t max_key_size)
 {
@@ -324,12 +320,10 @@ static const struct alg_config_t g_alg_config[] = {
         TEE_ALG_HMAC_SM3, TEE_MODE_MAC, TEE_OPERATION_MAC,
         check_keysize_for_hmac_sm3, TEE_TYPE_HMAC_SM3, TEE_OPTIONAL_ELEMENT_NONE
     },
-#ifndef MBEDTLS_ENABLE
     {
         TEE_ALG_SIP_HASH, TEE_MODE_MAC, TEE_OPERATION_MAC,
         check_keysize_for_sip_hash, TEE_TYPE_SIP_HASH, TEE_OPTIONAL_ELEMENT_NONE
     },
-#endif
     {
         TEE_ALG_ECDSA_SHA256, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
         check_keysize_for_ecdsa_sha_x, TEE_TYPE_ECDSA_PUBLIC_KEY, TEE_ECC_CURVE_NIST_P256
@@ -607,9 +601,7 @@ static const uint32_t g_supported_object_type[] = {
     TEE_TYPE_SM2_DSA_KEYPAIR,
     TEE_TYPE_SM2_KEP_KEYPAIR,
     TEE_TYPE_SM2_PKE_KEYPAIR,
-#ifndef MBEDTLS_ENABLE
     TEE_TYPE_SIP_HASH,
-#endif
 #ifdef CRYPTO_SSL_SUPPORT_EC25519
     TEE_TYPE_ED25519_PUBLIC_KEY,
     TEE_TYPE_ED25519_KEYPAIR,

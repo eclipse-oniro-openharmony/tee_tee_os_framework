@@ -56,19 +56,12 @@ if ("${CONFIG_CRYPTO_SUPPORT_UNSAFE_DH}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS CRYPTO_SSL_SUPPORT_UNSAFE_DH=1)
 endif()
 
-if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
-    list(APPEND TEE_C_DEFINITIONS MBEDTLS_ENABLE)
-    list(APPEND TEE_INCLUDE_PATH
-        ${PREBUILD_DIR}/headers/mbedtls
-    )
-else()
-    list(APPEND TEE_C_DEFINITIONS OPENSSL_ENABLE)
-    list(APPEND TEE_INCLUDE_PATH
-        ${PREBUILD_DIR}/headers/openssl
-        ${PREBUILD_DIR}/headers/openssl/openssl
-        ${PREBUILD_DIR}/headers/openssl/crypto
-    )
-endif()
+list(APPEND TEE_C_DEFINITIONS OPENSSL_ENABLE)
+list(APPEND TEE_INCLUDE_PATH
+    ${PREBUILD_DIR}/headers/openssl
+    ${PREBUILD_DIR}/headers/openssl/openssl
+    ${PREBUILD_DIR}/headers/openssl/crypto
+)
 
 if ("${CONFIG_CIPHER_ENABLE}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
@@ -148,36 +141,20 @@ else ()
     )
 endif()
 
-if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
-    list(APPEND TEE_C_DEFINITIONS MBEDTLS_ENABLE)
-    set(CRYPTOHAL_SRCS
-        ${CRYPTOHAL_SRCS}
-        src/mbedtls/soft_ae.c
-        src/mbedtls/soft_ec_api.c
-        src/mbedtls/soft_rsa_api.c
-        src/mbedtls/soft_derive_key_api.c
-        src/mbedtls/soft_cipher.c
-        src/mbedtls/soft_common_api.c
-        src/mbedtls/soft_hash.c
-        src/mbedtls/soft_hmac.c
-        src/mbedtls/soft_err.c
-     )
-else ()
-     set(CRYPTOHAL_SRCS
-        ${CRYPTOHAL_SRCS}
-        src/boringssl/soft_ae.c
-        src/boringssl/soft_ec_api.c
-        src/boringssl/soft_rsa_api.c
-        src/boringssl/soft_derive_key_api.c
-        src/boringssl/soft_cipher.c
-        src/boringssl/soft_common_api.c
-        src/boringssl/soft_hash.c
-        src/boringssl/soft_hmac.c
-        src/boringssl/soft_err.c
-        src/boringssl/soft_gmssl.c
-        src/tee_chinadrm_gmssl_api.c
-    )
-endif()
+set(CRYPTOHAL_SRCS
+    ${CRYPTOHAL_SRCS}
+    src/boringssl/soft_ae.c
+    src/boringssl/soft_ec_api.c
+    src/boringssl/soft_rsa_api.c
+    src/boringssl/soft_derive_key_api.c
+    src/boringssl/soft_cipher.c
+    src/boringssl/soft_common_api.c
+    src/boringssl/soft_hash.c
+    src/boringssl/soft_hmac.c
+    src/boringssl/soft_err.c
+    src/boringssl/soft_gmssl.c
+    src/tee_chinadrm_gmssl_api.c
+)
 
 tee_add_library(crypto_hal STATIC
     SOURCES

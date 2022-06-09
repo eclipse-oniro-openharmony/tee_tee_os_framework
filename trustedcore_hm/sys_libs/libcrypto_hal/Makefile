@@ -53,11 +53,7 @@ ifeq ($(CONFIG_CRYPTO_SUPPORT_UNSAFE_DH),true)
 c-flags += -DCRYPTO_SSL_SUPPORT_UNSAFE_DH
 endif
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-c-flags += -DMBEDTLS_ENABLE
-else
 c-flags += -DOPENSSL_ENABLE
-endif
 
 ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
 c-flags += -DCRYPTO_MGR_SERVER_ENABLE
@@ -100,23 +96,8 @@ inc-flags += -I$(PREBUILD_HEADER)/mbedtls
 endif
 
 # Source files required to build the target
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-c-flags += -DMBEDTLS_ENABLE
-libcrypto_hal_c_files += src/crypto_alg_config.c \
-                         src/crypto_hal.c        \
-                         src/crypto_hal_ae.c     \
-                         src/crypto_hal_cipher.c \
-                         src/crypto_hal_derive_key.c \
-                         src/crypto_hal_ec.c     \
-                         src/crypto_hal_hash.c   \
-                         src/crypto_hal_hmac.c   \
-                         src/crypto_hal_rsa.c    \
-                         src/crypto_manager.c    \
-                         $(wildcard src/mbedtls/*.c)
-else
 libcrypto_hal_c_files += $(wildcard src/*.c) \
                          $(wildcard src/boringssl/*.c)
-endif
 
 ifeq ($(CONFIG_CIPHER_ENABLE), true)
 libcrypto_hal_c_files += src/crypto_ext_api.c
