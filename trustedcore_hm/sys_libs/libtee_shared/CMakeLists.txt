@@ -70,7 +70,6 @@ if ("${ARCH}" STREQUAL "aarch64")
         teemem
         ac
         ac_policy
-        decouple
         ssa
         huk
         sec_fs_msg
@@ -94,7 +93,6 @@ else()
         teemem_a32
         ac_a32
         ac_policy
-        decouple_a32
         ssa_a32
         huk_a32
         sec_fs_msg_a32
