@@ -108,18 +108,6 @@ else()
     )
 endif()
 
-if ("${CONFIG_OTRP_SUPPORT}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_SHARED_LIBS
-            otrp
-        )
-    else()
-        list(APPEND TEE_SHARED_LIBS
-            otrp_a32
-        )
-    endif()
-endif()
-
 if ("${CONFIG_SEM}" STREQUAL "true" OR "${CONFIG_SE_SERVICE_32BIT}" STREQUAL "true" OR "${CONFIG_SE_SERVICE_64BIT}" STREQUAL "true")
     if ("${ARCH}" STREQUAL "aarch64")
         list(APPEND TEE_SHARED_LIBS
