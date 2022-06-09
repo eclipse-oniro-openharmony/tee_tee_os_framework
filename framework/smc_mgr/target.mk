@@ -23,7 +23,6 @@ teesmcmgr: common \
     libfileio     \
     libirqmgr     \
     libpathmgr    \
-    libasan
 else
 teesmcmgr: common \
     libcrt0_a32       \
@@ -37,5 +36,4 @@ teesmcmgr: common \
     libfileio_a32     \
     libirqmgr_a32     \
     libpathmgr_a32    \
-    libasan_a32
 endif

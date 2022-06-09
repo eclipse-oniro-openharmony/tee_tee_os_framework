@@ -15,7 +15,6 @@
 #include <hm_thread.h>
 #include <cs.h>
 #include <securec.h>
-#include <asan.h>
 #include "stdio_impl.h"
 
 extern uintptr_t __stack_chk_guard;

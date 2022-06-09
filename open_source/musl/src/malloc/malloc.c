@@ -18,7 +18,6 @@
 #include "malloc_impl.h"
 #include <inttypes.h>
 #include <procmgr.h>
-#include <asan.h>
 #include "hm_malloc.h"
 #include "enable_free_uncommit.h"
 
