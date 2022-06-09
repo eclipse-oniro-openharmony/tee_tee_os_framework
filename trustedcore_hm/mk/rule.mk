@@ -219,8 +219,8 @@ FILTER_MODULE += secisp kds bdkernel task_secboot sre_dev_relcb eSE touchscreen 
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -Wformat=2 -fsigned-char -fno-strict-aliasing \
                    -pipe
 WARNING_OPTIONS := -Wall -Wextra -Werror
-BLOCKLIST += libplatdrv libsec_flash_client softcrys secmem eSE
-BLOCKLIST += libthp task_antiroot sec_flash task_ukey hieps codesafe austin/host adp hieps secureflash npu_v100
+BLOCKLIST += libplatdrv softcrys secmem eSE
+BLOCKLIST += libthp task_antiroot task_ukey hieps codesafe austin/host adp hieps secureflash npu_v100
 BLOCKLIST += secureboot fingerprint modem_secboot libfdt touchscreen msp_ta_channel npu_v100 secsvm vcodec pal/src tvp
 
 # we need function uniq to deduplication

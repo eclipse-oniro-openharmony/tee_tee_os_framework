@@ -176,9 +176,6 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 /* NPU */
 #define NPU_GROUP_PERMISSION    0x800000000000LL
 
-/* SECFLASH */
-#define SECFLASH_GROUP_PERMISSION    0x1000000000000LL
-
 /* SE status operations */
 #define SE_STATUS_GROUP_PERMISSION 0x2000000000000LL
 
@@ -218,8 +215,6 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 #define FLASH_GROUP_PERMISSION 0x1000L
 #endif
 
-#define SECFLASH_GENERIC_PERMISSION 0x2000000000000000LL
-#define SECFLASH_SPECIFIC_PERMISSION 0x4000000000000000LL
 /* Access for all functions - ATTN this is reserved for global task
  * and other test tasks */
 #define ALL_GROUP_PERMISSION ((uint64_t) - 1)

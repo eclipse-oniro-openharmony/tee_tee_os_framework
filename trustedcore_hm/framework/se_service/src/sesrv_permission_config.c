@@ -13,7 +13,6 @@
 #define MSP_READER_ID              3
 
 enum mspc_vote_id {
-    MSPC_SECFLASH_VOTE_ID   = 0,
     MSPC_BIO_VOTE_ID        = 1,
     MSPC_ROT_VOTE_ID        = 2,
     MSPC_ART_VOTE_ID        = 3,
@@ -35,7 +34,6 @@ struct vote_uuid_t {
 };
 
 static const struct vote_uuid_t g_vote_uuid[] = {
-    { TEE_SERVICE_SEC_FLASH,         MSPC_SECFLASH_VOTE_ID },
     { TEE_SERVICE_BIO,               MSPC_BIO_VOTE_ID },
     { TEE_SERVICE_ROT,               MSPC_ROT_VOTE_ID },
     { TEE_SERVICE_ART,               MSPC_ART_VOTE_ID },
@@ -68,15 +66,6 @@ TEE_Result se_service_check_msp_permission(const TEE_UUID *uuid)
 bool is_msp_enable(void)
 {
 #ifdef TEE_SUPPORT_MSP
-    return true;
-#else
-    return false;
-#endif
-}
-
-bool is_sec_flash_enable(void)
-{
-#ifdef TEE_SUPPORT_SEC_FLASH
     return true;
 #else
     return false;

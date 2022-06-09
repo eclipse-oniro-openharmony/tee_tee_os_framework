@@ -365,7 +365,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_huk_service_a64.elf
                 test_permsrv_a64.elf
                 test_sec_storage_a64.elf
-                test_secflash_a64.elf
                 test_session_pool_a64.elf
                 test_srv_a64.elf
                 test_tee_api_a64.elf
@@ -431,7 +430,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_huk_service_a64
                 test_permsrv_a64
                 test_sec_storage_a64
-                test_secflash_a64
                 test_session_pool_a64
                 test_srv_a64
                 test_tee_api_a64
@@ -513,7 +511,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_km_rot_api.elf
                 test_permsrv.elf
                 test_sec_storage.elf
-                test_secflash.elf
                 test_session_pool.elf
                 test_srv.elf
                 test_tee_api.elf
@@ -584,7 +581,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 test_km_rot_api
                 test_permsrv
                 test_sec_storage
-                test_secflash
                 test_session_pool
                 test_srv
                 test_tee_api

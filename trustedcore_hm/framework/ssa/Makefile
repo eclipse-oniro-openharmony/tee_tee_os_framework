@@ -22,15 +22,6 @@ endif
 # Libraries
 LIBS := ssagent${TARG}
 
-ifeq ($(CONFIG_SECFS_SECFLASH),true)
-flags += -DCONFIG_SECFS_SECFLASH
-endif
-
-ifeq ($(CONFIG_DC_SECFLASH),y)
-LIBS += sec_fs${TARG}
-LIBS += zlib${TARG}
-endif
-
 ifeq ($(CONFIG_DYNLINK),y)
 DRV_LDFLAGS += -e tee_task_entry
 endif

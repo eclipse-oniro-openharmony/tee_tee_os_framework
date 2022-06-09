@@ -67,7 +67,6 @@ struct file_stat_entry {
     { "/libtest_shared.so", 0, 1001, 00040 },
     { "/libtest_shared_a32.so", 0, 1001, 00040 },
     { "/attestation_ta.elf", 24, 1001, 00040 },
-    { "/sec_flash.elf", 25, 1001, 00040 },
     { "/se_service.elf", 26, 1001, 00040 },
     { "/bio_service.elf", 27, 1001, 00040 },
     { "/rot_service.elf", 28, 1001, 00040 },

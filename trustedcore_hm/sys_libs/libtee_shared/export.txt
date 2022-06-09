@@ -406,7 +406,6 @@ TEE_SetCryptoFlag;
 TEE_SetObjectFlag;
 TEE_SupportCdrmEnhance;
 TEE_EPS_Ctrl;
-tee_sec_fs_init;
 #ifdef PERSO_ENABLE
 TEE_Ext_CreatePersistentObject;
 TEE_Ext_OpenPersistentObject;
@@ -809,22 +808,11 @@ tee_srv_unmap_from_task;
 tee_srv_map_from_task;
 tee_srv_cs_server_loop;
 tee_obj_init;
-/* secflash start */
-CMAC_CTX_new;
-CMAC_Init;
-CMAC_Update;
-CMAC_Final;
-CMAC_CTX_free;
-EVP_aes_128_cbc;
-/* secflash end */
 
 TEE_EXT_InitTAAttest;
 TEE_EXT_GetTAAttest;
 tee_ext_init_ta_attest;
 tee_ext_get_ta_attest;
-tee_common_service_sec_flash_allowed;
-TEE_EXT_GetSecFlashShareMem;
-tee_ext_get_sec_flash_share_mem;
 /* chinadrm api */
 aes_key_wrap;
 aes_key_unwrap;

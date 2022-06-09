@@ -96,12 +96,6 @@ if ("${CONFIG_ART}" STREQUAL "true")
     )
 endif()
 
-if ("${CONFIG_SEC_FLASH}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_SEC_FLASH
-    )
-endif()
-
 if ("${CONFIG_GATEKEEPER_64BIT}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         TEE_SUPPORT_GATEKEEPER_64BIT

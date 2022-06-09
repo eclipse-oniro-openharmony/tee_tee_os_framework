@@ -314,23 +314,12 @@ ac_init_simple
 ac_add_dynamic_policy
 ac_del_dynamic_policy
 tee_crypto_derive_root_key
-
 tee_obj_init
-/* secflash start */
-CMAC_CTX_new
-CMAC_Init
-CMAC_Update
-CMAC_Final
-CMAC_CTX_free
-EVP_aes_128_cbc
-EVP_aes_256_cbc
-/* secflash end */
 
 TEE_EXT_InitTAAttest
 TEE_EXT_GetTAAttest
 tee_ext_init_ta_attest
 tee_ext_get_ta_attest
-tee_common_service_sec_flash_allowed
 DSA_SIG_new
 DSA_SIG_free
 DSA_new

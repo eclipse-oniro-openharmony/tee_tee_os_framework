@@ -73,7 +73,6 @@ if ("${ARCH}" STREQUAL "aarch64")
         decouple
         ssa
         huk
-        sec_fs_msg
         teedynsrv
     )
 else()
@@ -97,7 +96,6 @@ else()
         decouple_a32
         ssa_a32
         huk_a32
-        sec_fs_msg_a32
         teedynsrv
     )
 endif()

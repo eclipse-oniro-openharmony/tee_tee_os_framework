@@ -76,10 +76,6 @@ ifeq ($(CONFIG_ART), true)
 flags += -DTEE_SUPPORT_ART
 endif
 
-ifeq ($(CONFIG_SEC_FLASH), true)
-flags += -DTEE_SUPPORT_SEC_FLASH
-endif
-
 ifeq ($(CONFIG_GATEKEEPER_64BIT), true)
 flags += -DTEE_SUPPORT_GATEKEEPER_64BIT
 endif

@@ -84,7 +84,6 @@ static int32_t param_check(int32_t argc, const char * const * argv, bool *free_u
 static bool is_agent(const char *task_name)
 {
     if ((strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_sec_flash", strlen("task_sec_flash") + 1) == HM_OK) ||
         (strncmp(task_name, "task_rotservice", strlen("task_rotservice") + 1) == HM_OK) ||
         (strncmp(task_name, "task_artservice", strlen("task_artservice") + 1) == HM_OK) ||
         (strncmp(task_name, "task_bioservice", strlen("task_bioservice") + 1) == HM_OK) ||

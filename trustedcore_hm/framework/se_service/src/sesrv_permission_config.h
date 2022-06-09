@@ -10,7 +10,6 @@
 
 TEE_Result se_service_check_msp_permission(const TEE_UUID *uuid);
 bool is_msp_enable(void);
-bool is_sec_flash_enable(void);
 uint32_t get_vote_id(uint32_t reader_id, const TEE_UUID *uuid);
 
 #endif
