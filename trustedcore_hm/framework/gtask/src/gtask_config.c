@@ -22,15 +22,6 @@ int get_tee_disable_ca_auth(void)
     return g_tee_disable_ca_auth;
 }
 
-const uint32_t g_tee_audit_event_enabled =
-    (ENABLE_TEE_AUDIT_EVENT_ONCE_REG_RDRMEM | ENABLE_TEE_AUDIT_EVENT_ONCE_REG_NTFMEM |
-     ENABLE_TEE_AUDIT_EVENT_ONCE_REG_REGMAILBOX | ENABLE_TEE_AUDIT_EVENT_GT_EXCPTION);
-
-uint32_t get_tee_audit_event_enabled(void)
-{
-    return g_tee_audit_event_enabled;
-}
-
 const struct task_info_st g_teeos_builtin_task_infos[] = {
 #ifdef TEE_SUPPORT_SSA_64BIT
     { TEE_SERVICE_SSA, SSA_SERVICE_NAME, "/ssa.elf", HM_PRIO_TEE_AGENT, true },
