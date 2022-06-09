@@ -40,10 +40,6 @@ ifneq ($(findstring $(CONFIG_EPS_FOR_MSP)$(CONFIG_EPS_FOR_990), true),)
 flags += -DEPS_ENABLE
 endif
 
-ifeq ($(CONFIG_PERSO_ENABLE),y)
-flags += -DPERSO_ENABLE
-endif
-
 ifeq ($(CONFIG_SSA_SHRINK_MEMORY),y)
 flags += -DSSA_SHRINK_MEMORY
 endif
