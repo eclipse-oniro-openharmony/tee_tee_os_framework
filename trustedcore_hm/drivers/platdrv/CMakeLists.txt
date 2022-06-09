@@ -68,12 +68,6 @@ if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true")
     )
 endif()
 
-if ("${CONFIG_SRE_AUDIT}" STREQUAL "y")
-    list(APPEND TEE_C_DEFINITIONS
-        SRE_AUDIT
-    )
-endif()
-
 if ("${CONFIG_EPS_FOR_MSP}" STREQUAL "true" OR "${CONFIG_EPS_FOR_990}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         EPS_ENABLE

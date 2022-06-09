@@ -9,31 +9,8 @@
 #include <uidgid.h>
 #include <stdint.h>
 
-#ifdef SRE_AUDIT
-extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_t uid);
-#endif
-
 #define HANDLE_SYSCALL(swi_id) switch (swi_id)
 
-#ifdef SRE_AUDIT
-#define SYSCALL_PERMISSION(swi_id, current_permissions, permission) \
-    case swi_id: {                                                  \
-        uint64_t ullNeedPermission = permission;                      \
-        if ((permission & current_permissions) == permission) {
-#define SYSCALL_END                                                                                                  \
-    break;                                                                                                           \
-    }                                                                                                                \
-    else                                                                                                             \
-    {                                                                                                                \
-        regs->r0 = OS_ERROR;                                                                                         \
-        uart_printf_func(                                                                                            \
-            "[ERROR!!!] permission denied to access swi_id 0x%x, please check sre_syscalls_id.h to get more info\n", \
-            swi_id);                                                                                                 \
-        audit_syscall_perm_failure(swi_id, ullNeedPermission, regs->r11);                                            \
-        break;                                                                                                       \
-    }                                                                                                                \
-    }
-#else
 #define SYSCALL_PERMISSION(swi_id, current_permissions, permission) \
     case swi_id: {                                                  \
         if ((permission & current_permissions) == permission) {
@@ -49,7 +26,6 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
         break;                                                                                                       \
     }                                                                                                                \
     }
-#endif
 
 /* General TA group, all user space apps are allowed */
 #define GENERAL_GROUP_PERMISSION 0x00000LL

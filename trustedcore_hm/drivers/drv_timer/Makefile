@@ -39,10 +39,6 @@ ifeq ($(CONFIG_SOFT_RTC_TICK), false)
 flags += -DSOFT_RTC_IRQ_DISABLE
 endif
 
-ifeq ($(CONFIG_SRE_AUDIT),y)
-flags += -DSRE_AUDIT
-endif
-
 ifeq ($(CONFIG_DX_ENABLE), true)
 flags += -DDX_ENABLE=1
 endif

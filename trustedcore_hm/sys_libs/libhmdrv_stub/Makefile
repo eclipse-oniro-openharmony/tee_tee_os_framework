@@ -4,10 +4,6 @@ MODULE := libhmdrv_stub${TARG}.a
 
 flags += -fno-builtin
 
-ifeq ($(CONFIG_SRE_AUDIT),y)
-flags += -DSRE_AUDIT
-endif
-
 flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel/
 flags += -I$(TOPDIR)/sys_libs/libhmdrv_stub/include/
 flags += -I$(TOPDIR)/drivers/platdrv/include/

@@ -57,12 +57,6 @@ if ("${CONFIG_SOFT_RTC_TICK}" STREQUAL "false")
     )
 endif()
 
-if ("${CONFIG_SRE_AUDIT}" STREQUAL "y")
-    list(APPEND TEE_C_DEFINITIONS
-        SRE_AUDIT
-    )
-endif()
-
 if ("${CONFIG_DX_ENABLE}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         DX_ENABLE=1

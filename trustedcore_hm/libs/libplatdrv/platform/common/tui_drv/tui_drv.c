@@ -20,11 +20,7 @@
 #include <sre_dev_relcb.h>
 #include <sre_syscalls_id_ext.h>
 #include <tee_log.h>
-#ifdef SRE_AUDIT
-#include <hmdrv_stub_timer.h>
-#endif
 #ifdef TEE_SUPPORT_TUI_MTK_DRIVER
-#include <sre_audit_drv.h>
 #include <tui_touchscreen.h>
 #else
 #include <hmdrv_stub.h>
@@ -63,11 +59,6 @@ enum ttf_hash_type {
 
 static void audit_fail_syscall(void)
 {
-#ifdef SRE_AUDIT
-    uint32_t pid = 0;
-    (void)task_caller(&pid);
-    kill_audit_task(pid, get_teesmc_hdlr());
-#endif
 }
 
 #define TTF_HASH_SIZE  32
