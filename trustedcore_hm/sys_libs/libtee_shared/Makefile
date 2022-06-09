@@ -88,10 +88,6 @@ else
 ld-flags += -lopenssl${TARG}
 endif
 
-ifeq ($(CONFIG_OTRP_SUPPORT),y)
-ld-flags += -lotrp${TARG}
-endif
-
 ifeq ($(findstring true, $(CONFIG_SEM) $(CONFIG_SE_SERVICE_32BIT) $(CONFIG_SE_SERVICE_64BIT)), true)
 ld-flags += -lse$(TARG)
 endif

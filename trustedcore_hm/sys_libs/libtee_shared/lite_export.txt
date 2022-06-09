@@ -346,9 +346,6 @@ DSA_SIG_free;
 DSA_new;
 DSA_free;
 DSA_do_verify;
-#ifdef CONFIG_OTRP_SUPPORT
-load_otrp_ta;
-#endif
 tee_crypto_hmac;
 tee_internal_derive_key;
 __tee_hal_get_dieid;
