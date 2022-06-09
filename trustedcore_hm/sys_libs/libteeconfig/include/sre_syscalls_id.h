@@ -132,18 +132,6 @@
 #define SW_SYSCALL_CC_CRYS_ECDSA_VERIFY_UPDATE             0xc102
 #define SW_SYSCALL_CC_CRYS_ECDSA_VERIFY_FINISH             0xc103
 
-/* rpmb init status */
-#define SW_SYSCALL_BSP_RPMBINIT_STATUS_WRITE               0xc200
-#define SW_SYSCALL_BSP_RPMBINIT_STATUS_READ                0xc201
-#define SW_SYSCALL_RPMB_SMC_SWITCH                         0xc202
-#define SW_SYSCALL_RPMB_PARTITION_WRITE                    0xc203
-#define SW_SYSCALL_RPMB_PARTITION_READ                     0xc204
-#define SW_SYSCALL_RPMB_KEYINFO_WRITE                      0xc205
-#define SW_SYSCALL_RPMB_KEYINFO_READ                       0xc206
-#define SW_SYSCALL_RPMB_RESET_CAPABLE                      0xc207
-#define SW_SYSCALL_RPMB_MDT_READ                           0xc208
-#define SW_SYSCALL_RPMB_UPDATE_CAPABLE                     0xc209
-
 /* sec boot */
 #define SW_GET_CUID                                        0xe002
 #define SW_COPY_SOC_DATA_TYPE                              0xe003

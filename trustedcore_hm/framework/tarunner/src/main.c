@@ -32,20 +32,17 @@
 #define IPC_CHANNEL_NUM 2
 
 void *g_libvendor = NULL;
-void *g_libtui = NULL;
 
 #ifdef __aarch64__
 static const char *g_tarunner_path = "/tarunner.elf";
 static const char *g_drv_so_path = "libdrv_shared.so";
 static const char *g_tee_share_so_path = "libtee_shared.so";
 static const char *g_vendor_so_path = "libvendor_shared.so";
-static const char *g_tui_so_path = "libtui_internal_shared.so";
 #else
 static const char *g_tarunner_path = "/tarunner_a32.elf";
 static const char *g_drv_so_path = "libdrv_shared_a32.so";
 static const char *g_tee_share_so_path = "libtee_shared_a32.so";
 static const char *g_vendor_so_path = "libvendor_shared_a32.so";
-static const char *g_tui_so_path = "libtui_internal_shared_a32.so";
 #endif
 
 static int32_t param_check(int32_t argc, const char * const * argv, bool *free_uncommit)
@@ -81,19 +78,15 @@ static int32_t param_check(int32_t argc, const char * const * argv, bool *free_u
 }
 
 /*
- * judge if the task is ssa rpmb or sec_flash
  * they work for many TAs
  * which helps TA to extend utilities
  */
 static bool is_agent(const char *task_name)
 {
     if ((strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_rpmb", strlen("task_rpmb") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_sec_flash", strlen("task_sec_flash") + 1) == HM_OK) ||
         (strncmp(task_name, "task_rotservice", strlen("task_rotservice") + 1) == HM_OK) ||
         (strncmp(task_name, "task_artservice", strlen("task_artservice") + 1) == HM_OK) ||
         (strncmp(task_name, "task_bioservice", strlen("task_bioservice") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_tui", strlen("task_tui") + 1) == HM_OK) ||
         (strncmp(task_name, VLTMMSRV_TASK_NAME, strlen(VLTMMSRV_TASK_NAME) + 1) == HM_OK))
         return true;
 
@@ -174,7 +167,7 @@ static int32_t init1(const char *task_name, const struct env_param *param, bool 
 
     load_info_print(task_name, param, free_uncommit);
 
-    /* Extend utable for drv or agent, such as SSA/RPMB */
+    /* Extend utable for drv or agent, such as SSA */
     if ((param->target_type == DRV_TARGET_TYPE) || extend_one_more_utable(task_name)) {
         ret = extend_utables();
         if (ret != HM_OK) {
@@ -297,12 +290,6 @@ static int32_t library_init(const char *task_name, bool free_uncommit, const str
         g_libvendor = dlopen(g_vendor_so_path, RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
         if (g_libvendor == NULL) /* some products may not have thsi so */
             hm_error("load vendor library failed: %s\n", dlerror());
-
-        if (strncmp(task_name, "task_tui", strlen("task_tui") + 1) == 0) {
-            g_libtui = dlopen(g_tui_so_path, RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
-            if (g_libtui == NULL)
-                hm_error("load tui library failed: %s\n", dlerror());
-        }
     }
 
     /* TEE library initialization */
@@ -360,11 +347,6 @@ static void load_fail(uint32_t target_type)
     if (g_libvendor != NULL) {
         dlclose(g_libvendor);
         g_libvendor = NULL;
-    }
-
-    if (g_libtui != NULL) {
-        dlclose(g_libtui);
-        g_libtui = NULL;
     }
 
     send_load_fail_msg(target_type);

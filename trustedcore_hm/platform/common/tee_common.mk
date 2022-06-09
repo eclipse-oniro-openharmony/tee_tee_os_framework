@@ -6,7 +6,7 @@ ifneq ($(CONFIG_NO_VENDOR_LIB_EMBEDDED), true)
 endif
 
 arm_libs +=
-arm_sys_libs += libteeconfig libtee_shared libbase_shared libtui_internal_shared libdrv_shared libspawn_common libelf_verify_key libtee_cmscbb libteedynsrv
+arm_sys_libs += libteeconfig libtee_shared libbase_shared libdrv_shared libspawn_common libelf_verify_key libtee_cmscbb libteedynsrv
 arm_host_libs += libhwsecurec_host
 arm_pro_libs +=
 arm_chip_libs += ramfsmkimg_host
@@ -55,13 +55,6 @@ aarch64_frm_drivers += ssa
 else
 arm_frm_drivers += ssa
 endif
-endif
-
-ifeq ($(CONFIG_RPMB_64BIT), true)
-aarch64_frm_drivers += rpmb
-endif
-ifeq ($(CONFIG_RPMB_64BIT), false)
-arm_frm_drivers += rpmb
 endif
 
 ifdef CONFIG_PERMSRV_64BIT
@@ -130,18 +123,6 @@ endif
 endif
 endif
 
-ifeq ($(CONFIG_RPMB_64BIT), true)
-product_apps += $(OUTPUTDIR)/aarch64/drivers/rpmb.elf
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/rpmb.elf
-endif
-ifeq ($(CONFIG_RPMB_64BIT), false)
-product_apps += $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
-check-syms-y += $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
-$(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf:
-	 @mkdir $(OUTPUTDIR)/arm/drivers/rpmb_a32
-	 @cp $(OUTPUTDIR)/arm/drivers/rpmb_a32.elf $(OUTPUTDIR)/arm/drivers/rpmb_a32/rpmb.elf
-endif
-
 ifdef CONFIG_PERMSRV_64BIT
 ifeq ($(CONFIG_PERMSRV_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/apps/permission_service.elf
@@ -151,16 +132,6 @@ $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf:
 	@mkdir $(OUTPUTDIR)/arm/apps/permission_service_a32
 	@cp $(OUTPUTDIR)/arm/apps/permission_service_a32.elf $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf
 endif
-endif
-
-ifeq ($(CONFIG_TUI_32BIT), true)
-product_apps += $(OUTPUTDIR)/arm/obj/arm/libtui_internal_shared/libtui_internal_shared_a32.so
-check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libtui_internal_shared/libtui_internal_shared_a32.so
-endif
-
-ifeq ($(CONFIG_TUI_64BIT), true)
-product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libtui_internal_shared/libtui_internal_shared.so
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libtui_internal_shared/libtui_internal_shared.so
 endif
 
 ifeq ($(CONFIG_TA_64BIT), true)

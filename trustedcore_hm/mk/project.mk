@@ -22,9 +22,6 @@ libbase_shared: libccmgr libteeconfig libtimer libteeagentcommon libteeagentcomm
 libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 
-libtui_internal_shared_a32:
-libtui_internal_shared:
-
 libs: $(arm_libs) $(arm_sys_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(vendor_libs) $(thirdparty_libs) $(host_tools)
 	@echo "libsok"
 $(arm_libs): $(arm_pro_libs) $(arm_sys_libs) $(arm_chip_libs)

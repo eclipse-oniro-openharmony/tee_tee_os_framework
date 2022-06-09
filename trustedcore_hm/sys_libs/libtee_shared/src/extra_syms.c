@@ -118,19 +118,8 @@ void cinit00(void)
 
 bool is_support_tui(void)
 {
-#if (defined TEE_SUPPORT_TUI_64BIT || defined TEE_SUPPORT_TUI_32BIT)
-    return true;
-#else
     return false;
-#endif
 }
-
-#if (defined CONFIG_RPMB_64BIT || defined CONFIG_RPMB_32BIT)
-TEE_Result TEE_EXT_TA_version_check(uint32_t ta_version)
-{
-    return tee_ext_ta_version_check(ta_version);
-}
-#endif
 
 #ifdef __aarch64__
 const char *g_debug_prefix = "libtee_shared";

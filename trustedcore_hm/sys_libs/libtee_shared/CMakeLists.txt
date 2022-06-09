@@ -73,7 +73,6 @@ if ("${ARCH}" STREQUAL "aarch64")
         decouple
         ssa
         huk
-        sec_fs_msg
         teedynsrv
     )
 else()
@@ -97,21 +96,8 @@ else()
         decouple_a32
         ssa_a32
         huk_a32
-        sec_fs_msg_a32
         teedynsrv
     )
-endif()
-
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "true" OR "${CONFIG_RPMB_64BIT}" STREQUAL "false" OR "${CONFIG_EXPORT_RPMB_STUB}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_SHARED_LIBS
-            rpmb
-        )
-    else()
-        list(APPEND TEE_SHARED_LIBS
-            rpmb_a32
-        )
-    endif()
 endif()
 
 if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
@@ -122,18 +108,6 @@ else()
     list(APPEND TEE_SHARED_LIBS
         openssl
     )
-endif()
-
-if ("${CONFIG_TUI_32BIT}" STREQUAL "true" OR "${CONFIG_TUI_64BIT}" STREQUAL "true")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND TEE_SHARED_LIBS
-            tui
-        )
-    else()
-        list(APPEND TEE_SHARED_LIBS
-            tui_a32
-        )
-    endif()
 endif()
 
 if ("${CONFIG_OTRP_SUPPORT}" STREQUAL "y")

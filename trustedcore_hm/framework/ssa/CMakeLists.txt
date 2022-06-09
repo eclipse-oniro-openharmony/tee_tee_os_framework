@@ -5,29 +5,10 @@ include(apps_subcommon)
 
 list(APPEND TEE_C_SOURCES
     src/tee_fs_oper_config.c
-    src/tee_secflash_oper_config.c
 )
 if (NOT "${CONFIG_TEE_FS_OPER}" STREQUAL "y")
     list(APPEND TEE_C_FLAGS
         -DTEE_FS_OPER
-    )
-endif()
-if ("${CONFIG_DC_SECFLASH}" STREQUAL "y")
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND SSA_LIBRARIES
-            sec_fs
-            zlib
-        )
-    else()
-        list(APPEND SSA_LIBRARIES
-            sec_fs_a32
-            zlib_a32
-        )
-    endif()
-endif()
-if ("${CONFIG_SECFS_SECFLASH}" STREQUAL "true")
-    list(APPEND TEE_C_FLAGS
-        -DCONFIG_SECFS_SECFLASH
     )
 endif()
 if ("${CONFIG_MERGE_HUK_SSA}" STREQUAL "y")

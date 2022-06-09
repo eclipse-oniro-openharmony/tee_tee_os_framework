@@ -159,11 +159,6 @@ extern int __scard_get_ese_type(void);
 extern int __SE_setflag(int flag);
 extern int __SE_getflag();
 
-#ifdef CONFIG_HISI_SECFLASH
-extern int __secflash_chip_reset(unsigned int type);
-extern int __secflash_power_save();
-#endif
-
 #if defined(TEE_SUPPORT_SVM) || defined(TEE_SUPPORT_SMMUV3)
 extern int __teesvm_ioctl(int svm_ta_tag, void *mcl);
 #endif

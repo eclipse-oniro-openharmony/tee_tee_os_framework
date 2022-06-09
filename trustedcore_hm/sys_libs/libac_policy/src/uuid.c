@@ -37,14 +37,8 @@ bool ac_taskmap2task_valid_subj_sid(uint64_t sid)
     switch (sid) {
     case AC_SID_PLATDRV:
     case AC_SID_DRV_TIMER:
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-    case AC_SID_TEE_SERVICE_RPMB:
-#endif
 #if (defined TEE_SUPPORT_SSA_64BIT || defined TEE_SUPPORT_SSA_32BIT)
     case AC_SID_TEE_SERVICE_SSA:
-#endif
-#ifdef TEE_SUPPORT_SEC_FLASH
-    case AC_SID_TEE_SERVICE_SEC_FLASH:
 #endif
 #ifdef TEE_SUPPORT_AI
     case AC_SID_TEE_SERVICE_AI:
@@ -65,14 +59,8 @@ bool ac_map2task_valid_subj_sid(uint64_t sid)
 {
     switch (sid) {
     case AC_SID_PLATDRV:
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-    case AC_SID_TEE_SERVICE_RPMB:
-#endif
 #if (defined TEE_SUPPORT_SSA_64BIT || defined TEE_SUPPORT_SSA_32BIT)
     case AC_SID_TEE_SERVICE_SSA:
-#endif
-#ifdef TEE_SUPPORT_SEC_FLASH
-    case AC_SID_TEE_SERVICE_SEC_FLASH:
 #endif
 #ifdef TEE_SUPPORT_AI
     case AC_SID_TEE_SERVICE_AI:

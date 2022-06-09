@@ -5,10 +5,6 @@ MODULE := libteeconfig$(TARG).a
 
 flags += -fno-builtin
 
-ifneq (, $(filter $(TARGET_BOARD_PLATFORM), kirin990))
-flags += -DCONFIG_HISI_SECFLASH
-endif
-
 ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), false)
 flags += -DCONFIG_TEE_MISC_DRIVER
 endif
@@ -27,7 +23,6 @@ endif
 
 ifneq (, $(filter $(TARGET_BOARD_PLATFORM), baltimore))
 flags += -DCONFIG_GENERIC_ROT
-flags += -DHISI_MSP_SECFLASH
 flags += -DCONFIG_GENERIC_ART
 endif
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext

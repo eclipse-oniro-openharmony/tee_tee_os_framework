@@ -34,23 +34,10 @@ enum ta_config_tags {
     CONFIGINFO_TA_MANIFEST_INFO_SINGLE_INSTANCE,
     CONFIGINFO_TA_MANIFEST_INFO_SINGLE_INSTANCE_SINGLE_INSTANCE,
     CONFIGINFO_TA_CONTROL_INFO,
-#if (defined(CONFIG_APP_TEE_RPMB) || defined(CONFIG_APP_TEE_RPMB_A32))
-    CONFIGINFO_TA_CONTROL_INFO_RPMB_INFO,
-    CONFIGINFO_TA_CONTROL_INFO_RPMB_INFO_RPMB_SIZE,
-    CONFIGINFO_TA_CONTROL_INFO_RPMB_INFO_RPMB_SIZE_RPMB_SIZE,
-    CONFIGINFO_TA_CONTROL_INFO_RPMB_INFO_RPMB_PERMISSION,
-    CONFIGINFO_TA_CONTROL_INFO_RPMB_INFO_RPMB_PERMISSION_RPMB_GENERAL,
-    CONFIGINFO_TA_CONTROL_INFO_RPMB_INFO_RPMB_PERMISSION_RPMB_GENERAL_RPMB_GENERAL,
-#endif
 #if defined(CONFIG_APP_TEE_SE)
     CONFIGINFO_TA_CONTROL_INFO_SE_INFO,
     CONFIGINFO_TA_CONTROL_INFO_SE_INFO_SE_OPEN_SESSION,
     CONFIGINFO_TA_CONTROL_INFO_SE_INFO_SE_OPEN_SESSION_SE_OPEN_SESSION,
-#endif
-#if (defined(CONFIG_LIB_TUI) || defined(CONFIG_LIB_TUI_A32))
-    CONFIGINFO_TA_CONTROL_INFO_TUI_INFO,
-    CONFIGINFO_TA_CONTROL_INFO_TUI_INFO_TUI_GENERAL,
-    CONFIGINFO_TA_CONTROL_INFO_TUI_INFO_TUI_GENERAL_TUI_GENERAL,
 #endif
     CONFIGINFO_TA_CONTROL_INFO_DEBUG_INFO,
     CONFIGINFO_TA_CONTROL_INFO_DEBUG_INFO_DEBUG_STATUS,
@@ -60,10 +47,7 @@ enum ta_config_tags {
     CONFIGINFO_UNUSED,
 };
 
-#define RPMB_GENERAL_PERMISSION      0x01U
-#define RPMB_RESET_PERMISSION        0x04U
 #define SE_OPEN_SESSION_PERMISSION   0x01U
-#define TUI_PERMISSION               0x01U
 #define CERT_GENERAL_PERMISSION      0x01U
 
 /* CN format in TA's certificate: "uuid string" + "_" + "service name" */
@@ -91,20 +75,11 @@ struct ta_manifest_info {
     bool sys_verify_ta;
 };
 
-struct ta_rpmb_info {
-    uint32_t size;
-    uint64_t permissions;
-};
-
 struct ta_sfs_info {
     uint64_t permissions;
 };
 
 struct ta_se_info {
-    uint64_t permissions;
-};
-
-struct ta_tui_info {
     uint64_t permissions;
 };
 
@@ -125,10 +100,8 @@ struct callee_ta_info {
 };
 
 struct ta_control_info {
-    struct ta_rpmb_info rpmb_info;
     struct ta_sfs_info sfs_info;
     struct ta_se_info se_info;
-    struct ta_tui_info tui_info;
     struct ta_cert_perm_info cert_info;
     uint32_t ta_manager;
     struct callee_ta_info *callee_info;

@@ -12,10 +12,7 @@
 #include <stdint.h>
 
 bool is_ssa_enable(void);
-bool is_rpmb_enable(void);
-bool is_tui_enable(void);
 bool is_se_service_enable(void);
 bool is_libfuzzer_enable(void);
-void get_tui_convergence_fonts_hash(uint8_t *buffer, int32_t len);
 bool is_tcmgr_service_enable(void);
 #endif

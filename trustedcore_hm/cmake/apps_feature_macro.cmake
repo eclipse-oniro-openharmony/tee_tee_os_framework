@@ -18,16 +18,6 @@ elseif ("${CONFIG_SSA_64BIT}" STREQUAL "false")
     )
 endif()
 
-if ("${CONFIG_RPMB_64BIT}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_RPMB_64BIT
-    )
-elseif ("${CONFIG_RPMB_64BIT}" STREQUAL "false")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_RPMB_32BIT
-    )
-endif()
-
 if ("${CONFIG_PERMSRV_64BIT}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         TEE_SUPPORT_PERM_64BIT
@@ -103,22 +93,6 @@ endif()
 if ("${CONFIG_ART}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         TEE_SUPPORT_ART
-    )
-endif()
-
-if ("${CONFIG_SEC_FLASH}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_SEC_FLASH
-    )
-endif()
-
-if ("${CONFIG_TUI_64BIT}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_TUI_64BIT
-    )
-elseif ("${CONFIG_TUI_32BIT}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_TUI_32BIT
     )
 endif()
 

@@ -112,15 +112,8 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 /* hwi msg operations */
 #define HWIMSG_GROUP_PERMISSION 0x200000LL
 
-/* RPMB general operations */
-#define RPMB_GENERIC_PERMISSION 0x400000LL
-/* RPMB special operations */
-#define RPMB_SPECIFIC_PERMISSION 0x800000LL
-
 /* ANTI ROOT */
 #define ROOTSTATUS_GROUP_PERMISSION 0x1000000LL
-/* RPMB update operations */
-#define RESERVED10_GROUP_PERMISSION 0x2000000LL
 
 /* SE communication operations */
 #define SE_GROUP_PERMISSION 0x4000000LL
@@ -130,8 +123,6 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 
 /* fingerprint sensor operations */
 #define FP_GROUP_PERMISSION 0x10000000LL
-/* TUI operations */
-#define TUI_GROUP_PERMISSION 0x20000000LL
 /* vsim operations */
 #define VSIM_GROUP_PERMISSION 0x40000000LL
 
@@ -185,9 +176,6 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 /* NPU */
 #define NPU_GROUP_PERMISSION    0x800000000000LL
 
-/* SECFLASH */
-#define SECFLASH_GROUP_PERMISSION    0x1000000000000LL
-
 /* SE status operations */
 #define SE_STATUS_GROUP_PERMISSION 0x2000000000000LL
 
@@ -227,12 +215,10 @@ extern void audit_syscall_perm_failure(int32_t swi_id, uint64_t permission, uid_
 #define FLASH_GROUP_PERMISSION 0x1000L
 #endif
 
-#define SECFLASH_GENERIC_PERMISSION 0x2000000000000000LL
-#define SECFLASH_SPECIFIC_PERMISSION 0x4000000000000000LL
 /* Access for all functions - ATTN this is reserved for global task
  * and other test tasks */
 #define ALL_GROUP_PERMISSION ((uint64_t) - 1)
-#define GT_PERMISSIONS (TASK_GROUP_PERMISSION | OEM_KEY_GROUP_PERMISSION| TUI_GROUP_PERMISSION | DYNAMIC_ION_PERMISSION)
+#define GT_PERMISSIONS (TASK_GROUP_PERMISSION | OEM_KEY_GROUP_PERMISSION | DYNAMIC_ION_PERMISSION)
 
 #if defined(TESTSUITE_RTOSck_UT) || defined(TESTSUITE_RTOSck_PT) || \
     defined(TESTSUITE_RTOSck_IT) // set no mem access isolation when run testsuite

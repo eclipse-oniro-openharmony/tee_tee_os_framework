@@ -8,9 +8,6 @@
 
 #include <tee_defines.h>
 
-uint32_t get_rpmb_threshold(const TEE_UUID *uuid);
-uint64_t get_rpmb_permission(const TEE_UUID *uuid);
-bool check_tui_permission(const TEE_UUID *uuid);
 bool check_sem_permission(const TEE_UUID *uuid);
 
 #endif

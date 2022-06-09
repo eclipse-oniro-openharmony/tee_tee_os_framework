@@ -111,10 +111,6 @@ add_custom_target(install_headers_64)
 add_custom_target(install_headers_32)
 add_dependencies(install_headers_64 libart_headers libbiometric_headers libchinadrm_headers libteeconfig_headers libtimer_headers librot_headers libvltmm_headers libweaver_headers libswcrypto_engine_headers libccmgr_headers libdrv_frame_headers libhmdrv_stub_headers libteeagentcommon_client_headers libcrypto_hal_headers libbz_hm_headers plat_cfg_headers)
 add_dependencies(install_headers_32 libart_a32_headers libbiometric_a32_headers libchinadrm_a32_headers libteeconfig_headers libtimer_headers librot_headers libvltmm_a32_headers libweaver_a32_headers libswcrypto_engine_headers libccmgr_headers libdrv_frame_headers libhmdrv_stub_headers libteeagentcommon_client_headers libcrypto_hal_headers libbz_hm_headers plat_cfg_headers)
-if (NOT "${PLATFORM_NAME}" STREQUAL "mtk")
-    add_dependencies(install_headers_64 libsec_flash_client_headers)
-    add_dependencies(install_headers_32 libsec_flash_client_a32_headers)
-endif()
 
 if ("${CONFIG_CRYPTO_ENGINE_DX}" STREQUAL "y")
     add_dependencies(install_headers_32 libdxcc_headers)
@@ -162,11 +158,6 @@ add_custom_command(TARGET prepare_kernel
     COMMAND ${CMAKE_COMMAND} -E copy ${OUTPUTDIR}/kernel/elfloader.o ${BOOTFS_OUT}/elfloader.o
 )
 
-if ("taloader.elf" IN_LIST BOOTFS_FILES_IN_PREBUILD)
-    add_custom_command(TARGET prepare_bins
-        COMMAND ${CMAKE_COMMAND} -E copy ${PREBUILD_APPS}/taloader.elf ${BOOTFS_STAGE_DIR}/taloader.elf
-    )
-endif()
 if ("teesmcmgr.elf" IN_LIST BOOTFS_FILES_IN_PREBUILD)
     add_custom_command(TARGET prepare_bins
         COMMAND ${CMAKE_COMMAND} -E copy ${PREBUILD_APPS}/teesmcmgr.elf ${BOOTFS_STAGE_DIR}/teesmcmgr.elf
@@ -199,13 +190,12 @@ if ("${BUILD_TOOL}" STREQUAL "clang")
     endif()
     set(TEE_SHARED_SO $<TARGET_FILE:tee_shared>)
     set(VENDOR_SHARED_SO $<TARGET_FILE:vendor_shared>)
-    set(TUI_SHARED_SO ${BOOTFS_STAGE_DIR}/libtui_internal_shared.so)
     set(BASE_SHARED_SO $<TARGET_FILE:base_shared>)
 
     foreach (b ${CANDIDATE_BINS})
         if (${b} MATCHES ".elf")
             add_custom_command(TARGET check_symbols
-                COMMAND ${PROJECT_SOURCE_DIR}/tools/check-syms.sh $<TARGET_FILE:${b}> ${C_SHARED_SO} ${TEE_SHARED_SO} ${VENDOR_SHARED_SO} ${TUI_SHARED_SO} ${DRV_SHARED_SO} ${BASE_SHARED_SO}
+                COMMAND ${PROJECT_SOURCE_DIR}/tools/check-syms.sh $<TARGET_FILE:${b}> ${C_SHARED_SO} ${TEE_SHARED_SO} ${VENDOR_SHARED_SO} ${DRV_SHARED_SO} ${BASE_SHARED_SO}
             )
         endif()
     endforeach()

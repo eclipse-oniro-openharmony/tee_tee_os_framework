@@ -20,18 +20,6 @@ if ("${CONFIG_DYNLINK_TEST}" STREQUAL "y")
     )
 endif()
 
-if (NOT "${TRUSTEDCORE_CHIP_CHOOSE}" STREQUAL "WITH_CHIP_MIAMICW")
-    if ("${CONFIG_TUI_32BIT}" STREQUAL "true")
-        list(APPEND BOOTFS_FILES
-            ${BOOTFS_STAGE_DIR}/libtui_internal_shared_a32.so
-        )
-    elseif ("${CONFIG_TUI_64BIT}" STREQUAL "true")
-        list(APPEND BOOTFS_FILES
-            ${BOOTFS_STAGE_DIR}/libtui_internal_shared.so
-        )
-    endif()
-endif()
-
 if ("${CONFIG_TA_64BIT}" STREQUAL "true")
     list(APPEND BOOTFS_FILES_IN_PREBUILD libc_shared.so)
 endif()
@@ -49,9 +37,7 @@ endif()
 
 file(GLOB BOOTFS_STAGE_FILES LIST_DIRECTORIES false ${BOOTFS_STAGE_DIR}/*)
 foreach (f ${BOOTFS_STAGE_FILES})
-    if (NOT f MATCHES libtui_internal_shared_a32.so)
-        list(APPEND BOOTFS_FILES ${f})
-    endif()
+    list(APPEND BOOTFS_FILES ${f})
 endforeach()
 
 if ("${BUILD_TOOL}" STREQUAL "clang")

@@ -82,24 +82,10 @@ ld-flags := -lccmgr$(TARG) -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -la
     -lteeconfig$(TARG) -lteemem$(TARG) -lac$(TARG) -lac_policy$(TARG) -ldecouple$(TARG) -lssa$(TARG) -lhuk${TARG} -lteedynsrv$(TARG)
 
 
-ifdef CONFIG_RPMB_64BIT
-ld-flags += -lrpmb$(TARG)
-else
-ifdef CONFIG_EXPORT_RPMB_STUB
-ld-flags += -lrpmb$(TARG)
-endif
-endif
-
-ld-flags += -lsec_fs_msg$(TARG)
-
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
 ld-flags += -lmbedtls${TARG}
 else
 ld-flags += -lopenssl${TARG}
-endif
-
-ifneq ($(findstring true, $(CONFIG_TUI_64BIT)$(CONFIG_TUI_32BIT)),)
-ld-flags += -ltui$(TARG)
 endif
 
 ifeq ($(CONFIG_OTRP_SUPPORT),y)

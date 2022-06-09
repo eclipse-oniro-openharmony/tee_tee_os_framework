@@ -406,7 +406,6 @@ TEE_SetCryptoFlag;
 TEE_SetObjectFlag;
 TEE_SupportCdrmEnhance;
 TEE_EPS_Ctrl;
-tee_sec_fs_init;
 #ifdef PERSO_ENABLE
 TEE_Ext_CreatePersistentObject;
 TEE_Ext_OpenPersistentObject;
@@ -666,32 +665,6 @@ tee_get_session_type;
 __dump_backtraces;
 TEE_EXT_GetDeviceUniqueId;
 tee_ext_get_device_unique_id;
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT || defined CONFIG_EXPORT_RPMB_STUB)
-TEE_RPMB_FS_Rename;
-TEE_RPMB_FS_Rm;
-TEE_RPMB_FS_Write;
-TEE_RPMB_FS_Read;
-TEE_RPMB_FS_Stat;
-TEE_RPMB_FS_StatDisk;
-TEE_RPMB_FS_Init;
-TEE_RPMB_FS_Format;
-TEE_RPMB_KEY_Status;
-TEE_RPMB_FS_Erase;
-TEE_RPMB_FS_SetAttr;
-#if (defined TEE_SUPPORT_RPMB_64BIT || defined TEE_SUPPORT_RPMB_32BIT)
-TEE_EXT_TA_version_check;
-tee_ext_ta_version_check;
-TEE_RPMB_ANTI_VERSION_Rollback;
-TEE_EXT_GetRpmbThreshold;
-TEE_EXT_GetRpmbCapability;
-tee_ext_get_rpmb_threshold;
-tee_ext_get_rpmb_capability;
-TEE_EXT_create_cert_req;
-TEE_EXT_verify_dev_cert;
-tee_create_cert_req;
-tee_verify_dev_cert;
-#endif
-#endif
 
 #if (defined TEE_SUPPORT_SEM || defined TEE_SUPPORT_SE_SERVICE_32BIT || defined TEE_SUPPORT_SE_SERVICE_64BIT)
 TEE_SESecureChannelOpen;
@@ -760,12 +733,10 @@ __driver_dep_test;
 tee_get_usermode;
 TEE_EXT_GetSfsCapability;
 TEE_EXT_GetSeCapability;
-TEE_EXT_GetTUICapability;
 TEE_EXT_ta_ctrl_list_process;
 TEE_EXT_crl_cert_process;
 tee_ext_get_sfs_capability;
 tee_ext_get_se_capability;
-tee_ext_get_tui_capability;
 tee_ext_ta_ctrl_list_process;
 tee_ext_crl_cert_process;
 tee_ext_get_manage_info;
@@ -784,40 +755,6 @@ ta_signing_cert_import;
 ta_signing_cert_export;
 ta_signing_cert_destroy;
 #endif
-
-
-TEE_EXT_tui_hw_init;
-TEE_EXT_tui_create_win;
-TEE_EXT_tui_destory_win;
-TEE_EXT_tui_get_event;
-TEE_EXT_tui_create_dialog;
-TEE_EXT_tui_hw_exit;
-TEE_EXT_tui_show_win;
-TEE_EXT_tui_set_entry;
-TEE_TUICheckTextFormat;
-TEE_TUICloseSession;
-TEE_TUIDisplayScreen;
-TEE_TUIGetScreenInfo;
-TEE_TUIInitSession;
-TEE_TUISetInfo;
-TEE_TUISendEvent;
-TEE_Ext_QrcodeInTuiFormat;
-TEE_TUISetLabel;
-TEE_EXT_TUI_OpenSession;
-TEE_EXT_TUI_CloseSession;
-TEE_EXT_TUI_GetScreenContext;
-TEE_EXT_TUI_SetClippingRectangle;
-TEE_EXT_TUI_GetClippingRectangle;
-TEE_EXT_TUI_GetTouchEvent;
-TEE_EXT_TUI_GetTouchEventWithTimeout;
-TEE_EXT_TUI_FlipFramebuffers;
-TEE_EXT_TUI_FillRectangle;
-TEE_EXT_TUI_GetImageInfo;
-TEE_EXT_TUI_DecodeImage;
-TEE_EXT_TUI_DrawImage;
-TEE_EXT_TUI_DrawBuffer;
-TEE_EXT_TUI_GetScreenInfo;
-TEE_EXT_TUI_SetImage;
 
 #ifdef TEE_SUPPORT_HSM
 TEE_HSM_CipherStart;
@@ -856,8 +793,6 @@ TEE_HSM_CounterInc;
 TEE_HSM_AlgCheck;
 TEE_HSM_EfuseWrite;
 TEE_HSM_CheckOutput;
-TEE_HSM_GenRpmbKey;
-TEE_HSM_GenRpmbWrappingKey;
 TEE_HSM_SOC_VERIFY;
 TEE_HSM_RIM_UpDate;
 TEE_HSM_Power_On;
@@ -873,22 +808,11 @@ tee_srv_unmap_from_task;
 tee_srv_map_from_task;
 tee_srv_cs_server_loop;
 tee_obj_init;
-/* secflash start */
-CMAC_CTX_new;
-CMAC_Init;
-CMAC_Update;
-CMAC_Final;
-CMAC_CTX_free;
-EVP_aes_128_cbc;
-/* secflash end */
 
 TEE_EXT_InitTAAttest;
 TEE_EXT_GetTAAttest;
 tee_ext_init_ta_attest;
 tee_ext_get_ta_attest;
-tee_common_service_sec_flash_allowed;
-TEE_EXT_GetSecFlashShareMem;
-tee_ext_get_sec_flash_share_mem;
 /* chinadrm api */
 aes_key_wrap;
 aes_key_unwrap;

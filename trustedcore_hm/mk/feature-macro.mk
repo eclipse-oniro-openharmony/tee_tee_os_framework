@@ -12,13 +12,6 @@ ifeq ($(CONFIG_SSA_64BIT), false)
 flags += -DTEE_SUPPORT_SSA_32BIT
 endif
 
-ifeq ($(CONFIG_RPMB_64BIT), true)
-flags += -DTEE_SUPPORT_RPMB_64BIT
-endif
-ifeq ($(CONFIG_RPMB_64BIT), false)
-flags += -DTEE_SUPPORT_RPMB_32BIT
-endif
-
 ifdef CONFIG_PERMSRV_64BIT
 ifeq ($(CONFIG_PERMSRV_64BIT), true)
 flags += -DTEE_SUPPORT_PERM_64BIT
@@ -81,18 +74,6 @@ endif
 
 ifeq ($(CONFIG_ART), true)
 flags += -DTEE_SUPPORT_ART
-endif
-
-ifeq ($(CONFIG_SEC_FLASH), true)
-flags += -DTEE_SUPPORT_SEC_FLASH
-endif
-
-ifeq ($(CONFIG_TUI_64BIT), true)
-flags += -DTEE_SUPPORT_TUI_64BIT
-endif
-
-ifeq ($(CONFIG_TUI_32BIT), true)
-flags += -DTEE_SUPPORT_TUI_32BIT
 endif
 
 ifeq ($(CONFIG_GATEKEEPER_64BIT), true)

@@ -31,12 +31,8 @@
 #define SW_SYSCALL_ESE_7816_RESET     0xe114
 #define SW_SYSCALL_ESE_GET_OS_MODE    0xe115
 #define SW_SYSCALL_SET_NFC_TYPE       0xe116
-/*  secflash 0xe120 - 0xe12f */
-#define SW_SYSCALL_SECFLASH_RESET           0xe120
-#define SW_SYSCALL_SECFLASH_POWER_SAVE      0xe121
 
 /*  MSPCore 0xe130 - 0xe14f */
-#define SW_SYSCALL_MSPC_CHECK_SECFLASH      0xe130
 #define SW_SYSCALL_MSPC_FACOTRY_CMD         0xe131
 #define SW_SYSCALL_MSPC_POWER_ON            0xe132
 #define SW_SYSCALL_MSPC_POWER_OFF           0xe133

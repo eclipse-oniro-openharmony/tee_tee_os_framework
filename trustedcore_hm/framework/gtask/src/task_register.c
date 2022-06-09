@@ -82,21 +82,6 @@ void register_task_rot_srv(void)
 #endif
 }
 
-void register_task_sec_flash(void)
-{
-#ifdef TEE_SUPPORT_SEC_FLASH
-    TEE_UUID uuid = TEE_SERVICE_SEC_FLASH;
-    struct srv_adaptor_config_t config = {0};
-    config.task_prio = TASK_PRIO_SEC_FLASH;
-    config.agent_id = 0;
-    config.is_need_release_ta_res = false;
-    config.crash_callback = true;
-    config.is_need_create_msg = false;
-    config.is_need_release_msg = false;
-    register_dynamic_task(&uuid, SEC_FLASH_TASK_NAME, &config);
-#endif
-}
-
 void register_task_vltmm_srv(void)
 {
 #ifdef TEE_SUPPORT_VLTMM_SRV
@@ -135,7 +120,6 @@ void register_multi_task(void)
     register_task_hsm_srv();
     register_task_huk_srv();
     register_task_rot_srv();
-    register_task_sec_flash();
     register_task_vltmm_srv();
     register_task_crypto_agent_srv();
 }

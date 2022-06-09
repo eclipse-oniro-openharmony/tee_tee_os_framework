@@ -154,9 +154,6 @@ void thread_func_kick_wrapper(void *(*func)(void *), struct pthread *arg,
 	self = arg;
 	self->tid = (uint64_t)tls.thread_id;
 
-	/* syscall to do spi_notify and set affinity to 0 (in the syscall) */
-	teecall_spi_notify_shadow();
-
 	cref_t channel;
 	int ret = thread_create_ipc(&channel);
 	if (ret != 0)
