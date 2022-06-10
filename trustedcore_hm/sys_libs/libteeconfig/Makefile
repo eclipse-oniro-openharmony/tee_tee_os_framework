@@ -51,10 +51,6 @@ endif
 EXPORT_HDRS += $(wildcard include/*)
 EXPORT_HDRS += $(wildcard include/*/*.h)
 
-ifeq ($(CONFIG_HSM), true)
-flags += -DTEE_SUPPORT_HSM
-endif
-
 ifeq ($(CONFIG_HISI_MSPC_IPC_TEST), true)
 c-flags += -DCONFIG_HISI_MSPC_IPC_TEST
 endif

@@ -6,7 +6,6 @@
 #ifndef GTASK_CONFIG_H
 #define GTASK_CONFIG_H
 #include <stdint.h>
-int get_tee_disable_ca_auth(void);
 
 /* for builtin task */
 uint32_t get_teeos_builtin_task_nums(void);

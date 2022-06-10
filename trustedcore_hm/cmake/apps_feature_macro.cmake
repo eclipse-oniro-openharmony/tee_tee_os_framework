@@ -78,24 +78,6 @@ if ("${CONFIG_MSP}" STREQUAL "true")
     )
 endif()
 
-if ("${CONFIG_BIO}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_BIO
-    )
-endif()
-
-if ("${CONFIG_ROT}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_ROT
-    )
-endif()
-
-if ("${CONFIG_ART}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_ART
-    )
-endif()
-
 if ("${CONFIG_GATEKEEPER_64BIT}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         TEE_SUPPORT_GATEKEEPER_64BIT
@@ -109,12 +91,6 @@ endif()
 if ("${CONFIG_ANTIROOT}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         TEE_SUPPORT_ANTIROOT
-    )
-endif()
-
-if ("${CONFIG_HSM}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_HSM
     )
 endif()
 

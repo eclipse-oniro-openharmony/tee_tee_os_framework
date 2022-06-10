@@ -11,17 +11,6 @@
 #include "tee_test_uuid.h"
 #include "sre_access_control.h"
 
-#ifdef TEE_DISABLE_CA_SIGN
-const int g_tee_disable_ca_auth = TEE_DISABLE_CA_SIGN;
-#else
-const int g_tee_disable_ca_auth;
-#endif
-
-int get_tee_disable_ca_auth(void)
-{
-    return g_tee_disable_ca_auth;
-}
-
 const struct task_info_st g_teeos_builtin_task_infos[] = {
 #ifdef TEE_SUPPORT_SSA_64BIT
     { TEE_SERVICE_SSA, SSA_SERVICE_NAME, "/ssa.elf", HM_PRIO_TEE_AGENT, true },
