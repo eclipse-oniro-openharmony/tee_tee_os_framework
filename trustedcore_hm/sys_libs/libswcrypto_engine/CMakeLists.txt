@@ -76,7 +76,6 @@ set(SWCRYPTO_SRCS
     src/rsa_wrapper.c
 )
 
-
 list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libcrypto_hal/include
