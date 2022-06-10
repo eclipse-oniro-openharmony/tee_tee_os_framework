@@ -23,10 +23,6 @@ flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG
 flags += -include$(PREBUILD_DIR)/headers/autoconf.h
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 
-ifeq ($(CONFIG_TEE_FS_OPER),y)
-flags += -DTEE_FS_OPER
-endif
-
 ifeq ($(CONFIG_LLVM_LTO),y)
 flags += -flto -fsplit-lto-unit
 endif

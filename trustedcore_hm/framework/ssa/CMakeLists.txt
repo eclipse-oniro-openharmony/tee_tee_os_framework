@@ -6,19 +6,6 @@ include(apps_subcommon)
 list(APPEND TEE_C_SOURCES
     src/tee_fs_oper_config.c
 )
-if (NOT "${CONFIG_TEE_FS_OPER}" STREQUAL "y")
-    list(APPEND TEE_C_FLAGS
-        -DTEE_FS_OPER
-    )
-endif()
-if ("${CONFIG_MERGE_HUK_SSA}" STREQUAL "y")
-    list(APPEND TEE_C_SOURCES
-        ${PROJECT_SOURCE_DIR}/framework/huk_service/src/huk_service_config.c
-    )
-    list(APPEND TEE_INCLUDE_PATH
-        ${PROJECT_SOURCE_DIR}/framework/huk_service/include
-    )
-endif()
 list(APPEND TEE_INCLUDE_PATH
     ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config

@@ -36,10 +36,6 @@ ifeq ($(CONFIG_TRNG_ENABLE), true)
 flags += -DTRNG_ENABLE
 endif
 
-ifeq ($(CONFIG_TEE_FS_OPER),y)
-flags += -DTEE_FS_OPER
-endif
-
 ifneq ($(findstring $(CONFIG_EPS_FOR_MSP)$(CONFIG_EPS_FOR_990), true),)
 flags += -DEPS_ENABLE
 endif

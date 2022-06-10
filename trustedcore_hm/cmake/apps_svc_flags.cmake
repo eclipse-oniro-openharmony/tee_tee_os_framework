@@ -52,12 +52,6 @@ list(APPEND TEE_C_FLAGS
     ${TRUSTEDCORE_PLATFORM_FLAGS}
 )
 
-if ("${CONFIG_TEE_FS_OPER}" STREQUAL "y")
-    list(APPEND TEE_C_FLAGS
-        -DTEE_FS_OPER
-    )
-endif()
-
 if ("${CONFIG_LLVM_LTO}" STREQUAL "y")
     list(APPEND TEE_C_FLAGS
 	-flto
