@@ -14,5 +14,4 @@
 bool is_ssa_enable(void);
 bool is_se_service_enable(void);
 bool is_libfuzzer_enable(void);
-bool is_tcmgr_service_enable(void);
 #endif

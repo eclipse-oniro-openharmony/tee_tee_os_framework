@@ -77,9 +77,6 @@ const struct ta_permission g_teeos_ta_permission_config[] = {
     { TEE_SERVICE_TEST_API, 0, ALL_GROUP_PERMISSION },
     { TEE_SERVICE_PERMCTRL_UT, 0, GENERAL_GROUP_PERMISSION },
 #endif
-#if (defined TEE_SUPPORT_TCMGR_SERVICE_32BIT || defined TEE_SUPPORT_TCMGR_SERVICE_64BIT)
-    { TEE_SERVICE_TCMGR, 0, PERMSRV_GROUP_PERMISSION | CERT_KEY_GROUP_PERMISSION },
-#endif
 };
 
 static const uint32_t g_teeos_ta_permission_num =

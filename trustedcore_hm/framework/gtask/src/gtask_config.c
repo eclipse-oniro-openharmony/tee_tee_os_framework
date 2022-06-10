@@ -22,11 +22,6 @@ const struct task_info_st g_teeos_builtin_task_infos[] = {
 #elif TEE_SUPPORT_HUK_SERVICE_32BIT
     { TEE_SERVICE_HUK, HUK_TASK_NAME, "/huk_service.elf", HM_PRIO_TEE_AGENT, false },
 #endif
-#ifdef TEE_SUPPORT_TCMGR_SERVICE_64BIT
-    { TEE_SERVICE_TCMGR, TCMGR_SERVICE_TASK_NAME, "/tcmgr_service.elf", HM_PRIO_TEE_AGENT, true },
-#elif TEE_SUPPORT_TCMGR_SERVICE_32BIT
-    { TEE_SERVICE_TCMGR, TCMGR_SERVICE_TASK_NAME, "/tcmgr_service.elf", HM_PRIO_TEE_AGENT, false },
-#endif
 #ifdef TEE_SUPPORT_PERM_64BIT
     {TEE_SERVICE_PERM, PERM_SERVICE_NAME, "/permission_service.elf", HM_PRIO_TEE_AGENT, true},
 #elif TEE_SUPPORT_PERM_32BIT
@@ -55,7 +50,6 @@ const struct task_info_st *get_teeos_builtin_task_infos(void)
 #define RPMB_HUK_HEAP_DIV     2
 #define SSA_DEFAULT_HEAP_HEAPMGR_MUL  24
 #define HUK_DEFAULT_HEAP_HEAPMGR_MUL  24
-#define TCMGR_DEFAULT_HEAP_HEAPMGR_MUL  24
 #define PERM_SRV_STACK_SIZE (DEFAULT_STACK_SIZE * 8)
 #define PERM_SRV_HEAP_SIZE  (DEFAULT_HEAP_SIZE * 3)
 #define PERM_SRV_DEFAULT_HEAP_HEAPMGR_MUL  (DEFAULT_HEAP_SIZE * 24)
@@ -65,38 +59,15 @@ const struct ta_property g_teeos_service_property[] = {
     /* uuid  stack  heap  instance multi_session  alive ssa_enum_enable other_property other_property_len */
     { TEE_SERVICE_REET, DEFAULT_STACK_SIZE, DEFAULT_HEAP_SIZE, true, false, false, false, NULL, 0 },
 #if (defined TEE_SUPPORT_SSA_64BIT || defined TEE_SUPPORT_SSA_32BIT)
-#ifdef SSA_SHRINK_MEMORY
-    { TEE_SERVICE_SSA, DEFAULT_STACK_SIZE / SSA_SHRINK_STACK_DIV, DEFAULT_HEAP_SIZE,
-      true, false, false, false, NULL, 0 },
-#else
-#ifdef CONFIG_MALLOC_HEAPMGR
-    { TEE_SERVICE_SSA, DEFAULT_STACK_SIZE * SSA_DEFAULT_STACK_MUL, DEFAULT_HEAP_SIZE * SSA_DEFAULT_HEAP_HEAPMGR_MUL,
-      true, false, false, false, NULL, 0 },
-#else
     { TEE_SERVICE_SSA, DEFAULT_STACK_SIZE * SSA_DEFAULT_STACK_MUL, DEFAULT_HEAP_SIZE * SSA_DEFAULT_HEAP_MUL,
       true, false, false, false, NULL, 0 },
 #endif
-#endif
-#endif
 #if (defined TEE_SUPPORT_HUK_SERVICE_32BIT || defined TEE_SUPPORT_HUK_SERVICE_64BIT)
-#ifdef CONFIG_MALLOC_HEAPMGR
-    { TEE_SERVICE_HUK, DEFAULT_STACK_SIZE / RPMB_HUK_STACK_DIV, DEFAULT_HEAP_SIZE * HUK_DEFAULT_HEAP_HEAPMGR_MUL,
-      true, false, false, false, NULL, 0 },
-#else
     { TEE_SERVICE_HUK, DEFAULT_STACK_SIZE / RPMB_HUK_STACK_DIV, DEFAULT_HEAP_SIZE / RPMB_HUK_HEAP_DIV,
       true, false, false, false, NULL, 0 },
 #endif
-#endif
-#if (defined TEE_SUPPORT_TCMGR_SERVICE_64BIT || defined TEE_SUPPORT_TCMGR_SERVICE_32BIT)
-    { TEE_SERVICE_TCMGR, DEFAULT_STACK_SIZE, DEFAULT_HEAP_SIZE * TCMGR_DEFAULT_HEAP_HEAPMGR_MUL,
-      true, false, false, false, NULL, 0 },
-#endif
 #if (defined TEE_SUPPORT_PERM_64BIT || defined TEE_SUPPORT_PERM_32BIT)
-#ifdef CONFIG_MALLOC_HEAPMGR
-    { TEE_SERVICE_PERM, PERM_SRV_STACK_SIZE, PERM_SRV_DEFAULT_HEAP_HEAPMGR_MUL, true, false, false, false, NULL, 0 },
-#else
     { TEE_SERVICE_PERM, PERM_SRV_STACK_SIZE, PERM_SRV_HEAP_SIZE, true, false, false, false, NULL, 0 },
-#endif
 #endif
 };
 
