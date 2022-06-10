@@ -20,12 +20,6 @@
  */
 const unsigned int g_cfi_disabled = 1;
 
-uint32_t get_mem_usage(bool show)
-{
-    /* Heap is uncommited lazily, cannot use heap size to judge mem leak; for backward compatibility */
-    (void)show;
-    return MEM_USAGE_OK;
-}
 void hm_yield()
 {
     hmapi_yield();

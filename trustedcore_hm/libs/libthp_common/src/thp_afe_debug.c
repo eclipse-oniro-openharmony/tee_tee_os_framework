@@ -246,9 +246,6 @@ void debug_free_memory(void)
 
 void show_mem_usage(const char* func)
 {
-    uint32_t mem_usage = get_mem_usage(false);
-    (void)mem_usage;
     (void)func;
-    tlogi("%s: MEM usage = %d.%d%\n", func, mem_usage / 100, mem_usage % 100);
 }
 

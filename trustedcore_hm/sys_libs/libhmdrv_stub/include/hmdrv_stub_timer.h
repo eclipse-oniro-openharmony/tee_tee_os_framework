@@ -12,7 +12,6 @@
 #include <malloc.h>  /* for malloc() */
 #include <tee_log.h>
 #include <securec.h>
-#include <tee_mem_ext.h>
 #include <mem_drv_map.h>
 #include <mem_ops_ext.h>
 

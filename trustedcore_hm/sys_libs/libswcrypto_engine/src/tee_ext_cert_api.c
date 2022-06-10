@@ -426,6 +426,15 @@ static TEE_Result save_rsa_key(int type, TEE_ObjectHandle key)
     return ret;
 }
 
+/* TODO: this interfaces need delete from OH */
+static TEE_Result tee_ext_get_device_unique_id(uint8_t *device_unique_id, uint32_t *length)
+{
+    (void)device_unique_id;
+    (void)length;
+    tloge("device id not support\n");
+    return TEE_ERROR_GENERIC;
+}
+
 static TEE_Result get_device_unique_id_str(uint8_t *buff, uint32_t len)
 {
     TEE_Result ret;
@@ -548,6 +557,17 @@ static TEE_Result get_rsa_key(uint8_t *key, uint32_t key_size, EVP_PKEY **cert_k
         return TEE_ERROR_GENERIC;
     }
     return TEE_SUCCESS;
+}
+
+/* TODO: this interfaces need delete from OH */
+static TEE_Result tee_ext_root_uuid_derive_key(const uint8_t *salt, uint32_t size, uint8_t *key, uint32_t *key_size)
+{
+    (void)salt;
+    (void)size;
+    (void)key;
+    (void)key_size;
+    tloge("derive key not suport\n");
+    return TEE_ERROR_GENERIC;
 }
 
 static TEE_Result get_key_for_cert_req(uint32_t key_type, EVP_PKEY **cert_key, const uint8_t *file_name)
