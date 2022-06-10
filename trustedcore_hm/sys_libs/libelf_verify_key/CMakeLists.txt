@@ -26,13 +26,10 @@ endif()
 
 if ("${CONFIG_DYN_TA_FORMAT}" STREQUAL "1")
     list(APPEND TEE_C_FLAGS
-        -DDYN_TA_SUPPORT_V1
-        -DDYN_TA_SUPPORT_V2
         -DDYN_TA_SUPPORT_V3
     )
 elseif ("${CONFIG_DYN_TA_FORMAT}" STREQUAL "2")
     list(APPEND TEE_C_FLAGS
-        -DDYN_TA_SUPPORT_V2
         -DDYN_TA_SUPPORT_V3
     )
 elseif ("${CONFIG_DYN_TA_FORMAT}" STREQUAL "3")

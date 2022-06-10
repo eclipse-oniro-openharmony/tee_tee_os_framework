@@ -22,13 +22,6 @@ TEE_Result get_wb_tool_key(struct wb_tool_key *tool_key)
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-#ifdef CONFIG_GENERIC_LOAD_KEY
-#if (defined(DYN_TA_SUPPORT_V1)) || (defined(DYN_TA_SUPPORT_V2) && defined(CONFIG_WHITE_BOX_KEY))
-    if (tool_key->tool_ver == WB_TOOL_KEY_128)
-        return get_wb_tool_v1_key(tool_key);
-#endif
-#endif
-
 #ifdef CONFIG_WHITE_BOX_KEY
     if (tool_key->tool_ver == WB_TOOL_KEY_256)
         return get_wb_tool_v2_key(tool_key);
