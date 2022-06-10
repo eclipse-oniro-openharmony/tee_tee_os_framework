@@ -50,29 +50,6 @@ bool ta_vsroot_flush(const TEE_UUID *uuid)
     return false;
 }
 
-
-int is_in_spawnlist(const char *name)
-{
-    uint32_t i;
-    const char **spawn_list = get_spawn_whitelist();
-    uint32_t spawn_list_num = get_spawn_list_num();
-
-    if (name == NULL) {
-        tloge("invalid param name\n");
-        return 0;
-    }
-    if (spawn_list == NULL)
-        return 0;
-
-    for (i = 0; i < spawn_list_num; i++) {
-        if (spawn_list[i] == NULL)
-            continue;
-        if (strncmp(name, spawn_list[i], strlen(spawn_list[i]) + 1) == 0)
-            return 1;
-    }
-    return 0;
-}
-
 /* next 3 functions for builtin task */
 uint32_t get_builtin_task_nums(void)
 {

@@ -84,21 +84,3 @@ const struct ta_property *get_teeos_service_property_config(void)
     return g_teeos_service_property;
 }
 
-
-const char *g_hm_spawn_whitelist[] = {
-#ifdef DEF_ENG
-    "hm-teeos-test",  /* hm_tee_test */
-#endif
-};
-
-const uint32_t g_hm_spawn_whitelist_num = sizeof(g_hm_spawn_whitelist) / sizeof(g_hm_spawn_whitelist[0]);
-
-uint32_t get_spawn_list_num(void)
-{
-    return g_hm_spawn_whitelist_num;
-}
-
-const char **get_spawn_whitelist(void)
-{
-    return g_hm_spawn_whitelist;
-}

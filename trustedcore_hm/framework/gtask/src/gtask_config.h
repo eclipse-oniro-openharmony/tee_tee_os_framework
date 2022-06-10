@@ -15,8 +15,4 @@ const struct task_info_st *get_teeos_builtin_task_infos(void);
 uint32_t get_teeos_service_property_num(void);
 const struct ta_property *get_teeos_service_property_config(void);
 
-/* for spawn whitelist */
-uint32_t get_spawn_list_num(void);
-const char **get_spawn_whitelist(void);
-
 #endif
