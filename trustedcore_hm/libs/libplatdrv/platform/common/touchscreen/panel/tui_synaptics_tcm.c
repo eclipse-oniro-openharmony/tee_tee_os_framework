@@ -5,7 +5,6 @@
  * Create: 2020-04-20
  */
 
-#include <legacy_mem_ext.h>
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "i2c.h"
@@ -210,10 +209,10 @@ static int syna_tcm_alloc_mem(struct syna_tcm_buffer *temp_buffer, unsigned int 
 {
     if (size > temp_buffer->buf_size) {
         if (!(temp_buffer->buf)) {
-            SRE_MemFree(0, temp_buffer->buf);
+            free(temp_buffer->buf);
             temp_buffer->buf = NULL;
         }
-        temp_buffer->buf = SRE_MemAlloc(0, 0, size);
+        temp_buffer->buf = malloc(size);
         if (!(temp_buffer->buf)) {
             TP_LOG_ERR("%s: Failed to allocate memory\n", __func__);
             TP_LOG_ERR("%s: Allocation size = %d\n", __func__, size);
@@ -233,7 +232,7 @@ static int syna_tcm_alloc_mem(struct syna_tcm_buffer *temp_buffer, unsigned int 
 static void syna_tcm_free_mem(struct syna_tcm_buffer *temp_buffer)
 {
     if (temp_buffer->buf) {
-        SRE_MemFree(0, temp_buffer->buf);
+        free(temp_buffer->buf);
         temp_buffer->buf = NULL;
         temp_buffer->buf_size = 0;
         temp_buffer->data_length = 0;
@@ -584,7 +583,7 @@ int touch_report(struct ts_tui_fingers *report_data)
     }
     object_data = tcm_hcd->object_data;
 
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
         return SYNA_ERR_STATUS;
@@ -623,7 +622,7 @@ int touch_report(struct ts_tui_fingers *report_data)
     info->cur_finger_number = touch_count;
     ts_tui_algo_t1(info, report_data);
 exit:
-    SRE_MemFree(0, info);
+    free(info);
     return retval;
 }
 
@@ -728,7 +727,7 @@ static int syna_tcm_get_report_config(void)
         return SYNA_ERR_STATUS;
 
     SRE_DelayMs(10); /* delay 10 */
-    report_config = (unsigned char *)SRE_MemAlloc(0, 0, TOUCH_REPORT_CONFIG_SIZE + MESSAGE_HEADER_SIZE);
+    report_config = (unsigned char *)malloc(TOUCH_REPORT_CONFIG_SIZE + MESSAGE_HEADER_SIZE);
     if (report_config == NULL) {
         TP_LOG_ERR("Alloc memory failed\n");
         return SYNA_ERR_STATUS;
@@ -772,7 +771,7 @@ static int syna_tcm_get_report_config(void)
 err_exit:
     if (retval)
         syna_tcm_free_mem(&(tcm_hcd->config));
-    SRE_MemFree(0, report_config);
+    free(report_config);
     return retval;
 }
 
@@ -816,7 +815,7 @@ int syna_tcm_device_init(void)
 {
     int retval;
 
-    tcm_hcd = (struct syna_tcm_hcd *)SRE_MemAlloc(0, 0, sizeof(*tcm_hcd));
+    tcm_hcd = (struct syna_tcm_hcd *)malloc(sizeof(*tcm_hcd));
     if (tcm_hcd == NULL) {
         TP_LOG_ERR("Alloc tcm_hcd Failed\n");
         return SYNA_ERR_STATUS;
@@ -834,7 +833,7 @@ int syna_tcm_device_init(void)
     }
     return 0;
 exit:
-    SRE_MemFree(0, tcm_hcd);
+    free(tcm_hcd);
     tcm_hcd = NULL;
     return retval;
 }
@@ -843,7 +842,7 @@ void tui_syna_tcm_exit(void)
 {
     if (tcm_hcd) {
         syna_tcm_free_mem(&(tcm_hcd->config));
-        SRE_MemFree(0, tcm_hcd);
+        free(tcm_hcd);
         tcm_hcd = NULL;
     }
 }

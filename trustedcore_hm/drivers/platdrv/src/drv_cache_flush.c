@@ -5,7 +5,6 @@
  */
 #include <stdio.h>
 #include <stdarg.h>
-#include <cache_flush.h>
 #include "drv_cache_flush.h"
 
 /*
@@ -17,7 +16,7 @@
 void v7_dma_inv_range(unsigned long start, unsigned long end)
 {
     /* Keep this function for thirdparty driver comatibilty */
-    __dma_inv_range(start, end);
+    dma_inv_range(start, end);
 }
 
 /*
@@ -33,5 +32,5 @@ void v7_dma_inv_range(unsigned long start, unsigned long end)
 void v7_dma_flush_range(unsigned long start, unsigned long end)
 {
     /* Keep this function for thirdparty driver comatibilty */
-    __dma_flush_range(start, end);
+    dma_flush_range(start, end);
 }

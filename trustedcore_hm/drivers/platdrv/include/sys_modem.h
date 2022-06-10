@@ -21,8 +21,6 @@ uint32_t sys_msg_send(uint32_t msg_hdl, uint32_t msg_id, uint32_t dst_pid, uint8
 uint32_t sys_msg_receive(uint32_t *msg_hdl, uint32_t *msg_id, uint32_t *send_pid,
                          uint8_t channel_id, uint32_t timeout);
 uint32_t sys_get_share_mem_info(enum sharedmem_types type, uint32_t *buffer, uint32_t size);
-void *sys_mem_alloc(uint32_t size);
-uint32_t sys_mem_free(void *addr);
 uint32_t tee_get_task_id(uint32_t *task_id);
 
 #endif /* PLATDRV_SYS_MODEM_H */

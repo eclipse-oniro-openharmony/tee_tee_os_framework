@@ -10,8 +10,6 @@ __stack_chk_guard;
 uart_printf_func;
 sys_hwi_create;
 sys_hwi_enable;
-sys_mem_alloc;
-sys_mem_free;
 sys_hwi_disable;
 sys_hwi_resume;
 sys_hwi_delete;

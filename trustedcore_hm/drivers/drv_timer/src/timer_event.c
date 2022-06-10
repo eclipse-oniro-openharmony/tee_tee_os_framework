@@ -9,7 +9,6 @@
 #include <sys/usrsyscall_new_ext.h>
 #include <hm_getpid.h>
 #include <mem_ops.h>
-#include <legacy_mem_ext.h>
 #include <limits.h>
 #include <ipclib.h>
 #include <procmgr_ext.h>
@@ -98,7 +97,7 @@ uint32_t timer_event_destory_with_uuid(timer_event *timer_node, const struct tee
     len = strnlen(timer_node->path_name, IPC_NAME_MAX);
     if (len == IPC_NAME_MAX) {
         hm_error("invalid path_name, len overflow!\n");
-        (void)SRE_MemFree(OS_MID_TIMER, timer_node);
+        free(timer_node);
         return TMR_DRV_ERROR;
     }
 
@@ -108,11 +107,7 @@ uint32_t timer_event_destory_with_uuid(timer_event *timer_node, const struct tee
             hm_warn("release channel fail\n");
     }
 
-    ret = SRE_MemFree(OS_MID_TIMER, timer_node);
-    if (ret != TMR_DRV_SUCCESS) {
-        hm_error("timer event destory with uuid,failed %u\n", ret);
-        return TMR_DRV_ERROR;
-    }
+    free(timer_node);
 
     return TMR_DRV_SUCCESS;
 }
@@ -510,7 +505,7 @@ timer_event *timer_event_create(const sw_timer_event_handler handler, int32_t ti
         return NULL;
     }
 
-    new_event = (timer_event *)SRE_MemAlloc(OS_MID_TIMER, OS_MEM_DEFAULT_FSC_PT, sizeof(*new_event));
+    new_event = (timer_event *)malloc(sizeof(*new_event));
     if (new_event == NULL) {
         hm_error("SW: Malloc failed in Creating New Timer event\n");
         return NULL;
@@ -519,20 +514,20 @@ timer_event *timer_event_create(const sw_timer_event_handler handler, int32_t ti
     ret_s = memset_s(new_event, sizeof(*new_event), 0, sizeof(*new_event));
     if (ret_s != EOK) {
         hm_error("memset failed!\n");
-        (void)SRE_MemFree(OS_MID_TIMER, new_event);
+        free(new_event);
         return NULL;
     }
 
     ret = timer_event_init(handler, timer_class, priv_data, new_event, pid);
     if (ret != 0) {
         hm_error("timer event init failed! ret is %d\n", ret);
-        (void)SRE_MemFree(OS_MID_TIMER, new_event);
+        free(new_event);
         return NULL;
     }
 
     if (new_event->clk_info == NULL) {
         hm_error("new event clock info is NULL\n");
-        (void)SRE_MemFree(OS_MID_TIMER, new_event);
+        free(new_event);
         return NULL;
     }
     dlist_insert_head(&new_event->c_node, &new_event->clk_info->avail);

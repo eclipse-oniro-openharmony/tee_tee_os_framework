@@ -34,10 +34,6 @@ __tee_mutex_release;
 hm_ccmgr_init;
 __virt_to_phys;
 tee_virt_to_phys;
-get_cs_es_info;
-__dma_map_area;
-__dma_unmap_area;
-__dma_clean_range;
 
 /* recommended APIs, because of 64bit input args */
 dma_flush_range;
@@ -77,8 +73,6 @@ tee_unbind_tee_service;
 
 hwi_create_irq_thread;
 hwi_init;
-__dma_flush_range;
-__dma_inv_range;
 /* openssl_symbol */
 EVP_sha256;
 EVP_sha512;
@@ -426,20 +420,11 @@ TEE_GetInstanceData;
 TEE_SetInstanceData;
 get_mem_usage;
 get_heap_usage;
-SRE_MemAlloc;
-__SRE_MemFree;
-__SRE_MemAllocShared;
-__SRE_MemFreeShared;
-tee_alloc_sharemem;
 tee_alloc_sharemem_aux;
 tee_free_sharemem;
 tee_map_sharemem;
 copy_from_sharemem;
 copy_to_sharemem;
-__task_map_from_ns_page;
-__task_unmap_from_ns_page;
-__task_map_from_task;
-task_map_from_task_handle;
 task_unmap;
 task_map_phy_mem;
 TEE_EXT_ROOT_UuidDeriveKey;

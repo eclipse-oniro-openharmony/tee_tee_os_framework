@@ -97,7 +97,7 @@ bool unset_secure_mem(struct mem_cfg *cfg, int32_t mem_type)
     if (cfg->need_clear)
         clear_mem_content(cfg);
 
-    int32_t ret = __task_unmap_from_ns_page(cfg->caller_pid, cfg->vm_addr, cfg->size);
+    int32_t ret = task_unmap(cfg->caller_pid, cfg->vm_addr, cfg->size);
     if (ret != 0) {
         tloge("unmap fb cfg mem failed 0x%x", ret);
         return false;

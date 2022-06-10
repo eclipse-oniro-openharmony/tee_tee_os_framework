@@ -25,6 +25,7 @@
 #include "drv_thread.h"
 #include "drv_legacy_def.h"
 #include "drv_task_map.h"
+#include "hm_cache_flush.h"
 
 pid_t g_caller_pid = INVALID_CALLER_PID;
 
@@ -123,13 +124,13 @@ int32_t sre_mmap(paddr_t base_addr, uint32_t size, uintptr_t *vm_addr,
 void v7_dma_map_area(uintptr_t start, uint32_t size, int32_t dir)
 {
     /* Keep this function for thirdparty driver comatibilty */
-    __dma_map_area(start, size, dir);
+    dma_map_area(start, size, dir);
 }
 
 void v7_dma_unmap_area(uintptr_t start, uint32_t size, int32_t dir)
 {
     /* Keep this function for thirdparty driver comatibilty */
-    __dma_unmap_area(start, size, dir);
+    dma_unmap_area(start, size, dir);
 }
 
 int sre_unmap(uintptr_t virt_addr, uint32_t size)

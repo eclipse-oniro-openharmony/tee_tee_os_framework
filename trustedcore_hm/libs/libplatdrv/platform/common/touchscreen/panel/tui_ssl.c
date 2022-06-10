@@ -5,7 +5,6 @@
  * Author: weizhenggui
  * Create: 2018-12-24
  */
-#include <legacy_mem_ext.h> /* SRE_MemAlloc */
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "mem_page_ops.h"
@@ -85,15 +84,15 @@ int ts_ssl_get_frame(struct ts_tui_fingers *report_data)
     unsigned char *tx_buf = NULL;
 
     (void)report_data;
-    tx_buf = (unsigned char *)SRE_MemAlloc(0, 0, SSL_FRAME_SIZE + DUMMY_BYTE + SPI_APP_HEADER_LEN * HEADER_LEN_NUM);
+    tx_buf = (unsigned char *)malloc(SSL_FRAME_SIZE + DUMMY_BYTE + SPI_APP_HEADER_LEN * HEADER_LEN_NUM);
     if (tx_buf == NULL) {
         TP_LOG_ERR("%s: get tx_bufout of memory\n", __func__);
         return -EINVAL;
     }
-    rx_buf = (unsigned char *)SRE_MemAlloc(0, 0, SSL_FRAME_SIZE + DUMMY_BYTE + SPI_APP_HEADER_LEN * HEADER_LEN_NUM);
+    rx_buf = (unsigned char *)malloc(SSL_FRAME_SIZE + DUMMY_BYTE + SPI_APP_HEADER_LEN * HEADER_LEN_NUM);
     if (rx_buf == NULL) {
         TP_LOG_ERR("%s: get rx_buf out of memory\n", __func__);
-        SRE_MemFree(0, tx_buf);
+        free(tx_buf);
         return -EINVAL;
     }
 
@@ -156,12 +155,12 @@ int ts_ssl_get_frame(struct ts_tui_fingers *report_data)
     if (g_tee_tp_buff.flag == 0)
         g_tee_tp_buff.flag = 1;
 
-    SRE_MemFree(0, tx_buf);
-    SRE_MemFree(0, rx_buf);
+    free(tx_buf);
+    free(rx_buf);
     return NO_ERR;
 
 data_err:
-    SRE_MemFree(0, tx_buf);
-    SRE_MemFree(0, rx_buf);
+    free(tx_buf);
+    free(rx_buf);
     return -EINVAL;
 }

@@ -14,7 +14,7 @@
 #include <securec.h>
 #include <tee_mem_ext.h>
 #include <mem_drv_map.h>
-#include <mem_ops_ext.h> /* __task_unmap_from_ns_page */
+#include <mem_ops_ext.h>
 
 #ifdef HANDLE_SYSCALL
 #undef HANDLE_SYSCALL
@@ -135,7 +135,7 @@ cref_t get_teesmc_hdlr(void);
                            __mapped_ptr[i].len);                                                      \
         }                                                                                             \
         if (__mapped_ptr[i].ptr)                                                                      \
-            __task_unmap_from_ns_page((uint32_t)__self_pid, (uint32_t)(uintptr_t)__mapped_ptr[i].ptr, \
+            task_unmap((uint32_t)__self_pid, (uint32_t)(uintptr_t)__mapped_ptr[i].ptr, \
                                       (uint32_t)__mapped_ptr[i].len);                                 \
         if (__mapped_ptr[i].l_ptr && __mapped_ptr[i].need_lo) {                                       \
             free(__mapped_ptr[i].l_ptr);                                                              \

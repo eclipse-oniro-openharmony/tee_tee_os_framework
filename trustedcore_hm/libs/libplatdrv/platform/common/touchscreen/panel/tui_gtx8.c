@@ -4,7 +4,6 @@
  * Author: weizhenggui
  * Create: 2018-12-22
  */
-#include <legacy_mem_ext.h> // SRE_MemAlloc
 #include <mem_ops.h>
 #include "sre_typedef.h"
 #include "sre_sys.h"
@@ -95,7 +94,7 @@ int gtx8_get_data(struct ts_tui_fingers *report_data)
     }
 
     TP_LOG_DEBUG("gtx8_get_data IN !\n");
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
         return -EINVAL;
@@ -209,7 +208,7 @@ point_up:
     ts_tui_algo_t1(info, report_data);
 
 out:
-    SRE_MemFree(0, info);
+    free(info);
     return ret;
 }
 
@@ -541,7 +540,7 @@ int brl_get_data(struct ts_tui_fingers *report_data)
     }
 
     TP_LOG_DEBUG("brl_get_data in\n");
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info\n");
         return -EINVAL;
@@ -566,6 +565,6 @@ error:
     ret_write = brl_i3c_write(BRL_TOUCH_DATA_ADDR, sync_val, BRL_SYNC_CMD_LEN);
     if (ret_write < 0)
         TP_LOG_ERR("brl write sync cmd failed\n");
-    SRE_MemFree(0, info);
+    free(info);
     return ret;
 }

@@ -14,7 +14,7 @@
 #include <securec.h>
 #include <tee_mem_ext.h>
 #include <mem_drv_map.h>
-#include <mem_ops_ext.h> /* __task_unmap_from_ns_page */
+#include <mem_ops_ext.h>
 #include <drv_pal.h>
 
 #ifdef HANDLE_SYSCALL
