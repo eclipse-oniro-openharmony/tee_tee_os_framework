@@ -65,27 +65,16 @@ else()
     )
 endif()
 
-if ("${CONFIG_CRYPTO_SOFT_ENGINE}" STREQUAL "mbedtls")
-    list(APPEND TEE_C_DEFINITIONS MBEDTLS_ENABLE)
-    list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
-    ${PREBUILD_DIR}/headers/mbedtls
-    )
-    set(SWCRYPTO_SRCS
-        ${SWCRYPTO_SRCS}
-        src/stub/rsa_wrapper_stub.c
-    )
-else()
-    list(APPEND TEE_C_DEFINITIONS OPENSSL_ENABLE)
-    list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
-        ${PREBUILD_DIR}/headers/openssl
-        ${PREBUILD_DIR}/headers/openssl/openssl
-        ${PREBUILD_DIR}/headers/openssl/crypto
-    )
-    set(SWCRYPTO_SRCS
-        ${SWCRYPTO_SRCS}
-        src/rsa_wrapper.c
-    )
-endif()
+list(APPEND TEE_C_DEFINITIONS OPENSSL_ENABLE)
+list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
+    ${PREBUILD_DIR}/headers/openssl
+    ${PREBUILD_DIR}/headers/openssl/openssl
+    ${PREBUILD_DIR}/headers/openssl/crypto
+)
+set(SWCRYPTO_SRCS
+    ${SWCRYPTO_SRCS}
+    src/rsa_wrapper.c
+)
 
 
 list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH

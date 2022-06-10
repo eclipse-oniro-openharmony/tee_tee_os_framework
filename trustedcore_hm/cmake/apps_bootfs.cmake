@@ -10,8 +10,6 @@ if ("${BENCHMARK}" STREQUAL "true")
     )
 endif()
 
-    list(APPEND BOOTFS_FILES_IN_PREBUILD "teesmcmgr.elf")
-
 if ("${CONFIG_DYNLINK_TEST}" STREQUAL "y")
     list(APPEND BOOTFS_FILES
         ${PREBUILD_LIBS}/arm/libtest_shared_a32.so

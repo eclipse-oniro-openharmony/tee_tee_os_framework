@@ -10,8 +10,4 @@
 #include <stdint.h>
 #include <sys/usrsyscall_ext.h>
 
-#ifdef SRE_AUDIT
-#include <uidgid.h>
-void kill_audit_task(uint32_t task_handle, cref_t teesmc_hdlr);
-#endif
 #endif

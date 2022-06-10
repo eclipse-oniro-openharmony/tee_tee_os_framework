@@ -40,9 +40,6 @@ bool ac_taskmap2task_valid_subj_sid(uint64_t sid)
 #if (defined TEE_SUPPORT_SSA_64BIT || defined TEE_SUPPORT_SSA_32BIT)
     case AC_SID_TEE_SERVICE_SSA:
 #endif
-#ifdef TEE_SUPPORT_AI
-    case AC_SID_TEE_SERVICE_AI:
-#endif
         return true;
     default:
         return ac_taskmap2task_valid_subj_sid_vendor(sid);
@@ -62,9 +59,6 @@ bool ac_map2task_valid_subj_sid(uint64_t sid)
 #if (defined TEE_SUPPORT_SSA_64BIT || defined TEE_SUPPORT_SSA_32BIT)
     case AC_SID_TEE_SERVICE_SSA:
 #endif
-#ifdef TEE_SUPPORT_AI
-    case AC_SID_TEE_SERVICE_AI:
-#endif
 #ifdef TEE_SUPPORT_HSM
     case AC_SID_TEE_SERVICE_HSM:
 #endif
@@ -80,12 +74,6 @@ bool ac_ta_add_valid_obj(const char *obj)
         return false;
     if (strncmp(obj, ".rtosck.tui", sizeof(".rtosck.tui")) != 0)
         return true;
-#ifdef DEF_ENG
-    if (strncmp(obj, "test1", sizeof("test1")) != 0)
-        return true;
-    if (strncmp(obj, "test2", sizeof("test2")) != 0)
-        return true;
-#endif
     return false;
 }
 

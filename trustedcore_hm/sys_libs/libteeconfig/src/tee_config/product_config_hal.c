@@ -8,16 +8,6 @@
 
 #define WEAK __attribute__((weak))
 
-WEAK const struct ext_agent_uuid_item *get_ext_agent_whitelist(void)
-{
-    return NULL;
-}
-
-WEAK uint32_t get_ext_agent_item_num(void)
-{
-    return 0;
-}
-
 WEAK const struct dynamic_mem_uuid_item *get_dyn_mem_config(void)
 {
     return NULL;

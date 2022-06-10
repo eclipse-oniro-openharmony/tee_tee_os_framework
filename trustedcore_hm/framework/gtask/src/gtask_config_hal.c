@@ -16,21 +16,11 @@
 #include "tee_inner_uuid.h"
 
 static const TEE_UUID g_uncommit_whitelist[] = {
-#ifndef SSA_SHRINK_MEMORY
     TEE_SERVICE_SSA,
-#endif
-    TEE_SERVICE_KEYMASTER,
-    TEE_SERVICE_GATEKEEPER,
-#ifdef TEE_SUPPORT_AI
-    TEE_SERVICE_AI,
-#endif
     TEE_SERVICE_PERM
 };
 
 static const TEE_UUID g_vsroot_flush_whitelist[] = {
-#ifdef TEE_SUPPORT_AI
-    TEE_SERVICE_AI
-#endif
 };
 
 bool ta_no_uncommit(const TEE_UUID *uuid)
@@ -42,11 +32,7 @@ bool ta_no_uncommit(const TEE_UUID *uuid)
                 return true;
         }
     }
-#ifdef MEMORY_NO_UC
-    return true;
-#else
     return false;
-#endif
 }
 
 bool ta_vsroot_flush(const TEE_UUID *uuid)
@@ -62,29 +48,6 @@ bool ta_vsroot_flush(const TEE_UUID *uuid)
             return true;
     }
     return false;
-}
-
-
-int is_in_spawnlist(const char *name)
-{
-    uint32_t i;
-    const char **spawn_list = get_spawn_whitelist();
-    uint32_t spawn_list_num = get_spawn_list_num();
-
-    if (name == NULL) {
-        tloge("invalid param name\n");
-        return 0;
-    }
-    if (spawn_list == NULL)
-        return 0;
-
-    for (i = 0; i < spawn_list_num; i++) {
-        if (spawn_list[i] == NULL)
-            continue;
-        if (strncmp(name, spawn_list[i], strlen(spawn_list[i]) + 1) == 0)
-            return 1;
-    }
-    return 0;
 }
 
 /* next 3 functions for builtin task */
@@ -188,69 +151,3 @@ uint32_t get_build_in_services_property(const TEE_UUID *uuid, struct ta_property
     return TEE_ERROR_GENERIC;
 }
 
-bool is_ext_agent(uint32_t agent_id)
-{
-    uint32_t agent_item_num = get_ext_agent_item_num();
-    const struct ext_agent_uuid_item *agent_item = get_ext_agent_whitelist();
-
-    if (agent_item == NULL)
-        return false;
-
-    for (uint32_t i = 0; i < agent_item_num; i++) {
-        if (agent_item[i].agent_id == agent_id)
-            return true;
-    }
-    return false;
-}
-
-bool check_ext_agent_permission(const TEE_UUID *uuid, uint32_t agent_id)
-{
-    uint32_t agent_item_num = get_ext_agent_item_num();
-    const struct ext_agent_uuid_item *agent_item = get_ext_agent_whitelist();
-
-    if (agent_item == NULL)
-        return false;
-
-    for (uint32_t i = 0; i < agent_item_num; i++) {
-        if ((TEE_MemCompare(uuid, &(agent_item[i].uuid), sizeof(*uuid)) == 0) &&
-            (agent_item[i].agent_id == agent_id))
-            return true;
-    }
-    return false;
-}
-
-const struct rsv_mem_pool_uuid_item *get_rsv_mem_item(uint64_t paddr, uint32_t size, uint32_t type)
-{
-    uint32_t item_num = get_rsv_mem_pool_config_num();
-    const struct rsv_mem_pool_uuid_item *item = get_rsv_mem_pool_config();
-
-    if (item == NULL)
-        return NULL;
-
-    for (uint32_t i = 0; i < item_num; ++i) {
-        if (item[i].paddr == paddr &&
-            item[i].size == size &&
-            item[i].type == type)
-            return &(item[i]);
-    }
-    return NULL;
-}
-
-#ifdef CONFIG_AUTH_ENHANCE
-struct call_info *get_kernel_ca_item(const char *ca_name, uint32_t name_size, const TEE_UUID *uuid)
-{
-    uint32_t item_num = get_kernel_ca_whitelist_num();
-    struct call_info *item = get_kernel_ca_whitelist();
-
-    if (item == NULL || ca_name == NULL || uuid == NULL)
-        return NULL;
-
-    for (uint32_t i = 0; i < item_num; ++i) {
-        if ((name_size >= (uint32_t)(strlen(item[i].ca_name) + 1)) &&
-            (strncmp(item[i].ca_name, ca_name, strlen(item[i].ca_name) + 1) == 0) &&
-            (memcmp(&item[i].uuid, uuid, sizeof(TEE_UUID)) == 0))
-            return &(item[i]);
-    }
-    return NULL;
-}
-#endif

@@ -7,7 +7,6 @@
 #include <ac.h>
 #include <security_ops.h>
 #include <sys/hm_priorities.h> /* for HM_PRIO_TEE_* */
-#include "tee_test_uuid.h"
 #include "sre_access_control.h"
 
 static struct drv_frame_info g_drv_frame_configs[] = {
@@ -67,18 +66,6 @@ const struct ta_permission g_teeos_ta_permission_config[] = {
 #endif
 #if (defined TEE_SUPPORT_PERM_64BIT || defined TEE_SUPPORT_PERM_32BIT)
     { TEE_SERVICE_PERM, 0, PERMSRV_GROUP_PERMISSION | OEM_KEY_GROUP_PERMISSION },
-#endif
-#ifdef DEF_ENG
-    { TEE_SERVICE_ECHO, 0, ALL_GROUP_PERMISSION },
-    { TEE_SERVICE_UT, 0, ALL_GROUP_PERMISSION },
-    { TEE_SERVICE_KERNELMEMUSAGE, 0, ALL_GROUP_PERMISSION },
-    { TEE_SERVICE_HELLOWORLD, 0, GENERAL_GROUP_PERMISSION },
-    { TEE_SERVICE_TIMER_UT, 0, ALL_GROUP_PERMISSION },
-    { TEE_SERVICE_TEST_API, 0, ALL_GROUP_PERMISSION },
-    { TEE_SERVICE_PERMCTRL_UT, 0, GENERAL_GROUP_PERMISSION },
-#endif
-#if (defined TEE_SUPPORT_TCMGR_SERVICE_32BIT || defined TEE_SUPPORT_TCMGR_SERVICE_64BIT)
-    { TEE_SERVICE_TCMGR, 0, PERMSRV_GROUP_PERMISSION | CERT_KEY_GROUP_PERMISSION },
 #endif
 };
 

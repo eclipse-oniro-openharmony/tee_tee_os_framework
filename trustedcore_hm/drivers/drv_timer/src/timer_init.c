@@ -68,22 +68,6 @@ pid_t get_g_caller_pid(void)
     return g_caller_pid;
 }
 
-#if SRE_AUDIT
-uint32_t task_caller(uint32_t *task_pid)
-{
-    if (task_pid == NULL) {
-        hm_error("task pid is null!\n");
-        return TMR_DRV_ERROR;
-    }
-    if (get_g_caller_pid() == INVALID_CALLERPID) {
-        hm_error("caller pid is invalid!\n");
-        return TMR_DRV_ERROR;
-    }
-    *task_pid = (uint32_t)get_g_caller_pid();
-    return TMR_DRV_SUCCESS;
-}
-#endif
-
 static uint32_t set_timer_permission(const TEE_UUID *uuid, uint64_t permission)
 {
     TEE_Result ret;

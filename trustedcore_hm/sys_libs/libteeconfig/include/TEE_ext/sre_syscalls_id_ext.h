@@ -339,11 +339,6 @@ enum tui_sw_syscall_id {
 /* hsm pg info get */
 #define SYSCALL_HSM_PG_GET                          0xae01
 
-/* low speed bus for test */
-#ifdef DEF_ENG
-#define SW_SYSCALL_LSBUS_DRV                        0xaf01
-#endif
-
 /* hsm mdc flash read */
 #define SYSCALL_MDC_FLASH_READ                      0xaf0b
 #define SYSCALL_MDC_FLASH_WRITE                     0xaf0c

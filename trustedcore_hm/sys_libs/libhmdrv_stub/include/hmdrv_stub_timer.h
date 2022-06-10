@@ -47,19 +47,7 @@
 #define ACCESS_READ_RIGHT_CHECK(addr, size)
 
 cref_t get_teesmc_hdlr(void);
-#include "sre_audit_drv.h"
-#ifdef SRE_AUDIT
-#define AUDIT_CHECK_FAIL() do {                \
-    UINT32 task_handle;                   \
-    if (task_caller(&task_handle) != 0) { \
-        tloge("get ta pid failed!\n");    \
-        return (-1);                      \
-    }                                     \
-    kill_audit_task(task_handle, get_teesmc_hdlr()); \
-} while (0)
-#else
 #define AUDIT_CHECK_FAIL()
-#endif
 
 #define ACCESS_WRITE_RIGHT_CHECK(addr, size)                                                        \
     {                                                                                               \

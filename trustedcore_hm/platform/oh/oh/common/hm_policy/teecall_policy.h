@@ -13,12 +13,6 @@ static const cap_teecall_t g_teecall_cap[AC_SID_NUM] = {
     /* builtin end */
     [AC_ARRAY_IDX(TEE_SERVICE_GLOBAL)]        = { 0 },
     [AC_ARRAY_IDX(TEE_SERVICE_SSA)]           = { 0 },
-#ifdef DEF_ENG
-    [AC_ARRAY_IDX(TEE_SERVICE_ECHO)]           = { TEECALL_ALL_GROUP_PERMISSION },
-    [AC_ARRAY_IDX(TEE_SERVICE_UT)]             = { TEECALL_ALL_GROUP_PERMISSION },
-    [AC_ARRAY_IDX(HM_TEEOS_TEST)]              = { TEECALL_ALL_GROUP_PERMISSION },
-    [AC_ARRAY_IDX(TEE_SERVICE_KERNELMEMUSAGE)] = { TEECALL_ALL_GROUP_PERMISSION },
-#endif
 };
 
 #include "public_teecall.h"

@@ -6,13 +6,10 @@ include(apps_feature_macro)
 
 if ("${CONFIG_DYN_TA_FORMAT}" STREQUAL "1")
     list(APPEND TEE_C_FLAGS
-        -DDYN_TA_SUPPORT_V1
-        -DDYN_TA_SUPPORT_V2
         -DDYN_TA_SUPPORT_V3
     )
 elseif ("${CONFIG_DYN_TA_FORMAT}" STREQUAL "2")
     list(APPEND TEE_C_FLAGS
-        -DDYN_TA_SUPPORT_V2
         -DDYN_TA_SUPPORT_V3
     )
 elseif ("${CONFIG_DYN_TA_FORMAT}" STREQUAL "3")
@@ -32,9 +29,6 @@ endif()
 list(APPEND TEE_C_SOURCES
     src/gtask_para_config.c
     src/tee_task_config.c
-    src/tee_img_black_table.c
-    src/tee_img_v2_allowed_table.c
-    src/task_register.c
     src/gtask_config_hal.c
     src/gtask_config.c
 )
@@ -92,12 +86,6 @@ list(APPEND TEE_C_FLAGS
 if ("${CONFIG_PLAT_HUANGLONG}" STREQUAL "y")
     list(APPEND TEE_C_SOURCES
         ${PROJECT_SOURCE_DIR}/platform/huanglong/ta_load/tee_ta_load.c
-    )
-endif()
-
-if ("${CONFIG_DYN_TA_FORMAT}" GREATER 2)
-    list(REMOVE_ITEM TEE_C_SOURCES
-        src/tee_img_v2_allowed_table.c
     )
 endif()
 

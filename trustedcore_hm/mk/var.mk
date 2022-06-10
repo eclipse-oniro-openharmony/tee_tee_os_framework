@@ -62,9 +62,7 @@ endif
 
 
 ifeq ($(WITH_ENG_VERSION), true)
-	TRUSTEDCORE_PLATFORM_FLAGS += -DDEF_ENG -DSECMEM_UT
-else ifneq ($(findstring hm-apps, $(TOPDIR)), )
-	TRUSTEDCORE_PLATFORM_FLAGS += -DDEF_ENG
+	TRUSTEDCORE_PLATFORM_FLAGS += -DSECMEM_UT
 endif
 
 ifeq ($(RELEASE_SIGN), true)

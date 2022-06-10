@@ -7,7 +7,6 @@
 #ifdef CONFIG_TEST_CA_CHECK
 #include "tee_test_calist.h"
 const char *g_teeos_testca_blacklist[] = {
-#ifndef DEF_ENG
     "tee_test",
     "teec_hello",
     "test_crypto",
@@ -22,7 +21,6 @@ const char *g_teeos_testca_blacklist[] = {
     "api_compatible_test",
     "crl_ctrl_agent",
     "tee_rollback_test"
-#endif
 };
 
 const uint32_t g_teeos_testca_blacklist_num = sizeof(g_teeos_testca_blacklist) / sizeof(g_teeos_testca_blacklist[0]);

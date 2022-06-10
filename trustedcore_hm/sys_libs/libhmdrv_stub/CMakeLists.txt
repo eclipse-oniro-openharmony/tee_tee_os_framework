@@ -11,11 +11,6 @@ list(APPEND TEE_C_FLAGS
     -fno-builtin
 )
 
-if ("${CONFIG_SRE_AUDIT}" STREQUAL "y")
-    list(APPEND TEE_C_DEFINITIONS
-        SRE_AUDIT
-    )
-endif()
 list(APPEND TEE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include/kernel
     ${PROJECT_SOURCE_DIR}/sys_libs/libhmdrv_stub/include

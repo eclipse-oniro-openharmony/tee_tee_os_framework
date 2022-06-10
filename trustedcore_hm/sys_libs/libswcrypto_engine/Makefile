@@ -57,13 +57,8 @@ else
 libswcrypto_engine_c_files := $(filter-out src/aes_wrapper.c, $(libswcrypto_engine_c_files))
 endif
 
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-c-flags += -DMBEDTLS_ENABLE
-libswcrypto_engine_c_files := $(filter-out src/rsa_wrapper.c, $(libswcrypto_engine_c_files))
-else
 c-flags += -DOPENSSL_ENABLE
 libswcrypto_engine_c_files := $(filter-out src/stub/rsa_wrapper_stub.c, $(libswcrypto_engine_c_files))
-endif
 
 EXPORT_HDRS := $(wildcard $(TOPDIR)/sys_libs/libswcrypto_engine/include/*)
 

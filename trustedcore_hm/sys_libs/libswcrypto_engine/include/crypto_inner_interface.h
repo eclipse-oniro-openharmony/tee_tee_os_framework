@@ -15,7 +15,6 @@
 #define ALGO_TLV_MAX_LEN   50
 #define HASH_LEN           32
 
-#ifndef MBEDTLS_ENABLE
 #include <openssl/rsa.h>
 
 RSA *build_boringssl_pub_key(rsa_pub_key_t *pub);
@@ -23,7 +22,6 @@ RSA *build_boringssl_pub_key(rsa_pub_key_t *pub);
 RSA *build_boringssl_priv_key(rsa_priv_key_t *priv);
 
 TEE_Result ecc_pubkey_tee_to_boring(void *publickey, EC_KEY **eckey);
-#endif
 
 TEE_Result ecc_privkey_tee_to_boring(void *priv, void **eckey);
 

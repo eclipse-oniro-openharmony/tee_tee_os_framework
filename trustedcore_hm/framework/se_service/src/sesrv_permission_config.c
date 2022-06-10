@@ -19,13 +19,7 @@ enum mspc_vote_id {
     MSPC_STRONGBOX_VOTE_ID  = 4,
     MSPC_WEAVER_VOTE_ID     = 5,
     MSPC_FILE_ENCRY_VOTE_ID = 6,
-#ifdef DEF_ENG
-    MSPC_HISI_TEST1_VOTE_ID = 7,
-    MSPC_HISI_TEST2_VOTE_ID = 8,
-    MSPC_MAX_VOTE_ID        = 9,
-#else
     MSPC_MAX_VOTE_ID        = 7,
-#endif
 };
 
 struct vote_uuid_t {
@@ -40,10 +34,6 @@ static const struct vote_uuid_t g_vote_uuid[] = {
     { TEE_SERVICE_STRONGBOX,         MSPC_STRONGBOX_VOTE_ID },
     { TEE_WEAVER_TA,            MSPC_WEAVER_VOTE_ID },
     { TEE_SERVICE_FILE_ENCRY,        MSPC_FILE_ENCRY_VOTE_ID },
-#ifdef DEF_ENG
-    { TEE_COMMON_TEST_TA1,       MSPC_ART_VOTE_ID },
-    { TEE_COMMON_TEST_TA2,       MSPC_WEAVER_VOTE_ID },
-#endif
 };
 
 TEE_Result se_service_check_msp_permission(const TEE_UUID *uuid)

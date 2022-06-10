@@ -8,9 +8,7 @@
 #define __CRYPTO_INNER_DEFINES_H_
 
 #include <tee_crypto_api.h>
-#ifndef MBEDTLS_ENABLE
 #define SIP_HASH_OUTPUT_LEN                 8
-#endif
 #define MD5_OUTPUT_LEN                      16
 #define SHA1_OUTPUT_LEN                     20
 #define SHA224_OUTPUT_LEN                   28
@@ -140,9 +138,7 @@ const static struct min_size_of_algorithm g_output_lower_limit[] = {
     { TEE_ALG_AES_CBC_MAC_NOPAD,  AES_MAC_LEN },
     { TEE_ALG_DES_CBC_MAC_NOPAD,  DES_CMAC_LEN },
     { TEE_ALG_DES3_CBC_MAC_NOPAD, DES_CMAC_LEN },
-#ifndef MBEDTLS_ENABLE
     { TEE_ALG_SIP_HASH,           SIP_HASH_OUTPUT_LEN },
-#endif
 };
 
 typedef struct {

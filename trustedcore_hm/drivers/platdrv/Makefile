@@ -14,10 +14,6 @@ include $(TOPDIR)/mk/plat.mk
 # it depends on compile order
 NO_OBJFILE_SORT = y
 
-ifeq ($(CONFIG_SRE_AUDIT),y)
-flags += -DSRE_AUDIT
-endif
-
 ifneq ($(findstring $(CONFIG_EPS_FOR_MSP)$(CONFIG_EPS_FOR_990), true),)
 flags += -DEPS_ENABLE
 endif

@@ -6,8 +6,6 @@
 #ifndef PLATFORM_PRODUCT_UUID_PUBLIC_H
 #define PLATFORM_PRODUCT_UUID_PUBLIC_H
 
-#include "tee_test_uuid.h"
-
 /* dca5ae8a-769e-4e24-896b-7d06442c1c0e */
 #define TEE_SERVICE_SECISP                                 \
     {                                                      \

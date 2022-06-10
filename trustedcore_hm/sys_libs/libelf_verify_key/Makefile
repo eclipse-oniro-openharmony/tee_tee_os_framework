@@ -18,11 +18,8 @@ flags += -DSUPPORT_SIGN_KEY_RELEASE_DEBUG_ISOLATION
 endif
 
 ifeq ($(CONFIG_DYN_TA_FORMAT),1)
-flags += -DDYN_TA_SUPPORT_V1
-flags += -DDYN_TA_SUPPORT_V2
 flags += -DDYN_TA_SUPPORT_V3
 else ifeq ($(CONFIG_DYN_TA_FORMAT),2)
-flags += -DDYN_TA_SUPPORT_V2
 flags += -DDYN_TA_SUPPORT_V3
 else ifeq ($(CONFIG_DYN_TA_FORMAT),3)
 flags += -DDYN_TA_SUPPORT_V3
@@ -111,16 +108,6 @@ ifeq ($(CONFIG_PUBKEY_SHAREMEM),true)
 libelf_verify_key_c_files := $(filter-out $(FILTEROUT_CFILES), $(libelf_sharemem_key_c_files))
 else
 libelf_verify_key_c_files := $(filter-out $(FILTEROUT_CFILES), $(libelf_verify_key_c_files))
-endif
-
-ifeq ($(CONFIG_TA_CMS_SIGNATURE),y)
-ifeq (${TARG}, )
-libelf_verify_key_c_files += $(wildcard src/common/ct/ta_cms_signature_verify.c)
-inc-flags += -I$(TOPDIR)/sys_libs/libelf_verify_key/src/common/ct
-inc-flags += -I$(TOPDIR)/sys_libs/libtee_cmscbb/include
-inc-flags += -I$(PREBUILD_HEADER)/openssl
-flags += -DSUPPORT_UPDATE_CRL
-endif
 endif
 
 include $(TOPDIR)/mk/lib-common.mk

@@ -400,15 +400,6 @@ TEE_SetCryptoFlag;
 TEE_SetObjectFlag;
 TEE_SupportCdrmEnhance;
 TEE_EPS_Ctrl;
-#ifdef PERSO_ENABLE
-TEE_Ext_CreatePersistentObject;
-TEE_Ext_OpenPersistentObject;
-TEE_Ext_DeleteAllObjects;
-tee_ext_create_persistent_object;
-tee_ext_open_persistent_object;
-tee_ext_delete_all_objects;
-
-#endif
 tee_memory_dump;
 TEE_Free;
 TEE_Malloc;

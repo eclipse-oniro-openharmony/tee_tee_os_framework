@@ -23,16 +23,8 @@ inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_confi
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src
 c-flags += -I$(TOPDIR)/framework/permission_service/src
 
-ifeq ($(CONFIG_CMS_CAHASH_AUTH),y)
-LIBS += tee_cmscbb${TARG} cmscbb${TARG}
-permission_service_c_files += $(wildcard src/auth/tee_auth_sign_cms.c)
-c-flags += -I$(TOPDIR)/framework/permission_service/src/auth/tee_auth_sign_cms.h
-inc-flags += -I$(TOPDIR)/sys_libs/libtee_cmscbb/include
-inc-flags += -I$(PREBUILD_HEADER)/openssl
-else
 permission_service_c_files += $(wildcard src/auth/tee_auth_sign_rsa.c)
 c-flags += -I$(TOPDIR)/framework/permission_service/src/auth/tee_auth_sign_rsa.h
-endif
 
 include $(TOPDIR)/mk/ta-common.mk
 include $(TOPDIR)/mk/feature-macro.mk

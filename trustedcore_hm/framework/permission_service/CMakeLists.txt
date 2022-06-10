@@ -45,25 +45,12 @@ if (${index} GREATER -1)
     endif()
 endif()
 
-if ("${CONFIG_CMS_CAHASH_AUTH}" STREQUAL "y")
-    list(APPEND PERMISSION_SERVICE_LIBRARIES
-        cmscbb tee_cmscbb
-    )
-    list(APPEND TEE_C_SOURCES
-         src/auth/tee_auth_sign_cms.c
-     )
-    list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/auth/tee_auth_sign_cms.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../sys_libs/libtee_cmscbb/include
-    )
-else()
-    list(APPEND TEE_C_SOURCES
-        src/auth/tee_auth_sign_rsa.c
-    )
-    list(APPEND TEE_INCLUDE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/auth/tee_auth_sign_rsa.h
-    )
-endif()
+list(APPEND TEE_C_SOURCES
+    src/auth/tee_auth_sign_rsa.c
+)
+list(APPEND TEE_INCLUDE_PATH
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/auth/tee_auth_sign_rsa.h
+)
 
 tee_add_executable(permission_service.elf
     SOURCES

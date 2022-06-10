@@ -4,7 +4,6 @@
  * Create: 2020-02
  */
 #include "drv_call_check.h"
-#include <sre_audit_drv.h>
 #include <mem_ops_ext.h>
 #include <securec.h>
 #include <tee_log.h>
@@ -16,17 +15,7 @@
 
 int32_t audit_check_fail(void)
 {
-#ifdef SRE_AUDIT
-    uint32_t task_handle;
-    if (task_caller(&task_handle) != 0) {
-        tloge("get ta pid failed!\n");
-        return DRV_CALL_ERROR;
-    }
-    kill_audit_task(task_handle, get_teesmc_hdlr());
     return DRV_CALL_OK;
-#else
-    return DRV_CALL_OK;
-#endif
 }
 
 int32_t check_call_permission(uint64_t current_permission, uint64_t permission)

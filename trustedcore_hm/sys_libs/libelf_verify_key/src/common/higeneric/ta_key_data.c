@@ -26,16 +26,6 @@ struct key_data g_key_data[] = {
 #ifdef KEYWEST_SIGN_PUB_KEY
     { WB_KEY, V3_TYPE_3072, (uint8_t *)&g_wb_key_v3_3072_keywest, sizeof(g_wb_key_v3_3072_keywest) },
 #endif
-#ifdef DYN_TA_SUPPORT_V1
-    { WB_KEY, V1_TYPE, (uint8_t *)&g_wb_old_rsa_crypt_data, sizeof(g_wb_old_rsa_crypt_data) },
-#endif
-#ifdef DYN_TA_SUPPORT_V2
-#ifdef CONFIG_WHITE_BOX_KEY
-    { WB_KEY, V2_TYPE, (uint8_t *)&g_wb_key_v2, sizeof(g_wb_key_v2) },
-#else
-    { ECIES_KEY, V2_TYPE, (uint8_t *)&g_ecies_key_data_v2, sizeof(g_ecies_key_data_v2) },
-#endif
-#endif
 #ifdef DYN_TA_SUPPORT_V3
 #ifdef CONFIG_WHITE_BOX_KEY
     { WB_KEY, V3_TYPE_2048, (uint8_t *)&g_wb_key_v3, sizeof(g_wb_key_v3) },

@@ -64,18 +64,6 @@ ifeq ($(CONFIG_MSP), true)
 flags += -DTEE_SUPPORT_MSP
 endif
 
-ifeq ($(CONFIG_BIO), true)
-flags += -DTEE_SUPPORT_BIO
-endif
-
-ifeq ($(CONFIG_ROT), true)
-flags += -DTEE_SUPPORT_ROT
-endif
-
-ifeq ($(CONFIG_ART), true)
-flags += -DTEE_SUPPORT_ART
-endif
-
 ifeq ($(CONFIG_GATEKEEPER_64BIT), true)
 flags += -DTEE_SUPPORT_GATEKEEPER_64BIT
 endif
@@ -86,10 +74,6 @@ endif
 
 ifeq ($(CONFIG_ANTIROOT), true)
 flags += -DTEE_SUPPORT_ANTIROOT
-endif
-
-ifeq ($(CONFIG_HSM), true)
-flags += -DTEE_SUPPORT_HSM
 endif
 
 ifeq ($(CONFIG_DX_ENABLE), true)
