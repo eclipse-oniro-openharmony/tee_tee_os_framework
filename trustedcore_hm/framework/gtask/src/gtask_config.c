@@ -8,7 +8,6 @@
 #include <ac.h>
 #include <security_ops.h>
 #include <sys/hm_priorities.h> /* for HM_PRIO_TEE_* */
-#include "tee_test_uuid.h"
 #include "sre_access_control.h"
 
 const struct task_info_st g_teeos_builtin_task_infos[] = {

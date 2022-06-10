@@ -7,7 +7,6 @@
 #include <ac.h>
 #include <security_ops.h>
 #include <sys/hm_priorities.h> /* for HM_PRIO_TEE_* */
-#include "tee_test_uuid.h"
 #include "sre_access_control.h"
 
 static struct drv_frame_info g_drv_frame_configs[] = {
