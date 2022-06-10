@@ -74,12 +74,6 @@ bool ac_ta_add_valid_obj(const char *obj)
         return false;
     if (strncmp(obj, ".rtosck.tui", sizeof(".rtosck.tui")) != 0)
         return true;
-#ifdef DEF_ENG
-    if (strncmp(obj, "test1", sizeof("test1")) != 0)
-        return true;
-    if (strncmp(obj, "test2", sizeof("test2")) != 0)
-        return true;
-#endif
     return false;
 }
 

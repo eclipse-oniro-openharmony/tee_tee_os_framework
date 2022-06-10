@@ -40,13 +40,7 @@ endif()
 if ("${WITH_ENG_VERSION}" STREQUAL "y")
     set(TRUSTEDCORE_PLATFORM_FLAGS
         ${TRUSTEDCORE_PLATFORM_FLAGS}
-        -DDEF_ENG
         -DSECMEM_UT
-    )
-else()
-    set(TRUSTEDCORE_PLATFORM_FLAGS
-        ${TRUSTEDCORE_PLATFORM_FLAGS}
-        -DDEF_ENG
     )
 endif()
 

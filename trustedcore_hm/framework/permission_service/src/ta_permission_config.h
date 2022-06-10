@@ -48,9 +48,6 @@ static const TEE_UUID g_tui_permsrv[] = {
     TEE_SERVICE_U_TA_30,
     TEE_SERVICE_U_TA_0,
 #endif
-#ifdef DEF_ENG
-    TEE_SERVICE_UT
-#endif
 };
 
 static const TEE_UUID g_sem_reserved_permsrv[] = {
@@ -94,13 +91,6 @@ static const TEE_UUID g_sem_reserved_permsrv[] = {
     TEE_SERVICE_PANPAY,
     TEE_SERVICE_U_TA_0,
     TEE_SERVICE_WEAVER,
-#endif
-#ifdef DEF_ENG
-    TEE_SERVICE_DEMO,
-    TEE_SERVICE_KERNELMEMUSAGE,
-    TEE_SERVICE_ECHO,
-    TEE_SERVICE_UT,
-    TEE_SERVICE_TEST_API
 #endif
 };
 

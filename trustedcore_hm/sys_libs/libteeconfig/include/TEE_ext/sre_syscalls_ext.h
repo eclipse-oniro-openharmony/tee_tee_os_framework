@@ -55,9 +55,6 @@ extern uint32_t __eiius_secure_memory_unmap(unsigned int virt_addr, unsigned int
 
 extern uint32_t __tee_call_hieps_drivers(uint32_t cmd, const char *input, uint32_t max_input_len, const char *parm_info,
                                          uint32_t parm_size);
-#ifdef DEF_ENG
-extern uint32_t __tee_call_bus_drivers(uint32_t cmd, const char *parm_info, uint32_t parm_size);
-#endif
 /* TUI */
 extern int __tui_sendevent(int type);
 

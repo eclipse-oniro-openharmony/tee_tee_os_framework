@@ -23,9 +23,6 @@ static const TEE_UUID g_huk_ta_access[] = {
     TEE_SERVICE_SSA,
     TEE_SERVICE_KEYMASTER,
     TEE_SERVICE_GATEKEEPER,
-#ifdef DEF_ENG
-    TEE_SERVICE_UT,
-#endif
 };
 static const uint32_t g_huk_ta_access_number = sizeof(g_huk_ta_access) / sizeof(g_huk_ta_access[0]);
 
@@ -62,9 +59,6 @@ bool is_kds_uuid(const TEE_UUID *uuid)
 
 static const TEE_UUID g_huk_ta2kds_access[] = {
     TEE_SERVICE_DPHDCP,
-#ifdef DEF_ENG
-    TEE_SERVICE_UT,
-#endif
 };
 static const uint32_t g_huk_ta2kds_access_number = sizeof(g_huk_ta2kds_access) / sizeof(g_huk_ta2kds_access[0]);
 bool is_ta_access_kds_permission(const TEE_UUID *uuid)
@@ -85,9 +79,6 @@ static TEE_UUID g_provisionkey_uuid[] = {
     TEE_SERVICE_GLOBAL,
     TEE_SERVICE_HDCP,
     TEE_SERVICE_SIGNTOOL,
-#ifdef DEF_ENG
-    TEE_SERVICE_UT,
-#endif
 };
 static const uint32_t g_provisionkey_uuid_num = sizeof(g_provisionkey_uuid) / sizeof(g_provisionkey_uuid[0]);
 

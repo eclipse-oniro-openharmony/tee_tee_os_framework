@@ -15,9 +15,6 @@
 #include <tee_defines.h> /* TEE_UUID */
 #include "ac_const.h"
 #include "ac_internal_idx.h"
-#ifdef DEF_ENG
-#include "policy_test.h"
-#endif
 #include "ac_map.h"
 #include "public_defines.h"
 #include "teecall_policy.h"
@@ -45,11 +42,7 @@ AC_DEFINE_SUBJ_END(ta_add)
 
 static const taskmap2task_ac_req_t g_taskmap2task_platdrv_objs[] = {
     { AC_SID_ALL, AC_SID_PLATDRV },
-#ifdef DEF_ENG
-    { AC_SID_PLATDRV, AC_SID_SUPER }, /* for ut_task */
-#else
     { AC_SID_ALL, AC_SID_PLATDRV }, /* place holder */
-#endif
 };
 
 static const struct ac_static_object g_taskmap2task_platdrv_acobjs = {
@@ -145,13 +138,6 @@ static const struct ac_static_object g_map2task_service_ssa_acobjs = {
 static const sid_t g_map2task_platdrv_objs[] = {
     AC_SID_GTASK,
     AC_SID_PLATDRV,
-#ifdef DEF_ENG
-    AC_SID_TEE_SERVICE_ECHO,
-    AC_SID_TEE_SERVICE_UT,
-    AC_SID_TEE_SERVICE_KERNELMEMUSAGE,
-    AC_SID_TEE_SERVICE_TEST_API,
-    AC_SID_SUPER, /* for ut_task */
-#endif
 };
 
 static const struct ac_static_object g_map2task_platdrv_acobjs = {
@@ -175,28 +161,12 @@ static const struct ac_static_object g_map2task_service_huksrv_acobjs = {
     sizeof(sid_t), ARRAY_SIZE(g_map2task_service_huksrv_objs), g_map2task_service_huksrv_objs
 };
 
-#ifdef DEF_ENG
-static const sid_t g_map2task_echo_objs[] = {
-    AC_SID_TEE_SERVICE_ECHO,
-};
-
-static const struct ac_static_object g_map2task_echo_acobjs = {
-    sizeof(sid_t), ARRAY_SIZE(g_map2task_echo_objs), g_map2task_echo_objs
-};
-#endif
-
 AC_DEFINE_SUBJ_BEG(map2task)
-#ifdef DEF_ENG
-    { AC_SID_TEE_SERVICE_ECHO, ARRAY_SIZE(g_map2task_echo_objs), &g_map2task_echo_acobjs },
-#endif
     { AC_SID_TEE_SERVICE_SSA, ARRAY_SIZE(g_map2task_service_ssa_objs), &g_map2task_service_ssa_acobjs },
     { AC_SID_TEE_SERVICE_HUK, ARRAY_SIZE(g_map2task_service_huksrv_objs), &g_map2task_service_huksrv_acobjs },
 AC_DEFINE_SUBJ_END(map2task)
 
 AC_DEFINE_SUBJ_BEG(unmap2task)
-#ifdef DEF_ENG
-    { AC_SID_TEE_SERVICE_ECHO, 0, NULL },
-#endif
     { AC_SID_TEE_SERVICE_SSA, 0, NULL },
     { AC_SID_TEE_SERVICE_HUK, 0, NULL },
     { AC_SID_TEE_SERVICE_PERM, 0, NULL },

@@ -49,7 +49,7 @@ static const rsa_pub_key_t g_ta_verify_pub_key = {
 static const struct ta_verify_key g_verify_key[] = {
     { PUB_KEY_2048_BITS, PUB_KEY_RELEASE, &g_ta_verify_pub_key }
 };
-#elif (defined CONFIG_TA_SIGN_CBG) || (defined DEF_ENG) || (defined CONFIG_TA_SIGN_HUANGLONG)
+#elif (defined CONFIG_TA_SIGN_CBG) || (defined CONFIG_TA_SIGN_HUANGLONG)
 static const rsa_pub_key_t g_ta_verify_pub_key = {
     {
         0x01, 0x00, 0x01

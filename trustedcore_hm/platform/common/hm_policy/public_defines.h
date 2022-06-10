@@ -9,11 +9,7 @@
 
 #include "ac_policy.h"
 
-#ifdef DEF_ENG
-const bool g_eng_policy = true;
-#else
 const bool g_eng_policy = false;
-#endif
 
 #define AC_STATIC_ASSERT(condition, name) typedef int g_static_assert_##name[1 - 2 * (int)((condition) == 0)]
 AC_STATIC_ASSERT(AC_UID_BUILTIN_MAX <= TA_DEFAULT_UID, AC_UID);
@@ -32,11 +28,7 @@ AC_STATIC_ASSERT(AC_SID_BUILTIN_MAX <= AC_SID_TA_DEFAULT, AC_SID);
 ;                              \
 AC_DEFINE_ARRAY_SIZE(ac_subj_##OP);
 
-#ifndef DEF_ENG
 #define T_POLICY(OP)
-#else
-#define T_POLICY(OP) { AC_SID_HAS_POLICY, 1, &g_ac_obj_##OP##_has_policy },
-#endif
 
 #define TEECALL_GENERAL_GROUP_PERMISSION TEECALL_GENERAL_GROUP
 #define TEECALL_GTASK_GROUP_PERMISSION    TEECALL_GTASK_GROUP
@@ -55,14 +47,6 @@ static const TEE_UUID g_uuid[] = {
 #undef AC_UUID_ALT
 };
 
-/* special case */
-#ifdef DEF_ENG
-/* set HM_TEEOS_TEST uid 0 */
-#define AC_UUID_IDX_HM_TEEOS_TEST  (AC_UID_IDX_SUPER - AC_TA_UID_BASE)
-#define AC_UUID_IDX_TEE_SERVICE_UT (AC_UID_IDX_SUPER - AC_TA_UID_BASE)
-/* must undef later */
-#endif
-
 static const cred_t g_cred[] = {
 #define AC_UUID_ALT(x)                                \
     {                                                 \
@@ -72,11 +56,6 @@ static const cred_t g_cred[] = {
 #include "ac_uuid.h"
 #undef AC_UUID_ALT
 };
-
-#ifdef DEF_ENG
-#undef AC_UUID_IDX_HM_TEEOS_TEST
-#undef AC_UUID_IDX_TEE_SERVICE_UT
-#endif
 
 struct ac_map_key_value g_ac_map_kv_uuid_to_cred[] = {
 #define AC_UUID_ALT(x)                                 \
