@@ -1,60 +1,65 @@
-# tee_tee_os_framework Introduction<a name="ZH-CN_TOPIC_0000001148528849"></a>
+# Contribution for tee_tee_os_framework #
 
--   [Introduction](#section11660541593)
--   [Directory Structure](#section161941989596)
--   [Repositories Involved](#section1371113476307)
+tee_os_framework mainly contains the framework codes of tee, which is responsible for the management of the whole life cycle of TA, the processing of CA and TA interactive information and the management of drivers. In addition, it also provides core services such as encryption, decryption and secure storage. The specific module introduction is as followed.
 
-## Introduction<a name="section11660541593"></a>
-
-tee_tee_os_framework secondary directory code structure：
-
-<a name="table2977131081412"></a>
-<table><thead align="left"><tr id="row7977610131417"><th class="cellrowborder" valign="top" width="50%" id="mcps1.2.3.1.1"><p id="p18792459121314"><a name="p18792459121314"></a><a name="p18792459121314"></a>Secondary Directory</p>
-</th>
-<th class="cellrowborder" valign="top" width="50%" id="mcps1.2.3.1.2"><p id="p77921459191317"><a name="p77921459191317"></a><a name="p77921459191317"></a>Description</p>
-</th>
-
-<tr id="row6978161091412"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.1 "><p id="p64006181102"><a name="p64006181102"></a><a name="p64006181102"></a>sample</p>
-</td>
-<td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.2 "><p id="p7456843192018"><a name="p7456843192018"></a><a name="p7456843192018"></a>sample code, contain two parts: teeloader and teed</p>
-</td>
+### 1. The specific module introduction of tee_os_framework ###
+<table>
+<th>Name of module</th>
+<th>Functions</th>
+<tr>
+<td> tamgr </td><td>TA lifetime control, create TA process by sysmgr, commication manager, session manager and agent manager of CA2TA, process error information for TA</td>
+</tr><tr>
+<td> smcmgr</td><td>dispatch smc command, including CA commands, system suspend and resume command, idle state management</td>
+</tr><tr>
+<td> tarunner</td><td> load,analysis and relocate the elf file of TA/drivers/services</td>
+</tr><tr>
+<td> drvmgr</td><td>management lifetime of drivers, including the create and destroy of drivers, interface permission control, driver process rights management, drivers access control, process incorrect state of drivers</td>
+</tr><tr>
+<td> permission service</td><td>permission management of SEC file</td>
+</tr><tr>
+<td> ssa</td><td>secure storage functions</td>
+</tr><tr>
+<td> huk service</td><td> hardware root key access control</td>
+</tr><tr>
+<td> miscdrv</td><td>base driver, get shared information from bootloader</td>
+</tr><tr>
+<td> cryptomgr</td><td>the framework code of encrypt/decrypt drivers </td>
+</tr><tr>
+<td> TEE base API</td><td>base interfaces of TA development, including encrypt/decrypt, secure storage, secure timer and GP interface of TA2TA</td>
+</tr><tr>
+<td> TEE driver API</td><td>interfaces for driver develepment, including interrupt, IO and DMA</td>
+</tr><tr>
+<td> sample</td><td>sample code for TEE load(teeloader) and sample code for ATF-TEE adapt code(tee_atf)</td>
+</tr><tr>
+<td> test</td><td>tee test suit </td>
 </tr>
 
-<tr id="row6978201031415"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.1 "><p id="p1978910485104"><a name="p1978910485104"></a><a name="p1978910485104"></a>test</p>
-</td>
-<td class="cellrowborder" valign="top" width="50%" headers="mcps1.2.3.1.2 "><p id="p1059035912204"><a name="p1059035912204"></a><a name="p1059035912204"></a>test-related code</p>
-</td>
-</tr>
-</tbody>
 </table>
 
-The sample directory contains teeloader and teed, which are only examples.
--  teeloader
-
-    Used to load the security image from the TEE side to the RAM (Random Access Memory).
-
--  teed
-
-    As a module adapts to the ATF (Arm Trusted Firmware), provide service for switching between Trusted Execution Environment (TEE) and Rich Execution Environment (REE).
-
-Test-related code is stored in the test directory, which is used to test the basic capabilities of the TEE trusted execution environment subsystem.
-
-## Directory Structure<a name="section161941989596"></a>
-
+### 二、tee_os_framework code directories ###
 ```
 base/tee/tee_os_framework
-│ 
-├── sample                              # sample code
-│   │  
-│   ├── teeloader                       # sample code for teeloader
-│   │  
-│   └── teed                            # sample code for teed
-│ 
-└── test                                # test-related code
+├── framework
+│   ├── gtask
+│   ├── smcmgr
+│   ├── drvmgr
+│   └── tarunner
+├── libs
+│   ├── drvlib                    # libs for drvmgr and drivers
+│   ├── syslib                    # libs for TA, services, tamgr
+│   └── teelib                    # libs for TEE internal services
+├── drivers
+│   ├── misc_drv
+│   └── crypto_mgr
+├── service
+│   ├── permission service
+│   ├── huk
+│   └── ssa
+├── ta
+├── config
+│   ├── release_config            # release config macros
+│   └── debug_config              # debug config macros
+├── build
+├── test
+└── sample
 ```
-
-## Repositories Involved<a name="section1371113476307"></a>
-
-**tee subsystem**
-
-**tee_os_framework**
