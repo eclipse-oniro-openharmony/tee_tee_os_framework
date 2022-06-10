@@ -153,7 +153,6 @@ get_heap_usage
 TEE_EXT_ROOT_UuidDeriveKey
 tee_ext_root_uuid_derive_key
 TEE_EXT_DeriveTAPlatfromKeys
-tee_ext_derive_ta_platfrom_keys
 TEE_EXT_DeriveTARootKey
 tee_ext_derive_ta_root_key
 TEE_EXT_GetDeviceUniqueId
@@ -467,7 +466,6 @@ tee_msleep
 tee_internal_derive_key
 __tee_hal_get_dieid
 tee_ext_get_dieid
-tee_internal_derive_ta_plat_root_key
 tee_crypto_derive_root_key
 derive_ecc_private_key_from_huk
 tee_crypto_hmac

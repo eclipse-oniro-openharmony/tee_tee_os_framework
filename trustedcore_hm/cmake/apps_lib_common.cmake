@@ -47,10 +47,6 @@ if ("${CONFIG_TRNG_ENABLE}" STREQUAL "true")
     list(APPEND TEE_C_FLAGS -DTRNG_ENABLE)
 endif()
 
-if ("${CONFIG_TEE_FS_OPER}" STREQUAL "y")
-    list(APPEND TEE_C_FLAGS -DTEE_FS_OPER)
-endif()
-
 if ("${CONFIG_EPS_FOR_MSP}" STREQUAL "true" OR "${CONFIG_EPS_FOR_990}" STREQUAL "true")
     list(APPEND TEE_C_FLAGS -DEPS_ENABLE)
 endif()
