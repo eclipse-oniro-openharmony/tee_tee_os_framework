@@ -5,7 +5,6 @@
  * Create: 2012-01-01
  */
 
-#include <legacy_mem_ext.h> /* SRE_MemAlloc */
 #include <dlist.h>
 #include <mem_ops.h>
 #include "sre_sys.h"
@@ -263,16 +262,16 @@ static void ts_tui_f12_abs_report(struct ts_tui_fingers *data_info)
 
     data_addr = fhandler_f12->full_addr.data_base;
     extra_data = (struct synaptics_rmi4_f12_extra_data *)fhandler_f12->extra;
-    f12_data = (unsigned char *)SRE_MemAlloc(0, 0, FINGERS_TO_PROCESS * SIZE_OF_2D_DATA);
+    f12_data = (unsigned char *)malloc(FINGERS_TO_PROCESS * SIZE_OF_2D_DATA);
     if (f12_data == NULL) {
         TP_LOG_ERR("Failed to alloc mem for f12_data!\n");
         return;
     }
 
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
-        SRE_MemFree(0, f12_data);
+        free(f12_data);
         return;
     }
 
@@ -284,8 +283,8 @@ static void ts_tui_f12_abs_report(struct ts_tui_fingers *data_info)
         ts_synaptics_i2c_read(data_addr + extra_data->data1_offset, f12_data, FINGERS_TO_PROCESS * SIZE_OF_2D_DATA);
     if (retval < 0) {
         TP_LOG_ERR("Failed to read data,retval: %d,\n", retval);
-        SRE_MemFree(0, f12_data);
-        SRE_MemFree(0, info);
+        free(f12_data);
+        free(info);
         return;
     }
 
@@ -318,8 +317,8 @@ static void ts_tui_f12_abs_report(struct ts_tui_fingers *data_info)
     ts_tui_algo_t1(info, data_info);
 
     TP_LOG_DEBUG("f12_abs_report, touch_count = %d\n", touch_count_num);
-    SRE_MemFree(0, f12_data);
-    SRE_MemFree(0, info);
+    free(f12_data);
+    free(info);
 }
 
 int synaptics_get_data(struct ts_tui_fingers *report_data)
@@ -370,7 +369,7 @@ static struct synaptics_rmi4_fn *synaptics_rmi4_alloc_fh(struct synaptics_rmi4_f
 
     if (rmi_fd == NULL)
         return NULL;
-    fhandler = (struct synaptics_rmi4_fn *)SRE_MemAlloc(0, 0, sizeof(struct synaptics_rmi4_fn));
+    fhandler = (struct synaptics_rmi4_fn *)malloc(sizeof(struct synaptics_rmi4_fn));
     if (!fhandler) {
         TP_LOG_DEBUG("Failed to alloc memory for fhandler\n");
         return NULL;
@@ -415,7 +414,7 @@ static int synaptics_rmi4_f12_init(struct synaptics_rmi4_fn *fhandler, struct sy
 
     fhandler->fn_number = fd->fn_number;
     fhandler->num_of_data_sources = fd->intr_src_count;
-    fhandler->extra = (void *)SRE_MemAlloc(0, 0, sizeof(struct synaptics_rmi4_f12_extra_data));
+    fhandler->extra = (void *)malloc(sizeof(struct synaptics_rmi4_f12_extra_data));
     if (fhandler->extra == NULL) {
         TP_LOG_ERR("Failed to alloc memory for fhandler->extra\n");
         retval = -1;
@@ -518,8 +517,8 @@ void tui_synaptics_exit(void)
 {
     if (fhandler_f12) {
         if (fhandler_f12->extra)
-            SRE_MemFree(0, fhandler_f12->extra);
-        SRE_MemFree(0, fhandler_f12);
+            free(fhandler_f12->extra);
+        free(fhandler_f12);
         fhandler_f12 = NULL;
     }
 }

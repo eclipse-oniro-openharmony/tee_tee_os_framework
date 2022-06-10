@@ -5,7 +5,6 @@
  * Create: 2017-04-02
  */
 #include "sre_sys.h"
-#include <legacy_mem_ext.h>
 #include <mem_ops.h>
 #include "i2c.h"
 #include <gpio.h>
@@ -237,7 +236,7 @@ int elan_get_data(struct ts_tui_fingers *report_data)
     if (report_data == NULL)
         return -ELAN_RET_ERROR;
 
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
         return -ELAN_RET_ERROR;
@@ -248,7 +247,7 @@ int elan_get_data(struct ts_tui_fingers *report_data)
     ret = elan_ktf_ts_recv_data(buf, info);
     if (ret != NO_ERR) {
         TP_LOG_ERR("Failed to recv data!\n");
-        SRE_MemFree(0, info);
+        free(info);
         return -ELAN_RET_ERROR;
     }
     if (buf[REPORT_ID_BYTE] == FINGER_REPORT_ID)
@@ -259,7 +258,7 @@ int elan_get_data(struct ts_tui_fingers *report_data)
     ret = ts_tui_algo_t1(info, report_data);
     if (ret != NO_ERR)
         TP_LOG_ERR("ts_tui_algo_t1 failed\n");
-    SRE_MemFree(0, info);
+    free(info);
     return ret;
 }
 

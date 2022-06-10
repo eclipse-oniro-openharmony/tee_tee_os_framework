@@ -4,7 +4,6 @@
  * Author: lijie
  * Create: 2017-04-02
  */
-#include <legacy_mem_ext.h> // SRE_MemAlloc
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "sre_log.h"
@@ -75,7 +74,7 @@ int parade_get_data(struct ts_tui_fingers *report_data)
     if (report_data == NULL)
         return -1;
 
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
         return -1;
@@ -158,6 +157,6 @@ int parade_get_data(struct ts_tui_fingers *report_data)
     info->cur_finger_number = rec_num;
     ts_tui_algo_t1(info, report_data);
 out:
-    SRE_MemFree(0, info);
+    free(info);
     return rc;
 }

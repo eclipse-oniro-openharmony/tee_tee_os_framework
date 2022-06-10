@@ -8,7 +8,6 @@
 #include <stdint.h>
 #include <sre_typedef.h>
 #include <sys/hm_types.h>
-#include <cache_flush.h>
 
 uint32_t task_caller(uint32_t *caller_id);
 pid_t get_g_caller_pid(void);

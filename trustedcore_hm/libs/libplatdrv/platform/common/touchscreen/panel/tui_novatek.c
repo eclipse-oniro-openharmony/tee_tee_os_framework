@@ -4,7 +4,6 @@
  * Author: lijie
  * Create: 2017-5-22
  */
-#include <legacy_mem_ext.h> // SRE_MemAlloc
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "i2c.h"
@@ -81,7 +80,7 @@ int novatek_get_data(struct ts_tui_fingers *report_data)
     if (report_data == NULL)
         return ERROR;
 
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
         return ERROR;
@@ -143,7 +142,7 @@ int novatek_get_data(struct ts_tui_fingers *report_data)
     info->cur_finger_number = finger_cnt;
     ts_tui_algo_t1(info, report_data);
 out:
-    SRE_MemFree(0, info);
+    free(info);
     return ret;
 }
 
@@ -174,7 +173,7 @@ int novatek_get_data_spi(struct ts_tui_fingers *report_data)
         return NOVA_ERR;
     }
 
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
         return NOVA_ERR;
@@ -236,7 +235,7 @@ int novatek_get_data_spi(struct ts_tui_fingers *report_data)
     info->cur_finger_number = finger_cnt;
     ts_tui_algo_t1(info, report_data);
 out:
-    SRE_MemFree(0, info);
+    free(info);
     return ret;
 }
 

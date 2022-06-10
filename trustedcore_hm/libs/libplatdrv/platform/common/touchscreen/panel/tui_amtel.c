@@ -4,7 +4,6 @@
  * Author: lijie
  * Create: 2017-04-02
  */
-#include <legacy_mem_ext.h>
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "i2c.h"
@@ -290,7 +289,7 @@ int atmel_device_init(void)
         tui_mxt_data.max_reportid, tui_mxt_data.t5_address, tui_mxt_data.t5_msg_size, tui_mxt_data.t44_address,
         tui_mxt_data.t100_address, tui_mxt_data.t100_reportid_min, tui_mxt_data.t100_reportid_max, tui_mxt_data.addr);
     TP_LOG_DEBUG("alloc size is %d\n", tui_mxt_data.max_reportid * tui_mxt_data.t5_msg_size);
-    mxt_msg_buf = SRE_MemAlloc(0, 0, tui_mxt_data.max_reportid * tui_mxt_data.t5_msg_size);
+    mxt_msg_buf = malloc(tui_mxt_data.max_reportid * tui_mxt_data.t5_msg_size);
     if (!mxt_msg_buf) {
         TP_LOG_ERR("Failed to allocate message buffer\n");
         return ERROR;
@@ -301,6 +300,6 @@ int atmel_device_init(void)
 void tui_atmel_exit(void)
 {
     if (mxt_msg_buf)
-        SRE_MemFree(0, mxt_msg_buf);
+        free(mxt_msg_buf);
     mxt_msg_buf = NULL;
 }

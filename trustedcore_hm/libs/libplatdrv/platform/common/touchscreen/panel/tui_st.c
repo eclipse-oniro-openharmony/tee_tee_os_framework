@@ -6,7 +6,6 @@
  */
 
 #include "libhwsecurec/securec.h"
-#include <legacy_mem_ext.h>
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "i2c.h"
@@ -199,7 +198,7 @@ static int st_tui_interrupt_install(struct fts_tui_info *info)
         TP_LOG_ERR("info is NULL\n");
         return -1;
     }
-    info->event_dispatch_table = SRE_MemAlloc(0, 0, sizeof(event_dispatch_handler_t) * EVENTID_LAST);
+    info->event_dispatch_table = malloc(sizeof(event_dispatch_handler_t) * EVENTID_LAST);
 
     if (!info->event_dispatch_table) {
         TP_LOG_ERR("event dispatch table malloc failed\n");
@@ -218,13 +217,13 @@ int st_device_init(void)
 {
     TP_LOG_DEBUG("st_device_init\n");
 
-    g_st_tui_info = SRE_MemAlloc(0, 0, sizeof(struct fts_tui_info));
+    g_st_tui_info = malloc(sizeof(struct fts_tui_info));
     if (g_st_tui_info == NULL) {
         TP_LOG_ERR("malloc failed!\n");
         return -1;
     }
     if (st_tui_interrupt_install(g_st_tui_info)) {
-        SRE_MemFree(0, g_st_tui_info);
+        free(g_st_tui_info);
         return -1;
     }
     return 0;
@@ -245,16 +244,16 @@ static void st_get_eventid(struct ts_tui_fingers *report_data)
     event_dispatch_handler_t event_handler;
     unsigned int size = FTS_EVENT_SIZE * (FTS_FIFO_MAX + 1);
 
-    data = (unsigned char *)SRE_MemAlloc(0, 0, size);
+    data = (unsigned char *)malloc(size);
     if (data == NULL) {
         TP_LOG_ERR("data malloc failed\n");
         return;
     }
 
-    temp_data = (unsigned char *)SRE_MemAlloc(0, 0, size);
+    temp_data = (unsigned char *)malloc(size);
     if (temp_data == NULL) {
         TP_LOG_ERR("temp_data malloc failed\n");
-        SRE_MemFree(0, data);
+        free(data);
         return;
     }
 
@@ -306,8 +305,8 @@ static void st_get_eventid(struct ts_tui_fingers *report_data)
         TP_LOG_ERR("i2c read error\n");
     }
 exit:
-    SRE_MemFree(0, data);
-    SRE_MemFree(0, temp_data);
+    free(data);
+    free(temp_data);
     return;
 }
 
@@ -316,12 +315,12 @@ void tui_st_exit(void)
 {
     if (g_st_tui_info) {
         if (g_st_tui_info->event_dispatch_table) {
-            SRE_MemFree(0, g_st_tui_info->event_dispatch_table);
+            free(g_st_tui_info->event_dispatch_table);
             g_st_tui_info->event_dispatch_table = NULL;
         }
     }
     if (g_st_tui_info) {
-        SRE_MemFree(0, g_st_tui_info);
+        free(g_st_tui_info);
         g_st_tui_info = NULL;
     }
     return;

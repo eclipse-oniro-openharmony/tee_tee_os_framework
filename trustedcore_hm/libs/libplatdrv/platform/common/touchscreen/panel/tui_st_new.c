@@ -4,7 +4,6 @@
  * Author: Chen puwang
  * Create: 2020-04-20
  */
-#include <legacy_mem_ext.h> /* SRE_MemAlloc */
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "i2c.h"
@@ -297,7 +296,7 @@ static int st_tui_interrupt_install(struct fts_tui_info *info)
         TP_LOG_ERR("info is NULL\n");
         return -EINVAL;
     }
-    info->event_dispatch_table = SRE_MemAlloc(0, 0, sizeof(event_dispatch_handler_t) * NUM_EVT_ID);
+    info->event_dispatch_table = malloc(sizeof(event_dispatch_handler_t) * NUM_EVT_ID);
 
     if (!info->event_dispatch_table) {
         TP_LOG_ERR("event dispatch table malloc failed\n");
@@ -316,13 +315,13 @@ static int st_tui_interrupt_install(struct fts_tui_info *info)
 
 int st_device_init_new(void)
 {
-    g_st_tui_info = SRE_MemAlloc(0, 0, sizeof(struct fts_tui_info));
+    g_st_tui_info = malloc(sizeof(struct fts_tui_info));
     if (!g_st_tui_info) {
         TP_LOG_ERR("malloc failed!\n");
         return -ENOMEM;
     }
     if (st_tui_interrupt_install(g_st_tui_info)) {
-        SRE_MemFree(0, g_st_tui_info);
+        free(g_st_tui_info);
         return -EINVAL;
     }
     g_report_touchid = FINGER_ID_INIT_STATE;
@@ -344,7 +343,7 @@ static void st_get_eventid(struct ts_tui_fingers *report_data)
     unsigned int count;
     unsigned int size = FTS_EVENT_SIZE * (FTS_FIFO_MAX + 1);
 
-    data = (unsigned char *)SRE_MemAlloc(0, 0, size);
+    data = (unsigned char *)malloc(size);
     if (!data) {
         TP_LOG_ERR("data malloc failed\n");
         return;
@@ -384,19 +383,19 @@ static void st_get_eventid(struct ts_tui_fingers *report_data)
     }
 
 exit:
-    SRE_MemFree(0, data);
+    free(data);
 }
 
 void tui_st_exit_new(void)
 {
     if (g_st_tui_info) {
         if (g_st_tui_info->event_dispatch_table) {
-            SRE_MemFree(0, g_st_tui_info->event_dispatch_table);
+            free(g_st_tui_info->event_dispatch_table);
             g_st_tui_info->event_dispatch_table = NULL;
         }
     }
     if (g_st_tui_info) {
-        SRE_MemFree(0, g_st_tui_info);
+        free(g_st_tui_info);
         g_st_tui_info = NULL;
     }
 }

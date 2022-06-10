@@ -5,7 +5,6 @@
  * Author: weizhenggui
  * Create: 2018-12-24
  */
-#include <legacy_mem_ext.h> /* SRE_MemAlloc */
 #include <mem_ops.h>
 #include "sre_sys.h"
 #include "i2c.h"
@@ -89,7 +88,7 @@ int sec_get_data(struct ts_tui_fingers *report_data)
     if (report_data == NULL)
         return ERROR;
 
-    info = (struct ts_tui_fingers *)SRE_MemAlloc(0, 0, sizeof(*info));
+    info = (struct ts_tui_fingers *)malloc(sizeof(*info));
     if (info == NULL) {
         TP_LOG_ERR("Failed to alloc mem for info!\n");
         return ERROR;
@@ -179,7 +178,7 @@ int sec_get_data(struct ts_tui_fingers *report_data)
 
     info->cur_finger_number = rec_num;
     ts_tui_algo_t1(info, report_data);
-    SRE_MemFree(0, info);
+    free(info);
     return ret;
 }
 

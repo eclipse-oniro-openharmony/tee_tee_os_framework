@@ -10,7 +10,6 @@ __tee_mutex_init
 __tee_mutex_unlock
 __tee_mutex_release
 hm_timer_init
-get_cs_es_info
 sre_get_shared_mem_info
 get_tlv_sharedmem
 
@@ -144,14 +143,6 @@ TEE_Realloc
 TEE_GetInstanceData
 TEE_SetInstanceData
 get_mem_usage
-SRE_MemAlloc
-__SRE_MemFree
-__SRE_MemAllocShared
-__SRE_MemFreeShared
-__task_map_from_ns_page
-__task_unmap_from_ns_page
-__task_map_from_task
-task_map_from_task_handle
 task_unmap
 task_map_phy_mem
 TEE_EXT_ROOT_UuidDeriveKey
