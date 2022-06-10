@@ -80,15 +80,6 @@ LIBS += elf_verify${TARG} \
     whitebox${TARG}
 endif
 
-ifeq ($(CONFIG_SSA_EMBEDDED), y)
-LIBS += ssagent${TARG}
-endif
-
-ifeq ($(CONFIG_SSA_EMBEDDED), y)
-gtask_c_files += $(wildcard ../huk_service/src/huk_service_config.c)
-inc-flags += -I$(TOPDIR)/framework/huk_service/include
-endif
-
 ifeq ($(CONFIG_TERMINAL_DRV_SUPPORT),y)
 LIBS += devchip_api${TARG}
 endif

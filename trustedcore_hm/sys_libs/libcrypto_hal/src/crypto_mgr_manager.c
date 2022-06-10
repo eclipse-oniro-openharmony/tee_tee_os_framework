@@ -143,11 +143,7 @@ static int32_t prepare_ioctl_parameters(const struct drv_memref_t *data, uint32_
             tee_free_sharemem((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size);
         }
 
-#ifdef DATA_FALLTHROUGH
-        share_mem->buffer = (uint64_t)(uintptr_t)tee_alloc_coherent_sharemem_aux(&uuid, size);
-#else
         share_mem->buffer = (uint64_t)(uintptr_t)tee_alloc_sharemem_aux(&uuid, size);
-#endif
         if (share_mem->buffer == 0) {
             tloge("alloc share memory failed\n");
             return CRYPTO_OVERFLOW;

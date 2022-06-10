@@ -188,7 +188,6 @@ static int32_t map_hal_share_mem(uint32_t taskid, uint8_t **drv_share_buf, struc
         return CRYPTO_OVERFLOW;
     }
 
-#ifndef DATA_FALLTHROUGH
     (void)taskid;
     *drv_share_buf = (uint8_t *)malloc(ioctl->buf_len);
     if (*drv_share_buf == NULL) {
@@ -203,15 +202,6 @@ static int32_t map_hal_share_mem(uint32_t taskid, uint8_t **drv_share_buf, struc
         free(*drv_share_buf);
         *drv_share_buf = NULL;
     }
-#else
-    uint64_t dst;
-    int32_t ret = tee_map_sharemem(taskid, ioctl->buf, ioctl->buf_len, &dst);
-    if (ret != 0) {
-        hm_error("get_drv_caller_taskid_1 failed. ret = %d taskid = 0x%x\n", ret, taskid);
-        return ret;
-    }
-    *drv_share_buf = (uint8_t *)(uintptr_t)dst;
-#endif
 
     return ret;
 }
@@ -238,14 +228,10 @@ static int32_t malloc_memref_array(struct memref_t **memref_addr, uint32_t memre
 
 void driver_free_share_mem_and_buf_arg(void *buf1, uint32_t buf1_size, void *buf2, uint32_t buf2_size)
 {
-#ifndef DATA_FALLTHROUGH
     if (buf1 != NULL) {
         (void)memset_s(buf1, buf1_size, 0, buf1_size);
         free(buf1);
     }
-#else
-    (void)munmap(buf1, buf1_size);
-#endif
 
     if (buf2 != NULL) {
         (void)memset_s(buf2, buf2_size, 0, buf2_size);

@@ -152,25 +152,6 @@ if (NOT "${CONFIG_NO_VENDOR_LIB_EMBEDDED}" STREQUAL "true")
     endif()
 endif()
 
-
-if ("${CONFIG_SSA_EMBEDDED}" STREQUAL "y")
-    list(APPEND TEE_C_SOURCES
-        ${PROJECT_SOURCE_DIR}/framework/huk_service/src/huk_service_config.c
-    )
-    list(APPEND TEE_INCLUDE_PATH
-        ${PROJECT_SOURCE_DIR}/framework/huk_service/include
-    )
-    if ("${ARCH}" STREQUAL "aarch64")
-        list(APPEND GTASK_LIBRARIES
-            ssagent
-        )
-    else()
-        list(APPEND GTASK_LIBRARIES
-            ssagent_a32
-        )
-    endif()
-endif()
-
 if ("${CONFIG_TERMINAL_DRV_SUPPORT}" STREQUAL "y")
     list(APPEND GTASK_LIBRARIES
         devchip_api

@@ -10,9 +10,7 @@ ifeq ($(BENCHMARK), true)
 boot-fs-files-y += $(PREBUILD_APPS)/benchmark_a32
 endif
 
-ifneq ($(CONFIG_SMCMGR_EMBEDDED), y)
 boot-fs-files-y += $(PREBUILD_APPS)/teesmcmgr.elf
-endif
 
 ifeq ($(CONFIG_DYNLINK_TEST), y)
 boot-fs-files-y += $(PREBUILD_LIBS)/arm/libtest_shared_a32.so

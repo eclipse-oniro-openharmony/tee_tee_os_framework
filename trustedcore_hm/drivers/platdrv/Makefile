@@ -26,10 +26,6 @@ ifeq ($(CONFIG_EPS_FOR_990), true)
 flags += -DEPS_FOR_990
 endif
 
-ifeq ($(CONFIG_DATA_FALLTHROUGH),y)
-flags += -DDATA_FALLTHROUGH
-endif
-
 ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
 flags += -DCRYPTO_MGR_SERVER_ENABLE
 endif

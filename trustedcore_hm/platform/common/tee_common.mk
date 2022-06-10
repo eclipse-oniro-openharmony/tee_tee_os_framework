@@ -108,7 +108,6 @@ $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf:
 	@cp $(OUTPUTDIR)/arm/apps/tcmgr_service_a32.elf $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf
 endif
 
-ifndef CONFIG_SSA_EMBEDDED
 ifdef CONFIG_SSA_64BIT
 ifeq ($(CONFIG_SSA_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/drivers/ssa.elf
@@ -119,7 +118,6 @@ check-syms-y += $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf
 $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf:
 	 @mkdir $(OUTPUTDIR)/arm/drivers/ssa_a32
 	 @cp $(OUTPUTDIR)/arm/drivers/ssa_a32.elf $(OUTPUTDIR)/arm/drivers/ssa_a32/ssa.elf
-endif
 endif
 endif
 
