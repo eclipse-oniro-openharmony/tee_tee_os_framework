@@ -9,9 +9,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-const struct ext_agent_uuid_item *get_ext_agent_whitelist(void);
-uint32_t get_ext_agent_item_num(void);
-
 const struct dynamic_mem_uuid_item *get_dyn_mem_config(void);
 uint32_t get_dyn_mem_config_num(void);
 

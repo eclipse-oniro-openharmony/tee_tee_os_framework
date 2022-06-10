@@ -17,8 +17,6 @@
 
 static const TEE_UUID g_uncommit_whitelist[] = {
     TEE_SERVICE_SSA,
-    TEE_SERVICE_KEYMASTER,
-    TEE_SERVICE_GATEKEEPER,
     TEE_SERVICE_PERM
 };
 
@@ -174,53 +172,5 @@ uint32_t get_build_in_services_property(const TEE_UUID *uuid, struct ta_property
         }
     }
     return TEE_ERROR_GENERIC;
-}
-
-bool is_ext_agent(uint32_t agent_id)
-{
-    uint32_t agent_item_num = get_ext_agent_item_num();
-    const struct ext_agent_uuid_item *agent_item = get_ext_agent_whitelist();
-
-    if (agent_item == NULL)
-        return false;
-
-    for (uint32_t i = 0; i < agent_item_num; i++) {
-        if (agent_item[i].agent_id == agent_id)
-            return true;
-    }
-    return false;
-}
-
-bool check_ext_agent_permission(const TEE_UUID *uuid, uint32_t agent_id)
-{
-    uint32_t agent_item_num = get_ext_agent_item_num();
-    const struct ext_agent_uuid_item *agent_item = get_ext_agent_whitelist();
-
-    if (agent_item == NULL)
-        return false;
-
-    for (uint32_t i = 0; i < agent_item_num; i++) {
-        if ((TEE_MemCompare(uuid, &(agent_item[i].uuid), sizeof(*uuid)) == 0) &&
-            (agent_item[i].agent_id == agent_id))
-            return true;
-    }
-    return false;
-}
-
-const struct rsv_mem_pool_uuid_item *get_rsv_mem_item(uint64_t paddr, uint32_t size, uint32_t type)
-{
-    uint32_t item_num = get_rsv_mem_pool_config_num();
-    const struct rsv_mem_pool_uuid_item *item = get_rsv_mem_pool_config();
-
-    if (item == NULL)
-        return NULL;
-
-    for (uint32_t i = 0; i < item_num; ++i) {
-        if (item[i].paddr == paddr &&
-            item[i].size == size &&
-            item[i].type == type)
-            return &(item[i]);
-    }
-    return NULL;
 }
 

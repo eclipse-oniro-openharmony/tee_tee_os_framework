@@ -50,9 +50,6 @@ ifeq ($(CONFIG_PLAT_HUANGLONG),y)
 gtask_c_files += ../../platform/huanglong/ta_load/tee_ta_load.c
 endif
 
-ifeq ($(shell test $(CONFIG_DYN_TA_FORMAT) -gt 2; echo $$?),0)
-FILTEROUT_CFILES += src/tee_img_v2_allowed_table.c
-endif
 gtask_c_files := $(filter-out $(FILTEROUT_CFILES), $(gtask_c_files))
 
 LIBS := gtask${TARG}       \

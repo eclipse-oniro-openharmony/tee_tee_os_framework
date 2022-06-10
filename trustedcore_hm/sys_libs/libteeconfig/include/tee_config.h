@@ -74,11 +74,6 @@ struct drv_frame_info {
     bool is_elf;
 };
 
-struct ext_agent_uuid_item {
-    TEE_UUID uuid;
-    uint32_t agent_id;
-};
-
 uint32_t get_die_id_size_num(void);
 const uint32_t *get_tee_die_id_size(void);
 uint32_t get_platform_die_id_size(void);
