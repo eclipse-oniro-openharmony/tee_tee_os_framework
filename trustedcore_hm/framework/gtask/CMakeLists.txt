@@ -34,7 +34,6 @@ list(APPEND TEE_C_SOURCES
     src/tee_task_config.c
     src/tee_img_black_table.c
     src/tee_img_v2_allowed_table.c
-    src/task_register.c
     src/gtask_config_hal.c
     src/gtask_config.c
 )
