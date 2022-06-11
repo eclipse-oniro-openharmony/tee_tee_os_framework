@@ -99,15 +99,6 @@ $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf:
 	@cp $(OUTPUTDIR)/arm/apps/huk_service_a32.elf $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
 endif
 
-ifeq ($(CONFIG_REMOTE_ATTESTATION_32IT), true)
-arm_frm_drivers += tcmgr_service
-product_apps += $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf
-check-syms-y += $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf
-$(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf:
-	@mkdir $(OUTPUTDIR)/arm/apps/tcmgr_service_a32
-	@cp $(OUTPUTDIR)/arm/apps/tcmgr_service_a32.elf $(OUTPUTDIR)/arm/apps/tcmgr_service_a32/tcmgr_service.elf
-endif
-
 ifdef CONFIG_SSA_64BIT
 ifeq ($(CONFIG_SSA_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/drivers/ssa.elf
