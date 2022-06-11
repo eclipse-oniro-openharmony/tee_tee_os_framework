@@ -73,7 +73,6 @@ struct file_stat_entry {
     { "/art_service.elf", 29, 1001, 00040 },
     { "/huk_service.elf", 32, 1001, 00040 },
     { "/crypto_mgr.elf", 33, 1002, 07005 },
-    { "/tcmgr_service.elf", 33, 1001, 00040 },
 };
 
 #ifndef ARRAY_SIZE
