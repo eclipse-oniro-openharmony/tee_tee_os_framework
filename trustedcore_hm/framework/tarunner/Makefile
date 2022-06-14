@@ -10,13 +10,13 @@ tarunner_c_files := $(wildcard src/*.c)
 
 
 # Libraries
-LIBS := ta_mt${TARG} \
-    c_shared${TARG}
+LIBS := c_shared${TARG}
 
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/src/
 inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(PREBUILD_DIR)/sys/hmapi
 
 # drv makefile will fully link a binary.
 include $(TOPDIR)/mk/svc-common.mk

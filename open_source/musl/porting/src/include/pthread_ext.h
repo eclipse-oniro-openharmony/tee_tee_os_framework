@@ -1,7 +1,7 @@
 #ifndef _PTHREAD_EXT_H
 #define _PTHREAD_EXT_H
 
-#include "../../include/pthread.h"
+#include "pthread.h"
 #include "posix_types.h"
 
 // NOTE: __pthread_self is used by musl libc itself.

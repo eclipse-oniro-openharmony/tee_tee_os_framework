@@ -17,16 +17,16 @@
 #include <procmgr_ext.h>
 #include <ipclib.h>
 #include <cs.h>
-#include <ta_mt.h>
 #include <teecall_cap.h>
 #include <ta_framework.h>
 #include <tee_task.h>
 #include <tee_drv_internal.h>
-#include <load_init.h>
 #include <spawn_init.h>
 #include <target_type.h>
 #include <tee_drv_entry.h>
 #include "get_spawn_env.h"
+#include "load_init.h"
+#include "ta_mt.h"
 
 #define RTLD_TA 0x100000
 #define IPC_CHANNEL_NUM 2
