@@ -11,7 +11,7 @@
 #include <uidgid.h>
 #include <hmlog.h>
 #include <target_type.h>
-#include <load_init.h>
+#include "load_init.h"
 
 static uint32_t get_u32_env(const char *env_name)
 {
