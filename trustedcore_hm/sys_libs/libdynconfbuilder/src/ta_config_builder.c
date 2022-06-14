@@ -44,6 +44,15 @@ static void hex2str(uint8_t *dest, uint32_t dest_len, const uint8_t *source, uin
     *p = '\0';
 }
 
+/* TODO: need replace this function by new ways */
+static TEE_Result tee_ext_get_device_unique_id(uint8_t *device_unique_id, uint32_t *length)
+{
+    (void)device_unique_id;
+    (void)length;
+    hm_error("device id not support\n");
+    return TEE_ERROR_GENERIC;
+}
+
 TEE_Result check_device_id(struct config_info *config, const uint8_t *buff, uint32_t len)
 {
     bool is_invalid = (config == NULL || buff == NULL || len == 0);

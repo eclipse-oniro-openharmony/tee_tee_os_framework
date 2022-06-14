@@ -120,7 +120,6 @@ TEE_Panic
 TEE_OpenTASession
 TEE_CloseTASession
 TEE_InvokeTACommand
-TEE_GetSessionType
 tee_get_session_type
 
 TEE_GetPropertyAsString
@@ -150,13 +149,7 @@ tee_drv_open
 tee_drv_ioctl
 tee_drv_close
 get_heap_usage
-TEE_EXT_ROOT_UuidDeriveKey
 tee_ext_root_uuid_derive_key
-TEE_EXT_DeriveTAPlatfromKeys
-TEE_EXT_DeriveTARootKey
-tee_ext_derive_ta_root_key
-TEE_EXT_GetDeviceUniqueId
-tee_ext_get_device_unique_id
 tee_hal_get_provision_key
 g_debug_prefix
 
@@ -420,8 +413,6 @@ hm_drv_call
 hm_drv_call_new
 __get_platform_chip
 get_die_id_size
-TEE_EXT_GetDeviceUniqueId
-tee_ext_get_device_unique_id
 tee_print
 tee_map_sharemem
 get_global_handle

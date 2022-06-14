@@ -50,20 +50,9 @@ ifeq (${CONFIG_DYN_IMPORT_CERT},y)
 flags += -DDYN_IMPORT_CERT=1
 endif
 
-
-ifeq ($(CONFIG_LIBTEE_SHARED_LITE), y)
-EXTERN_FILE := lite_extern.txt
-EXPORT_FILE := lite_export.txt
-ALIAS_FILE  := lite_alias.txt
-else ifeq ($(CONFIG_OH_SHARED_LIB), y)
 EXTERN_FILE := oh_extern.txt
 EXPORT_FILE := oh_export.txt
 ALIAS_FILE  := oh_alias.txt
-else
-EXTERN_FILE := extern.txt
-EXPORT_FILE := export.txt
-ALIAS_FILE  := alias.txt
-endif
 
 ${BUILD_DIR}/$(EXTERN_FILE): $(EXTERN_FILE) ${BUILD_DIR}/$(EXPORT_FILE) ${BUILD_DIR}/$(ALIAS_FILE)
 	@echo "preprocess ${BUILD_DIR}/$(EXTERN_FILE)"
