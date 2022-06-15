@@ -257,12 +257,8 @@ static void gic_trigger_set(uint32_t irq, uint32_t flags)
 static int gic_set_irq_target(uint32_t irq, uint64_t target_cpu_id)
 {
     if (irq >= IRQ_SPI_START && irq < IRQ_SPECIAL_START) {
-#ifdef CONFIG_IRQ_MIGRATE_ENABLE
-        uint64_t mpidr = cpu_affinity[target_cpu_id];
-#else
         uint64_t mpidr = get_mpidr_el1();
         (void)target_cpu_id;
-#endif
         uint32_t irq_base = IRQ_BASE(irq, 1);
         uint32_t irq_bit = IRQ_BIT(irq, 1);
         uint32_t is_enable = read32_dist_reg(GICD_ISENABLERn + irq_base) & (1 << irq_bit);
