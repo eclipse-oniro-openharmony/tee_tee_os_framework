@@ -88,14 +88,8 @@ const struct ac_plc_obj_fn_set *ac_get_obj_fn_subo(uint64_t sub_type)
     switch (sub_type) {
     case ACOP_ta_add:
         return &g_ta_add_fn_set;
-    case ACOP_taskmap2task:
-        return &g_taskmap2task_fn_set;
-    case ACOP_map2task:
-        return &g_map2task_fn_set;
     case ACOP_unmap2task:
         return &g_unmap2task_fn_set;
-    case ACOP_mmap_physical:
-        return &g_mmap_physical_fn_set;
     case ACOP_proc_status:
         return &g_proc_status_fn_set;
     case ACOP_get_uuid:
@@ -108,8 +102,6 @@ const struct ac_plc_obj_fn_set *ac_get_obj_fn_subo(uint64_t sub_type)
         return &g_sysctrl_local_irq_fn_set;
     case ACOP_teesmc_acquire:
         return &g_teesmc_acquire_fn_set;
-    case ACOP_push_rnd:
-        return &g_push_rnd_fn_set;
     case ACOP_virt2phys:
         return &g_virt2phys_fn_set;
     case ACOP_map_secure:

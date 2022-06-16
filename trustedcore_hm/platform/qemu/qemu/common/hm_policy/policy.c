@@ -57,20 +57,8 @@ static const struct ac_static_object g_taskmap2task_platdrv_acobjs = {
     sizeof(taskmap2task_ac_req_t), ARRAY_SIZE(g_taskmap2task_platdrv_objs), g_taskmap2task_platdrv_objs
 };
 
-AC_DEFINE_SUBJ_BEG(taskmap2task)
-AC_DEFINE_SUBJ_END(taskmap2task)
-
-AC_DEFINE_SUBJ_BEG(taskmap2drv)
-AC_DEFINE_SUBJ_END(taskmap2drv)
-
-AC_DEFINE_SUBJ_BEG(spawn_uuid)
-AC_DEFINE_SUBJ_END(spawn_uuid)
-
 AC_DEFINE_SUBJ_BEG(spawn)
 AC_DEFINE_SUBJ_END(spawn)
-
-AC_DEFINE_SUBJ_BEG(pmeminfo)
-AC_DEFINE_SUBJ_END(pmeminfo)
 
 AC_DEFINE_SUBJ_BEG(meminfo)
 AC_DEFINE_SUBJ_END(meminfo)
@@ -98,42 +86,17 @@ AC_DEFINE_SUBJ_END(fops)
 AC_DEFINE_SUBJ_BEG(xip_map)
 AC_DEFINE_SUBJ_END(xip_map)
 
-AC_DEFINE_SUBJ_BEG(add_free_mem)
-AC_DEFINE_SUBJ_END(add_free_mem)
-
-AC_DEFINE_SUBJ_BEG(adddynmemlist)
-AC_DEFINE_SUBJ_END(adddynmemlist)
-
-AC_DEFINE_SUBJ_BEG(del_dyn_mem_list)
-AC_DEFINE_SUBJ_END(del_dyn_mem_list)
-
-AC_DEFINE_SUBJ_BEG(setprocsize)
-AC_DEFINE_SUBJ_END(setprocsize)
-
-AC_DEFINE_SUBJ_BEG(mmap_scatter)
-AC_DEFINE_SUBJ_END(mmap_scatter)
-
 AC_DEFINE_SUBJ_BEG(io_map)
 AC_DEFINE_SUBJ_END(io_map)
 
 AC_DEFINE_SUBJ_BEG(irq_acquire)
 AC_DEFINE_SUBJ_END(irq_acquire)
 
-AC_DEFINE_SUBJ_BEG(sysctrl_tick)
-AC_DEFINE_SUBJ_END(sysctrl_tick)
-
 AC_DEFINE_SUBJ_BEG(sysctrl_local_irq)
 AC_DEFINE_SUBJ_END(sysctrl_local_irq)
 
 AC_DEFINE_SUBJ_BEG(teesmc_acquire)
 AC_DEFINE_SUBJ_END(teesmc_acquire)
-
-AC_DEFINE_SUBJ_BEG(pid2cref)
-AC_DEFINE_SUBJ_END(pid2cref)
-
-AC_DEFINE_SUBJ_BEG(dumpvregion)
-{ AC_SID_GTASK, 0, NULL },
-AC_DEFINE_SUBJ_END(dumpvregion)
 
 static const sid_t g_map2task_service_ssa_objs[] = {
     AC_SID_TEE_SERVICE_SSA,
@@ -217,16 +180,6 @@ AC_DEFINE_SUBJ_END(map_nonsecure)
 #define UINT64MAX ((uint64_t)-1)
 #endif
 
-static const mmap_physical_t g_mmap_physical_cap[] = {
-    { 0, UINT64MAX },
-};
-static const struct ac_static_object g_mmap_physical_obj_all = {
-    sizeof(mmap_physical_t), ARRAY_SIZE(g_mmap_physical_cap), g_mmap_physical_cap
-};
-
-AC_DEFINE_SUBJ_BEG(mmap_physical)
-AC_DEFINE_SUBJ_END(mmap_physical)
-
 AC_DEFINE_SUBJ_BEG(channel_register)
 AC_DEFINE_SUBJ_END(channel_register)
 
@@ -234,8 +187,3 @@ AC_DEFINE_SUBJ_BEG(channel_acquire)
 AC_DEFINE_SUBJ_END(channel_acquire)
 
 #include "public_subject.h"
-
-const TEE_UUID g_svm_bind_talist[] = {
-
-};
-const uint32_t g_svm_bind_talist_num = sizeof(g_svm_bind_talist) / sizeof(TEE_UUID);
