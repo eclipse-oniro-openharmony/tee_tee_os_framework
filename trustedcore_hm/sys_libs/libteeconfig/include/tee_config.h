@@ -74,10 +74,6 @@ struct drv_frame_info {
     bool is_elf;
 };
 
-uint32_t get_die_id_size_num(void);
-const uint32_t *get_tee_die_id_size(void);
-uint32_t get_platform_die_id_size(void);
-
 uint32_t get_product_service_property_num(void);
 const struct ta_property *get_product_service_property_config(void);
 

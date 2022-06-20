@@ -25,8 +25,6 @@ struct mem_unmap_para {
     unsigned int buff_id;
 };
 
-int32_t __set_dynmem_config(void *memconfig, uint32_t type);
-
 struct tui_config_k;
 
 extern unsigned int __driver_cambricon_command(void *p_cambricon_command);
