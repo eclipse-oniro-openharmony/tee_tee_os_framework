@@ -5,10 +5,6 @@ ifeq ($(CONFIG_CRYPTO_SUPPORT_EC25519),true)
 c-flags += -DCRYPTO_SSL_SUPPORT_EC25519
 endif
 
-ifeq ($(CONFIG_CRYPTO_SUPPORT_MD5),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_MD5
-endif
-
 c-flags += -DOPENSSL_ENABLE
 
 ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)

@@ -52,19 +52,11 @@
 #define ECDSA_KEY_384                       384
 #define ECDSA_KEY_521                       521
 #define MALLOC_MAX_KEY_SIZE                 1024
-#ifdef CRYPTO_SSL_SUPPORT_UNSAFE_DH
-#define DH_MIN_KEY_SIZE                     28
-#else
 #define DH_MIN_KEY_SIZE                     32
-#endif
 #define DH_MAX_KEY_SIZE                     256
 #define MAX_IV_LEN                          32
 #define RSA_MIN_KEY_SIZE                    256
-#ifdef CRYPTO_SSL_SUPPORT_UNSAFE_ECDH
 #define ECDH_MIN_KEY_SIZE                   28
-#else
-#define ECDH_MIN_KEY_SIZE                   28
-#endif
 #define ECDSA_MIN_KEY_SIZE                  28
 #define PBKDF2_MIN_KEY_SIZE                 14
 #define PBKDF2_MAX_KEY_SIZE                 1024
