@@ -1,56 +1,8 @@
 MODULE := libcrypto_hal${TARG}.a
 include $(TOPDIR)/mk/feature-macro.mk
 
-ifeq ($(CONFIG_ASCEND_SEC_ENABLE), true)
-flags += -DASCEND_SEC_ENABLE
-endif
-
-ifeq ($(CONFIG_TRNG_ENABLE), true)
-flags += -DTRNG_ENABLE
-endif
-
-ifeq ($(CONFIG_DRV_SEC_ENABLE), true)
-flags += -DSEC_ENABLE
-endif
-
-ifeq ($(CONFIG_IPC_SEC_ENABLE), true)
-flags += -DSEC_ENABLE
-endif
-
-ifeq ($(CONFIG_KUNPENG_SEC_ENABLE), true)
-flags += -DSEC_ENABLE
-endif
-
-ifeq ($(CONFIG_CRYPTO_SUPPORT_DES),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_DES
-endif
 ifeq ($(CONFIG_CRYPTO_SUPPORT_EC25519),true)
 c-flags += -DCRYPTO_SSL_SUPPORT_EC25519
-endif
-
-ifeq ($(CONFIG_CRYPTO_SUPPORT_MD5),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_MD5
-endif
-ifeq ($(CONFIG_CRYPTO_SUPPORT_SHA1),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_SHA1
-endif
-ifeq ($(CONFIG_CRYPTO_SUPPORT_SHA224),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_SHA224
-endif
-ifeq ($(CONFIG_CRYPTO_SUPPORT_3DES),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_3DES
-endif
-ifeq ($(CONFIG_CRYPTO_SUPPORT_UNSAFE_RSA),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_UNSAFE_RSA
-endif
-ifeq ($(CONFIG_CRYPTO_SUPPORT_UNSAFE_ECDSA),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_UNSAFE_ECDSA
-endif
-ifeq ($(CONFIG_CRYPTO_SUPPORT_UNSAFE_ECDH),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_UNSAFE_ECDH
-endif
-ifeq ($(CONFIG_CRYPTO_SUPPORT_UNSAFE_DH),true)
-c-flags += -DCRYPTO_SSL_SUPPORT_UNSAFE_DH
 endif
 
 c-flags += -DOPENSSL_ENABLE
@@ -60,7 +12,6 @@ c-flags += -DCRYPTO_MGR_SERVER_ENABLE
 endif
 
 ifeq ($(CONFIG_CIPHER_ENABLE), true)
-flags += -DDX_ENABLE=1
 inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/austin/host/src/cclib
 inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/ccdriver_lib/include
 inc-flags += -I$(TOPDIR)/thirdparty/vendor/libdxcc/atlanta/shared/include/crypto_api

@@ -38,7 +38,6 @@ libswcrypto_engine_c_files := $(filter-out src/x509_wrapper.c, $(libswcrypto_eng
 endif
 
 ifeq ($(CONFIG_CRYPTO_ECC_WRAPPER),true)
-c-flags += -DCRYPTO_SUPPORT_ECC_WRAPPER
 libswcrypto_engine_c_files := $(filter-out src/stub/ec_wrapper_stub.c, $(libswcrypto_engine_c_files))
 ifeq ($(CONFIG_CRYPTO_SUPPORT_X509),true)
 libswcrypto_engine_c_files := $(filter-out src/stub/ec_wrapper_x509_stub.c, $(libswcrypto_engine_c_files))
@@ -51,7 +50,6 @@ libswcrypto_engine_c_files := $(filter-out src/ec_wrapper_x509.c, $(libswcrypto_
 endif
 
 ifeq ($(CONFIG_CRYPTO_AES_WRAPPER),true)
-c-flags += -DCRYPTO_SUPPORT_AES_WRAPPER
 libswcrypto_engine_c_files := $(filter-out src/stub/aes_wrapper_stub.c, $(libswcrypto_engine_c_files))
 else
 libswcrypto_engine_c_files := $(filter-out src/aes_wrapper.c, $(libswcrypto_engine_c_files))

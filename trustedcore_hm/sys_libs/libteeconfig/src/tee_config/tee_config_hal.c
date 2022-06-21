@@ -7,7 +7,6 @@
 #include <string.h>
 #include <tee_log.h>
 #include <tee_mem_mgmt_api.h>
-#include "platform_get.h"
 #include "product_config_hal.h"
 
 int32_t get_tbac_info_by_name(const char *name, uint64_t *sid, uint64_t *job_type)
@@ -34,32 +33,6 @@ int32_t get_tbac_info_by_name(const char *name, uint64_t *sid, uint64_t *job_typ
         }
     }
     return -1;
-}
-
-uint32_t get_platform_die_id_size(void)
-{
-    uint32_t platform = 0;
-    uint32_t chip     = 0;
-    uint32_t die_size_num = get_die_id_size_num();
-    const uint32_t *die_id_size = NULL;
-
-    if (__get_platform_chip(&platform, &chip) != 0) {
-        tloge("get platform failed\n");
-        return INVALID_DIE_ID_SIZE;
-    }
-
-    die_id_size = get_tee_die_id_size();
-    if (die_id_size == NULL)
-        return INVALID_DIE_ID_SIZE;
-
-#ifdef WITH_CHIP_DENVER
-    if (chip == WITH_CHIP_DENVER)
-        return DV_DIE_ID_SIZE;
-#endif
-
-    if (platform < die_size_num)
-        return die_id_size[platform];
-    return INVALID_DIE_ID_SIZE;
 }
 
 /* next 3 functions for permission config */

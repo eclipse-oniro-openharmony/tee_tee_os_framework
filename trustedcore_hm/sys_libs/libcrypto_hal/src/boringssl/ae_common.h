@@ -44,13 +44,5 @@ static struct aes_init_oper g_aes_des_init_oeration[] = {
     { CRYPTO_TYPE_AES_CBC_PKCS5, AES_TEN_ROUNDS_KEY_SIZE, EVP_aes_128_cbc },
     { CRYPTO_TYPE_AES_CBC_PKCS5, AES_TWELVE_ROUNDS_KEY_SIZE, EVP_aes_192_cbc },
     { CRYPTO_TYPE_AES_CBC_PKCS5, AES_FOURTEEN_ROUNDS_KEY_SIZE, EVP_aes_256_cbc },
-#ifdef CRYPTO_SSL_SUPPORT_DES
-    { CRYPTO_TYPE_DES_ECB_NOPAD, DES_KEY_SIZE, EVP_des_ecb },
-    { CRYPTO_TYPE_DES_CBC_NOPAD, DES_KEY_SIZE, EVP_des_cbc },
-#endif
-#ifdef CRYPTO_SSL_SUPPORT_3DES
-    { CRYPTO_TYPE_DES3_ECB_NOPAD, DES3_KEY_SIZE, EVP_des_ede3 },
-    { CRYPTO_TYPE_DES3_CBC_NOPAD, DES3_KEY_SIZE, EVP_des_ede3_cbc },
-#endif
 };
 #endif

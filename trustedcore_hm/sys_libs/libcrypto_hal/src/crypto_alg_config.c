@@ -37,24 +37,6 @@ static TEE_Result check_keysize_for_aes(uint32_t max_key_size)
 
     return TEE_SUCCESS;
 }
-#ifdef CRYPTO_SSL_SUPPORT_DES
-static TEE_Result check_keysize_for_des(uint32_t max_key_size)
-{
-    if (max_key_size != DES_KEY_64 * BIT_TO_BYTE)
-        return TEE_ERROR_NOT_SUPPORTED;
-
-    return TEE_SUCCESS;
-}
-#endif
-#ifdef CRYPTO_SSL_SUPPORT_3DES
-static TEE_Result check_keysize_for_des3(uint32_t max_key_size)
-{
-    if (max_key_size != DES_KEY_128 * BIT_TO_BYTE && max_key_size != DES_KEY_192 * BIT_TO_BYTE)
-        return TEE_ERROR_NOT_SUPPORTED;
-
-    return TEE_SUCCESS;
-}
-#endif
 
 static TEE_Result check_keysize_for_rsa(uint32_t max_key_size)
 {
@@ -212,38 +194,6 @@ static const struct alg_config_t g_alg_config[] = {
         TEE_ALG_AES_CBC_PKCS5, TEE_MODE_ENCRYPT, TEE_OPERATION_CIPHER,
         check_keysize_for_aes, TEE_TYPE_AES, TEE_OPTIONAL_ELEMENT_NONE
     },
-#ifdef CRYPTO_SSL_SUPPORT_DES
-    {
-        TEE_ALG_DES_ECB_NOPAD, TEE_MODE_ENCRYPT, TEE_OPERATION_CIPHER,
-        check_keysize_for_des, TEE_TYPE_DES, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_DES_CBC_NOPAD, TEE_MODE_ENCRYPT, TEE_OPERATION_CIPHER,
-        check_keysize_for_des, TEE_TYPE_DES, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_DES_CBC_MAC_NOPAD, TEE_MODE_MAC, TEE_OPERATION_MAC,
-        check_keysize_for_des, TEE_TYPE_DES, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_DES_CBC_MAC_PKCS5, TEE_MODE_MAC, TEE_OPERATION_MAC,
-        check_keysize_for_des, TEE_TYPE_DES, TEE_OPTIONAL_ELEMENT_NONE
-    },
-#endif
-#ifdef CRYPTO_SSL_SUPPORT_3DES
-    {
-        TEE_ALG_DES3_ECB_NOPAD, TEE_MODE_ENCRYPT, TEE_OPERATION_CIPHER,
-        check_keysize_for_des3, TEE_TYPE_DES3, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_DES3_CBC_NOPAD, TEE_MODE_ENCRYPT, TEE_OPERATION_CIPHER,
-        check_keysize_for_des3, TEE_TYPE_DES3, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_DES3_CBC_MAC_NOPAD, TEE_MODE_MAC, TEE_OPERATION_MAC,
-        check_keysize_for_des3, TEE_TYPE_DES3, TEE_OPTIONAL_ELEMENT_NONE
-    },
-#endif
     {
         TEE_ALG_RSASSA_PKCS1_V1_5_SHA256, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
         check_keysize_for_rsa, TEE_TYPE_RSA_PUBLIC_KEY, TEE_OPTIONAL_ELEMENT_NONE
@@ -396,64 +346,6 @@ static const struct alg_config_t g_alg_config[] = {
         TEE_ALG_SM3, TEE_MODE_DIGEST, TEE_OPERATION_DIGEST,
         check_keysize_for_others, TEE_TYPE_INVALID, TEE_OPTIONAL_ELEMENT_NONE
     },
-#ifdef CRYPTO_SSL_SUPPORT_MD5
-    {
-        TEE_ALG_MD5, TEE_MODE_DIGEST, TEE_OPERATION_DIGEST,
-        check_keysize_for_others, TEE_TYPE_INVALID, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_HMAC_MD5, TEE_MODE_MAC, TEE_OPERATION_MAC,
-        check_keysize_for_hmac, TEE_TYPE_HMAC_MD5, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_RSASSA_PKCS1_V1_5_MD5, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
-        check_keysize_for_rsa, TEE_TYPE_RSA_PUBLIC_KEY, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_RSASSA_PKCS1_PSS_MGF1_MD5, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
-        check_keysize_for_rsa, TEE_TYPE_RSA_PUBLIC_KEY, TEE_OPTIONAL_ELEMENT_NONE
-    },
-#endif
-#ifdef CRYPTO_SSL_SUPPORT_SHA1
-    {
-        TEE_ALG_SHA1, TEE_MODE_DIGEST, TEE_OPERATION_DIGEST,
-        check_keysize_for_others, TEE_TYPE_INVALID, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_RSASSA_PKCS1_V1_5_SHA1, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
-        check_keysize_for_rsa, TEE_TYPE_RSA_PUBLIC_KEY, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_ECDSA_SHA1, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
-        check_keysize_for_ecdsa_sha_x, TEE_TYPE_ECDSA_PUBLIC_KEY, TEE_ECC_CURVE_NIST_P192
-    },
-#endif
-#ifdef CRYPTO_SSL_SUPPORT_SHA224
-    {
-        TEE_ALG_SHA224, TEE_MODE_DIGEST, TEE_OPERATION_DIGEST,
-        check_keysize_for_others, TEE_TYPE_INVALID, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_HMAC_SHA224, TEE_MODE_MAC, TEE_OPERATION_MAC,
-        check_keysize_for_hmac, TEE_TYPE_HMAC_SHA224, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_RSASSA_PKCS1_PSS_MGF1_SHA224, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
-        check_keysize_for_rsa, TEE_TYPE_RSA_PUBLIC_KEY, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_RSASSA_PKCS1_V1_5_SHA224, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
-        check_keysize_for_rsa, TEE_TYPE_RSA_PUBLIC_KEY, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_RSAES_PKCS1_OAEP_MGF1_SHA224, TEE_MODE_ENCRYPT, TEE_OPERATION_ASYMMETRIC_CIPHER,
-        check_keysize_for_rsa, TEE_TYPE_RSA_PUBLIC_KEY, TEE_OPTIONAL_ELEMENT_NONE
-    },
-    {
-        TEE_ALG_ECDSA_SHA224, TEE_MODE_SIGN, TEE_OPERATION_ASYMMETRIC_SIGNATURE,
-        check_keysize_for_ecdsa_sha_x, TEE_TYPE_ECDSA_PUBLIC_KEY, TEE_ECC_CURVE_NIST_P224
-    },
-#endif
     {
         TEE_ALG_SHA256, TEE_MODE_DIGEST, TEE_OPERATION_DIGEST,
         check_keysize_for_others, TEE_TYPE_INVALID, TEE_OPTIONAL_ELEMENT_NONE
@@ -569,15 +461,6 @@ bool crypto_check_alg_supported(uint32_t alg, uint32_t element)
 
 static const uint32_t g_supported_object_type[] = {
     TEE_TYPE_AES,
-#ifdef CRYPTO_SSL_SUPPORT_DES
-    TEE_TYPE_DES,
-#endif
-#ifdef CRYPTO_SSL_SUPPORT_3DES
-    TEE_TYPE_DES3,
-#endif
-#ifdef CRYPTO_SSL_SUPPORT_MD5
-    TEE_TYPE_HMAC_MD5,
-#endif
     TEE_TYPE_SM4,
     TEE_TYPE_HMAC_SM3,
     TEE_TYPE_HMAC_SHA1,
@@ -631,7 +514,6 @@ struct safe_alg_and_key_size_t {
 };
 
 static const struct safe_alg_and_key_size_t g_unsafe_alg_with_key[] = {
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_RSA
     { TEE_ALG_RSASSA_PKCS1_V1_5_MD5, RSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_RSASSA_PKCS1_V1_5_SHA1, RSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_RSASSA_PKCS1_V1_5_SHA224, RSA_SAFE_KEY_SIZE_MIN},
@@ -651,43 +533,28 @@ static const struct safe_alg_and_key_size_t g_unsafe_alg_with_key[] = {
     { TEE_ALG_RSAES_PKCS1_OAEP_MGF1_SHA384, RSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_RSAES_PKCS1_OAEP_MGF1_SHA512, RSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_RSA_NOPAD, RSA_SAFE_KEY_SIZE_MIN},
-#endif
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_DH
     { TEE_ALG_DH_DERIVE_SHARED_SECRET, DH_SAFE_KEY_SIZE_MIN },
-#endif
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_ECDSA
     { TEE_ALG_ECDSA_SHA1, ECDSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDSA_SHA224, ECDSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDSA_SHA256, ECDSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDSA_SHA384, ECDSA_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDSA_SHA512, ECDSA_SAFE_KEY_SIZE_MIN},
-#endif
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_ECDH
     { TEE_ALG_ECDH_DERIVE_SHARED_SECRET, ECDH_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDH_P224, ECDH_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDH_P256, ECDH_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDH_P384, ECDH_SAFE_KEY_SIZE_MIN},
     { TEE_ALG_ECDH_P521, ECDH_SAFE_KEY_SIZE_MIN},
-#endif
     { ARRAY_END, ARRAY_END },
 };
 
 static const struct safe_alg_and_key_size_t g_unsafe_type_with_key[] = {
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_RSA
     { TEE_TYPE_RSA_PUBLIC_KEY, RSA_SAFE_KEY_SIZE_MIN},
     { TEE_TYPE_RSA_KEYPAIR, RSA_SAFE_KEY_SIZE_MIN},
-#endif
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_DH
     { TEE_TYPE_DH_KEYPAIR, DH_SAFE_KEY_SIZE_MIN },
-#endif
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_ECDSA
     { TEE_TYPE_ECDSA_PUBLIC_KEY, ECDSA_SAFE_KEY_SIZE_MIN},
     { TEE_TYPE_ECDSA_KEYPAIR, ECDSA_SAFE_KEY_SIZE_MIN},
-#endif
-#ifndef CRYPTO_SSL_SUPPORT_UNSAFE_ECDH
     { TEE_TYPE_ECDH_PUBLIC_KEY, ECDH_SAFE_KEY_SIZE_MIN},
     { TEE_TYPE_ECDH_KEYPAIR, ECDH_SAFE_KEY_SIZE_MIN},
-#endif
     { ARRAY_END, ARRAY_END },
 };
 

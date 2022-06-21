@@ -32,33 +32,6 @@ struct drv_frame_info *get_drv_frame_infos(void)
     return g_drv_frame_configs;
 }
 
-/*
- * die_size is dependent on platforms index defined in plat.mk
- * WITH_XXX_PLATFORM
- * when new platforms added here, the array should be modefied
- * THIS SEQUENCE SHOULD NOT BE MODEFIED
- */
-static const uint32_t g_die_id_size[] = { OTHER_DIE_ID_SIZE,
-                                          M_DIE_ID_SIZE,
-                                          OTHER_DIE_ID_SIZE,
-                                          OTHER_DIE_ID_SIZE,
-                                          OTHER_DIE_ID_SIZE,
-                                          OTHER_DIE_ID_SIZE,
-                                          OTHER_DIE_ID_SIZE,
-                                          OTHER_DIE_ID_SIZE };
-
-static const uint32_t g_die_id_size_num = sizeof(g_die_id_size) / sizeof(g_die_id_size[0]);
-
-uint32_t get_die_id_size_num(void)
-{
-    return g_die_id_size_num;
-}
-
-const uint32_t *get_tee_die_id_size(void)
-{
-    return g_die_id_size;
-}
-
 const struct ta_permission g_teeos_ta_permission_config[] = {
     { TEE_SERVICE_REET, 0, SMC_GROUP_PERMISSION },
 #if (defined TEE_SUPPORT_HUK_SERVICE_32BIT || defined TEE_SUPPORT_HUK_SERVICE_64BIT)
