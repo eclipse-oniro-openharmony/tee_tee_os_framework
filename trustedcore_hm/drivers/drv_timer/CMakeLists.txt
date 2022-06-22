@@ -116,7 +116,6 @@ if ("${ARCH}" STREQUAL "aarch64")
         teemem
         hwi
         ac
-        ccmgr
         crypto_hal
         teeconfig
         hmdrv
@@ -136,7 +135,6 @@ else()
         teemem_a32
         hwi_a32
         ac_a32
-        ccmgr
         crypto_hal
         teeconfig
         hmdrv_a32

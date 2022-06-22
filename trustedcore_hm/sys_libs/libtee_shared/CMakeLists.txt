@@ -54,7 +54,6 @@ endif()
 
 if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND TEE_SHARED_LIBS
-        ccmgr
         crypto_hal
         timer
         agent
@@ -76,7 +75,6 @@ if ("${ARCH}" STREQUAL "aarch64")
     )
 else()
     list(APPEND TEE_SHARED_LIBS
-        ccmgr
         crypto_hal
         timer
         agent_a32

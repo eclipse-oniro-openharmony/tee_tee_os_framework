@@ -17,7 +17,6 @@
 #include <ta_permission.h>
 #include <irqmgr_api_ext.h>
 #include <sys/hm_priorities.h>
-#include <ccmgr.h>
 
 #include <hmlog.h>
 #include "timer_irq.h"
@@ -83,12 +82,6 @@ __attribute__((visibility("default"))) int32_t main(void)
     ret = timer_init(timer_channel);
     if (ret != TMR_DRV_SUCCESS) {
         hm_error("failed to init timer subsystem: %d\n", ret);
-        return TMR_DRV_ERROR;
-    }
-
-    ret = hm_ccmgr_init();
-    if (ret != TMR_DRV_SUCCESS) {
-        hm_error("failed to init cc: %d\n", ret);
         return TMR_DRV_ERROR;
     }
 

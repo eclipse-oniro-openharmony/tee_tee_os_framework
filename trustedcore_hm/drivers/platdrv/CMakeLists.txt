@@ -148,7 +148,6 @@ if ("${ARCH}" STREQUAL "aarch64")
     if ("${TARGET_BOARD_PLATFORM}" STREQUAL "mt6885")
         list(APPEND PLATDRV_LIBRARIES
             openssl
-            ccmgr
             hmdrv
         )
     endif()
@@ -179,7 +178,6 @@ else()
     if ("${TARGET_BOARD_PLATFORM}" STREQUAL "mt6885")
         list(APPEND PLATDRV_LIBRARIES
             openssl
-            ccmgr
             hmdrv_a32
         )
     endif()

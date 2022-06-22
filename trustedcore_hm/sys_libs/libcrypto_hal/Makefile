@@ -50,16 +50,6 @@ endif
 libcrypto_hal_c_files += $(wildcard src/*.c) \
                          $(wildcard src/boringssl/*.c)
 
-ifeq ($(CONFIG_CIPHER_ENABLE), true)
-libcrypto_hal_c_files += src/crypto_ext_api.c
-libcrypto_hal_c_files := $(filter-out src/crypto_ext_api_stub.c, $(libcrypto_hal_c_files))
-libcrypto_hal_c_files := $(filter-out src/tee_chinadrm_gmssl_api_stub.c, $(libcrypto_hal_c_files))
-else
-libcrypto_hal_c_files += src/crypto_ext_api_stub.c
-libcrypto_hal_c_files := $(filter-out src/crypto_ext_api.c, $(libcrypto_hal_c_files))
-libcrypto_hal_c_files := $(filter-out src/tee_chinadrm_gmssl_api.c, $(libcrypto_hal_c_files))
-endif
-
 crypto_mgr_file = src/crypto_mgr_manager.c
 crypto_file = src/crypto_manager.c
 

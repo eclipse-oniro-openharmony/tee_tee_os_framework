@@ -69,20 +69,6 @@ set(CRYPTOHAL_SRCS
     src/crypto_alg_config.c
 )
 
-if ("${CONFIG_CIPHER_ENABLE}" STREQUAL "true")
-    set(CRYPTOHAL_SRCS
-        ${CRYPTOHAL_SRCS}
-        src/crypto_ext_api.c
-        src/tee_chinadrm_gmssl_api.c
-    )
-else()
-    set(CRYPTOHAL_SRCS
-        ${CRYPTOHAL_SRCS}
-        src/crypto_ext_api_stub.c
-        src/tee_chinadrm_gmssl_api_stub.c
-    )
-endif()
-
 if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS CRYPTO_MGR_SERVER_ENABLE)
     set(CRYPTOHAL_SRCS
