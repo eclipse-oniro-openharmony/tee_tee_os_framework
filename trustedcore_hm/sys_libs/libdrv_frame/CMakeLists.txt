@@ -14,7 +14,6 @@ list(APPEND TEE_C_FLAGS
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libtimer/include
-    ${PROJECT_SOURCE_DIR}/sys_libs/libccmgr/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include
     ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
     ${PROJECT_SOURCE_DIR}/drivers/include

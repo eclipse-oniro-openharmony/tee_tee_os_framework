@@ -1,7 +1,6 @@
 add_subdirectory(libteeconfig)
 add_subdirectory(libtimer)
 add_subdirectory(libac_policy)
-add_subdirectory(libccmgr)
 add_subdirectory(libcrypto_hal)
 add_subdirectory(libswcrypto_engine)
 add_subdirectory(libdrv_frame)

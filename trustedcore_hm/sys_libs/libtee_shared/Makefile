@@ -66,7 +66,7 @@ ${BUILD_DIR}/$(ALIAS_FILE): $(ALIAS_FILE)
 	@echo "preprocess ${BUILD_DIR}/$(ALIAS_FILE)"
 	@mkdir -p $(@D)
 	@${CC} ${flags} -P -E -o $@ -x c $<
-ld-flags := -lccmgr$(TARG) -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -lagent_base$(TARG) -lhmdrv$(TARG) \
+ld-flags := -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -lagent_base$(TARG) -lhmdrv$(TARG) \
     -lteeos$(TARG) -lpermission_service$(TARG) -lswcrypto_engine$(TARG) -ltaentry$(TARG) -lteeagentcommon_client$(TARG) -lcrypto$(TARG) \
     -lteeconfig$(TARG) -lteemem$(TARG) -lac$(TARG) -lac_policy$(TARG) -lssa$(TARG) -lhuk${TARG} -lteedynsrv$(TARG)
 

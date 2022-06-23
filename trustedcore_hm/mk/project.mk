@@ -10,14 +10,14 @@ crypto_lib :=
 else
 crypto_lib :=
 endif
-libtee_shared_a32: libccmgr libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
-libtee_shared: libccmgr libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
+libtee_shared_a32: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
+libtee_shared: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
 
 libvendor_shared: libvendor_static
 libvendor_shared_a32: libvendor_static_a32
 
-libbase_shared_a32: libccmgr libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
-libbase_shared: libccmgr libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
+libbase_shared_a32: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
+libbase_shared: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
 
 libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig

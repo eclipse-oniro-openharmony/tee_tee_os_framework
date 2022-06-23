@@ -5,7 +5,6 @@ include $(TOPDIR)/mk/var.mk
 flags += -fno-builtin
 flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 flags += -I$(TOPDIR)/sys_libs/libtimer/include/
-flags += -I$(TOPDIR)/sys_libs/libccmgr/include/
 flags += -I$(TOPDIR)/drivers/platdrv/include/
 flags += -I$(TOPDIR)/drivers/common
 flags += -I$(TOPDIR)/drivers/include

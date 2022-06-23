@@ -41,9 +41,6 @@
 #define TIMER_GROUP_PERMISSION GENERAL_GROUP_PERMISSION
 #endif
 
-#ifdef DX_ENABLE
-#include <ccmgr_ops_ext.h>
-#endif
 #include <timer_hw.h>
 #include <timer.h>
 #include <drv_call_check.h>

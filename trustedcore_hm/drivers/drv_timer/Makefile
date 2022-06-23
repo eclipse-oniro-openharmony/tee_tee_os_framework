@@ -86,7 +86,6 @@ LIBS := c_shared${TARG} \
     teemem${TARG} \
     hwi${TARG} \
     ac${TARG} \
-    ccmgr${TARG} \
     crypto_hal${TARG} \
     teeconfig${TARG} \
     hmdrv${TARG} \
