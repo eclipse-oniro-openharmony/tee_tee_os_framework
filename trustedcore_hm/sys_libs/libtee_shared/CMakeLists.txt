@@ -5,6 +5,7 @@ include(apps_subcommon)
 include(apps_feature_macro)
 
 list(APPEND TEE_INCLUDE_PATH
+    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libtee_shared/include
     ${PROJECT_SOURCE_DIR}/platform/common/tee_config
     ${PROJECT_SOURCE_DIR}/libs/syslib/libmmgr/include

@@ -22,7 +22,7 @@ endif
 include $(HM_COMMON)/common-nwe-flags.mk
 INCLUDE_DIRS += $(PWD)/libs/syslib/libmmgr/include
 INCLUDE_DIRS += $(PWD)/libs/syslib/libpathmgr/include
-INCLUDE_DIRS += $(PWD)/libs/teelib/libteeos/include/TEE
+INCLUDE_DIRS += $(PWD)/libs/teelib/libteeos/include/tee
 INCLUDE_DIRS += $(PWD)/libs/teelib/libteeos/include/legacy
 INCLUDE_DIRS += $(PWD)/libs/syslib/libhwi/include
 INCLUDE_DIRS += $(PWD)/libs/syslib/libhmlog/include

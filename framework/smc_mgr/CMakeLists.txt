@@ -27,7 +27,7 @@ set(TEESMCMGR_INCLUDES
     ${TEESMCMGR_INCLUDES}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/syslib/libmmgr/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/syslib/libpathmgr/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/teelib/libteeos/include/TEE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/teelib/libteeos/include/tee
     ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/teelib/libteeos/include/legacy
     ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/syslib/libhwi/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../libs/syslib/libhmlog/include
