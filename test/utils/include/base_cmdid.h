@@ -26,7 +26,7 @@
 #define BASEID_SAMPLE 0
 #define BASEID_COMMUNICATION 1
 #define BASEID_DRVTEST 2
-
+#define BASEID_TCF 3
 
 #define GET_CMD_ID(base, inner) ((((uint32_t)(base)) << 16) | (inner))
 

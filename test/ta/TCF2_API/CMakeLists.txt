@@ -10,6 +10,19 @@
 # See the Mulan PSL v2 for more details.
 #
 
+set(TARGET_NAME tee_test_tcf2_api)
 
-add_subdirectory(ClientAPI)
-add_subdirectory(TCF2_API)
+ta_compile_pub(
+    ELF_NAME
+    ${TARGET_NAME}
+
+    SRC_LIST
+    tee_test_tcf.c
+
+    INCLUDE_DIRS
+
+    COMPILE_OPTS
+
+    COMPILE_DEFS
+    API_LEVEL=3
+)
