@@ -12,4 +12,4 @@
 
 add_subdirectory(sample)
 add_subdirectory(ClientAPI)
-add_subdirectory(tee_test_drv)
+add_subdirectory(TCF_API)

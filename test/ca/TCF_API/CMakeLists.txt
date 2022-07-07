@@ -10,6 +10,25 @@
 # See the Mulan PSL v2 for more details.
 #
 
+MESSAGE( STATUS "__ANDROID_API__ = ${__ANDROID_API__}.")
 
-add_subdirectory(ClientAPI)
-add_subdirectory(TCF2_API)
+set(ca_sources)
+list(APPEND ca_sources
+    common/common_test.cpp
+    get_prop_as_identity_test.cpp
+)
+
+ca_compile_pub(
+    TEST_NAME
+    tcf_api_ca
+
+    SRC_LIST
+    ${ca_sources}
+
+    INCLUDE_DIRS
+    common
+   
+    COMPILE_OPTS
+    COMPILE_DEFS
+)
+
