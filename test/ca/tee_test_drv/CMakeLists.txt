@@ -10,7 +10,21 @@
 # See the Mulan PSL v2 for more details.
 #
 
+set(ca_sources)
+list(APPEND ca_sources
+    tee_test_drv.cpp
+)
 
-add_subdirectory(ClientAPI)
-add_subdirectory(TCF2_API)
-add_subdirectory(drv_test_ta)
+ca_compile_pub(
+    TEST_NAME
+    tee_test_drv
+
+    SRC_LIST
+    ${ca_sources}
+
+    INCLUDE_DIRS
+    common
+
+    COMPILE_OPTS
+    COMPILE_DEFS
+)

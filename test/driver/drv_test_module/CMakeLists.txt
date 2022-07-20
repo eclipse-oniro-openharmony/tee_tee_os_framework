@@ -11,6 +11,20 @@
 #
 
 
-add_subdirectory(ClientAPI)
-add_subdirectory(TCF2_API)
-add_subdirectory(drv_test_ta)
+set(drv_sources)
+list(APPEND drv_sources
+    drv_test_module.c
+)
+
+drv_compile_pub(
+    ELF_NAME
+    drv_test_module.elf
+
+    SRC_LIST
+    ${drv_sources}
+
+    INCLUDE_DIRS
+
+    COMPILE_OPTS
+    COMPILE_DEFS
+)

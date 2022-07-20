@@ -10,7 +10,4 @@
 # See the Mulan PSL v2 for more details.
 #
 
-
-add_subdirectory(ClientAPI)
-add_subdirectory(TCF2_API)
-add_subdirectory(drv_test_ta)
+add_subdirectory(drv_test_module)
