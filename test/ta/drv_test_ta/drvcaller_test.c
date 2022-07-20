@@ -1,0 +1,161 @@
+/*
+ * Copyright (C) 2022 Huawei Technologies Co., Ltd.
+ * Licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *     http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
+#include "drvcaller_test.h"
+#include <securec.h>
+#include <stdlib.h>
+#include <string.h>
+#include <tee_drv_client.h>
+#include <tee_ext_api.h>
+#include <tee_log.h>
+#include <test_drv_cmdid.h>
+
+#define DRV_UUID1                                          \
+    {                                                      \
+        0x11112222, 0x0000, 0x0000,                        \
+        {                                                  \
+            0x00, 0x00, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 \
+        }                                                  \
+    }
+
+#define BUFFER_SIZE 1024
+struct share_buffer_arg {
+    uint64_t addr;
+    uint32_t len;
+    uint32_t share_token;
+};
+
+char g_drvcallerInput[] = "the param is drvcaller_input";
+uint32_t g_drvcallerInputLen;
+char g_drvOutput[] = "DRVMEM_OUTPUT";
+uint32_t g_drvOutputLen;
+
+static TEE_Result TeeTestDrive(uint32_t cmd)
+{
+    int64_t ret;
+    const char *drvName = "drv_test_module";
+    uint32_t args = (uint32_t)(&drvName);
+
+    g_drvcallerInputLen = strlen(g_drvcallerInput) + 1;
+    g_drvOutputLen = strlen(g_drvOutput) + 1;
+    TEE_UUID uuid = DRV_UUID1;
+
+    tlogi("%s drv test open begin args:0x%x\n", drvName, args);
+
+    int64_t fd = tee_drv_open(drvName, &args, sizeof(args));
+    if (fd <= 0) {
+        tloge("open %s for get fd failed\n", drvName);
+        return TEE_ERROR_GENERIC;
+    }
+
+    char *tempBuffer = tee_alloc_sharemem_aux(&uuid, BUFFER_SIZE);
+    if (tempBuffer == NULL) {
+        tloge("alloc share mem failed\n");
+        return TEE_ERROR_GENERIC;
+    }
+    (void)memset_s(tempBuffer, BUFFER_SIZE, 0x0, BUFFER_SIZE);
+    ret = strcpy_s(tempBuffer, g_drvcallerInputLen, g_drvcallerInput);
+    if (ret != 0) {
+        tloge("strcpy_s failed,ret = 0x%x\n", ret);
+        return TEE_ERROR_GENERIC;
+    }
+
+    struct share_buffer_arg inputArg = { 0 };
+    inputArg.addr = (uint64_t)tempBuffer;
+    inputArg.len = BUFFER_SIZE;
+
+    tlogi("%s drv test ioctl begin args:0x%x fd:%d\n", drvName, inputArg, (int32_t)fd);
+
+    ret = tee_drv_ioctl(fd, cmd, (const void *)(&inputArg), sizeof(inputArg));
+    if (ret != 0)
+        tloge("%s drv test ioctl failed, fd:%d \n", drvName, (int32_t)fd);
+
+    if (cmd == GET_DRV_CMDID(DRVTEST_COMMAND_COPYTOCLIENT)) {
+        if (strncmp(g_drvOutput, (char *)tempBuffer, g_drvOutputLen) != 0) {
+            tloge("%s drv copy_to_client test failed, fd:%d, heap_buffer is:%s \n", drvName, (int32_t)fd, tempBuffer);
+            if (tee_free_sharemem(tempBuffer, BUFFER_SIZE) != 0)
+                tloge("free sharemem failed\n");
+            return TEE_ERROR_GENERIC;
+        }
+    }
+
+    ret |= tee_drv_close(fd);
+    if (ret != 0)
+        tloge("drv test fail!\n");
+    else
+        tlogd("drv test success!\n");
+
+    if (tee_free_sharemem(tempBuffer, BUFFER_SIZE) != 0) {
+        tloge("free sharemem failed\n");
+        ret = -1;
+    }
+    return ret;
+}
+
+TEE_Result TA_CreateEntryPoint(void)
+{
+    tlogi("---- TA_CreateEntryPoint ----------- \n");
+    TEE_Result ret = AddCaller_CA_exec("/system/bin/tee_test_drv", 0);
+    if (ret != TEE_SUCCESS) {
+        tloge("add caller failed, ret: 0x%x\n", ret);
+        return ret;
+    }
+
+    return TEE_SUCCESS;
+}
+
+TEE_Result TA_OpenSessionEntryPoint(uint32_t parmType, TEE_Param params[4], void **sessionContext)
+{
+    (void)parmType;
+    (void)sessionContext;
+    tlogi("---- TA_OpenSessionEntryPoint -------- \n");
+    if (params[0].value.b == 0xFFFFFFFE)
+        return TEE_ERROR_GENERIC;
+    else
+        return TEE_SUCCESS;
+}
+
+TEE_Result TA_InvokeCommandEntryPoint(void *sessionContext, uint32_t cmd, uint32_t parmType, TEE_Param params[4])
+{
+    TEE_Result ret = TEE_SUCCESS;
+    (void)sessionContext;
+    (void)parmType;
+    (void)params;
+    tlogi("---- TA invoke command ----------- command id: %u\n", cmd);
+
+    switch (cmd) {
+        case GET_DRV_CMDID(DRVTEST_COMMAND_DRVVIRTTOPHYS):
+        case GET_DRV_CMDID(DRVTEST_COMMAND_COPYFROMCLIENT):
+        case GET_DRV_CMDID(DRVTEST_COMMAND_COPYTOCLIENT):
+            ret = TeeTestDrive(cmd);
+            if (ret != TEE_SUCCESS)
+                tloge("invoke command for driver test failed! cmdId: %u, ret: 0x%x\n", cmd, ret);
+            break;
+        default:
+            tloge("not support this invoke command! cmdId: %u\n", cmd);
+            ret = TEE_ERROR_GENERIC;
+            break;
+    }
+
+    return ret;
+}
+
+void TA_CloseSessionEntryPoint(void *sessionContext)
+{
+    (void)sessionContext;
+    tlogi("---- TA_CloseSessionEntryPoint ----- \n");
+}
+
+void TA_DestroyEntryPoint(void)
+{
+    tlogi("---- TA_DestroyEntryPoint ---- \n");
+}

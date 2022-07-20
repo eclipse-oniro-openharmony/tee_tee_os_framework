@@ -10,7 +10,20 @@
 # See the Mulan PSL v2 for more details.
 #
 
+set(ta_sources)
+list(APPEND ta_sources
+    drvcaller_test.c
+)
 
-add_subdirectory(ClientAPI)
-add_subdirectory(TCF2_API)
-add_subdirectory(drv_test_ta)
+ta_compile_pub(
+    ELF_NAME
+    drvcaller_test.elf
+
+    SRC_LIST
+    ${ta_sources}
+
+    INCLUDE_DIRS
+
+    COMPILE_OPTS
+    COMPILE_DEFS
+)
