@@ -3,15 +3,15 @@
  * Licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
- *     http://license.coscl.org.cn/MulanPSL2
+ * http://license.coscl.org.cn/MulanPSL2
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
-#ifndef __COMMON_TEST_H__
-#define __COMMON_TEST_H__
+#ifndef __TCF_COMMON_TEST_H__
+#define __TCF_COMMON_TEST_H__
 
 #include <base_cmdid.h>
 #include <gtest/gtest.h>
@@ -21,16 +21,21 @@
 using namespace std;
 
 typedef uint32_t TEE_PropSetHandle;
-/*
-#define TEST_STR_LEN 256
-#define TEST_SIZE512 512
-#define TEEC_MEM_INVALID 4
-*/
-#define SIZE20 20
+typedef uint32_t TEE_TASessionHandle;
+
+#define TESTSIZE 16
 #define BIG_SIZE 1024
+#define MAX_SHARE_SIZE 0x100000
+#define MAX_HEAP_SIZE 0x120000
 
 #define ENUMERATOR1 1
 #define MAX_ENUMERATOR 1023
+
+#define EXPECTBUFFER_ZERO ""
+#define EXPECTBUFFER_A "AAAAAAAAAAAAAAAA"
+#define EXPECTBUFFER_A_LESS "AAAAAAAAAAAAAAA"
+#define EXPECTBUFFER_B "BBBBBBBBBBBBBBBB"
+#define EXPECTBUFFER_OVERLAP "AAAAAAAAABBBBBBB"
 
 // ALL_PROPERTY_NAMES
 #define GPD_CLIENT_IDENTITY "gpd.client.identity"
@@ -122,17 +127,6 @@ typedef struct {
     TEEC_UUID uuid;
 } TEEC_Identity;
 
-typedef enum {
-    undefined = 0,
-    str = 1,
-    boolType = 2,
-    intType32 = 3,
-    intType64 = 4,
-    binaryblock = 5,
-    uuid = 6,
-    identity = 7,
-} PropType;
-
 #define TCF_API_UUID_1                                     \
     {                                                      \
         0x534d4152, 0x542d, 0x4353,                        \
@@ -149,6 +143,14 @@ typedef enum {
         }                                                  \
     }
 
+#define UUID_TA_NOT_EXIST                                  \
+    {                                                      \
+        0x534D4152, 0x542D, 0x4353,                        \
+        {                                                  \
+            0x4C, 0x54, 0x2D, 0x54, 0x41, 0x2D, 0x53, 0x5B \
+        }                                                  \
+    }
+
 struct TestData {
     uint32_t cmd;
     uint32_t caseId;
@@ -162,12 +164,27 @@ struct TestData {
 };
 typedef struct TestData TestData;
 
+struct TestMemData {
+    size_t oldSize;
+    size_t newSize;
+    uint32_t oldAddr;
+    uint32_t newAddr;
+    uint32_t caseId;
+    uint32_t origin;
+    uint32_t accessFlags;
+};
+typedef struct TestMemData TestMemData;
+
 typedef enum {
     HINT_RESERVE = 0x80000000,
     TEE_MALLOC_FILL_ZERO = 0,
     TEE_MALLOC_NO_FILL = 1,
     TEE_MALLOC_NO_SHARE = 2,
 } ALL_MEMORY_HINTS;
+
+#define TEE_MEMORY_ACCESS_READ 0x00000001
+#define TEE_MEMORY_ACCESS_WRITE 0x00000002
+#define TEE_MEMORY_ACCESS_ANY_OWNER 0x00000004
 
 class TCF1Test : public ::testing::Test {
 private:
@@ -196,8 +213,8 @@ private:
     static TEEC_Session session;
 
 public:
-    static void SetUpTestCase();
-    static void TearDownTestCase();
+    static void SetUpTestCase() {}
+    static void TearDownTestCase() {}
 
     TEEC_Context *GetContext()
     {
@@ -207,8 +224,34 @@ public:
     {
         return &TCF2Test::session;
     }
-    void SetUp() {}
-    void TearDown() {}
+    void SetUp();
+    void TearDown();
+};
+
+class TCF2TA2TATest : public ::testing::Test {
+private:
+    static TEEC_Context context;
+    static TEEC_Session session;
+    static TEEC_Session session2;
+
+public:
+    static void SetUpTestCase() {}
+    static void TearDownTestCase() {}
+
+    TEEC_Context *GetContext()
+    {
+        return &TCF2TA2TATest::context;
+    }
+    TEEC_Session *GetSession()
+    {
+        return &TCF2TA2TATest::session;
+    }
+    TEEC_Session *GetSession2()
+    {
+        return &TCF2TA2TATest::session2;
+    }
+    void SetUp();
+    void TearDown();
 };
 
 class TCF1ENUM_Test : public ::testing::Test {
@@ -237,6 +280,25 @@ public:
 TEEC_Result Invoke_GetPropertyAsX(TEEC_Context *context, TEEC_Session *session, TestData *testDate);
 TEEC_Result Invoke_AllocatePropertyEnumerator(TEEC_Session *session, TestData *testData);
 TEEC_Result Invoke_Operate_PropertyEnumerator(TEEC_Session *session, TestData *testData);
-TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, size_t inMemSize, ALL_MEMORY_HINTS inHint,
+TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, size_t inMemSize, uint32_t inHint,
+    char *testBuffer, uint32_t *origin);
+TEEC_Result Invoke_Realloc(TEEC_Session *session, uint32_t commandID, TestMemData *testData, char *output);
+TEEC_Result Invoke_MemMove_Or_Fill(TEEC_Session *session, uint32_t commandID, TestMemData *testData, char *output);
+TEEC_Result Invoke_Free(TEEC_Session *session, uint32_t commandID, uint32_t caseNum, uint32_t *origin);
+TEEC_Result Invoke_MemCompare(TEEC_Session *session, uint32_t commandID, TestMemData *testData, char *buffer1,
+    char *buffer2);
+TEEC_Result Invoke_CheckMemoryAccessRights(TEEC_Session *session, uint32_t commandID, TestMemData *testData);
+TEEC_Result Invoke_SetInstanceData(TEEC_Session *session, uint32_t commandID, char *buffer, uint32_t bufSize,
     uint32_t *origin);
+TEEC_Result Invoke_GetInstanceData(TEEC_Session *session, uint32_t commandID, char *buffer, uint32_t *bufSize,
+    uint32_t *origin);
+TEEC_Result Invoke_OpenTASession(TEEC_Session *session, uint32_t commandID, TEEC_UUID uuid,
+    TEE_TASessionHandle *ta2taSession, TestData *testData, uint32_t *origin);
+TEEC_Result Invoke_CloseTASession(TEEC_Session *session, uint32_t commandID, TEE_TASessionHandle ta2taSession,
+    uint32_t *origin);
+TEEC_Result Invoke_InvokeTACommand(TEEC_Session *session, uint32_t commandID, TEE_TASessionHandle ta2taSession,
+    TestData *testData, uint32_t *origin);
+TEEC_Result Invoke_Panic(TEEC_Session *session, uint32_t commandID, TEEC_Result panicCode, uint32_t *origin);
+uint32_t get_ta_data_size(TEEC_Context *context, TEEC_Session *session);
+uint32_t get_ta_stack_size(TEEC_Context *context, TEEC_Session *session);
 #endif
