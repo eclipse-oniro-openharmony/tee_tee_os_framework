@@ -334,11 +334,7 @@ set(COMMON_FLAG_CFLAGS
     -fno-builtin
     -Wall
 )
-if ("${CONFIG_LIBFUZZER_SERVICE_64BIT}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_LIBFUZZER
-    )
-endif()
+
 
 set(COMMON_FLAG_INCLUDES
     ${COMMON_FLAG_INCLUDES}

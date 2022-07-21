@@ -34,11 +34,6 @@ endif
 boot-fs := $(boot-fs-files-y)
 boot-fs := $(filter-out $(PREBUILD_LIBS)/aarch64/libc_shared.so $(PREBUILD_LIBS)/arm/libc_shared_a32.so, $(boot-fs))
 
-ifneq ($(CONFIG_NO_VENDOR_LIB_EMBEDDED), true)
-    DEF_LIBVENDOR_SHARED := $(OUTPUTDIR)/arm/obj/arm/libvendor_shared/libvendor_shared_a32.so
-    DEF_LIBVENDOR_SHARED_A64 := $(OUTPUTDIR)/aarch64/obj/aarch64/libvendor_shared/libvendor_shared.so
-endif
-
 $(STAGE_DIR)/bootfs.img: $(boot-fs-files-y) FORCE
 	@if [ "xy" = "xy" ] ; then \
 	set -e ;\

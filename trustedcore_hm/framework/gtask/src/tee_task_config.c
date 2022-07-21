@@ -26,12 +26,3 @@ bool is_se_service_enable(void)
     return false;
 #endif
 }
-
-bool is_libfuzzer_enable(void)
-{
-#if (defined TEE_SUPPORT_LIBFUZZER)
-    return true;
-#else
-    return false;
-#endif
-}

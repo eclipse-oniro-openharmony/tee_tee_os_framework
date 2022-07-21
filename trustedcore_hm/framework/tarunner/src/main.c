@@ -31,18 +31,14 @@
 #define RTLD_TA 0x100000
 #define IPC_CHANNEL_NUM 2
 
-void *g_libvendor = NULL;
-
 #ifdef __aarch64__
 static const char *g_tarunner_path = "/tarunner.elf";
 static const char *g_drv_so_path = "libdrv_shared.so";
 static const char *g_tee_share_so_path = "libtee_shared.so";
-static const char *g_vendor_so_path = "libvendor_shared.so";
 #else
 static const char *g_tarunner_path = "/tarunner_a32.elf";
 static const char *g_drv_so_path = "libdrv_shared_a32.so";
 static const char *g_tee_share_so_path = "libtee_shared_a32.so";
-static const char *g_vendor_so_path = "libvendor_shared_a32.so";
 #endif
 
 static int32_t param_check(int32_t argc, const char * const * argv, bool *free_uncommit)
@@ -83,17 +79,8 @@ static int32_t param_check(int32_t argc, const char * const * argv, bool *free_u
  */
 static bool is_agent(const char *task_name)
 {
-    if ((strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_rotservice", strlen("task_rotservice") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_artservice", strlen("task_artservice") + 1) == HM_OK) ||
-        (strncmp(task_name, "task_bioservice", strlen("task_bioservice") + 1) == HM_OK) ||
-        (strncmp(task_name, VLTMMSRV_TASK_NAME, strlen(VLTMMSRV_TASK_NAME) + 1) == HM_OK))
+    if (strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == HM_OK)
         return true;
-
-#if (TRUSTEDCORE_CHIP_CHOOSE == WITH_CHIP_HI1951)
-    if (strncmp(task_name, "task_hsmservice", strlen("task_hsmservice") + 1) == HM_OK)
-        return true;
-#endif
     return false;
 }
 
@@ -286,12 +273,6 @@ static int32_t library_init(const char *task_name, bool free_uncommit, const str
     if (*libtee == NULL)
         return HM_ERROR;
 
-    if (param->target_type != DRV_TARGET_TYPE) {
-        g_libvendor = dlopen(g_vendor_so_path, RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
-        if (g_libvendor == NULL) /* some products may not have thsi so */
-            hm_error("load vendor library failed: %s\n", dlerror());
-    }
-
     /* TEE library initialization */
     if (init2(*libtee, task_name, param->target_type) != HM_OK)
         return HM_ERROR;
@@ -344,11 +325,6 @@ static void load_fail(uint32_t target_type)
 {
     clear_libtee();
 
-    if (g_libvendor != NULL) {
-        dlclose(g_libvendor);
-        g_libvendor = NULL;
-    }
-
     send_load_fail_msg(target_type);
 }
 
@@ -361,9 +337,6 @@ static int32_t get_routine_info(void *handle, uint32_t size, struct ta_routine_i
     routine->info[CLOSE_SESSION_INDEX] = dlsym(handle, "TA_CloseSessionEntryPoint");
     routine->info[DESTROY_ENTRY_INDEX] = dlsym(handle, "TA_DestroyEntryPoint");
 
-#if (defined TEE_SUPPORT_LIBFUZZER)
-    routine->info[LIBFUZZER_CALLBACK] = dlsym(handle, "OutPutInformation");
-#endif
     /* should check caller info when open session */
     routine->addcaller_flag = true;
 

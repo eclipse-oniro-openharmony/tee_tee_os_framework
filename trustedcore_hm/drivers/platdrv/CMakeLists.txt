@@ -122,7 +122,6 @@ list(APPEND TEE_INCLUDE_PATH
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/platdrv/include
     ${PROJECT_SOURCE_DIR}/../../hm-teeos/libs/syslib/libsyscalls/include
-    ${PROJECT_SOURCE_DIR}/vendor/${PLATFORM_NAME}/libvendor_shared/include
     ${PREBUILD_HEADER}/sys/stackprotect
 )
 
