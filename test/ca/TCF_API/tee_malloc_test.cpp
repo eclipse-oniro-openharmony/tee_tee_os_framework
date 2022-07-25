@@ -1,0 +1,170 @@
+/*
+ * Copyright (C) 2022 Huawei Technologies Co., Ltd.
+ * Licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ * http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
+#include <common_test.h>
+#include <gtest/gtest.h>
+#include <securec.h>
+#include <tee_client_api.h>
+#include <tee_client_type.h>
+#include <test_defines.h>
+#include <test_log.h>
+#include <test_tcf_cmdid.h>
+
+/**
+ * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_FILL_ZERO
+ * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is TEE_MALLOC_FILL_ZERO
+ * @testcase.expect    : return TEEC_SUCCESS
+ */
+TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_FILL_ZERO, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+    (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_FILL_ZERO, buffer, &origin);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+    ASSERT_STREQ(buffer, EXPECTBUFFER_ZERO);
+}
+
+/**
+ * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_NO_FILL
+ * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is TEE_MALLOC_NO_FILL
+ * @testcase.expect    : return TEEC_SUCCESS
+ */
+TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+    (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_NO_FILL, buffer, &origin);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+    ASSERT_STRNE(buffer, EXPECTBUFFER_A);
+}
+
+/**
+ * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_NO_SHARE
+ * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is TEE_MALLOC_NO_SHARE
+ * @testcase.expect    : return TEEC_SUCCESS
+ */
+TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_SHARE, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+    (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_NO_SHARE, buffer, &origin);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+    ASSERT_STRNE(buffer, EXPECTBUFFER_A);
+}
+
+/**
+ * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_NO_FILL_And_NO_SHARE
+ * @testcase.desc      : test TA call TEE_Malloc to alloc 10 bytes with hint is TEE_MALLOC_NO_FILL|TEE_MALLOC_NO_SHARE
+ * @testcase.expect    : return TEEC_SUCCESS
+ */
+TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL_And_NO_SHARE, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+    (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_NO_FILL | TEE_MALLOC_NO_SHARE,
+        buffer, &origin);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+    ASSERT_STRNE(buffer, EXPECTBUFFER_A);
+}
+
+/**
+ * @testcase.name      : TEE_Malloc_With_HINT_RESERVE
+ * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is HINT_RESERVE
+ * @testcase.expect    : return TEEC_SUCCESS
+ */
+TEE_TEST(TCF2Test, TEE_Malloc_With_HINT_RESERVE, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+    (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, HINT_RESERVE, buffer, &origin);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+    ASSERT_STRNE(buffer, EXPECTBUFFER_A);
+}
+
+/**
+ * @testcase.name      : TEE_Malloc_With_SIZEIsZero
+ * @testcase.desc      : test TA call TEE_Malloc to alloc buffer with size is zero
+ * @testcase.expect    : return TEEC_ERROR_OUT_OF_MEMORY
+ */
+TEE_TEST(TCF2Test, TEE_Malloc_With_SizeIsZero, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), 0, TEE_MALLOC_FILL_ZERO, buffer, &origin);
+    ASSERT_EQ(ret, TEEC_ERROR_OUT_OF_MEMORY);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+}
+
+/**
+ * @testcase.name      : TEE_Malloc_With_SizeExceedHeapLimit
+ * @testcase.desc      : test TA call TEE_Malloc to alloc buffer with size exceed heaplimit
+ * @testcase.expect    : return TEEC_ERROR_OUT_OF_MEMORY
+ */
+TEE_TEST(TCF2Test, TEE_Malloc_With_SizeExceedHeapLimit, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+    uint32_t dateSize = get_ta_data_size(GetContext(), GetSession());
+    ASSERT_GT(dateSize, 0);
+
+    uint32_t stackSize = get_ta_stack_size(GetContext(), GetSession());
+    ASSERT_GT(stackSize, 0);
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), dateSize + stackSize, TEE_MALLOC_FILL_ZERO, buffer,
+        &origin);
+    ASSERT_EQ(ret, TEEC_ERROR_OUT_OF_MEMORY);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+}
+
+/**
+ * @testcase.name      : TEE_Malloc_With_MAXDataSize
+ * @testcase.desc      : test TA call TEE_Malloc to alloc buffer with size is max data size
+ * @testcase.expect    : return TEEC_SUCCESS
+ */
+TEE_TEST(TCF1Test, TEE_Malloc_With_MAXDataSize, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+    uint32_t origin;
+    char buffer[MAX_SHARE_SIZE] = { 0 };
+    (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
+
+    uint32_t dateSize = get_ta_data_size(GetContext(), GetSession());
+    ASSERT_GT(dateSize, 0);
+
+    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), dateSize, TEE_MALLOC_FILL_ZERO, buffer, &origin);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
+    ASSERT_STREQ(buffer, EXPECTBUFFER_ZERO);
+}

@@ -20,20 +20,20 @@
 #include <test_tcf_cmdid.h>
 
 /**
- * @testcase.name      : TEE_GetPropertyAsIdentity_WithoutEnum_SMC_TA_TESTIDENTITY
- * @testcase.desc      : test TA call TEE_GetPropertyAsIdentity to get value of  SMC_TA_TESTIDENTITY
+ * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_GPD_TA_APPID
+ * @testcase.desc      : test TA call TEE_GetPropertyAsUUID to get value of  GPD_TA_APPID
  * @testcase.expect    : return TEEC_SUCCESS
- */
-TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_SMC_TA_TESTIDENTITY, Function | MediumTest | Level0)
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsUUID_WithoutEnum_GPD_TA_APPID, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID);
     value.propSet = TEE_PROPSET_CURRENT_TA;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTIDENTITY, sizeof(SMC_TA_TESTIDENTITY));
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));
     ASSERT_EQ(rc, 0);
-    value.inBufferLen = sizeof(SMC_TA_TESTIDENTITY);
+    value.inBufferLen = sizeof(GPD_TA_APPID);
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -41,16 +41,16 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_SMC_TA_TESTIDENTITY, Fu
 }
 
 /**
- * @testcase.name      : TEE_GetPropertyAsIdentity_WithoutEnum_NameIsNull
- * @testcase.desc      : test TA call TEE_GetPropertyAsIdentity for name is null
+ * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_NameIsNull
+ * @testcase.desc      : test TA call TEE_GetPropertyAsUUID for name is null
  * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
- */
-TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameIsNull, Function | MediumTest | Level0)
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsUUID_WithoutEnum_NameIsNull, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID);
     value.caseId = INPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
@@ -60,16 +60,16 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameIsNull, Function | 
 }
 
 /**
- * @testcase.name      : TEE_GetPropertyAsIdentity_WithoutEnum_NameIsZero
- * @testcase.desc      : test TA call TEE_GetPropertyAsIdentity for name value is zero
+ * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_NameIsZero
+ * @testcase.desc      : test TA call TEE_GetPropertyAsUUID for name value is zero
  * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
- */
-TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameIsZero, Function | MediumTest | Level0)
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsUUID_WithoutEnum_NameIsZero, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID);
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
@@ -78,22 +78,22 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameIsZero, Function | 
 }
 
 /**
- * @testcase.name      : TEE_GetPropertyAsIdentity_WithoutEnum_ValueBufferIsNULL
- * @testcase.desc      : test TA call TEE_GetPropertyAsIdentity for value buffer is null
+ * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_ValueBufferIsNULL
+ * @testcase.desc      : test TA call TEE_GetPropertyAsUUID for value buffer is null
  * @testcase.expect    : return TEEC_ERROR_BAD_PARAMETERS
- */
-TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_ValueBufferIsNULL, Function | MediumTest | Level0)
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsUUID_WithoutEnum_ValueBufferIsNULL, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID);
     value.caseId = OUTPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTIDENTITY, sizeof(SMC_TA_TESTIDENTITY));
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));
     ASSERT_EQ(rc, 0);
-    value.inBufferLen = sizeof(SMC_TA_TESTIDENTITY);
+    value.inBufferLen = sizeof(GPD_TA_APPID);
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
@@ -101,17 +101,17 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_ValueBufferIsNULL, Func
 }
 
 /**
- * @testcase.name      : TEE_GetPropertyAsIdentity_WithoutEnum_NameNotFound
- * @testcase.desc      : test TA call TEE_GetPropertyAsIdentity while Name Not Found
+ * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_NameNotFound
+ * @testcase.desc      : test TA call TEE_GetPropertyAsUUID while Name Not Found
  * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
- */
-TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotFound, Function | MediumTest | Level0)
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsUUID_WithoutEnum_NameNotFound, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID);
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, PROPERTY_NAME_UNKNOWN, sizeof(PROPERTY_NAME_UNKNOWN));
     ASSERT_EQ(rc, 0);
@@ -123,17 +123,17 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotFound, Function 
 }
 
 /**
- * @testcase.name      : TEE_GetPropertyAsIdentity_WithoutEnum_NameNotIdentity
- * @testcase.desc      : test TA call TEE_GetPropertyAsIdentity while Name type is not Identity
+ * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_NameNotUUID
+ * @testcase.desc      : test TA call TEE_GetPropertyAsUUID while Name type is not UUID
  * @testcase.expect    : return TEEC_ERROR_BAD_FORMAT
- */
-TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotIdentity, Function | MediumTest | Level0)
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsUUID_WithoutEnum_NameNotUUID, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID);
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_SINGLEINSTANCE, sizeof(GPD_TA_SINGLEINSTANCE));
     ASSERT_EQ(rc, 0);
@@ -145,21 +145,21 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotIdentity, Functi
 }
 
 /**
- * @testcase.name      : TEE_GetPropertyAsIdentity_WithoutEnum_NameNotUUID2
- * @testcase.desc      : test TA call TEE_GetPropertyAsIdentity while Name type is not UUID, is string
+ * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_NameNotUUID2
+ * @testcase.desc      : test TA call TEE_GetPropertyAsUUID while Name type is not UUID, is string
  * @testcase.expect    : return TEEC_ERROR_BAD_FORMAT
- */
-TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotUUID2, Function | MediumTest | Level0)
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsUUID_WithoutEnum_NameNotUUID2, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
-    value.propSet = TEE_PROPSET_IMPLEMENTATION;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_DESCRIPTION, sizeof(GPD_TEE_DESCRIPTION));
+    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID);
+    value.propSet = TEE_PROPSET_CURRENT_TA;
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DESCRIPTION, sizeof(GPD_TA_DESCRIPTION));
     ASSERT_EQ(rc, 0);
-    value.inBufferLen = sizeof(GPD_TEE_DESCRIPTION);
+    value.inBufferLen = sizeof(GPD_TA_DESCRIPTION);
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_FORMAT);

@@ -30,19 +30,36 @@ typedef enum {
     CMD_TEE_GetPropertyNameEnumerator,
     CMD_TEE_GetNextPropertyEnumerator,
     CMD_TEE_Malloc,
+    CMD_TEE_Free,
     CMD_TEE_Realloc,
     CMD_TEE_MemMove,
     CMD_TEE_MemCompare,
     CMD_TEE_MemFill,
-    CMD_TEE_Free,
+    CMD_TEE_CheckMemoryAccessRights,
+    CMD_TEE_GetInstanceData,
+    CMD_TEE_SetInstanceData,
+    CMD_TEE_OpenTASession,
+    CMD_TEE_InvokeTACommand,
+    CMD_TEE_CloseTASession,
+    CMD_TEE_Panic,
 } TCFCmdId;
 
 #define GET_TCF_CMDID(inner) GET_CMD_ID(BASEID_TCF, inner)
 
-#define INPUTBUFFER_ISNULL 1
-#define OUTPUTBUFFER_ISNULL 2
+#define INPUT_ISNULL 1
+#define OUTPUT_ISNULL 2
 #define OUTPUTBUFFERSIZE_ISNULL 3
 #define OUTPUTBUFFERSIZE_ISZERO 4
 #define OUTPUTBUFFERSIZE_TOOSHORT 5
-
+#define BUFFER_ISNOT_MALLOC 6
+#define BUFFERSIZE_ISTOOBIG 7
+#define BUFFER_IS_FREE 8
+#define BUFFER_IS_PARAM 9
+#define DESTANDSRC_ISSAME 10
+#define DESTANDSRC_OVERLAP 11
+#define BUFFER_IS_GLOBALVAR 12
+#define BUFFER_IS_GLOBALCONSTVAR 13
+#define RETURNORIGIN_ISNULL 14
+#define TA_CRASH_FLAG 15
+#define BUFFER_NOFILLNOSHARE 16
 #endif

@@ -15,8 +15,26 @@ MESSAGE( STATUS "__ANDROID_API__ = ${__ANDROID_API__}.")
 set(ca_sources)
 list(APPEND ca_sources
     common/common_test.cpp
+    get_prop_as_string_test.cpp
+    get_prop_as_bool_test.cpp
+    get_prop_as_u32_test.cpp
+    get_prop_as_u64_test.cpp
+    get_prop_as_binaryblock_test.cpp
+    get_prop_as_uuid_test.cpp
     get_prop_as_identity_test.cpp
+    get_prop_with_enumerator_test.cpp
+    tee_malloc_test.cpp
+    tee_realloc_test.cpp
+    tee_memmove_test.cpp
+    tee_memfill_test.cpp
+    tee_free_test.cpp
+    tee_memcompare_test.cpp
+    tee_checkmemaccessrights_test.cpp
+    tee_instance_test.cpp
+    internal_client_api_test.cpp
+    tee_panic_test.cpp
 )
+
 
 ca_compile_pub(
     TEST_NAME
@@ -27,7 +45,7 @@ ca_compile_pub(
 
     INCLUDE_DIRS
     common
-   
+
     COMPILE_OPTS
     COMPILE_DEFS
 )
