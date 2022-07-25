@@ -11,7 +11,8 @@
 #
 
 
-add_subdirectory(ClientAPI)
-add_subdirectory(TCF_API)
-add_subdirectory(TCF2_API)
-add_subdirectory(drv_test_ta)
+add_subdirectory(test_client_api)
+add_subdirectory(test_tcf2_api)
+add_subdirectory(test_tcf_api)
+add_subdirectory(test_driver_ta)
+add_subdirectory(test_arithmetic_api)
