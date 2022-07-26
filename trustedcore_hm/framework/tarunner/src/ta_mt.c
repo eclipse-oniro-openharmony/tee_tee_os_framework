@@ -396,23 +396,6 @@ static void handle_thread_remove(uint32_t tid, uint32_t session_id)
     if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, (uint32_t)ret, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
         hm_error("Msg send failed\n");
 }
-static void handle_dumpinfo_for_libfuzzer(const struct ta_routine_info *routine)
-{
-    bool error = false;
-    if (routine != NULL) {
-        void (*fun)(void) = routine->info[LIBFUZZER_CALLBACK];
-        if (fun != NULL) {
-            error = true;
-            fun();
-        }
-    }
-    if (error == false)
-        hm_error(
-            "teeos cannot get input testcase which triggered this crash! Does the ta is instrumented by libfuzzer?\n");
-
-    if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, TADUMP_FOR_LIBFUZZER, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
-        hm_error("Msg send for libfuzzer failed\n");
-}
 
 static void tee_task_entry_handle(ta_entry_type ta_entry, uint32_t ca, int32_t priority, const char *name,
     const struct ta_routine_info *append_args)
@@ -446,10 +429,6 @@ static void tee_task_entry_handle(ta_entry_type ta_entry, uint32_t ca, int32_t p
             tid = entry_msg.remove_msg.tid;
             session_id = entry_msg.remove_msg.session_id;
             handle_thread_remove(tid, session_id);
-            break;
-        case CALL_TA_DUMP_FOR_LIBFUZZER:
-            hm_debug("++ CALL TA DUMP FOR LIBFUZZER. We will dump input which trigger a crash.\n");
-            handle_dumpinfo_for_libfuzzer(append_args);
             break;
         case CALL_TA_STHREAD_EXIT: /* no need to break, cos this proc exit directly */
             hm_debug("++ CALL TA STHREAD EXIT\n");

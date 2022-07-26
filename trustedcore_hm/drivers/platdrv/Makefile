@@ -95,7 +95,6 @@ inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel # sre_rwroot.h
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/platdrv/include
-inc-flags += -I$(TOPDIR)/vendor/$(PLATFORM_NAME)/libvendor_shared/include
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/include/
 
 inc-flags += -I$(TOPDIR)../../tee_os_kernel/libs/syslib/libsyscalls/include

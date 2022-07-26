@@ -12,7 +12,6 @@ UNDEF=$(objdump -T "$1" | grep '\*UND\*' | egrep -o '[^ ]+$')
 # ALLDEF for check:
 # libc_shared_a32.so             libc_shared_a32.so
 # libtee_shared_a32.so           libtee_shared.so
-# libvendor_shared_a32.so        libvendor_shared.so
 # libdrv_shared_a32.so           libdrv_shared.so
 # libbase_shared_a32.so          libbase_shared.so
 ALLDEF="$IGNORED\n"
