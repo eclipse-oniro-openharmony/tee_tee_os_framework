@@ -15,7 +15,7 @@
 #include <public_test.h>
 #include <test_log.h>
 #include <securec.h>
-#include "common_test.h"
+#include <common_test.h>
 
 #include <session_mgr/client_session_mgr.h>
 
