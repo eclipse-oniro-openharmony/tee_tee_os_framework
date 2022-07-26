@@ -28,7 +28,7 @@ TEE_Result TestConverterBetweenBitInAndOctetString()
     TEE_Result ret = TEE_BigIntConvertFromOctetString((TEE_BigInt *)bigInt, string, sizeof(string), -1);
     if (ret != TEE_SUCCESS) {
         tloge("BigIntConvertFromOctetString failed, ret = 0x%x", ret);
-        return ret;
+        goto CLEANUP;
     }
 
     uint8_t buffer[SIZE_256] = {0};
@@ -36,7 +36,7 @@ TEE_Result TestConverterBetweenBitInAndOctetString()
     ret = TEE_BigIntConvertToOctetString(buffer, &bufferLen, bigInt);
     if (ret != TEE_SUCCESS) {
         tloge("BigIntConvertToOctetString failed, ret = 0x%x", ret);
-        return ret;
+        goto CLEANUP;
     }
     if (strcmp(buffer, string) != 0) {
         tloge("convert failed. string is %s; buffer is %s;", string, buffer);
@@ -44,6 +44,7 @@ TEE_Result TestConverterBetweenBitInAndOctetString()
     }
     tlogi("after convert buffer is %s", buffer);
 
+CLEANUP:
     TEE_Free(bigInt);
     tlogi("[%s] end. ret = 0x%x.", __FUNCTION__, ret);
     return ret;
@@ -64,7 +65,7 @@ TEE_Result TestConverterBetweenBitInAndS32()
     TEE_Result ret = TEE_BigIntConvertToS32(&value, bigInt);
     if (ret != TEE_SUCCESS) {
         tloge("BigIntConvertToS32 failed, ret = 0x%x", ret);
-        return ret;
+        goto CLEANUP;
     }
     if (value != shortVal) {
         tloge("convert failed. value is %d; shortVal is %d", value, shortVal);
@@ -72,6 +73,7 @@ TEE_Result TestConverterBetweenBitInAndS32()
     }
     tlogi("after convert value is %d", value);
 
+CLEANUP:
     TEE_Free(bigInt);
     tlogi("[%s] end. ret = 0x%x.", __FUNCTION__, ret);
     return ret;

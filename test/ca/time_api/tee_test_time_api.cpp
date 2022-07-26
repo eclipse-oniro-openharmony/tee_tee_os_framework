@@ -32,7 +32,7 @@ TEE_TEST(EmptyTest, TEE_GetSystemTime, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     TEEC_Operation operation = {0};
     operation.started = 1;
@@ -46,7 +46,7 @@ TEE_TEST(EmptyTest, TEE_GetSystemTime, Function | MediumTest | Level0)
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
     uint32_t time2 = operation.params[1].value.a;
-    ASSERT_EQ(time2 > time1, true);
+    ASSERT_LT(time1, time2);
     sess.Destroy();
 }
 
@@ -61,7 +61,7 @@ TEE_TEST(EmptyTest, TeeWait, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_TEE_WAIT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -79,7 +79,7 @@ TEE_TEST(EmptyTest, GetPersistentTime, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_PERSISTENT_TIME, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -97,7 +97,7 @@ TEE_TEST(EmptyTest, SetPersistentTime, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_SET_PERSISTENT_TIME, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -115,7 +115,7 @@ TEE_TEST(EmptyTest, GetReeTime, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     TEEC_Operation operation = {0};
     operation.started = 1;
@@ -129,6 +129,6 @@ TEE_TEST(EmptyTest, GetReeTime, Function | MediumTest | Level0)
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
     uint32_t time2 = operation.params[1].value.a;
-    ASSERT_EQ(time2 > time1, true);
+    ASSERT_LT(time1, time2);
     sess.Destroy();
 }

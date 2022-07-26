@@ -32,7 +32,7 @@ TEE_TEST(EmptyTest, BigInt_ComputeFMM, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_COMPUTE_FMM, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -50,7 +50,7 @@ TEE_TEST(EmptyTest, BigInt_InitFMMContext, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_INIT_FMM_CONTEXT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -68,7 +68,7 @@ TEE_TEST(EmptyTest, BigInt_ConverterBetweenBigIntAndFMM, Function | MediumTest |
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_CONVERTER_BETWEEN_BIG_INT_AND_FMM, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -86,7 +86,7 @@ TEE_TEST(EmptyTest, BigInt_ComputeExpMod, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_EXP_MOD, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -104,7 +104,7 @@ TEE_TEST(EmptyTest, BigInt_ConverterBetweenBigIntAndOctetString, Function | Medi
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_CONVERTER_BETWEEN_BIG_INT_AND_OCTET_STRING, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -122,7 +122,7 @@ TEE_TEST(EmptyTest, BigInt_ConverterBetweenBigIntAndShortVal, Function | MediumT
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_CONVERTER_BETWEEN_BIG_INT_AND_S32, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -140,7 +140,7 @@ TEE_TEST(EmptyTest, BigInt_AddAndSubMod, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_ADD_AND_SUB_MOD, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -158,7 +158,7 @@ TEE_TEST(EmptyTest, BigInt_MulAndInvMod, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_MUL_AND_INV_MOD, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -176,7 +176,7 @@ TEE_TEST(EmptyTest, BigInt_InitMod, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_MOD, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -194,7 +194,7 @@ TEE_TEST(EmptyTest, BigInt_AddAndSub, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_ADD_AND_SUB, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -212,7 +212,7 @@ TEE_TEST(EmptyTest, BigInt_Neg, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_NEG, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -230,7 +230,7 @@ TEE_TEST(EmptyTest, BigInt_MulAndSquare, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_MUL_AND_SQUARE, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -248,7 +248,7 @@ TEE_TEST(EmptyTest, BigInt_div, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_DIV, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -266,7 +266,7 @@ TEE_TEST(EmptyTest, BigInt_ShiftRight, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_SHIFT_RIGHT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -284,7 +284,7 @@ TEE_TEST(EmptyTest, BigInt_GetBit, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_GET_BIT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -302,7 +302,7 @@ TEE_TEST(EmptyTest, BigInt_GetBitCount, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_GET_BIT_COUNT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -320,7 +320,7 @@ TEE_TEST(EmptyTest, BigInt_SetBit, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_SET_BIT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -338,7 +338,7 @@ TEE_TEST(EmptyTest, BigInt_AssignSrcToDest, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_ASSIGN, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -356,7 +356,7 @@ TEE_TEST(EmptyTest, BigInt_Abs, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_ABS, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -374,7 +374,7 @@ TEE_TEST(EmptyTest, BigInt_RelativePrime, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_RELATIVE_PRIME, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -392,7 +392,7 @@ TEE_TEST(EmptyTest, BigInt_ComputeExtendedGcd, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_COMPUTE_EXTENTED_GCD, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -410,7 +410,7 @@ TEE_TEST(EmptyTest, BigInt_ProbabilisticPrimality, Function | MediumTest | Level
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_IS_PROBABLE_PRIME, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -428,7 +428,7 @@ TEE_TEST(EmptyTest, BigInt_Compare, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_CMP, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -446,7 +446,7 @@ TEE_TEST(EmptyTest, BigInt_CompareWithShortVal, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_CMP_S32, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -464,7 +464,7 @@ TEE_TEST(EmptyTest, BigInt_InitializeFMM, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_INIT_FMM, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
@@ -482,7 +482,7 @@ TEE_TEST(EmptyTest, BigInt_InitializeBigInt, Function | MediumTest | Level0)
     uint32_t origin;
     TEEC_UUID testId = ARITHMETIC_API_UUID;
     TEEC_Result ret = sess.Start(&testId);
-    EXPECT_EQ(ret, TEEC_SUCCESS);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_BIG_INT_INIT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);

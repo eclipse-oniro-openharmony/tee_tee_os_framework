@@ -82,6 +82,7 @@ TEE_Result TestBigIntShiftRight()
 
     TEE_Free(dest);
     TEE_Free(op);
+    TEE_Free(check);
     tlogi("[%s] end. ret = 0x%x.", __FUNCTION__, ret);
     return ret;
 }

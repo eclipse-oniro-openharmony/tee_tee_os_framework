@@ -45,6 +45,7 @@ TEE_BigInt *CreateBigInt(uint32_t size, uint8_t *buffer)
 
 TEE_Result TestBigIntInit()
 {
+    TEE_Result ret = TEE_SUCCESS;
     uint32_t length = TEE_BigIntSizeInU32(SIZE_256);
     TEE_BigInt *bigInt = (TEE_BigInt *)TEE_Malloc(length * sizeof(TEE_BigInt), 0);
     if (bigInt == NULL) {
@@ -55,8 +56,9 @@ TEE_Result TestBigIntInit()
     TEE_BigIntInit(bigInt, length);
     if (TEE_BigIntCmpS32(bigInt, 0) != 0) {
         tloge("BigIntInit fail.");
-        return TEE_ERROR_GENERIC;
+        ret = TEE_ERROR_GENERIC;
     }
+
     TEE_Free(bigInt);
-    return TEE_SUCCESS;
+    return ret;
 }
