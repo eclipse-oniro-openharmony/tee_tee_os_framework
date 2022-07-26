@@ -13,4 +13,6 @@
 add_subdirectory(sample)
 add_subdirectory(client_api)
 add_subdirectory(tcf_api)
-add_subdirectory(test_driver)
+add_subdirectory(tee_test_drv)
+add_subdirectory(arithmetic_api)
+add_subdirectory(time_api)

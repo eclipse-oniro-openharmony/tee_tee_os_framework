@@ -26,7 +26,7 @@ using namespace std;
  * @testcase.desc      : test TEE_GetSystemTime api
  * @testcase.expect    : return TEEC_SUCCESS
  */
-TEE_TEST(EmptyTest, GetSystemTime, Function | MediumTest | Level0)
+TEE_TEST(EmptyTest, TEE_GetSystemTime, Function | MediumTest | Level0)
 {
     ClientSessionMgr sess;
     uint32_t origin;
@@ -41,7 +41,7 @@ TEE_TEST(EmptyTest, GetSystemTime, Function | MediumTest | Level0)
     ASSERT_EQ(ret, TEEC_SUCCESS);
     uint32_t time1 = operation.params[1].value.a;
 
-    sleep(3); // 等待3s
+    sleep(3); // wait for 3s
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_SYSTEM_TIME, operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
@@ -124,7 +124,7 @@ TEE_TEST(EmptyTest, GetReeTime, Function | MediumTest | Level0)
     ASSERT_EQ(ret, TEEC_SUCCESS);
     uint32_t time1 = operation.params[1].value.a;
 
-    sleep(3); // 等待3s
+    sleep(3); // wait for 3s
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_REE_TIME, operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
