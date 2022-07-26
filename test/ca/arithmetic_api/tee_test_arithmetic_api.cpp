@@ -19,8 +19,6 @@
 
 #include <session_mgr/client_session_mgr.h>
 
-using namespace std;
-
 /**
  * @testcase.name      : BigInt_ComputeFMM
  * @testcase.desc      : test TEE_BigIntComputeFMM api

@@ -17,12 +17,7 @@
 #include <stdint.h>
 #include <tee_client_type.h>
 
-#ifdef __cplusplus
-#include <string>
-using namespace std;
-#endif
-
-#define ARITHMETIC_API_UUID                                   \
+#define ARITHMETIC_API_UUID                                \
     {                                                      \
         0xe7d4c078, 0xb19f, 0x4f97,                        \
         {                                                  \

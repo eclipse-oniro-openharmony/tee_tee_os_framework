@@ -53,7 +53,7 @@ enum TEST_ARITHMETIC_API_CMD_ID {
 };
 
 
-TEE_BigInt* AllocateAndInitialize(uint32_t bitSize);
+TEE_BigInt *AllocateAndInitialize(uint32_t bitSize);
 TEE_BigInt *CreateBigInt(uint32_t size, uint8_t *buffer);
 TEE_Result TestBigIntInit();
 
