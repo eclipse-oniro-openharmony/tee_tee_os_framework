@@ -10,8 +10,8 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#ifndef __TEE_TEST_ARITHMETIC_API_BASE_H__
-#define __TEE_TEST_ARITHMETIC_API_BASE_H__
+#ifndef __TEST_ARITHMETIC_API_BASE_H__
+#define __TEST_ARITHMETIC_API_BASE_H__
 
 #include <tee_arith_api.h>
 

@@ -14,7 +14,7 @@
 #include <tee_log.h>
 #include <securec.h>
 #include "test_converter_function.h"
-#include "tee_test_arithmetic_api_base.h"
+#include "test_arithmetic_api_base.h"
 #include "test_basic_arithmetic_operation.h"
 #include "test_modular_arithmetic_operation.h"
 #include "test_logical_operation.h"

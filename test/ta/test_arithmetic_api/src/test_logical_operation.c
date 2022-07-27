@@ -14,7 +14,7 @@
 #include <tee_log.h>
 #include <securec.h>
 #include <tee_arith_api.h>
-#include "tee_test_arithmetic_api_base.h"
+#include "test_arithmetic_api_base.h"
 
 TEE_Result TestBigIntCmp()
 {
