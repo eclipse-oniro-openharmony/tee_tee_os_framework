@@ -10,10 +10,24 @@
 # See the Mulan PSL v2 for more details.
 #
 
+set(TARGET_NAME test_time_api)
 
-add_subdirectory(test_client_api)
-add_subdirectory(test_tcf2_api)
-add_subdirectory(test_tcf_api)
-add_subdirectory(test_driver_ta)
-add_subdirectory(test_arithmetic_api)
-add_subdirectory(test_time_api)
+list(APPEND ta_src
+    src/test_time_api_func.c
+    src/test_time_api_main.c
+)
+
+ta_compile_pub(
+    ELF_NAME
+    ${TARGET_NAME}
+
+    SRC_LIST
+    ${ta_src}
+
+    INCLUDE_DIRS
+
+    COMPILE_OPTS
+
+    COMPILE_DEFS
+    API_LEVEL=3
+)

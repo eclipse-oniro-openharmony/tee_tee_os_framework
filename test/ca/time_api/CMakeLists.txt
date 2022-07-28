@@ -11,9 +11,21 @@
 #
 
 
-add_subdirectory(test_client_api)
-add_subdirectory(test_tcf2_api)
-add_subdirectory(test_tcf_api)
-add_subdirectory(test_driver_ta)
-add_subdirectory(test_arithmetic_api)
-add_subdirectory(test_time_api)
+set(ca_sources)
+list(APPEND ca_sources
+    tee_test_time_api.cpp
+)
+
+ca_compile_pub(
+    TEST_NAME
+    time_api
+
+    SRC_LIST
+    ${ca_sources}
+
+    INCLUDE_DIRS
+    common
+
+    COMPILE_OPTS
+    COMPILE_DEFS
+)
