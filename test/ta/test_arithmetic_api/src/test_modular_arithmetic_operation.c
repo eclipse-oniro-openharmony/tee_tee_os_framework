@@ -14,6 +14,7 @@
 #include <tee_log.h>
 #include <securec.h>
 #include <tee_arith_api.h>
+#include <tee_mem_mgmt_api.h>
 #include "test_arithmetic_api_base.h"
 
 static uint8_t g_value1[] = {
@@ -272,16 +273,16 @@ TEE_Result TestBigIntExpMod()
     }
 
     const uint8_t modValue[] = {0x01, 0x31};
-    TEE_BigInt *modulus = CreateBigInt(sizeof(modValue), modValue);
+    TEE_BigInt *modulus = CreateBigInt(sizeof(modValue), (uint8_t *)modValue);
     TEE_BigIntInitFMMContext(bigIntFMMContext, length, modulus);
 
     const uint8_t desValue[] = "desValue";
     const uint8_t op1Value[] = {0x01, 0x01};
     const uint8_t op2Value[] = {0x01, 0x11};
-    TEE_BigInt *des1 = CreateBigInt(sizeof(desValue), desValue);
-    TEE_BigInt *des2 = CreateBigInt(sizeof(desValue), desValue);
-    TEE_BigInt *op1 = CreateBigInt(sizeof(op1Value), op1Value);
-    TEE_BigInt *op2 = CreateBigInt(sizeof(op2Value), op2Value);
+    TEE_BigInt *des1 = CreateBigInt(sizeof(desValue), (uint8_t *)desValue);
+    TEE_BigInt *des2 = CreateBigInt(sizeof(desValue), (uint8_t *)desValue);
+    TEE_BigInt *op1 = CreateBigInt(sizeof(op1Value), (uint8_t *)op1Value);
+    TEE_BigInt *op2 = CreateBigInt(sizeof(op2Value), (uint8_t *)op2Value);
 
     if (TEE_BigIntExpMod(des1, op1, op2, modulus, bigIntFMMContext) != TEE_SUCCESS) {
         tloge("TEE_BigIntExpMod failed with fmm context.");

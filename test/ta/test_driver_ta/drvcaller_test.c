@@ -70,7 +70,7 @@ static TEE_Result TeeTestDrive(uint32_t cmd)
     }
 
     struct share_buffer_arg inputArg = { 0 };
-    inputArg.addr = (uint64_t)tempBuffer;
+    inputArg.addr = (uint64_t)(uint32_t)tempBuffer;
     inputArg.len = BUFFER_SIZE;
 
     tlogi("%s drv test ioctl begin args:0x%x fd:%d\n", drvName, inputArg, (int32_t)fd);

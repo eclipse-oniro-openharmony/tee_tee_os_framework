@@ -14,6 +14,7 @@
 #include <tee_log.h>
 #include <securec.h>
 #include <tee_arith_api.h>
+#include <tee_mem_mgmt_api.h>
 #include "test_arithmetic_api_base.h"
 
 TEE_BigInt* AllocateAndInitialize(uint32_t bitSize)

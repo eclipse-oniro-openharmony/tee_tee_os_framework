@@ -14,6 +14,7 @@
 #include <tee_log.h>
 #include <securec.h>
 #include <tee_arith_api.h>
+#include <tee_mem_mgmt_api.h>
 #include "test_arithmetic_api_base.h"
 
 TEE_Result TestConverterBetweenBitInAndOctetString()
@@ -38,7 +39,7 @@ TEE_Result TestConverterBetweenBitInAndOctetString()
         tloge("BigIntConvertToOctetString failed, ret = 0x%x", ret);
         goto CLEANUP;
     }
-    if (strcmp(buffer, string) != 0) {
+    if (strcmp((const char *)buffer, (const char *)string) != 0) {
         tloge("convert failed. string is %s; buffer is %s;", string, buffer);
         ret = TEE_ERROR_GENERIC;
     }

@@ -14,6 +14,7 @@
 #include <tee_log.h>
 #include <securec.h>
 #include <tee_arith_api.h>
+#include <tee_mem_mgmt_api.h>
 #include "test_arithmetic_api_base.h"
 
 static uint8_t g_modValue[] = {
@@ -84,7 +85,7 @@ TEE_Result TestBigIntInitFMMContext()
         0x40, 0x84, 0xB4, 0xAF, 0xF9, 0x13, 0xE0, 0x2B, 0xFF, 0x2D, 0x30, 0x21, 0x7C, 0x94, 0xD2, 0x8F,
         0x89, 0x47, 0x9F, 0x7E, 0x14, 0xC1, 0xB4, 0xD7, 0x64, 0x97, 0x33, 0x65, 0x26, 0x62, 0x86, 0xED
     };
-    TEE_BigInt *bigInt = CreateBigInt(sizeof(p1Value), p1Value);
+    TEE_BigInt *bigInt = CreateBigInt(sizeof(p1Value), (uint8_t *)p1Value);
     TEE_BigIntInitFMMContext(bigIntFMMContext, length, bigInt);
 
     TEE_Result ret = TEE_BigIntInitFMMContext1(bigIntFMMContext1, length, bigInt);

@@ -18,7 +18,7 @@
 #include <stdint.h>
 #include <tee_client_type.h>
 
-using namespace std;
+using namespace testing::ext;
 
 typedef uint32_t TEE_PropSetHandle;
 typedef uint32_t TEE_TASessionHandle;

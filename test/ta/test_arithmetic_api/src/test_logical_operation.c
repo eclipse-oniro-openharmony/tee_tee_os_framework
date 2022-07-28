@@ -14,6 +14,7 @@
 #include <tee_log.h>
 #include <securec.h>
 #include <tee_arith_api.h>
+#include <tee_mem_mgmt_api.h>
 #include "test_arithmetic_api_base.h"
 
 TEE_Result TestBigIntCmp()
@@ -27,8 +28,8 @@ TEE_Result TestBigIntCmp()
         0x35, 0x51, 0x61, 0xEA, 0x4A, 0x7E, 0xDB, 0xF1, 0x78, 0x7E, 0x48, 0xB9, 0x60, 0xA8, 0x15, 0x16
     };
 
-    TEE_BigInt *op1 = CreateBigInt(sizeof(op1Value), op1Value);
-    TEE_BigInt *op2 = CreateBigInt(sizeof(op2Value), op2Value);
+    TEE_BigInt *op1 = CreateBigInt(sizeof(op1Value), (uint8_t *)op1Value);
+    TEE_BigInt *op2 = CreateBigInt(sizeof(op2Value), (uint8_t *)op2Value);
     int32_t result = TEE_BigIntCmp(op1, op2);
     if (result < 0) {
         tloge("BigIntCmp fail.");
@@ -49,7 +50,7 @@ TEE_Result TestBigIntCmpS32()
         0x6A, 0xA2, 0xC3, 0xD4, 0x94, 0xFD, 0xB7, 0xE2, 0xF0, 0xFC, 0x91, 0x72, 0xC1, 0x50, 0x2A, 0x2C
     };
 
-    TEE_BigInt *op = CreateBigInt(sizeof(opValue), opValue);
+    TEE_BigInt *op = CreateBigInt(sizeof(opValue), (uint8_t *)opValue);
     int32_t result = TEE_BigIntCmpS32(op, 0);
     if (result < 0) {
         tloge("BigIntCmpS32 fail.");
@@ -72,8 +73,8 @@ TEE_Result TestBigIntShiftRight()
         0x35, 0x51, 0x61, 0xEA, 0x4A, 0x7E, 0xDB, 0xF1, 0x78, 0x7E, 0x48, 0xB9, 0x60, 0xA8, 0x15, 0x16
     };
     TEE_BigInt *dest = CreateBigInt(RESULT_SIZE, 0);
-    TEE_BigInt *op = CreateBigInt(sizeof(opValue), opValue);
-    TEE_BigInt *check = CreateBigInt(sizeof(checkValue), checkValue);
+    TEE_BigInt *op = CreateBigInt(sizeof(opValue), (uint8_t *)opValue);
+    TEE_BigInt *check = CreateBigInt(sizeof(checkValue), (uint8_t *)checkValue);
     TEE_BigIntShiftRight(dest, op, 1);
     if (TEE_BigIntCmp(dest, check) != 0) {
         tloge("BigIntShiftRight fail.");
@@ -90,10 +91,10 @@ TEE_Result TestBigIntShiftRight()
 TEE_Result TestBigIntGetBit()
 {
     tlogi("[%s] begin:", __FUNCTION__);
-    const uint8_t opValue[] = {0x01, 0x11};
+    const uint8_t opValue[] = {0x01, 0x11, 0x01, 0x11};
     const uint32_t bitIndex = 4;
 
-    TEE_BigInt *src = CreateBigInt(sizeof(opValue), opValue);
+    TEE_BigInt *src = CreateBigInt(sizeof(opValue), (uint8_t *)opValue);
     bool bitValue = TEE_BigIntGetBit(src, bitIndex);
     if (bitValue) { // expect bitValue is 0.
         tloge("BigIntGetBit failed.");
@@ -106,9 +107,9 @@ TEE_Result TestBigIntGetBit()
 TEE_Result TestBigIntGetBitCount()
 {
     tlogi("[%s] begin:", __FUNCTION__);
-    const uint8_t opValue[] = {0x01, 0x11};
-    const uint32_t check = 9;
-    TEE_BigInt *src = CreateBigInt(sizeof(opValue), opValue);
+    const uint8_t opValue[] = {0x01, 0x11, 0x11, 0x10};
+    const uint32_t check = 17;
+    TEE_BigInt *src = CreateBigInt(sizeof(opValue), (uint8_t *)opValue);
     uint32_t count = TEE_BigIntGetBitCount(src);
     if (count != check) {
         tloge("BigIntGetBitCount fail. count = %d.", count);
@@ -121,9 +122,9 @@ TEE_Result TestBigIntGetBitCount()
 TEE_Result TestBigIntSetBit()
 {
     tlogi("[%s] begin:", __FUNCTION__);
-    const uint8_t opValue[] = {0x01, 0x11};
+    const uint8_t opValue[] = {0x01, 0x11, 0x01, 0x11};
     const uint32_t bitIndex = 4;
-    TEE_BigInt *src = CreateBigInt(sizeof(opValue), opValue);
+    TEE_BigInt *src = CreateBigInt(sizeof(opValue), (uint8_t *)opValue);
 
     uint32_t value = TEE_BigIntGetBit(src, bitIndex);
     value = (value == 1 ? 0 : 1);

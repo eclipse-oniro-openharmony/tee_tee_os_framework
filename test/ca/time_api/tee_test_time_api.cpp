@@ -16,7 +16,8 @@
 #include <test_log.h>
 #include <securec.h>
 #include <common_test.h>
-
+#include <tee_client_api.h>
+#include <tee_client_type.h>
 #include <session_mgr/client_session_mgr.h>
 
 /**
@@ -35,12 +36,12 @@ TEE_TEST(EmptyTest, TEE_GetSystemTime, Function | MediumTest | Level0)
     TEEC_Operation operation = {0};
     operation.started = 1;
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_VALUE_OUTPUT, TEEC_NONE, TEEC_NONE);
-    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_SYSTEM_TIME, operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_SYSTEM_TIME, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     uint32_t time1 = operation.params[1].value.a;
 
     sleep(3); // wait for 3s
-    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_SYSTEM_TIME, operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_SYSTEM_TIME, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
     uint32_t time2 = operation.params[1].value.a;
@@ -118,12 +119,12 @@ TEE_TEST(EmptyTest, GetReeTime, Function | MediumTest | Level0)
     TEEC_Operation operation = {0};
     operation.started = 1;
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_VALUE_OUTPUT, TEEC_NONE, TEEC_NONE);
-    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_REE_TIME, operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_REE_TIME, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     uint32_t time1 = operation.params[1].value.a;
 
     sleep(3); // wait for 3s
-    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_REE_TIME, operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_GET_REE_TIME, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
     uint32_t time2 = operation.params[1].value.a;

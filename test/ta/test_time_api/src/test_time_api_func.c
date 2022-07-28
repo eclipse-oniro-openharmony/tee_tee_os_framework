@@ -84,7 +84,7 @@ static void RemovePersistentTimeFile(void)
         strlen(PERSISTENT_TIME_BASE_FILE), TEE_DATA_FLAG_ACCESS_READ | TEE_DATA_FLAG_ACCESS_WRITE_META, &object);
     if (ret == TEE_SUCCESS) {
         tlogi("persistent time file is exist\n");
-        TEE_CloseAndDeletePersistentObject(object);
+        TEE_CloseAndDeletePersistentObject1(object);
         tlogi("fremove time file\n");
     } else {
         tlogi("persistent time file is not exist!\n");

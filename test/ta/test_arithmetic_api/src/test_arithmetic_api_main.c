@@ -107,6 +107,8 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sessionContext, uint32_t cmdId, uint
 {
     TEE_Result ret = TEE_SUCCESS;
     (void)sessionContext;
+    (void)params;
+    (void)parmType;
 
     ret = TestArithmeticApi(cmdId);
     if (ret != TEE_SUCCESS)
