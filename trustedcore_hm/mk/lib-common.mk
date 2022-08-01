@@ -7,7 +7,6 @@ TARGET_IS_SYS := y
 include $(TOPDIR)/mk/var.mk
 include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
-include $(TOPDIR)/mk/llvm-apps-xom.mk
 include $(TOPDIR)/mk/common.mk
 
 # use musl lib c headers.

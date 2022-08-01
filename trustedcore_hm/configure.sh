@@ -10,11 +10,7 @@ BOOTFS_OUT=${ABS_SOURCE_PATH}/bootfs_out
 PREBUILD_PATH=${ABS_SOURCE_PATH}/prebuild
 CONFIG_FILE=${PREBUILD_PATH}/hm-teeos-local-release/headers/.config
 TOOLCHAIN_FILE_64=clang64_toolchain.cmake
-if ["${CONFIG_ENABLE_XOM32}" -eq y]; then
-    TOOLCHAIN_FILE_32=clang32_toolchain_xom.cmake
-else
-    TOOLCHAIN_FILE_32=clang32_toolchain.cmake
-fi
+TOOLCHAIN_FILE_32=clang32_toolchain.cmake
 TARGET_BUILD_VARIANT=$(eval echo \$\{PATH\})
 OUTPUTDIR_64=${OUT64}
 OUTPUTDIR_32=${OUT32}
@@ -97,10 +93,6 @@ check_for_arch()
 
         if [ "$var" == "CONFIG_ARCH_AARCH32" ] && [ "$val" == "y" ]; then
             ARCH=arm
-        fi
-
-        if [ "$var" == "CONFIG_ENABLE_XOM32" ] && [ "$val" == "y" ]; then
-            USE_XOM32=y
         fi
 
         if [ -n "$ARCH" ] && [ -n "$USE_XOM32" ]; then

@@ -145,15 +145,7 @@ platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker64.ld
 endif
 
 ifeq (${TARG},_a32)
-ifeq ($(CONFIG_ENABLE_XOM32),y)
-ifeq ($(xom32_enable),y)
-platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker.xom.ld
-else
 platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker.ld
-endif
-else
-platdrv_LDFLAGS += -T$(SOURCE_DIR)/linker.ld
-endif
 endif
 
 ifeq ($(CONFIG_DRIVER_DYN_MOD), true)

@@ -95,12 +95,6 @@ list(APPEND TEE_INCLUDE_PATH
 )
 endif()
 
-if ("${ARCH}" STREQUAL "arm" AND "${CONFIG_ENABLE_XOM32}" STREQUAL "y")
-    list(APPEND TEE_SHARED_LINKER_FLAGS
-        -Wl,-T${XOM_LIB_LDS}
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TEE_SHARED_LINKER_FLAGS
         -Wl,-z,separate-loadable-segments

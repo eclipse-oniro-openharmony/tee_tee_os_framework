@@ -181,12 +181,6 @@ if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     )
 endif()
 
-if ("${ARCH}" STREQUAL "arm" AND "${CONFIG_ENABLE_XOM32}" STREQUAL "y")
-    list(APPEND TEE_SHARED_LINKER_FLAGS
-        -Wl,-T${XOM_LIB_LDS}
-    )
-endif()
-
 set(TEE_PRECOMPILE_FLAGS ${TEE_C_FLAGS})
 list(REMOVE_ITEM TEE_PRECOMPILE_FLAGS "-march=armv8-a")
 foreach(d ${TEE_C_DEFINITIONS})

@@ -240,15 +240,9 @@ if ("${ARCH}" STREQUAL "aarch64")
         -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker64.ld
     )
 else()
-    if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y")
-        list(APPEND PLATDRV_LDFLAGS
-            -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker.xom.ld
-        )
-    else()
-        list(APPEND PLATDRV_LDFLAGS
-            -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker.ld
-        )
-    endif()
+    list(APPEND PLATDRV_LDFLAGS
+        -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker.ld
+    )
 endif()
 
 

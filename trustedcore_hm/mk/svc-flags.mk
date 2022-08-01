@@ -5,8 +5,6 @@ TARGET_IS_SYS := y
 # setup toolchain
 include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
-include $(TOPDIR)/mk/llvm-apps-xom.mk
-LLVM_INC := $(PREBUILD_DIR)/headers/libc++
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
 # use musl lib c headers.

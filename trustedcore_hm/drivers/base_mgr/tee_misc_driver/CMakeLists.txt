@@ -17,12 +17,6 @@ list(APPEND TEE_C_FLAGS
     -DTA_LOG_LEVEL=2
 )
 
-if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
-    list(APPEND TEE_MISC_DRIVER_LDFLAGS
-        -Wl,-T${XOM_LDS}
-    )
-endif()
-
 if(NOT "${CMAKE_TOOLCHAIN_BASEVER}" STREQUAL "8.0.1")
     list(APPEND TEE_MISC_DRIVER_LDFLAGS
         -Wl,-z,separate-loadable-segments

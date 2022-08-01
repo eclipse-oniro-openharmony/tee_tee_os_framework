@@ -165,15 +165,9 @@ if ("${ARCH}" STREQUAL "aarch64")
         -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker64.ld
     )
 else()
-    if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y")
-        list(APPEND DRV_TIMER_LDFLAGS
-            -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker.xom.ld
-        )
-    else()
-        list(APPEND DRV_TIMER_LDFLAGS
-            -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker.ld
-        )
-    endif()
+    list(APPEND DRV_TIMER_LDFLAGS
+        -Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/linker.ld
+    )
 endif()
 
 list(REMOVE_ITEM TEE_C_FLAGS -Os)

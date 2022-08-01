@@ -37,10 +37,6 @@ check_for_arch()
             ARCH=arm
         fi
 
-        if [ "$var" == "CONFIG_ENABLE_XOM32" ] && [ "$val" == "y" ]; then
-            USE_XOM32=y
-        fi
-
         if [ -n "$ARCH" ] && [ -n "$USE_XOM32" ]; then
             break
         fi

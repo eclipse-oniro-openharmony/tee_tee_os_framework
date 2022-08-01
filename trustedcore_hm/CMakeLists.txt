@@ -223,44 +223,6 @@ add_custom_target(remove_xomloc_section_hmfilemgr)
 add_custom_target(remove_xomloc_section_hmsysmgr)
 set(XOM_FINISH_FILE)
 
-if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${GET_XOM_FILE}" STREQUAL "true")
-    foreach(bootfs_file ${BOOTFS_FILES})
-        execute_process(
-            COMMAND file ${bootfs_file}
-            OUTPUT_VARIABLE  ELF_FILE_TYPE
-        )
-        string(FIND ${ELF_FILE_TYPE} "ELF 64" pos1)
-        string(FIND ${ELF_FILE_TYPE} "tui.elf" pos2)
-        string(FIND ${ELF_FILE_TYPE} "taloader.elf" pos3)
-        if (${pos1} STREQUAL -1 AND ${pos2} STREQUAL -1 AND ${pos3} STREQUAL -1)
-            list(FIND XOM_FINISH_FILE ${bootfs_file} check_result)
-            if (${check_result} STREQUAL -1)
-                add_custom_command(TARGET use_xom32
-                    COMMAND ${XOM_BIN} ${bootfs_file}
-                )
-                add_custom_command(TARGET remove_xomloc_section
-                    COMMAND ${CMAKE_OBJCOPY} ${bootfs_file} --remove-section ".xomloc"
-                )
-            endif()
-            list(APPEND XOM_FINISH_FILE ${bootfs_file})
-        endif()
-    endforeach()
-
-    add_custom_command(TARGET use_xom32_hmfilemgr
-        COMMAND ${XOM_BIN} ${PROJECT_BINARY_DIR}/tools/hmfilemgr/hmfilemgr
-    )
-    add_custom_command(TARGET use_xom32_hmsysmgr
-        COMMAND ${XOM_BIN} ${PROJECT_BINARY_DIR}/framework/hmsysmgr/hmsysmgr
-    )
-    add_custom_command(TARGET remove_xomloc_section_hmfilemgr
-        COMMAND ${CMAKE_OBJCOPY} ${PROJECT_BINARY_DIR}/tools/hmfilemgr/hmfilemgr --remove-section ".xomloc"
-    )
-    add_custom_command(TARGET remove_xomloc_section_hmsysmgr
-        COMMAND ${CMAKE_OBJCOPY} ${PROJECT_BINARY_DIR}/framework/hmsysmgr/hmsysmgr --remove-section ".xomloc"
-    )
-endif()
-
-
 ############
 # pack img #
 ############
