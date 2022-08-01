@@ -3,7 +3,6 @@ TARGET_IS_TA := y
 TARGET_IS_EXT_LIB := y
 include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
-include $(TOPDIR)/mk/llvm-apps-xom.mk
 include $(TOPDIR)/mk/common.mk
 # use musl lib c headersn.
 inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH) -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)

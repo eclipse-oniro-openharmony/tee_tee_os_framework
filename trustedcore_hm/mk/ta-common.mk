@@ -2,7 +2,6 @@ TARGET_IS_TA := y
 # setup toolchain
 include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
-include $(TOPDIR)/mk/llvm-apps-xom.mk
 include $(TOPDIR)/mk/common.mk
 
 # use musl lib c headers.

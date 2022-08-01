@@ -49,29 +49,16 @@ if ("${ARCH}" STREQUAL "aarch64")
     )
 else()
     if ("${CONFIG_DYNLINK}" STREQUAL "y")
-        if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND NOT "${BUILD_TA}" STREQUAL "y" AND NOT "${IN_XOM32_BLACK_LIST}" STREQUAL "y")
-            list(APPEND TA_LDFLAGS
-                -Wl,--discard-all
-                -Wl,-z,text
-                -Wl,-z,now
-                -Wl,-z,relro
-                -Wl,-shared
-                -Wl,-z,noexecstack
-                -Wl,-T${PROJECT_SOURCE_DIR}/cmake/ta_link_new.xom.ld
-            )
-            list(APPEND TEE_C_FLAGS -fvisibility=hidden)
-        else()
-            list(APPEND TA_LDFLAGS
-                -Wl,--discard-all
-                -Wl,-z,text
-                -Wl,-z,now
-                -Wl,-z,relro
-                -Wl,-shared
-                -Wl,-z,noexecstack
-                -Wl,-T${PROJECT_SOURCE_DIR}/cmake/ta_link_new.ld
-            )
-            list(APPEND TEE_C_FLAGS -fvisibility=hidden)
-        endif()
+        list(APPEND TA_LDFLAGS
+            -Wl,--discard-all
+            -Wl,-z,text
+            -Wl,-z,now
+            -Wl,-z,relro
+            -Wl,-shared
+            -Wl,-z,noexecstack
+            -Wl,-T${PROJECT_SOURCE_DIR}/cmake/ta_link_new.ld
+        )
+        list(APPEND TEE_C_FLAGS -fvisibility=hidden)
     else()
         list(APPEND TA_LDFLAGS
             -Wl,-r

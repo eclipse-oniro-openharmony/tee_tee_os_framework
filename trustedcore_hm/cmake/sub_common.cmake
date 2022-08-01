@@ -4,27 +4,15 @@ if ("${BUILD_TA}" STREQUAL "y")
 
     if ("${ARCH}" STREQUAL "arm")
         if ("${CONFIG_DYNLINK}" STREQUAL "y")
-            if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y")
-                set(COMMON_LDFLAGS
-                    ${COMMON_LDFLAGS}
-                    -Wl,-x
-                    -Wl,-z,text
-                    -Wl,-z,now
-                    -Wl,-z,relro
-                    -Wl,-shared
-                    -Wl,-T${PROJECT_SOURCE_DIR}/tools/teeos/ta_link_new.xom.ld
-                )
-            else()
-                set(COMMON_LDFLAGS
-                    ${COMMON_LDFLAGS}
-                    -Wl,-x
-                    -Wl,-z,text
-                    -Wl,-z,now
-                    -Wl,-z,relro
-                    -Wl,-shared
-                    -Wl,-T${PROJECT_SOURCE_DIR}/tools/teeos/ta_link_new.ld
-                )
-            endif()
+            set(COMMON_LDFLAGS
+                ${COMMON_LDFLAGS}
+                -Wl,-x
+                -Wl,-z,text
+                -Wl,-z,now
+                -Wl,-z,relro
+                -Wl,-shared
+                -Wl,-T${PROJECT_SOURCE_DIR}/tools/teeos/ta_link_new.ld
+            )
         else()
             set(COMMON_LDFLAGS
                 ${COMMON_LDFLAGS}

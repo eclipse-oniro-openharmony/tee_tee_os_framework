@@ -162,12 +162,6 @@ else()
     )
 endif()
 
-if ("${CONFIG_ENABLE_XOM32}" STREQUAL "y" AND "${ARCH}" STREQUAL "arm")
-    list(APPEND GTASK_LDFLAGS
-        -Wl,-T${XOM_LDS}
-    )
-endif()
-
 list(REMOVE_ITEM TEE_C_FLAGS "-flto")
 list(REMOVE_ITEM TEE_C_FLAGS "-fsplit-lto-unit")
 

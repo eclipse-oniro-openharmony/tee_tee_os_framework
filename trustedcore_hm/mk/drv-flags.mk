@@ -5,7 +5,6 @@ TARGET_IS_DRV := y
 # setup toolchain
 include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
-include $(TOPDIR)/mk/llvm-apps-xom.mk
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
 # use musl lib c headers.
