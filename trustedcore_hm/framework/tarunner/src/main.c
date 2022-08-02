@@ -182,35 +182,11 @@ static int32_t init2(void *libtee, const char *task_name, uint32_t target_type)
         *pp = task_name;
 
     (void)target_type;
-
-#ifndef CONFIG_OFF_DRV_TIMER
-    func = dlsym(libtee, "hm_timer_init");
-    if ((func == NULL) || (func() != HM_OK)) {
-        hm_error("timer init failed\n");
-        return HM_ERROR;
-    }
-#endif
-
     (void)func;
     return HM_OK;
 }
 
-static int32_t driver_job_handler(void *libtee, uint32_t target_type)
-{
-    int32_t (*func)(void) = NULL;
-
-    (void)target_type;
-
-    func = dlsym(libtee, "renew_hmtimer_job_handler");
-    if ((func == NULL) || (func() != HM_OK)) {
-        hm_error("renew timer handler failed\n");
-        return HM_ERROR;
-    }
-
-    return HM_OK;
-}
-
-static int32_t init3(const struct env_param *param, void *libtee)
+static int32_t init3(const struct env_param *param)
 {
     int32_t ret;
 
@@ -226,15 +202,11 @@ static int32_t init3(const struct env_param *param, void *libtee)
         return HM_ERROR;
     }
 
-    if (driver_job_handler(libtee, param->target_type) != HM_OK)
-        return HM_ERROR;
-
     ret = mprotect(&__tcb_cref, PAGE_SIZE, PROT_READ);
     if (ret != HM_OK) {
         hm_error("protect tcb cref failed: %d\n", ret);
         return HM_ERROR;
     }
-
     return HM_OK;
 }
 
@@ -249,7 +221,7 @@ static int32_t library_init(const char *task_name, const struct env_param *param
     if (init2(*libtee, task_name, param->target_type) != HM_OK)
         return HM_ERROR;
 
-    if (init3(param, *libtee) != HM_OK)
+    if (init3(param) != HM_OK)
         return HM_ERROR;
 
     return HM_OK;

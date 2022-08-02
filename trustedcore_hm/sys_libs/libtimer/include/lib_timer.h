@@ -7,5 +7,4 @@
 #define LIBTIMER_LIB_TIMER_H
 #include <sys_timer.h>
 #include <tee_time_event.h>
-#include <tee_time_legacy.h>
 #endif /* LIBTIMER_LIB_TIMER_H */

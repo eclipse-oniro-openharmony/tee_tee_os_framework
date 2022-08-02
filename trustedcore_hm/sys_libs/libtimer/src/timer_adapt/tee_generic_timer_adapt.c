@@ -12,7 +12,6 @@
 #include <timemgr_api.h>
 #include <generic_timer.h>
 #include <tee_time_adapt.h>
-#include <tee_rtc_adapt.h>
 #include <tee_mem_mgmt_api.h>
 
 enum classic_timer_msg {
@@ -29,13 +28,6 @@ struct timer_event_msg {
 };
 
 static struct tee_time_t g_rtc_offset;
-
-#ifndef CONFIG_RTC_TIMER
-struct rtc_timer_ops_t *get_rtc_time_ops(void)
-{
-    return NULL;
-}
-#endif
 
 static uint64_t tee_read_time_stamp(void)
 {
@@ -458,15 +450,9 @@ static uint32_t tee_time_event_check(timer_notify_data_kernel *timer_data)
 
 static uint32_t tee_get_secure_rtc_time(void)
 {
-    struct rtc_timer_ops_t *rtc_time_ops = NULL;
     timeval_t cur_time;
-    rtc_time_ops = get_rtc_time_ops();
-    if (rtc_time_ops == NULL) {
-        cur_time.tval64 = tee_read_time_stamp();
-        return cur_time.tval.sec;
-    }
-
-    return rtc_time_ops->get_rtc_seconds();
+    cur_time.tval64 = tee_read_time_stamp();
+    return cur_time.tval.sec;
 }
 
 static void tee_release_timer_event(const TEE_UUID *uuid)

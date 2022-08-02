@@ -17,7 +17,5 @@
 #include <tee_time_sleep.h>
 #include <tee_time_event.h>
 #include <tee_time_sys.h>
-#include <tee_timer_call.h>
-#include <tee_time_legacy.h>
 
 #endif /* SYS_LIBS_LIBTIMER_TIMER_H */

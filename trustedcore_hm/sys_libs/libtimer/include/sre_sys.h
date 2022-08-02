@@ -8,5 +8,4 @@
 #include <sre_typedef.h>
 #include <sys_timer.h>
 #include <tee_time_sleep.h>
-#include <tee_time_legacy.h>
 #endif /* LIBTIMER_SRE_SYS_H */
