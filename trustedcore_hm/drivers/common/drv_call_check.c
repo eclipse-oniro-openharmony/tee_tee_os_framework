@@ -13,15 +13,9 @@
 #include "drv_pal.h"
 #include "hmdrv_stub_timer.h"
 
-int32_t audit_check_fail(void)
-{
-    return DRV_CALL_OK;
-}
-
 int32_t check_call_permission(uint64_t current_permission, uint64_t permission)
 {
     if ((permission & current_permission) != permission) {
-        audit_check_fail();
         return DRV_CALL_ERROR;
     }
 
@@ -42,7 +36,6 @@ static int32_t mmap_address_a32(struct call_params *param, uint32_t index,
                                        (uint32_t)param->self_pid, temp_addr,
                                        prot, param->job_handler);
     if (ret != 0) {
-        audit_check_fail();
         tloge("drv_map_from_task_under_tbac failed\n");
         return DRV_CALL_ERROR;
     }
@@ -65,7 +58,6 @@ static int32_t mmap_address_a64(struct call_params *param, uint32_t index,
                                               (uint32_t)param->self_pid, temp_addr,
                                               prot, param->job_handler);
     if (ret != 0) {
-        audit_check_fail();
         tloge("drv_map_from_task_under_tbac failed\n");
         return DRV_CALL_ERROR;
     }
@@ -186,7 +178,6 @@ static int32_t check_addr_write_right(const struct call_params *param)
 
         if (((uint32_t)param->mmaped_ptrs[i].prot & PROT_WRITE) != PROT_WRITE) {
             tloge("swi_id %x, param %u, do not have write permission\n", param->swi_id, i);
-            audit_check_fail();
             return DRV_CALL_OK;
         }
 
