@@ -8,17 +8,7 @@
 #include <string.h>
 #include <autoconf.h>
 
-#ifdef DEBUG_VERSION
-#define TEE_VERSION_PUBLIC                                                     \
-        "TEE Version 1.0.0"                                                    \
-        "\nCommit ID: "                                                        \
-        TEEOS_COMMIT_ID "," HMAPPS_COMMIT_ID "\n"
-#else
-#define TEE_VERSION_PUBLIC                                                     \
-        "TEE Version 1.0.0"                                                    \
-        "\nCommit ID: "                                                        \
-        TEEOS_COMMIT_ID "," HMAPPS_COMMIT_ID "\n"
-#endif
+#define TEE_VERSION_PUBLIC        "TEE Version 1.0.0\n"
 
 bool get_tee_version(unsigned char *buf, uint32_t size)
 {
