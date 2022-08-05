@@ -7,7 +7,6 @@
 #include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <enable_free_uncommit.h> /* libc header file */
 #include <fcntl.h>
 #include <dlfcn.h>
 #include <sys/mman.h>
@@ -41,7 +40,7 @@ static const char *g_drv_so_path = "libdrv_shared_a32.so";
 static const char *g_tee_share_so_path = "libtee_shared_a32.so";
 #endif
 
-static int32_t param_check(int32_t argc, const char * const * argv, bool *free_uncommit)
+static int32_t param_check(int32_t argc, const char * const * argv)
 {
     size_t length;
 
@@ -49,9 +48,6 @@ static int32_t param_check(int32_t argc, const char * const * argv, bool *free_u
         hm_error("invalid argc %d\n", argc);
         return HM_ERROR;
     }
-
-    if (strncmp(argv[ARGV_UNCOMMIT_INDEX], "no_uc", sizeof("no_uc")) == 0)
-        *free_uncommit = false;
 
     length = strnlen(argv[ARGV_TASK_NAME_INDEX], ARGV0_SIZE);
     if (length == 0 || length >= ARGV0_SIZE) {
@@ -101,17 +97,16 @@ static const char *get_target_type_name(const struct env_param *param)
     return name;
 }
 
-static void load_info_print(const char *task_name, const struct env_param *param, bool free_uncommit)
+static void load_info_print(const char *task_name, const struct env_param *param)
 {
     const char *type = get_target_type_name(param);
 
     /* Always print, but not an error */
 #ifdef __aarch64__
-    std_log("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d ca=%u %s\n", type, task_name, hm_getpid(),
-        param->ca, free_uncommit ? "" : " no-uncommit");
+    std_log("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d ca=%u\n", type, task_name, hm_getpid(),
+        param->ca);
 #else
-    std_log("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d ca=%u %s\n", type, task_name, hm_getpid(), param->ca,
-        free_uncommit ? "" : " no-uncommit");
+    std_log("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d ca=%u\n", type, task_name, hm_getpid(), param->ca);
 #endif
 }
 
@@ -148,11 +143,11 @@ static int32_t create_task_channel(const char *task_name, const struct env_param
     return 0;
 }
 
-static int32_t init1(const char *task_name, const struct env_param *param, bool free_uncommit, cref_t *drv_channel)
+static int32_t init1(const char *task_name, const struct env_param *param, cref_t *drv_channel)
 {
     int32_t ret;
 
-    load_info_print(task_name, param, free_uncommit);
+    load_info_print(task_name, param);
 
     /* Extend utable for drv or agent, such as SSA */
     if ((param->target_type == DRV_TARGET_TYPE) || extend_one_more_utable(task_name)) {
@@ -235,12 +230,9 @@ static int32_t driver_job_handler(void *libtee, uint32_t target_type)
     return HM_OK;
 }
 
-static int32_t init3(bool free_uncommit, const struct env_param *param, void *libtee)
+static int32_t init3(const struct env_param *param, void *libtee)
 {
     int32_t ret;
-
-    if (free_uncommit)
-        enable_free_uncommit();
 
     ret = hm_setuid(param->uid);
     if (ret != HM_OK) {
@@ -266,7 +258,7 @@ static int32_t init3(bool free_uncommit, const struct env_param *param, void *li
     return HM_OK;
 }
 
-static int32_t library_init(const char *task_name, bool free_uncommit, const struct env_param *param, void **libtee)
+static int32_t library_init(const char *task_name, const struct env_param *param, void **libtee)
 {
     /* Load TEE library */
     *libtee = ta_mt_dlopen(g_tee_share_so_path, RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
@@ -277,7 +269,7 @@ static int32_t library_init(const char *task_name, bool free_uncommit, const str
     if (init2(*libtee, task_name, param->target_type) != HM_OK)
         return HM_ERROR;
 
-    if (init3(free_uncommit, param, *libtee) != HM_OK)
+    if (init3(param, *libtee) != HM_OK)
         return HM_ERROR;
 
     return HM_OK;
@@ -519,12 +511,11 @@ drv_err:
 
 __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * const * argv)
 {
-    bool free_uncommit = true;
     struct env_param param = { 0 };
     void *libtee = NULL;
     cref_t drv_channel = 0;
 
-    if (param_check(argc, argv, &free_uncommit) != HM_OK) {
+    if (param_check(argc, argv) != HM_OK) {
         hm_error("param check failed\n");
         goto err_out;
     }
@@ -533,11 +524,11 @@ __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * c
         goto err_out;
 
     /* task context initialization */
-    if (init1(argv[ARGV_TASK_NAME_INDEX], &param, free_uncommit, &drv_channel) != HM_OK)
+    if (init1(argv[ARGV_TASK_NAME_INDEX], &param, &drv_channel) != HM_OK)
         goto err_out;
 
     /* load tee library and init it */
-    if (library_init(argv[ARGV_TASK_NAME_INDEX], free_uncommit, &param, &libtee) != HM_OK)
+    if (library_init(argv[ARGV_TASK_NAME_INDEX], &param, &libtee) != HM_OK)
         goto err_out;
 
     if (param.target_type == DRV_TARGET_TYPE) {

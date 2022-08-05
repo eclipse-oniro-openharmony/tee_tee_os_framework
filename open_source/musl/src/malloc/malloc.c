@@ -19,7 +19,6 @@
 #include <inttypes.h>
 #include <procmgr.h>
 #include "hm_malloc.h"
-#include "enable_free_uncommit.h"
 
 #if defined(__GNUC__) && defined(__PIC__)
 #define inline inline __attribute__((always_inline))
@@ -636,13 +635,6 @@ copy_free_ret:
 	return new;
 }
 
-static int need_uncommit = 0;
-
-void enable_free_uncommit(void)
-{
-	need_uncommit = 0x1234;
-}
-
 static void do_unmap_and_notify(void *base, size_t len)
 {
 	int rc = __munmap(base, len);
@@ -721,16 +713,6 @@ void __bin_chunk(struct chunk *self)
 	self->prev = mal.bins[i].tail;
 	self->next->prev = self;
 	self->prev->next = self;
-
-	/* Replace middle of large chunks with fresh zero pages */
-	if (need_uncommit && reclaim) {
-		uintptr_t a = ((uintptr_t)self + SIZE_ALIGN + PAGE_SIZE - 1) & -PAGE_SIZE;
-		uintptr_t b = ((uintptr_t)next - SIZE_ALIGN) & -PAGE_SIZE;
-		rc = hm_muncommit((void *)a, b - a);
-		if (rc) {
-			printf("ERROR: free: hm_muncommit return code = %d\n", rc);
-		}
-	}
 
 	unlock_bin(i);
 }
@@ -970,8 +952,6 @@ static int shrink_top_heap_map(uint32_t head, bool *do_unmap)
 #define REMAIN_EXPAND	2
 int shrink()
 {
-	if (need_uncommit)
-		return 0;
 	lock(mal.binmap_lock_m);
 	lock(mal.binmap_lock_f);
 	lock(heap_lock);
