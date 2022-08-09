@@ -14,7 +14,6 @@ list(APPEND TEE_C_FLAGS
 list(APPEND TEE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include/kernel
     ${PROJECT_SOURCE_DIR}/sys_libs/libhmdrv_stub/include
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
 )
 
 tee_add_library(hmdrv_stub STATIC

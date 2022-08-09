@@ -84,7 +84,6 @@ list(APPEND SWCRYPTO_ENGINE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/vendor/common/include
     ${PREBUILD_HEADER}/inner_sdk/gpapi
     ${PREBUILD_HEADER}/inner_sdk/teeapi
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/crypto
 )
 
 set(SWCRYPTO_SRCS

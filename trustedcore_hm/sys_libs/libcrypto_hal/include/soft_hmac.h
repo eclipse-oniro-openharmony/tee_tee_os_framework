@@ -6,7 +6,6 @@
 #ifndef _SOFT_HMAC_H
 #define _SOFT_HMAC_H
 
-#include <crypto_syscall.h>
 #include <crypto_driver_adaptor.h>
 
 int32_t soft_crypto_hmac_init(struct ctx_handle_t *ctx, const struct symmerit_key_t *key);

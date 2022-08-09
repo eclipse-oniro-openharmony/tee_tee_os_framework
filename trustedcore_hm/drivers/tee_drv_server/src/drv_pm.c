@@ -15,35 +15,10 @@
 #include <drv_pm_check.h>
 #include "task_mgr.h"
 
-#if defined(TEE_SUPPORT_PLATDRV_64BIT) || defined(TEE_SUPPORT_PLATDRV_32BIT)
-static int32_t hunt_platdrv_pid(uint32_t *pid)
-{
-    uint32_t ret = ipc_hunt_by_name(0, "platdrv", pid);
-    if (ret != 0) {
-        hm_error("get platdrv pid fail\n");
-        return -1;
-    }
-
-    hm_debug("hunt platdrv succ\n");
-
-    return 0;
-}
-#endif
-
 static bool check_msg_invalid(uint16_t msg_id, cref_t msg_hdl, hm_msg_header *msg,
     const struct hmcap_message_info *info)
 {
-    static uint32_t auth_pid = SRE_PID_ERR;
-
-#if defined(TEE_SUPPORT_PLATDRV_64BIT) || defined(TEE_SUPPORT_PLATDRV_32BIT)
-    if (auth_pid == SRE_PID_ERR) {
-        int32_t ret = hunt_platdrv_pid(&auth_pid);
-        if (ret != 0)
-            return true;
-    }
-#else
-    auth_pid = SMCMGR_PID;
-#endif
+    static uint32_t auth_pid = SMCMGR_PID;
 
     if (pm_msg_param_check(msg_id, msg_hdl, msg, info, pid_to_hmpid(auth_pid)) != 0)
         return true;
@@ -68,13 +43,6 @@ intptr_t driver_pm_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_i
 
     tee_drv_pm_cmd_handle(msg_id);
 
-#if defined(TEE_SUPPORT_PLATDRV_64BIT) || defined(TEE_SUPPORT_PLATDRV_32BIT)
-    ret = cs_server_reply_error(msg_hdl, 0);
-    if (ret != 0) {
-        hm_error("reply to PM msg error %d\n", ret);
-        return ret;
-    }
-#else
     /*
      * smcmgr will send suspend/resume cmd to tee_drv_server when there it no platdrv
      * in this case, tee_drv_server should send suspend/resume cmd to drv_timer
@@ -88,8 +56,6 @@ intptr_t driver_pm_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_i
     ret = hm_driver_pm_return_to_ree(msg_id);
     if (ret != 0)
         return -1;
-
-#endif
 
     hm_info("tee drv server handle PM msg 0x%x done\n", msg_id);
 

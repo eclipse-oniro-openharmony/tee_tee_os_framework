@@ -10,7 +10,6 @@
 #include <securec.h>
 #include <sys/mman.h>
 #include "mem_drv_map.h"
-#include "drv_pal.h"
 #include "hmdrv_stub_timer.h"
 
 int32_t check_call_permission(uint64_t current_permission, uint64_t permission)
@@ -131,87 +130,6 @@ int32_t mmap_call_param(struct call_params *param, uint32_t index)
         tloge("copy driver data failed\n");
         return DRV_CALL_ERROR;
     }
-    return DRV_CALL_OK;
-}
-
-static int32_t addr_access_check(struct call_params *param)
-{
-    int32_t ret;
-    uint32_t i;
-
-    if (param == NULL) {
-        tloge("invalid parameters, please check\n");
-        return DRV_CALL_ERROR;
-    }
-
-    if (param->mmaped_ptr_cnt > MMAP_PTR_MAX - 1) {
-        tloge("mmaped ptr count is wrong\n");
-        return DRV_CALL_ERROR;
-    }
-
-    for (i = 0; i < param->mmaped_ptr_cnt; i++) {
-        ret = mmap_call_param(param, i);
-        if (ret != DRV_CALL_OK) {
-            tloge("Failed to execute check_addr64_access\n");
-            unmap_maped_ptrs(param);
-            return DRV_CALL_ERROR;
-        }
-    }
-
-    return DRV_CALL_OK;
-}
-
-static int32_t check_addr_write_right(const struct call_params *param)
-{
-    if (param == NULL) {
-        tloge("invalid param, please check\n");
-        return DRV_CALL_ERROR;
-    }
-
-    if (param->mmaped_ptr_cnt == 0)
-        return DRV_CALL_OK;
-
-    for (uint32_t i = 0; i < param->mmaped_ptr_cnt; i++) {
-        if (param->mmaped_ptrs[i].access_flag != ACCESS_WRITE_RIGHT ||
-            param->mmaped_ptrs[i].ptr == NULL)
-            continue;
-
-        if (((uint32_t)param->mmaped_ptrs[i].prot & PROT_WRITE) != PROT_WRITE) {
-            tloge("swi_id %x, param %u, do not have write permission\n", param->swi_id, i);
-            return DRV_CALL_OK;
-        }
-
-        if ((uint32_t)param->mmaped_ptrs[i].len == 0) {
-            tloge("invalid addr len\n");
-            return DRV_CALL_ERROR;
-        }
-    }
-
-    return DRV_CALL_OK;
-}
-
-int32_t check_addr_access_right(struct call_params *param)
-{
-    int32_t ret;
-
-    if (param == NULL) {
-        tloge("invalid parameters, please check\n");
-        return DRV_CALL_ERROR;
-    }
-
-    ret = addr_access_check(param);
-    if (ret != DRV_CALL_OK) {
-        tloge("cmd %x: ACCESS_CHECK failed: %d\n", param->swi_id, ret);
-        return DRV_CALL_ERROR;
-    }
-
-    ret = check_addr_write_right(param);
-    if (ret != DRV_CALL_OK) {
-        tloge("cmd %x:access write right check failed\n", param->swi_id);
-        unmap_maped_ptrs(param);
-        return DRV_CALL_ERROR;
-    }
-
     return DRV_CALL_OK;
 }
 

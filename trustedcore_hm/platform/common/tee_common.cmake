@@ -76,13 +76,6 @@ if ("${CONFIG_PERMSRV_64BIT}")
     endif()
 endif()
 
-if ("${CONFIG_PLATDRV_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_RELEASE_64 platdrv.elf)
-endif()
-if ("${CONFIG_PLATDRV_64BIT}" STREQUAL "false")
-    list(APPEND PRODUCT_RELEASE_32 platdrv.elf)
-endif()
-
 if (NOT "${CONFIG_OFF_DRV_TIMER}" STREQUAL "y")
 if ("${CONFIG_DRV_TIMER_64BIT}" STREQUAL "true")
     list(APPEND PRODUCT_RELEASE_64 drv_timer.elf)
@@ -208,23 +201,6 @@ if ("${CONFIG_DRV_TIMER_64BIT}" STREQUAL "false")
 endif()
 endif()
 
-if ("${CONFIG_PLATDRV_64BIT}" STREQUAL "true")
-    list(APPEND PRODUCT_APPS_64
-        platdrv.elf
-    )
-    list(APPEND CHECK_SYMS
-        platdrv.elf
-    )
-endif()
-if ("${CONFIG_PLATDRV_64BIT}" STREQUAL "false")
-    list(APPEND PRODUCT_APPS_32
-        platdrv.elf
-    )
-    list(APPEND CHECK_SYMS
-        platdrv.elf
-    )
-endif()
-
 if ("${CONFIG_KMS}" STREQUAL "true")
     list(APPEND PRODUCT_APPS_64
         kms.elf
@@ -328,8 +304,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 drv_test_module_copy4
                 drv_test_module_copy5
                 dtfuzz
-                platdrv_libdemo
-                platdrv_libdemo_dependent
                 test_service
             )
             list(APPEND PRODUCT_APPS_64
@@ -415,8 +389,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 openssl_exchng_test_a64
                 perso_perf_test_a64
                 pki-test_a64
-                platdrv_libdemo
-                platdrv_libdemo_dependent
                 receiver_a64
                 sec_storage_perf_a64
                 sender_a64
@@ -468,8 +440,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 drv_test_module_copy2_a32
                 dtfuzz_a32
                 test_service_a32
-                platdrv_libdemo_a32
-                platdrv_libdemo_dependent_a32
             )
             list(APPEND PRODUCT_APPS_32
                 communication_perf_test.elf
@@ -560,8 +530,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 libtest_service_a32
                 openssl_exchng_test
                 perso_perf_test
-                platdrv_libdemo_a32
-                platdrv_libdemo_dependent_a32
                 pki-test
                 receiver
                 sec_storage_perf
@@ -637,8 +605,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 drv_test_module_copy4
                 drv_test_module_copy5
                 dtfuzz
-                platdrv_libdemo
-                platdrv_libdemo_dependent
                 test_service
             )
             list(APPEND PRODUCT_APPS_64
@@ -654,8 +620,6 @@ if ("${BUILD_TEST}" STREQUAL "y")
                 drv_test_module_copy2_a32
                 dtfuzz_a32
                 test_service_a32
-                platdrv_libdemo_a32
-                platdrv_libdemo_dependent_a32
             )
             list(APPEND PRODUCT_APPS_32
                 "${BUILD_TA_NAME}.elf"

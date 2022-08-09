@@ -409,7 +409,6 @@ RSA_get0_factors
 RSA_get0_crt_params
 
 /* may not be exported on OH platform */
-hm_drv_call
 hm_drv_call_new
 get_die_id_size
 tee_print

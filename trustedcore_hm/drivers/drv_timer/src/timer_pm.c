@@ -5,7 +5,6 @@
  */
 #include "timer_pm.h"
 #include <hmlog.h>
-#include <sre_hwi.h>
 #include "timer_hw.h"
 #include "timer_reg.h"
 #include "timer_types.h"

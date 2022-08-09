@@ -7,7 +7,6 @@
 #define TIMER_IO_MAP_H
 
 #include <timer_init.h>
-#include <hisi_platform.h>
 #include <plat_cfg.h>
 
 struct ioaddr_timer_t g_timer_id_addr[] = {

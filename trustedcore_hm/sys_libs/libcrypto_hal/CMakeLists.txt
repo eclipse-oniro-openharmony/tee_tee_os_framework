@@ -24,7 +24,6 @@ if ("${CONFIG_CIPHER_ENABLE}" STREQUAL "true")
     )
     list(APPEND TEE_INCLUDE_PATH
         ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/austin/host/src/cclib
-        ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/ccdriver_lib/include
         ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/crypto_api
         ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/
         ${PROJECT_SOURCE_DIR}/thirdparty/vendor/libdxcc/atlanta/shared/include/crypto_api/cc7x_tee
@@ -41,17 +40,12 @@ if ("${CONFIG_CIPHER_ENABLE}" STREQUAL "true")
     )
 endif()
 list(APPEND TEE_INCLUDE_PATH
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/crypto
     ${PROJECT_SOURCE_DIR}/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/libseceng/include/cdrmr
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/libseceng/include/common
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/host/include/pal
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/crypto_enhance/host/include/adapter
     ${PREBUILD_HEADER}/inner_sdk/gpapi
     ${PROJECT_SOURCE_DIR}/inner_sdk/teeapi/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 list(REMOVE_ITEM TEE_C_FLAGS "-Werror")

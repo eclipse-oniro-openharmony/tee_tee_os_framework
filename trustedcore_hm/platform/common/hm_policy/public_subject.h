@@ -12,7 +12,6 @@ AC_DEFINE_SUBJ_BEG(pub_ta_add)
     { AC_SID_TEESMCMGR, 0, NULL },
     { AC_SID_TALDR, 0, NULL },
     { AC_SID_GTASK, 0, NULL },
-    { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
     { AC_SID_HMCCMGR, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
@@ -49,7 +48,6 @@ AC_DEFINE_SUBJ_BEG(pub_setuid)
 AC_DEFINE_SUBJ_END(pub_setuid)
 
 AC_DEFINE_SUBJ_BEG(pub_proc_status)
-    { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
     { AC_SID_FILEMGR, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
@@ -70,7 +68,6 @@ AC_DEFINE_SUBJ_BEG(pub_dyn_plc)
 AC_DEFINE_SUBJ_END(pub_dyn_plc)
 
 AC_DEFINE_SUBJ_BEG(pub_get_uuid)
-    { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
     { AC_SID_TEE_DRV_SERVER, 0, NULL },
@@ -97,14 +94,12 @@ AC_DEFINE_SUBJ_BEG(pub_xip_map)
 AC_DEFINE_SUBJ_END(pub_xip_map)
 
 AC_DEFINE_SUBJ_BEG(pub_io_map)
-    { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
     { AC_SID_HMCCMGR, 0, NULL },
     T_POLICY(io_map)
 AC_DEFINE_SUBJ_END(pub_io_map)
 
 AC_DEFINE_SUBJ_BEG(pub_irq_acquire)
-    { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
     T_POLICY(irq_acquire)
 AC_DEFINE_SUBJ_END(pub_irq_acquire)
@@ -112,13 +107,11 @@ AC_DEFINE_SUBJ_END(pub_irq_acquire)
 AC_DEFINE_SUBJ_BEG(pub_sysctrl_local_irq)
     { AC_SID_TEESMCMGR, 0, NULL },
     { AC_SID_GTASK, 0, NULL },
-    { AC_SID_PLATDRV, 0, NULL },
     T_POLICY(sysctrl_local_irq)
 AC_DEFINE_SUBJ_END(pub_sysctrl_local_irq)
 
 AC_DEFINE_SUBJ_BEG(pub_teesmc_acquire)
     { AC_SID_TEESMCMGR, 0, NULL },
-    { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
     { AC_SID_TEE_DRV_SERVER, 0, NULL },
@@ -128,20 +121,17 @@ AC_DEFINE_SUBJ_END(pub_teesmc_acquire)
 
 AC_DEFINE_SUBJ_BEG(pub_map2task)
     { AC_SID_GTASK, ARRAY_SIZE(g_map2task_gtask_objs), &g_map2task_gtask_acobjs },
-    { AC_SID_PLATDRV, ARRAY_SIZE(g_map2task_platdrv_objs), &g_map2task_platdrv_acobjs },
     T_POLICY(map2task)
 AC_DEFINE_SUBJ_END(pub_map2task)
 
 AC_DEFINE_SUBJ_BEG(pub_unmap2task)
     { AC_SID_GTASK, 0, NULL },
-    { AC_SID_PLATDRV, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
     { AC_SID_HMCCMGR, 0, NULL },
     T_POLICY(unmap2task)
 AC_DEFINE_SUBJ_END(pub_unmap2task)
 
 AC_DEFINE_SUBJ_BEG(pub_push_rnd)
-    { AC_SID_PLATDRV, 0, NULL },
     T_POLICY(push_rnd)
 AC_DEFINE_SUBJ_END(pub_push_rnd)
 

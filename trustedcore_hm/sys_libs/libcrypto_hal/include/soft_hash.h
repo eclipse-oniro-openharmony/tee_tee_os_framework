@@ -6,7 +6,6 @@
 #ifndef _SOFT_HASH_H
 #define _SOFT_HASH_H
 
-#include <crypto_syscall.h>
 #include <crypto_driver_adaptor.h>
 
 int32_t soft_crypto_hash_init(struct ctx_handle_t *ctx);

@@ -6,7 +6,6 @@
 #ifndef PLATDRV_IO_MAP_PUBLIC_H
 #define PLATDRV_IO_MAP_PUBLIC_H
 
-#include <platdrv.h>
 
 /*
  * for example

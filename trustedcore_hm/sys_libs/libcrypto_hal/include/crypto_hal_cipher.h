@@ -7,7 +7,6 @@
 #define CRYPTO_HAL_CIPHER_H
 
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 
 struct ctx_handle_t *tee_crypto_cipher_init(uint32_t alg_type, uint32_t direction,
     const struct symmerit_key_t *key, const struct memref_t *iv, uint32_t engine);

@@ -51,7 +51,7 @@ struct ctx_handle_t *driver_alloc_ctx_handle(uint32_t alg_type, uint32_t engine,
 {
     (void)engine;
     if (ctx == NULL)
-        return CRYPTO_BAD_PARAMETERS;
+        return NULL;
 
     int64_t fd = get_ctx_fd_handle(alg_type, false);
     if (fd <= 0) {
@@ -1958,7 +1958,7 @@ int32_t crypto_driver_generate_random(void *buffer, uint32_t size, bool is_hw_ra
 
 int32_t crypto_driver_get_entropy(void *buffer, uint32_t size)
 {
-#if !defined(TEE_SUPPORT_PLATDRV_64BIT) && !defined(TEE_SUPPORT_PLATDRV_32BIT)
+#if !defined(CRYPTO_MGR_SERVER_ENABLE)
     return soft_random_get(buffer, size);
 #else
     if (buffer == NULL || size == 0) {

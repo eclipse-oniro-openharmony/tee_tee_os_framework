@@ -13,10 +13,7 @@ include $(TOPDIR)/mk/plat.mk
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(PREBUILD_DIR)/headers/ddk
 inc-flags += -I$(TOPDIR)/drivers/common
-inc-flags += -I$(LIBS_DIR)/libplatdrv/platform/common/include
-inc-flags += -I$(LIBS_DIR)/libplatdrv/platform/common/crypto
 inc-flags += -I$(TOPDIR)/drivers/drv_timer/src
-inc-flags += -I$(TOPDIR)/drivers/platdrv/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 inc-flags += -I$(PREBUILD_HEADER)/sys/stackprotect
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/timer/include

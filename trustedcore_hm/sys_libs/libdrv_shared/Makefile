@@ -29,11 +29,9 @@ endif
 endif
 
 include $(TOPDIR)/mk/lib-common.mk
-inc-flags += -I$(TOPDIR)/drivers/platdrv/include
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/common/crypto
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/include
 
 ifneq ($(CONFIG_TEE_DRV_SERVER_64BIT), )

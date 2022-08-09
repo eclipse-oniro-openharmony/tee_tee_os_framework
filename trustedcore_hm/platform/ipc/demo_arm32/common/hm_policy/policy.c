@@ -43,19 +43,6 @@ AC_DEFINE_SUBJ_BEG(ta_add)
     { AC_SID_TEE_SERVICE_PERM, 1, &g_ac_obj_ta_add_permsrv_file },
 AC_DEFINE_SUBJ_END(ta_add)
 
-static const taskmap2task_ac_req_t g_taskmap2task_platdrv_objs[] = {
-    { AC_SID_ALL, AC_SID_PLATDRV },
-#ifdef DEF_ENG
-    { AC_SID_PLATDRV, AC_SID_SUPER }, /* for ut_task */
-#else
-    { AC_SID_ALL, AC_SID_PLATDRV }, /* place holder */
-#endif
-};
-
-static const struct ac_static_object g_taskmap2task_platdrv_acobjs = {
-    sizeof(taskmap2task_ac_req_t), ARRAY_SIZE(g_taskmap2task_platdrv_objs), g_taskmap2task_platdrv_objs
-};
-
 AC_DEFINE_SUBJ_BEG(spawn)
 AC_DEFINE_SUBJ_END(spawn)
 
@@ -103,22 +90,6 @@ static const sid_t g_map2task_service_ssa_objs[] = {
 
 static const struct ac_static_object g_map2task_service_ssa_acobjs = {
     sizeof(sid_t), ARRAY_SIZE(g_map2task_service_ssa_objs), g_map2task_service_ssa_objs
-};
-
-static const sid_t g_map2task_platdrv_objs[] = {
-    AC_SID_GTASK,
-    AC_SID_PLATDRV,
-#ifdef DEF_ENG
-    AC_SID_TEE_SERVICE_ECHO,
-    AC_SID_TEE_SERVICE_UT,
-    AC_SID_TEE_SERVICE_KERNELMEMUSAGE,
-    AC_SID_TEE_SERVICE_TEST_API,
-    AC_SID_SUPER, /* for ut_task */
-#endif
-};
-
-static const struct ac_static_object g_map2task_platdrv_acobjs = {
-    sizeof(sid_t), ARRAY_SIZE(g_map2task_platdrv_objs), g_map2task_platdrv_objs
 };
 
 static const sid_t g_map2task_gtask_objs[] = {

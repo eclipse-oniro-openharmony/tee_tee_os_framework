@@ -284,7 +284,7 @@ if ("${ARCH}" STREQUAL "aarch64")
 else()
     list(APPEND CFI_NO_ICALL ccmgr_hm vfs ac hongmeng ta_mt zlib crypto taentry gtask teeos ssa decouple swcrypto_engine tarunner.elf timer crypto_hal)
     if ("${PLATFORM_NAME}" STREQUAL "mtk")
-        list(APPEND CFI_NO_ICALL platdrv.elf drv_frame)
+        list(APPEND CFI_NO_ICALL drv_frame)
     endif()
 endif()
 

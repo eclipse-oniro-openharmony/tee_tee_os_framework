@@ -13,7 +13,6 @@ inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
 inc-flags += -I$(TOPDIR)/vendor/common/include # chip_info.h
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/common/crypto
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), mbedtls)
 inc-flags += -I$(PREBUILD_HEADER)/mbedtls

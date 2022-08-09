@@ -7,7 +7,6 @@
 #define _SOFT_COMMON_API_H
 
 #include <crypto_inner_defines.h>
-#include <crypto_syscall.h>
 #include "crypto_driver_adaptor.h"
 
 #define AES_MAX_IV_SIZE              16

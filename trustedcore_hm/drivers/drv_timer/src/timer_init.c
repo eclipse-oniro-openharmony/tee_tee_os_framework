@@ -769,11 +769,7 @@ static int32_t timer_handle_message(const struct timer_req_msg_t *msg, struct ti
     return TMR_DRV_SUCCESS;
 }
 
-#if defined(TEE_SUPPORT_PLATDRV_64BIT) || defined(TEE_SUPPORT_PLATDRV_32BIT)
-const char *g_pm_sender_name = "platdrv";
-#else
 const char *g_pm_sender_name = "tee_drv_server";
-#endif
 
 static int32_t hunt_sender_drv_pid(uint32_t *pid)
 {

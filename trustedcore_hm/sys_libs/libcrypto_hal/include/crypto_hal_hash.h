@@ -8,7 +8,6 @@
 #define CRYPTO_HAL_HASH_H
 
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 
 struct ctx_handle_t *tee_crypto_hash_init(uint32_t alg_type, uint32_t engine);
 int32_t tee_crypto_hash_update(struct ctx_handle_t *ctx, const struct memref_t *data_in);

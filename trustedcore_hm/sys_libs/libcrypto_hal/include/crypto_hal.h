@@ -9,7 +9,6 @@
 #include <stdbool.h>
 #include <tee_mem_mgmt_api.h>
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 
 #define CRYPTO_PADDING_LEN    16
 #define MAX_CRYPTO_DATA_LEN   (500 * 1024)

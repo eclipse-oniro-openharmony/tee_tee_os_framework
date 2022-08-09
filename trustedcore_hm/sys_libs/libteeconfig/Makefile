@@ -32,13 +32,6 @@ inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
-ifeq ($(chip_type), es)
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include/platform/$(TARGET_BOARD_PLATFORM)_es/
-else ifeq ($(chip_type), cs2)
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include/platform/$(TARGET_BOARD_PLATFORM)_cs2/
-else
-inc-flags += -I$(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/include/platform/$(TARGET_BOARD_PLATFORM)/
-endif
 
 # Source files required to build the target
 libteeconfig_c_files += $(wildcard src/drv_hal/*.c)

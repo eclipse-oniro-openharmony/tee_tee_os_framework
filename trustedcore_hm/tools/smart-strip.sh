@@ -10,9 +10,6 @@ strip_file() {
 		# not a ELF file
 		return
 	fi
-	if (echo "$1" | grep 'platdrv.elf') ; then
-		STRIP_OPTION="-d -p"
-	fi
 	if (echo "$1" | grep '\.so$') ; then
 		STRIP_OPTION="-s -p"
 	fi

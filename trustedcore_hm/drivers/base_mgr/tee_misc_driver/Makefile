@@ -17,7 +17,6 @@ inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/sys/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
 inc-flags += -I$(TOPDIR)/drivers/include
-inc-flags += -I$(TOPDIR)/drivers/platdrv/include
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(TOPDIR)/drivers/tee_drv_server/src

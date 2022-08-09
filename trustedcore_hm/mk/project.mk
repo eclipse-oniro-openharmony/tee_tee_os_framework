@@ -131,12 +131,6 @@ $(aarch64_test_drivers): $(aarch64_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
 	$(VER) $(MAKE) -C tests/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 
-drv_mods: $(arm_tee_mods)
-$(arm_tee_mods):
-	@echo "building ARCH=aarch64 mods=$@ target"
-	$(VER) $(MAKE) -C libs/libplatdrv/platform/$(PLATFORM_NAME)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	$(VER) $(MAKE) -C libs/libplatdrv/platform/$(PLATFORM_NAME)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all
-
 # compile kernel rules
 
 kernel: $(hm_kernel) $(hm_elfloader)

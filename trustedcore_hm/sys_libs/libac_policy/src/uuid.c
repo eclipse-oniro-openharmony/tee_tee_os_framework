@@ -35,7 +35,6 @@ WEAK bool ac_taskmap2task_valid_subj_sid_vendor(uint64_t sid)
 bool ac_taskmap2task_valid_subj_sid(uint64_t sid)
 {
     switch (sid) {
-    case AC_SID_PLATDRV:
     case AC_SID_DRV_TIMER:
 #if (defined TEE_SUPPORT_SSA_64BIT || defined TEE_SUPPORT_SSA_32BIT)
     case AC_SID_TEE_SERVICE_SSA:
@@ -55,7 +54,6 @@ WEAK bool ac_map2task_valid_subj_sid_vendor(uint64_t sid)
 bool ac_map2task_valid_subj_sid(uint64_t sid)
 {
     switch (sid) {
-    case AC_SID_PLATDRV:
 #if (defined TEE_SUPPORT_SSA_64BIT || defined TEE_SUPPORT_SSA_32BIT)
     case AC_SID_TEE_SERVICE_SSA:
 #endif

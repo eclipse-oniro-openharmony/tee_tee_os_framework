@@ -1,6 +1,5 @@
 add_custom_target(libteeconfig_headers
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/include/crypto_syscal_types.h ${HDR_L_DIR}
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/include/dynion_types.h ${HDR_L_DIR}
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/include/hwi_drv_call.h ${HDR_L_DIR}
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/include/root_status_ops.h ${HDR_L_DIR}
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/include/sre_syscalls_id.h ${HDR_L_DIR}
@@ -38,7 +37,6 @@ list(APPEND TEE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/drivers/base_mgr/tee_misc_driver/src
     ${PLATFORM_DIR}/common/include
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/tee_config
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/libthirdparty_drv/include/platform/${TARGET_BOARD_PLATFORM}
 )
 
 if ("${CONFIG_TEE_MISC_DRIVER_64BIT}" STREQUAL "true" OR "${CONFIG_TEE_MISC_DRIVER_64BIT}" STREQUAL "false")

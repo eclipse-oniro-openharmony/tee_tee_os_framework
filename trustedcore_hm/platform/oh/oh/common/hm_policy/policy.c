@@ -89,15 +89,6 @@ static const struct ac_static_object g_map2task_service_ssa_acobjs = {
     sizeof(sid_t), ARRAY_SIZE(g_map2task_service_ssa_objs), g_map2task_service_ssa_objs
 };
 
-static const sid_t g_map2task_platdrv_objs[] = {
-    AC_SID_GTASK,
-    AC_SID_PLATDRV,
-};
-
-static const struct ac_static_object g_map2task_platdrv_acobjs = {
-    sizeof(sid_t), ARRAY_SIZE(g_map2task_platdrv_objs), g_map2task_platdrv_objs
-};
-
 static const sid_t g_map2task_gtask_objs[] = {
     AC_SID_ALL,
 };

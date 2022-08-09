@@ -7,7 +7,6 @@
 #define CRYPTO_HAL_AE_H
 
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 
 struct ctx_handle_t *tee_crypto_ae_init(uint32_t alg_type, uint32_t direction, const struct symmerit_key_t *key,
     const struct ae_init_data *ae_init_param, uint32_t engine);

@@ -7,7 +7,6 @@
 #define CRYPTO_MANAGER_H
 
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 
 #define TEE_CRYPTO_DRIVER_NAME   "crypto_mgr"
 
@@ -15,13 +14,8 @@ uint32_t crypto_get_default_engine(uint32_t algorithm);
 
 uint32_t crypto_get_default_generate_key_engine(uint32_t algorithm);
 
-#ifdef CRYPTO_MGR_SERVER_ENABLE
 int32_t crypto_driver_get_ctx_size(uint32_t alg_type, int64_t fd);
 int32_t crypto_driver_get_driver_ability(int64_t fd);
-#else
-int32_t crypto_driver_get_ctx_size(uint32_t alg_type, uint32_t engine);
-int32_t crypto_driver_get_driver_ability(uint32_t engine);
-#endif
 
 int32_t crypto_driver_ctx_copy(const struct ctx_handle_t *src_ctx, struct ctx_handle_t *dest_ctx);
 
