@@ -62,7 +62,6 @@ list(APPEND TEE_INCLUDE_PATH
     ${PREBUILD_DIR}/headers/ddk/hmapi
     ${PREBUILD_DIR}/headers/sys/hmapi
     ${PREBUILD_DIR}/headers/ddk/legacy
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/drivers/common
     ${PROJECT_SOURCE_DIR}/drivers/tee_drv_server/src

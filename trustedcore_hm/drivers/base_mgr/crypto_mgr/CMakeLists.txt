@@ -10,13 +10,7 @@ list(APPEND TEE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/drivers/tee_drv_server/src
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/drivers/common
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/src
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/crypto
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
-    ${PROJECT_SOURCE_DIR}/platform/ascend/mdc/hi1951/platdrv/include
     ${PROJECT_SOURCE_DIR}/platform/higeneric/phone/common/include
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_frame/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_shared/src
     ${PROJECT_SOURCE_DIR}/drivers/base_mgr/crypto_mgr/src/crypto_ioctl/

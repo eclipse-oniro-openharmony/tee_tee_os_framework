@@ -7,7 +7,6 @@
 #define CRYPTO_HAL_HMAC_H
 
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 
 struct ctx_handle_t *tee_crypto_hmac_init(uint32_t alg_type, const struct symmerit_key_t *key, uint32_t engine);
 int32_t tee_crypto_hmac_update(struct ctx_handle_t *ctx, const struct memref_t *data_in);

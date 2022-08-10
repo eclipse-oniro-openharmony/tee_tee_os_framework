@@ -5,7 +5,6 @@
  */
 #include "timer_interrupt.h"
 #include <hmlog.h>
-#include <sre_hwi.h>
 #include <drv_hwi_share.h>
 #include <drv_module.h>
 #include <secure_gic_common.h>
@@ -25,6 +24,8 @@
 #define DEFAULT_HWI_PRI 0
 #define INT_FUN_ARG 0x0
 #define RTC_INIT_TIME 0x0
+
+typedef VOID (*HWI_PROC_FUNC)(HWI_ARG_T);
 
 static const uint32_t g_timer_hwi[] = {
 #ifndef TIMER_FREE_RUNNING_FIQ_DISABLE

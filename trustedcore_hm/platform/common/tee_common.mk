@@ -65,13 +65,6 @@ arm_frm_drivers += permission_service
 endif
 endif
 
-ifeq ($(CONFIG_PLATDRV_64BIT), true)
-aarch64_driver_drivers += platdrv
-endif
-ifeq ($(CONFIG_PLATDRV_64BIT), false)
-arm_driver_drivers += platdrv
-endif
-
 ifneq ($(CONFIG_OFF_DRV_TIMER), y)
 ifeq ($(CONFIG_DRV_TIMER_64BIT), true)
 aarch64_driver_drivers += drv_timer
@@ -157,15 +150,6 @@ ifeq ($(CONFIG_DRV_TIMER_64BIT), false)
 product_apps += $(OUTPUTDIR)/arm/drivers/drv_timer.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/drv_timer.elf
 endif
-endif
-
-ifeq ($(CONFIG_PLATDRV_64BIT), true)
-product_apps += $(OUTPUTDIR)/aarch64/drivers/platdrv.elf
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/platdrv.elf
-endif
-ifeq ($(CONFIG_PLATDRV_64BIT), false)
-product_apps += $(OUTPUTDIR)/arm/drivers/platdrv.elf
-check-syms-y += $(OUTPUTDIR)/arm/drivers/platdrv.elf
 endif
 
 ifneq ($(CONFIG_PLATDRV_64BIT),)

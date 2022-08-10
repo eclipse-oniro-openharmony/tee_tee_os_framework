@@ -5,7 +5,6 @@
  */
 
 #include <stdint.h>
-#include <hmdrv.h>
 #include <hm_msg_type.h> /* for ARRAY_SIZE */
 #include <sre_syscalls_id.h>
 #include "securec.h"
@@ -35,11 +34,9 @@ uint32_t tee_hal_get_provision_key(uint8_t *oem_key, size_t key_size)
 
     return 0;
 #else
-    uint64_t args[] = {
-        (uint64_t)(uintptr_t)(oem_key),
-        (uint64_t)key_size,
-    };
-    return hm_drv_call(SW_SYSCALL_GET_PROVISION_KEY, args, ARRAY_SIZE(args));
+    (void)oem_key;
+    (void)key_size;
+    return TEE_ERROR_NOT_SUPPORTED;
 #endif
 #endif
 }

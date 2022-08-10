@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <sys/usrsyscall_ext.h>
 #include <api/kcalls.h>
-#include <sre_hwi.h>
 #include <drv_hwi_share.h>
 #include <hmlog.h>
 #include <drv_module.h>

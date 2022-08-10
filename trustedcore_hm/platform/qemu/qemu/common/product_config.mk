@@ -1,7 +1,7 @@
 #qemu need libs include:
 #aarch64_sys_libs        include (libccmgr libtimer)
 #arch64_open_source_libs include (libzlib)
-#arm_driver_drivers      include (drv_timer platdrv)
+#arm_driver_drivers      include (drv_timer)
 #arm_sys_apps            include (gatekeeper keymaster storage tui attestation_ta)
 
 #tee drivers core service

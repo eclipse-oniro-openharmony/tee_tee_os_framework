@@ -6,7 +6,6 @@
 #ifndef _SOFT_CIPHER_H
 #define _SOFT_CIPHER_H
 
-#include <crypto_syscall.h>
 #include <crypto_driver_adaptor.h>
 
 int32_t soft_crypto_cipher_init(struct ctx_handle_t *ctx, const struct symmerit_key_t *key, const struct memref_t *iv);

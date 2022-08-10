@@ -15,7 +15,6 @@ list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libtimer/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libteeconfig/include
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/drivers/common
     ${PROJECT_SOURCE_DIR}/platform/common/tee_config

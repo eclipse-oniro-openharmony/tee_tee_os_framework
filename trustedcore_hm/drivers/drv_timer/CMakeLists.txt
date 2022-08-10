@@ -19,10 +19,7 @@ list(APPEND TEE_INCLUDE_PATH
     ${PREBUILD_DIR}/headers/ddk
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/drivers/common
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/include
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/crypto
     ${PROJECT_SOURCE_DIR}/drivers/drv_timer/src
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
     ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_frame/include
     ${PREBUILD_HEADER}/sys/stackprotect
     ${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/timer/include

@@ -82,8 +82,6 @@ list(APPEND TEE_INCLUDE_PATH
     ${PREBUILD_LIBC_INC}/arch/${ARCH}/bits
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/drivers/include
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/common/crypto
     ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_frame/include
 )
 

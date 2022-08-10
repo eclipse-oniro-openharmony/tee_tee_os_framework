@@ -84,14 +84,8 @@ static void tee_smc_pm_fallback_for_error(enum cap_teesmc_ret ret)
 static int32_t get_drv_cref(cref_t *drv_cref)
 {
     cref_t drv = 0;
-    int32_t err = pathmgr_acquire("platdrv", &drv);
-    if (!(err != EOK || is_ref_err(drv))) {
-        info("found platdrv channel\n");
-        *drv_cref = drv;
-        return 0;
-    }
 
-    err = pathmgr_acquire("tee_drv_server", &drv);
+    int32_t err = pathmgr_acquire("tee_drv_server", &drv);
     if (!(err != EOK || is_ref_err(drv))) {
         info("found tee driver server channel\n");
         *drv_cref = drv;

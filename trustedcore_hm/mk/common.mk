@@ -12,7 +12,6 @@ include $(TOPDIR)/mk/asan.mk
 inc-flags += -I$(TEE_SECUREC_DIR)/include
 INCLUDE_PATH += $(PREBUILD_DIR)/headers/
 INCLUDE_PATH += $(TOPDIR)/tools/
-INCLUDE_PATH += $(TOPDIR)/libs/libplatdrv/platform/libthirdparty_drv/plat_drv/inse_crypto/
 
 # all target flags for both c & c++ compiler
 ifneq ($(TARGET_IS_HOST),y)

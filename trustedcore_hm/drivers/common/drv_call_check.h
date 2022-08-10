@@ -64,7 +64,6 @@ struct call_params {
 int32_t audit_check_fail(void);
 int32_t check_call_permission(uint64_t current_permission, uint64_t permission);
 void unmap_maped_ptrs(struct call_params *param);
-int32_t check_addr_access_right(struct call_params *param);
 int32_t mmap_call_param(struct call_params *param, uint32_t index);
 
 #endif

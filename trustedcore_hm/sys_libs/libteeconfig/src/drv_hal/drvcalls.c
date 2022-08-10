@@ -8,13 +8,11 @@
 #include <string.h>
 #include <sre_syscalls_id.h>
 #include <sre_syscalls_id_ext.h>
-#include <hmdrv.h>
 #include <api/errno.h>
 #include <securec.h>
 #include <api/tee_common.h>
 #include "tee_log.h"
 #include "tee_bit_ops.h"
-#include "hwi_drv_call.h"
 #include "boot_sharedmem.h"
 #include "tee_secfile_load_agent.h"
 #include "tee_sharemem.h"
@@ -23,37 +21,19 @@
 #define DRV_MOD_PARAM_LEN   2
 #define PRODCUT_MAX_LEN     64
 
-uint32_t tee_hwi_msg_register(uint32_t uw_hwi_num)
-{
-    uint64_t args[] = {
-        (uint64_t)uw_hwi_num,
-    };
-    return hm_drv_call(SW_SYSCALL_HWI_IPCREGISTER, args, ARRAY_SIZE(args));
-}
-
-uint32_t tee_hwi_msg_deregister(uint32_t uw_hwi_num)
-{
-    uint64_t args[] = {
-        (uint64_t)uw_hwi_num,
-    };
-    return hm_drv_call(SW_SYSCALL_HWI_IPCDEREGISTER, args, ARRAY_SIZE(args));
-}
-
 int32_t get_tlv_sharedmem(const char *type, uint32_t type_size, void *buffer, uint32_t *buffer_size, bool clear_flag)
 {
 #ifdef CONFIG_TEE_MISC_DRIVER
     int32_t ret = tee_shared_mem(type, type_size, buffer, buffer_size, clear_flag);
     return ret;
 #else
-    uint64_t args[] = {
-        (uint64_t)(uintptr_t)type,
-        (uint64_t)type_size,
-        (uint64_t)(uintptr_t)buffer,
-        (uint64_t)(uintptr_t)buffer_size,
-        (uint64_t)clear_flag,
-    };
+    (void)type;
+    (void)type_size;
+    (void)buffer;
+    (void)buffer_size;
+    (void)clear_flag;
 
-    return hm_drv_call(SW_SYSCALL_GET_TLV_TEESHAREDMEM, args, ARRAY_SIZE(args));
+    return TEE_ERROR_NOT_SUPPORTED;
 #endif
 }
 
@@ -89,13 +69,6 @@ int32_t tee_get_chip_type(char *buffer, uint32_t buffer_len)
 __attribute__((visibility("default"))) \
 int32_t tee_ext_get_dieid(uint32_t *in_buffer)
 {
-#ifdef CONFIG_SUPPORT_GET_DIEID
-    uint64_t args[] = {
-        (uint64_t)(uintptr_t)(in_buffer),
-    };
-    return hm_drv_call(SW_SYSCALL_TEE_HAL_GET_DIEID, args, ARRAY_SIZE(args));
-#else
     (void)in_buffer;
     return TEE_ERROR_NOT_SUPPORTED;
-#endif
 }

@@ -8,7 +8,6 @@
 #define __GMSSL_INTERNAL_H__
 
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 #include <crypto/sm2.h>
 #include <crypto/sm3.h>
 #include <crypto/sm4.h>

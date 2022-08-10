@@ -21,6 +21,8 @@
 #define ECC_KEY_LEN          68
 #define DRIVER_PADDING       0x00000001
 #define DRIVER_CACHE         0x00000002
+#define AES_MAC_LEN          16
+#define CIPHER_CACHE_LEN     16
 
 enum crypto_engine {
     DX_CRYPTO_FLAG,
@@ -160,6 +162,7 @@ enum key_type_t {
     CRYPTO_KEYTYPE_USER    = 0x1,
     CRYPTO_KEYTYPE_HUK     = 0x2,
     CRYPTO_KEYTYPE_GID     = 0x3,
+    CRYPTO_KEYTYPE_RPMB    = 0x4,
 };
 
 enum crypto_key_type_id {
@@ -171,6 +174,31 @@ enum crypto_key_type_id {
     CRYPTO_KEY_TYPE_X25519_KEYPAIR     = 0xA1000044,
     CRYPTO_KEY_TYPE_SM2_DSA_KEYPAIR    = 0xA1000045,
     CRYPTO_KEY_TYPE_SM2_PKE_KEYPAIR    = 0xA1000047,
+};
+
+struct ctx_handle_t {
+    uint64_t ctx_buffer;
+    uint32_t ctx_size;
+    uint32_t engine;
+    uint32_t alg_type;
+    uint32_t direction;
+    bool is_support_ae_update;
+    uint64_t cache_buffer;
+    uint8_t cbc_mac_buffer[AES_MAC_LEN];
+    uint32_t tag_len;
+    uint8_t cipher_cache_data[CIPHER_CACHE_LEN];
+    uint32_t cipher_cache_len;
+    void (*free_context)(uint64_t *);
+    uint64_t aad_cache;
+    uint32_t aad_size;
+    uint32_t driver_ability;
+    uint64_t fd;
+};
+
+struct drv_memref_t {
+    uint64_t buffer;
+    uint32_t size;
+    bool need_copy;
 };
 
 struct memref_t {
@@ -344,7 +372,4 @@ struct crypto_ops_t {
         uint32_t digest_type, struct memref_t *data_out);
 };
 
-int32_t register_crypto_ops(uint32_t engine, const struct crypto_ops_t *ops);
-int32_t hw_derive_root_key(uint32_t derive_type, const struct memref_t *data_in, struct memref_t *data_out);
-int32_t hw_generate_random(void *buffer, size_t size);
 #endif

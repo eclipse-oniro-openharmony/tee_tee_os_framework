@@ -72,9 +72,7 @@ do_others() {
             CC_PLATFORM_ES="_es"
         fi
         if [ "${CONFIG_NO_PLATCFG_EMBEDDED}" != "true" ]; then
-            ${CC} ${SDK_CPPFLAGS} -I"${PWD}"/libs/libplatdrv/platform/common/include/ \
-                -I"${PWD}"/libs/libplatdrv/platform/libthirdparty_drv/include/platform/${TARGET_BOARD_PLATFORM}${CC_PLATFORM_ES}/ \
-                -I"${PLAT_CFG_DIR}"/ \
+            ${CC} ${SDK_CPPFLAGS} -I"${PLAT_CFG_DIR}"/ \
                 -I"${PLAT_COMMON_DIR}"/include/ \
                 -I${TOPDIR}/kernel/elfloader/include/ \
                 -I${TOPDIR}/kernel/libuart/ \

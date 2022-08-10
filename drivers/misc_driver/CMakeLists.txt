@@ -37,7 +37,6 @@ list(APPEND TEE_INCLUDE_PATH
     ${PROJECT_SOURCE_DIR}/prebuild/hm-teeos-local-release/headers/ddk/hmapi
     ${PROJECT_SOURCE_DIR}/prebuild/hm-teeos-local-release/headers/sys/hmapi
     ${PROJECT_SOURCE_DIR}/prebuild/hm-teeos-local-release/headers/ddk/legacy
-    ${PROJECT_SOURCE_DIR}/drivers/platdrv/include
     ${PROJECT_SOURCE_DIR}/drivers/include
     ${PROJECT_SOURCE_DIR}/drivers/tee_drv_server/src
     ${PROJECT_SOURCE_DIR}/drivers/base_mgr/misc_driver/src

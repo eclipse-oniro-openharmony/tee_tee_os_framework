@@ -3,7 +3,6 @@ include(apps_asan)
 list(APPEND TEE_INCLUDE_PATH
     ${PREBUILD_DIR}/headers/
     ${PROJECT_SOURCE_DIR}/tools/
-    ${PROJECT_SOURCE_DIR}/libs/libplatdrv/platform/kirin/inse_crypto/
     ${PROJECT_SOURCE_DIR}/thirdparty/huawei/libhwsecurec/include/libhwsecurec/
     ${PROJECT_SOURCE_DIR}/thirdparty/huawei/libhwsecurec/include/
 )

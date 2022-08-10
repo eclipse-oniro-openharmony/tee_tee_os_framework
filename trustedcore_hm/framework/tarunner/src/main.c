@@ -181,17 +181,7 @@ static int32_t init2(void *libtee, const char *task_name, uint32_t target_type)
     if (pp != NULL)
         *pp = task_name;
 
-#if defined(TEE_SUPPORT_PLATDRV_64BIT) || defined(TEE_SUPPORT_PLATDRV_32BIT)
-    if (target_type != DRV_TARGET_TYPE) {
-        func = dlsym(libtee, "hm_ccmgr_init");
-        if ((func == NULL) || (func() != HM_OK)) {
-            hm_error("ccmgr init failed\n");
-            return HM_ERROR;
-        }
-    }
-#else
     (void)target_type;
-#endif
 
 #ifndef CONFIG_OFF_DRV_TIMER
     func = dlsym(libtee, "hm_timer_init");
@@ -209,17 +199,7 @@ static int32_t driver_job_handler(void *libtee, uint32_t target_type)
 {
     int32_t (*func)(void) = NULL;
 
-#if defined(TEE_SUPPORT_PLATDRV_64BIT) || defined(TEE_SUPPORT_PLATDRV_32BIT)
-    if (target_type != DRV_TARGET_TYPE) {
-        func = dlsym(libtee, "renew_hmdrv_job_handler");
-        if ((func == NULL) || (func() != HM_OK)) {
-            hm_error("renew drv handler failed\n");
-            return HM_ERROR;
-        }
-    }
-#else
     (void)target_type;
-#endif
 
     func = dlsym(libtee, "renew_hmtimer_job_handler");
     if ((func == NULL) || (func() != HM_OK)) {

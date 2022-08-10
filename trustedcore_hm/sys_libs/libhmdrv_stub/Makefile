@@ -6,7 +6,6 @@ flags += -fno-builtin
 
 flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel/
 flags += -I$(TOPDIR)/sys_libs/libhmdrv_stub/include/
-flags += -I$(TOPDIR)/drivers/platdrv/include/
 
 # Source files required to build the target
 libhmdrv_stub_c_files += $(wildcard src/*.c)

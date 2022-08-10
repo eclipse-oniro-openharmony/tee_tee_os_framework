@@ -9,7 +9,6 @@
 
 #include <tee_defines.h>
 #include <crypto_driver_adaptor.h>
-#include <crypto_syscall.h>
 
 int32_t sm3_digest_init(struct ctx_handle_t *ctx);
 

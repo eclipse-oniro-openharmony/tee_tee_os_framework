@@ -365,7 +365,7 @@ int32_t tee_crypto_generate_random(void *buffer, uint32_t size, bool is_hw_rand)
     int32_t ret;
 
     while (size > MAX_CRYPTO_RANDOM_LEN) {
-#if !defined(TEE_SUPPORT_PLATDRV_64BIT) && !defined(TEE_SUPPORT_PLATDRV_32BIT) && !defined(CRYPTO_MGR_SERVER_ENABLE)
+#if !defined(CRYPTO_MGR_SERVER_ENABLE)
         ret = soft_random_get(buffer + offset_len, MAX_CRYPTO_RANDOM_LEN);
 #else
         ret = crypto_driver_generate_random(buffer + offset_len, MAX_CRYPTO_RANDOM_LEN, is_hw_rand);
@@ -377,7 +377,7 @@ int32_t tee_crypto_generate_random(void *buffer, uint32_t size, bool is_hw_rand)
         size -= MAX_CRYPTO_RANDOM_LEN;
         offset_len += MAX_CRYPTO_RANDOM_LEN;
     }
-#if !defined(TEE_SUPPORT_PLATDRV_64BIT) && !defined(TEE_SUPPORT_PLATDRV_32BIT) && !defined(CRYPTO_MGR_SERVER_ENABLE)
+#if !defined(CRYPTO_MGR_SERVER_ENABLE)
     ret = soft_random_get(buffer + offset_len, size);
     (void)is_hw_rand;
 #else

@@ -4,7 +4,6 @@ export CONFIG_SSA_64BIT := false
 export CONFIG_GTASK_64BIT := false
 export ENABLE_CPP := true
 export ENABLE_CPP_STATIC := true
-export CONFIG_PLATDRV_64BIT := false
 export CONFIG_TRNG_ENABLE := true
 export CONFIG_GMLIB_IMPORT := true
 export CONFIG_OPENSSL_NO_ASM := true
