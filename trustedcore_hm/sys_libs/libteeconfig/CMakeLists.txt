@@ -53,12 +53,6 @@ if ("${CONFIG_SUPPORT_GET_DIEID}" STREQUAL "true")
     )
 endif()
 
-if ("${CONFIG_HSM}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS
-        TEE_SUPPORT_HSM
-    )
-endif()
-
 if ("${CONFIG_DYN_CONF}" STREQUAL "true")
     list(APPEND TEE_C_DEFINITIONS
         TEE_SUPPORT_DYN_CONF

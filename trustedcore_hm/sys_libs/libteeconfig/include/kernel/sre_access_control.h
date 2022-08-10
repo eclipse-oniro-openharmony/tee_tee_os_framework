@@ -183,14 +183,6 @@
 
 #define KEY_FACTOR_GROUP_PERMISSION 0x400000000000000LL
 
-#ifdef TEE_SUPPORT_HSM
-#define HSM_GROUP_PERMISSION 0x800000000000000LL
-
-#define HSM_EFUSE_GROUP_PERMISSION 0x1000000000000000LL
-
-#define FLASH_GROUP_PERMISSION 0x1000L
-#endif
-
 /* Access for all functions - ATTN this is reserved for global task
  * and other test tasks */
 #define ALL_GROUP_PERMISSION ((uint64_t) - 1)

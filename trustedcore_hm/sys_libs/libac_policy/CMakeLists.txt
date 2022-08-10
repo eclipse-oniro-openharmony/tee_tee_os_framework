@@ -11,9 +11,6 @@ include(apps_feature_macro)
 list(APPEND TEE_C_FLAGS
     -fno-builtin
 )
-if ("${CONFIG_HSM}" STREQUAL "true")
-    list(APPEND TEE_C_DEFINITIONS TEE_SUPPORT_HSM)
-endif()
 
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
