@@ -11,7 +11,6 @@ export CONFIG_TIMER_FREERUNNING_FIQ_DISABLE := true
 export ENABLE_TA_LOAD_WHITE_BOX_KEY := false
 export CONFIG_TA_LOCAL_SIGN := true
 export CONFIG_DYN_SRV_MULTI_THREAD_DISABLE := true
-export CONFIG_LIBFUZZER_SERVICE_64BIT :=false
 
 ifeq ($(CONFIG_APP_TEE_TALOADER), y)
 boot-fs-files-y += $(PREBUILD_APPS)/taloader.elf

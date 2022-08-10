@@ -18,9 +18,6 @@ struct drv_frame_t {
 };
 
 int32_t drv_framework_init(const struct drv_frame_t *drv_frame);
-cref_t get_teesmc_hdlr(void);
 int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *ch, bool new_frame);
 cref_t get_sysctrl_hdlr(void);
-int32_t pm_forward_msg_to_other_drv(uint16_t msg_id, const char *drv_name, cref_t *drv_cref);
-int32_t hm_driver_pm_return_to_ree(uint16_t msg_id);
 #endif

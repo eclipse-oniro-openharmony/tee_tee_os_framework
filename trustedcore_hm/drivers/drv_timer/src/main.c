@@ -24,12 +24,6 @@
 #include "timer_types.h"
 
 const char *g_debug_prefix = "[===> DRV_TIMER <===]";
-static cref_t g_teesmc_hdlr;
-
-cref_t get_teesmc_hdlr(void)
-{
-    return g_teesmc_hdlr;
-}
 
 static int32_t hm_system_init(cref_t *timer_channel)
 {
@@ -38,12 +32,6 @@ static int32_t hm_system_init(cref_t *timer_channel)
     ret = hm_create_ipc_native(TIMER_PATH, timer_channel);
     if (ret != TMR_DRV_SUCCESS) {
         hm_error("failed to create channel with name \"%s\":%d\n", TIMER_PATH, ret);
-        return TMR_DRV_ERROR;
-    }
-
-    g_teesmc_hdlr = irqmgr_acquire_teesmc_hdlr();
-    if (is_ref_err(g_teesmc_hdlr) != 0) {
-        hm_error("get teesmc hdlr error %s\n", hmapi_strerror(ref_to_err(g_teesmc_hdlr)));
         return TMR_DRV_ERROR;
     }
 
@@ -69,7 +57,6 @@ __attribute__((visibility("default"))) int32_t main(void)
     dispatch_fn_t dispatch_fns[] = {
         [HM_MSG_HEADER_CLASS_TMRMGR] = timer_dispatch,
         [HM_MSG_HEADER_CLASS_IRQMGR] = irq_dispatch,
-        [HM_MSG_HEADER_CLASS_DRV_PWRMGR] = timer_pm_dispatch,
         [HM_MSG_HEADER_CLASS_ACMGR_PUSH] = ac_dispatch,
     };
 

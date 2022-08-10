@@ -51,9 +51,6 @@ ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 flags += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 endif
 
-ifeq ($(CONFIG_LIBFUZZER_SERVICE_64BIT), true)
-flags += -DTEE_SUPPORT_LIBFUZZER
-endif
 # all target for c++ compiler
 cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
 

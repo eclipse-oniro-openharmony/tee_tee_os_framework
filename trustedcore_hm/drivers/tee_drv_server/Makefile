@@ -16,7 +16,6 @@ NO_OBJFILE_SORT = y
 # Source files required to build the target
 tee_drv_server_c_files := src/main.c \
 		src/drv_dispatch.c \
-		src/drv_pm.c \
 		src/drv_fd_ops.c \
 		src/drv_process_mgr.c \
 		src/drv_index_mgr.c \
@@ -26,7 +25,6 @@ tee_drv_server_c_files := src/main.c \
 		src/drvcall_dyn_conf_mgr.c \
 		src/drv_dyn_policy_mgr.c \
 		src/base_drv_node.c \
-		$(TOPDIR)/drivers/common/drv_pm_check.c \
 		src/task_mgr.c
 
 ifeq ($(WITH_ENG_VERSION), true)

@@ -13,9 +13,7 @@ libdrv_shared_c_files += $(TOPDIR)/sys_libs/libdrv_frame/src/drv_param_ops.c
 ifneq ($(CONFIG_TEE_DRV_SERVER_64BIT), )
 libdrv_shared_c_files += src/tee_drv_entry.c
 libdrv_shared_c_files += src/drv_dispatch.c
-libdrv_shared_c_files += src/drv_pm.c
 libdrv_shared_c_files += src/drv_operations.c
-libdrv_shared_c_files += $(TOPDIR)/drivers/common/drv_pm_check.c
 
 ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
 flags += -DCRYPTO_MGR_SERVER_ENABLE

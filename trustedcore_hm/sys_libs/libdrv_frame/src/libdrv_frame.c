@@ -26,15 +26,9 @@
 #include <tee_tag.h>
 #include <tee_drv_internal.h>
 
-static cref_t g_teesmc_hdlr;
 static rref_t g_sysctrl_ref;
 
 #define IPC_CHANNEL_NUM 2
-
-cref_t get_teesmc_hdlr(void)
-{
-    return g_teesmc_hdlr;
-}
 
 cref_t get_sysctrl_hdlr(void)
 {
@@ -97,12 +91,6 @@ static int32_t system_init(const char *name)
         return -1;
     }
 
-    g_teesmc_hdlr = irqmgr_acquire_teesmc_hdlr();
-    if (is_ref_err(g_teesmc_hdlr) != 0) {
-        printf("%s: get teesmc hdlr error %s\n", name, hmapi_strerror(ref_to_err(g_teesmc_hdlr)));
-        return -1;
-    }
-
     ret = ta_permission_init();
     if (ret != 0) {
         hm_error("failed to init ta permission\n");
@@ -145,88 +133,4 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
     }
 
     return 0;
-}
-
-static int32_t pm_forward_msg_param_check(uint16_t msg_id, const char *drv_name, cref_t *drv_cref)
-{
-    if (msg_id != HM_MSG_ID_DRV_PWRMGR_SUSPEND_CPU && msg_id != HM_MSG_ID_DRV_PWRMGR_RESUME_CPU &&
-        msg_id != HM_MSG_ID_DRV_PWRMGR_SUSPEND_S4 && msg_id != HM_MSG_ID_DRV_PWRMGR_RESUME_S4) {
-        hm_error("pm forward invalid msg id:0x%x\n", msg_id);
-        return -1;
-    }
-
-    if (drv_cref == NULL) {
-        hm_error("pm forward invalid drv cref\n");
-        return -1;
-    }
-
-    if (drv_name == NULL) {
-        hm_error("pm forward invalid drv name\n");
-        return -1;
-    }
-
-    size_t len = strnlen(drv_name, DRV_NAME_MAX_LEN);
-    if (len == 0 || len >= DRV_NAME_MAX_LEN) {
-        hm_error("pm forward invalid drv name len\n");
-        return -1;
-    }
-
-    return 0;
-}
-
-int32_t pm_forward_msg_to_other_drv(uint16_t msg_id, const char *drv_name, cref_t *drv_cref)
-{
-    int32_t err = pm_forward_msg_param_check(msg_id, drv_name, drv_cref);
-    if (err != 0)
-        return -1;
-
-    hm_msg_header req = {{ 0 }};
-    hm_msg_header reply = {{ 0 }};
-
-    if (is_ref_err(*drv_cref)) {
-        err = pathmgr_acquire(drv_name, drv_cref);
-        if (err != 0 || is_ref_err(*drv_cref)) {
-            hm_error("get drv:%s cref failed error %s, cref %s\n", drv_name, hmapi_strerror(err),
-                     hmapi_strerror(ref_to_err(*drv_cref)));
-            return -1;
-        }
-    }
-
-    req.send.msg_class = HM_MSG_HEADER_CLASS_DRV_PWRMGR;
-    req.send.msg_id    = msg_id;
-    req.send.msg_size  = sizeof(req);
-    err = hm_msg_call(*drv_cref, &req, sizeof(req), &reply, sizeof(reply), 0, -1);
-    if (err != 0)
-        hm_error("forward msg 0x%x to drv:%s failed, error %s\n", msg_id, drv_name, hmapi_strerror(err));
-    return err;
-}
-
-int32_t hm_driver_pm_return_to_ree(uint16_t msg_id)
-{
-    int32_t cpu;
-    enum cap_teesmc_req req;
-    int32_t err;
-
-    cpu = hm_get_current_cpu_id();
-
-    switch (msg_id) {
-    case HM_MSG_ID_DRV_PWRMGR_SUSPEND_CPU:
-        req = CAP_TEESMC_REQ_CPU_SUSPEND;
-        break;
-    case HM_MSG_ID_DRV_PWRMGR_RESUME_CPU:
-        req = CAP_TEESMC_REQ_CPU_RESUME;
-        break;
-    case HM_MSG_ID_DRV_PWRMGR_SUSPEND_S4:
-        req = CAP_TEESMC_REQ_S4_SUSPEND_DONE;
-        break;
-    case HM_MSG_ID_DRV_PWRMGR_RESUME_S4:
-        req = CAP_TEESMC_REQ_S4_RESUME_DONE;
-        break;
-    default:
-        req = CAP_TEESMC_REQ_NR;
-    }
-    err = hmex_teesmc_switch_req(get_teesmc_hdlr(), req);
-    if (err != 0)
-        hm_error("cpus %d return to ree failed msg 0x%x, error %s\n", cpu, msg_id, hmapi_strerror(err));
-    return err;
 }

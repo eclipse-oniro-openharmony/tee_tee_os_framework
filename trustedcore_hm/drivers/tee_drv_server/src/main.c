@@ -13,9 +13,7 @@
 #include <ac.h>
 #include <ipclib.h>
 #include <libdrv_frame.h>
-#include "drv_dispatch.h"
 #include "drv_thread.h"
-#include "drv_pm.h"
 #include "drv_process_mgr.h"
 
 const char *g_debug_prefix = "tee_drv_server";
@@ -31,7 +29,6 @@ int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((u
 {
     static dispatch_fn_t dispatch_fns[] = {
         [0] = driver_dispatch,
-        [HM_MSG_HEADER_CLASS_DRV_PWRMGR] = driver_pm_dispatch,
         [HM_MSG_HEADER_CLASS_ACMGR_PUSH] = ac_dispatch,
     };
 

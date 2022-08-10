@@ -50,10 +50,3 @@ include $(TOPDIR)/mk/llvm-apps-cfi.mk
 ### 	     do it later.
 TA_LDFLAGS:=$(filter-out -pie,$(TA_LDFLAGS))
 TA_LDFLAGS:=$(filter-out --gc-sections,$(TA_LDFLAGS))
-
-# to compile libfuzzer-specific TA
-ifeq (${ARCH}, aarch64)
-ifeq ($(CONFIG_LIBFUZZER_SERVICE_64BIT), true)
-include $(TOPDIR)/mk/libfuzzer_cflags.mk
-endif
-endif

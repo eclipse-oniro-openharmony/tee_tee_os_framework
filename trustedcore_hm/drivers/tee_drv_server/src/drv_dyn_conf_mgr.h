@@ -120,8 +120,6 @@ enum drv_error {
 void dump_drv_conf(const struct drv_conf_t *drv_conf);
 #endif
 
-void tee_drv_pm_cmd_handle(uint16_t msg_id);
-
 void broadcast_drv_state(struct task_node *node, bool spawn_succ);
 int32_t check_drv_node_state(struct task_node *node);
 int32_t do_receive_drv_conf(struct drv_conf_t *drv_conf);

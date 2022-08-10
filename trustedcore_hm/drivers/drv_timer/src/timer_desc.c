@@ -7,7 +7,6 @@
 #include <hmlog.h>
 #include <drv_module.h>
 #include "timer_types.h"
-#include "timer_pm.h"
 
 #define REVSER_VALUE 0
 DECLARE_TC_TIMER(timer_cfg,
@@ -18,8 +17,8 @@ DECLARE_TC_TIMER(timer_cfg,
                  NULL,
                  NULL,
                  NULL,
-                 timer_suspend,
-                 timer_resume);
+                 NULL,
+                 NULL);
 static const struct tc_drv_desc_timer *g_tc_drv[] = {
     &__drv_desc_timer_cfg,
 };

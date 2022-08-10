@@ -12,7 +12,5 @@
 uint32_t timer_interrupt_init(void);
 void timer_free_running_fiq_handler(void);
 void timer_oneshot_fiq_handler(void);
-uint32_t timer_interrupt_enable_all(void);
-uint32_t timer_hwi_resume_all(void);
 
 #endif /* DRV_TIMER_PLATFORM_TIMER_INTERRUPT_H */

@@ -19,6 +19,5 @@ export CONFIG_DYN_CONF := true
 export CONFIG_TEE_MISC_DRIVER_64BIT := true
 export CONFIG_NO_PLATCFG_EMBEDDED := true
 export CONFIG_NO_VENDOR_LIB_EMBEDDED := true
-export CONFIG_LIBFUZZER_SERVICE_64BIT :=false
 
 include $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/modules/modules.mk
