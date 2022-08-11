@@ -20,8 +20,8 @@ struct gic_v3_data {
 static struct gic_v3_data gic;
 
 static bool mt;
-static uint64_t cpu_affinity[CONFIG_MAX_NUM_NODES];
-static uint64_t gicr[CONFIG_MAX_NUM_NODES];
+static uint64_t cpu_affinity;
+static uint64_t gicr;
 
 static inline void write32_dist_reg(uint32_t offset, uint32_t val)
 {
@@ -40,12 +40,12 @@ static inline void write64_dist_reg(uint32_t offset, uint64_t val)
 
 static inline void write32_redist_reg(uint32_t offset, uint32_t val)
 {
-    *(uint32_t *)(uintptr_t)(gicr[get_current_cpu_id()] + offset) = val;
+    *(uint32_t *)(uintptr_t)(gicr + offset) = val;
 }
 
 static inline uint32_t read32_redist_reg(uint32_t offset)
 {
-    return *(uint32_t *)(uintptr_t)(gicr[get_current_cpu_id()] + offset);
+    return *(uint32_t *)(uintptr_t)(gicr + offset);
 }
 
 static void gic_wait_for_rwp(void)
@@ -295,28 +295,25 @@ static void gic_send_sgi(uint32_t irq, uint32_t target_list)
 {
     (void)irq;
     (void)target_list;
-    uint32_t i;
 
-    for (i = 0; i < (uint32_t)get_cpu_nr(); i++) {
-        if ((1 << i) & target_list) {
-            uint64_t sgi1r;
-            uint64_t aff = cpu_affinity[i];
-            if (mt) {
-                sgi1r = ((aff >> 32) << 48) |          /* aff3 */
-                        (((aff >> 16) & 0xff) << 32) | /* aff2 */
-                        (((aff >> 8) & 0xff) << 16) |  /* aff1 */
-                        1 |                            /* if mt== true, targetlist is always 1 */
-                        ((uint64_t)irq << 24);         /* irq */
-            } else {
-                sgi1r = ((aff >> 32) << 48) |          /* aff3 */
-                        (((aff >> 16) & 0xff) << 32) | /* aff2 */
-                        (((aff >> 8) & 0xff) << 16) |  /* aff1 */
-                        (1 << (i % 4)) |               /* targetlist */
-                        ((uint64_t)irq << 24);         /* irq */
-            }
-            set_icc_sgi1r_el1(sgi1r);
-            gic_isb();
+    if (target_list) {
+        uint64_t sgi1r;
+        uint64_t aff = cpu_affinity;
+        if (mt) {
+            sgi1r = ((aff >> 32) << 48) |          /* aff3 */
+                    (((aff >> 16) & 0xff) << 32) | /* aff2 */
+                    (((aff >> 8) & 0xff) << 16) |  /* aff1 */
+                    1 |                            /* if mt== true, targetlist is always 1 */
+                    ((uint64_t)irq << 24);         /* irq */
+        } else {
+            sgi1r = ((aff >> 32) << 48) |          /* aff3 */
+                    (((aff >> 16) & 0xff) << 32) | /* aff2 */
+                    (((aff >> 8) & 0xff) << 16) |  /* aff1 */
+                    (1 << 0) |               /* targetlist */
+                    ((uint64_t)irq << 24);         /* irq */
         }
+        set_icc_sgi1r_el1(sgi1r);
+        gic_isb();
     }
 }
 
@@ -394,7 +391,7 @@ static void gic_sys_reg_init(void)
     gic_isb();
     /* check SRE */
     sre = get_icc_sre_el1();
-    klog(DEBUG_LOG, "CPU%d SRE:%lx\n", (int)get_current_cpu_id(), sre);
+    klog(DEBUG_LOG, "SRE:%lx\n", sre);
     if (!(sre & ICC_SRE_EL1_SRE))
         klog(DEBUG_WARNING, "Cannot enable SRE.\n");
 
@@ -409,7 +406,7 @@ static void gic_sys_reg_init(void)
     gic_isb();
     /* check EOIMode */
     ctlr = get_icc_ctlr_el1();
-    klog(DEBUG_LOG, "CPU%d CTLR:%lx\n", (int)get_current_cpu_id(), ctlr);
+    klog(DEBUG_LOG, "CTLR:%lx\n", ctlr);
     if (ctlr & (1 << ICC_CTLR_EOIMODE_BIT))
         klog(DEBUG_WARNING, "Cannot set EOIMode to 1\n");
 }
@@ -436,30 +433,12 @@ static void gic_enable_gicr(void)
 
 BOOT_CODE static void gicr_init(void)
 {
-    uint64_t i;
-    uint64_t mpidr = get_mpidr_el1();
-    int cpu = (int)get_current_cpu_id();
-
-    /* set gicr base address of each cpu */
-    for (i = 0; i < (uint64_t)get_cpu_nr(); i++) {
-        /* read high 32-bits */
-        uint64_t base = gic.gic_redist_base + i * gic.size_per_gicr;
-        /* read high 32-bits */
-        uint32_t typer = *(uint32_t *)(uintptr_t)(base + GICR_TYPER + 4);
-        uint64_t aff = cpu_affinity[cpu];
-        aff = ((aff & MPIDR_AFF3_MASK) >> 8) |
-              (aff & (MPIDR_AF012_MASK));
-        if (typer == (uint32_t)aff) {
-            gicr[cpu] = base;
-            break;
-        }
-    }
-    if (!gicr[cpu]) {
-        panic("Can't find GICR for CPU%d mpidr:%lx\n",
-              cpu, (unsigned long)mpidr);
+    /* read high 32-bits */
+    gicr = gic.gic_redist_base + gic.size_per_gicr;
+    if (!gicr) {
+        panic("Can't find GICR\n");
     } else {
-        klog(DEBUG_LOG, "CPU%d mpidr:%lx uses GICR:%lx\n", cpu,
-             (unsigned long)mpidr, (unsigned long)gicr[cpu]);
+        klog(DEBUG_LOG, "uses GICR:%lx\n", (unsigned long)gicr);
         gic_enable_gicr();
     }
 }
@@ -486,7 +465,7 @@ BOOT_CODE static void gic_cpu_init(void)
         mt = false;
 
     /* set affinity of each cpu */
-    cpu_affinity[get_current_cpu_id()] = mpidr & MPIDR_AFF_MASK;
+    cpu_affinity = mpidr & MPIDR_AFF_MASK;
 
     gicr_init();
     gic_sys_reg_init();

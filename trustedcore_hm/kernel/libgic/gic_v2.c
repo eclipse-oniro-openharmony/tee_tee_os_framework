@@ -350,7 +350,7 @@ static void gic_end_interrupt(uint32_t irq)
 
     /* SGIs */
     if (irq < 16)
-        iar = ((uint32_t)BIT(get_current_cpu_id()) << GICC_EOIR_CPUID_SHIFT) | irq;
+        iar = ((uint32_t)BIT(0) << GICC_EOIR_CPUID_SHIFT) | irq;
     /* edge trigger mode */
     if ((gic_get_irq_cfg(irq) >> 1) == IRQ_EDGE_MODE)
         gic_set_irq_pend(irq, false);
