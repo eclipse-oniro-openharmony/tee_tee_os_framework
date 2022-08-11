@@ -487,7 +487,7 @@ static int32_t drv_conf_register_handle(const struct tee_drv_param *params, int6
     }
 
     if (!check_caller_from_legal_service(params)) {
-        tloge("drv conf can only regist from legal service\n");
+        tloge("drv conf can only register from legal service\n");
         return -1;
     }
 
@@ -572,7 +572,7 @@ static int32_t drvcall_conf_register_handle(const struct tee_drv_param *params, 
     }
 
     if (!check_caller_from_legal_service(params)) {
-        tloge("drvcall conf can only regist from legal service\n");
+        tloge("drvcall conf can only register from legal service\n");
         return -1;
     }
 

@@ -109,7 +109,7 @@ static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_
 
     ret = hm_spawn_ex(&pid, drv_loader, NULL, &spawnattr, argv, env, &thread_cref);
     if (ret != 0) {
-        tloge("spawn dirver failed ret:0x%x\n", ret);
+        tloge("spawn driver failed ret:0x%x\n", ret);
         return -1;
     }
 
@@ -213,7 +213,7 @@ static int32_t get_drv_loader(const char *name)
     int32_t elf_class = get_elf_class(ehdr, sizeof(ehdr));
     int32_t elf_type  = get_elf_type(ehdr, sizeof(ehdr), elf_class);
     if (elf_type != ET_DYN) {
-        tloge("not suuport elf_type:0x%x\n", elf_type);
+        tloge("not support elf_type:0x%x\n", elf_type);
         goto close_fd;
     }
 

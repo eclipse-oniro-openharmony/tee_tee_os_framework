@@ -61,7 +61,7 @@ static int32_t set_tlv_node(struct drv_tlv *tlv, const struct base_driver_node *
     ret = memcpy_s(&tlv->drv_conf.drv_basic_info, sizeof(tlv->drv_conf.drv_basic_info),
                    &(drv_service_property->drv_basic_info), sizeof(drv_service_property->drv_basic_info));
     if (ret != EOK) {
-        hm_error("copy drv basci info failed\n");
+        hm_error("copy drv basic info failed\n");
         return -1;
     }
 
