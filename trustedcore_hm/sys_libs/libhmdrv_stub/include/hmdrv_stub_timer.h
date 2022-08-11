@@ -45,7 +45,6 @@
 
 #define ACCESS_READ_RIGHT_CHECK(addr, size)
 
-cref_t get_teesmc_hdlr(void);
 #define AUDIT_CHECK_FAIL()
 
 #define ACCESS_WRITE_RIGHT_CHECK(addr, size)                                                        \

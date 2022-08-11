@@ -16,7 +16,6 @@ export CONFIG_CRYPTO_SUPPORT_X509 := true
 export CONFIG_CRYPTO_ECC_WRAPPER := true
 export CONFIG_CRYPTO_AES_WRAPPER := true
 export CONFIG_PERMSRV_64BIT := false
-export CONFIG_LIBFUZZER_SERVICE_64BIT :=false
 
 boot-fs-files-y += $(PREBUILD_APPS)/taloader.elf
 

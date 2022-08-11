@@ -1,1 +1,0 @@
-../../../../../libs/hisi-platdrv/platform/ascend/include/sys_ascend.h

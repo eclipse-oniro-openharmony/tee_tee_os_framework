@@ -900,23 +900,6 @@ struct task_node *find_drv_node_by_taskid(uint32_t exit_pid)
     return node;
 }
 
-void tee_drv_pm_cmd_handle(uint16_t msg_id)
-{
-    struct dlist_node *pos = NULL;
-    dlist_for_each(pos, &g_task_list) {
-        struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
-        if (temp->target_type == DRV_TARGET_TYPE &&
-            temp->tlv.drv_conf != NULL &&
-            temp->state == TASK_NORMAL) {
-            int32_t ret = pm_forward_msg_to_other_drv(msg_id,
-                temp->tlv.drv_conf->mani.service_name, &temp->drv_task.channel);
-            if (ret != 0)
-                tloge("pm drv:%s msg_id:0x%x channel:0x%llx fail\n",
-                    temp->tlv.drv_conf->mani.service_name, msg_id, temp->drv_task.channel);
-        }
-    }
-}
-
 #ifdef TEE_SUPPORT_DYN_CONF_DEBUG
 static void dump_task_state(struct task_node *node)
 {

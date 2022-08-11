@@ -88,12 +88,10 @@ list(APPEND TEE_C_SOURCES
     src/main.c
     src/timer_init.c
     src/timer_irq.c
-    src/timer_pm.c
     src/timer_sys.c
     src/timer_desc.c
     src/timer_interrupt.c
     ${PROJECT_SOURCE_DIR}/drivers/common/drv_call_check.c
-    ${PROJECT_SOURCE_DIR}/drivers/common/drv_pm_check.c
 )
 
 if ("${CONFIG_TIMER_EVENT}" STREQUAL "true")

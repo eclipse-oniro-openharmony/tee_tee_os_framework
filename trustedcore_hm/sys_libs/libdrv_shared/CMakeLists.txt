@@ -15,11 +15,9 @@ if ("${CONFIG_TEE_DRV_SERVER_64BIT}" STREQUAL "true" OR "${CONFIG_TEE_DRV_SERVER
 list(APPEND TEE_C_SOURCES
     src/tee_drv_entry.c
     src/drv_dispatch.c
-    src/drv_pm.c
     src/drv_operations.c
     ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_frame/src/drv_thread.c
     ${PROJECT_SOURCE_DIR}/sys_libs/libdrv_frame/src/drv_param_ops.c
-    ${PROJECT_SOURCE_DIR}/drivers/common/drv_pm_check.c
 )
 
 if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true")

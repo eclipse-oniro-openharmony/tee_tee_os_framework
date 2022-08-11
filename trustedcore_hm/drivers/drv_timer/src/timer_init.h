@@ -15,7 +15,6 @@
 #include <sys/hm_types.h>
 
 TEE_Result add_ta_permission(const TEE_UUID *uuid, uint64_t permissions);
-intptr_t timer_pm_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *info);
 intptr_t timer_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *info);
 int32_t timer_init(cref_t chnl_cref);
 uint32_t get_mix_seed(void);

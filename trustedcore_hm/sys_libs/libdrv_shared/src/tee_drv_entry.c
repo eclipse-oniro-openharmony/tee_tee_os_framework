@@ -17,7 +17,6 @@
 #include "drv_dispatch.h"
 #include "drv_thread.h"
 #include "drv_operations.h"
-#include "drv_pm.h"
 #ifdef CRYPTO_MGR_SERVER_ENABLE
 #include "drv_random.h"
 #include "crypto_manager.h"
@@ -146,7 +145,6 @@ void tee_drv_entry(const struct tee_driver_module *drv_func, const char *drv_nam
 {
     static dispatch_fn_t dispatch_fns[] = {
         [0] = driver_dispatch,
-        [HM_MSG_HEADER_CLASS_DRV_PWRMGR] = driver_pm_dispatch,
 #ifdef CRYPTO_MGR_SERVER_ENABLE
         [HM_MSG_HEADER_CLASS_UPDATE_RND] = rand_update,
 #endif

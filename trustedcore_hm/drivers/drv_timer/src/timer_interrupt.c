@@ -27,18 +27,6 @@
 
 typedef VOID (*HWI_PROC_FUNC)(HWI_ARG_T);
 
-static const uint32_t g_timer_hwi[] = {
-#ifndef TIMER_FREE_RUNNING_FIQ_DISABLE
-    FREE_RUNNING_FIQ_NUMBLER,
-#endif
-#ifdef TIMER_EVENT_SUPPORT
-    TICK_TIMER_FIQ_NUMBLER,
-#endif
-#if (defined CONFIG_RTC_TIMER) && (!defined SOFT_RTC_IRQ_DISABLE)
-    SECURE_RTC_FIQ_NUMBLER,
-#endif
-};
-
 void timer_free_running_fiq_handler(void)
 {
 #ifndef TIMER_FREE_RUNNING_FIQ_DISABLE
@@ -70,43 +58,6 @@ void timer_oneshot_fiq_handler(void)
         timer_event_handler(TIMER_INDEX_TIMER);
     }
 #endif
-}
-
-uint32_t timer_interrupt_enable_all(void)
-{
-    uint32_t i;
-    uint32_t ret;
-
-    /*
-     * GIC distributor has already been enabled by platdrv,
-     * so there is no need to invoke secure_distributor_enable()
-     */
-    for (i = 0; i < ARRAY_SIZE(g_timer_hwi); i++) {
-        ret = sys_hwi_enable(g_timer_hwi[i]);
-        if (ret != SRE_OK) {
-            hm_error("enable irq %u failed\n", g_timer_hwi[i]);
-            return TMR_DRV_ERROR;
-        }
-    }
-
-    return TMR_DRV_SUCCESS;
-}
-
-uint32_t timer_hwi_resume_all(void)
-{
-    uint32_t i;
-    uint32_t ret;
-
-    /* When S/R gic registers changed, so set the target cpu when resume */
-    for (i = 0; i < ARRAY_SIZE(g_timer_hwi); i++) {
-        ret = sys_hwi_resume(g_timer_hwi[i], DEFAULT_HWI_PRI, INT_SECURE);
-        if (ret != TMR_DRV_SUCCESS) {
-            hm_error("resume irq %u failed\n", g_timer_hwi[i]);
-            return TMR_DRV_ERROR;
-        }
-    }
-
-    return TMR_DRV_SUCCESS;
 }
 
 static uint32_t secure_timer_handler_init(void)

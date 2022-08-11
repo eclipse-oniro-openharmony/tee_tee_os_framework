@@ -28,9 +28,7 @@ done
 for sym in $UNDEF ; do
 if ! (echo -e "$ALLDEF" | grep -qs "^$sym$") ; then
 echo "$(basename $1) contains undefined symbol $sym"
-if [ "$CONFIG_LIBFUZZER_SERVICE_64BIT" !=  "true" ] ; then
 exit 1
-fi
 fi
 done
 exit 0

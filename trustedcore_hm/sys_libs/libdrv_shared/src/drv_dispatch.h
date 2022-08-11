@@ -25,6 +25,4 @@ struct tee_drv_param {
     uint32_t caller_pid;
 };
 
-intptr_t driver_pm_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *info);
-
 #endif

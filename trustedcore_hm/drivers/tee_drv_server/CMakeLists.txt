@@ -12,13 +12,11 @@ list(APPEND TEE_C_SOURCES
     src/drv_process_mgr.c
     src/drv_index_mgr.c
     src/drv_ipc_mgr.c
-    src/drv_pm.c
     src/drv_auth.c
     src/drv_dyn_conf_mgr.c
     src/drvcall_dyn_conf_mgr.c
     src/drv_dyn_policy_mgr.c
     src/base_drv_node.c
-    ${PROJECT_SOURCE_DIR}/drivers/common/drv_pm_check.c
     src/task_mgr.c
 )
 

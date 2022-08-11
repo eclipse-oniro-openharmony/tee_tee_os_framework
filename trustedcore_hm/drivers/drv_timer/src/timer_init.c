@@ -22,11 +22,9 @@
 #include <ta_permission.h>
 #include <ac.h>
 #include <ipclib.h>
-#include <pm_msgtype.h>
 #include <sys_timer.h>
 #include <timer_interrupt.h>
 #include <timer_event.h>
-#include <timer_pm.h>
 #include <timer_desc.h>
 #include <drv_module.h>
 #include "mem_drv_map.h"
@@ -44,7 +42,6 @@
 #include <timer_hw.h>
 #include <timer.h>
 #include <drv_call_check.h>
-#include <drv_pm_check.h>
 #include "timer_types.h"
 #include "timer_sys.h"
 #include "timer_io_map.h"
@@ -765,80 +762,6 @@ static int32_t timer_handle_message(const struct timer_req_msg_t *msg, struct ti
     rmsg->tcb_cref = g_timer_tcb_cref;
 
     unmap_maped_ptrs(&param);
-
-    return TMR_DRV_SUCCESS;
-}
-
-const char *g_pm_sender_name = "tee_drv_server";
-
-static int32_t hunt_sender_drv_pid(uint32_t *pid)
-{
-    uint32_t ret = ipc_hunt_by_name(0, g_pm_sender_name, pid);
-    if (ret != 0) {
-        hm_error("get %s pid fail\n", g_pm_sender_name);
-        return -1;
-    }
-
-    hm_debug("hunt drv:%s succ\n", g_pm_sender_name);
-
-    return 0;
-}
-
-static bool check_msg_invalid(uint16_t msg_id, cref_t msg_hdl, hm_msg_header *msg,
-    const struct hmcap_message_info *info)
-{
-    static uint32_t auth_pid = SRE_PID_ERR;
-    if (auth_pid == SRE_PID_ERR) {
-        int32_t ret = hunt_sender_drv_pid(&auth_pid);
-        if (ret != 0)
-            return true;
-    }
-
-    if (pm_msg_param_check(msg_id, msg_hdl, msg, info, pid_to_hmpid(auth_pid)) != 0)
-        return true;
-
-    return false;
-}
-
-intptr_t timer_pm_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *info)
-{
-    uint16_t msg_id;
-    int32_t err;
-    cref_t msg_hdl;
-
-    /*
-     * The 'dispatch_fn_t' expect all functions have the paramter 'info'.
-     * Actually, this paramter is useless in this function.
-     * But we cannot delete it.
-     */
-    (void)info;
-
-    if ((msg == NULL) || (p_msg_hdl == NULL)) {
-        hm_error("timer dispatch param error\n");
-        return TMR_DRV_ERROR;
-    }
-
-    msg_hdl = *p_msg_hdl;
-    msg_id = ((hm_msg_header *)msg)->send.msg_id;
-    if (check_msg_invalid(msg_id, msg_hdl, msg, info))
-        return TMR_DRV_ERROR;
-
-    hm_debug("timer CPU%d handle PM msg 0x%x start\n", hm_get_current_cpu_id(), msg_id);
-    if (msg_id == HM_MSG_ID_DRV_PWRMGR_SUSPEND_CPU)
-        tc_drv_sp(TIMER_SUSPEND_S3);
-    else if (msg_id == HM_MSG_ID_DRV_PWRMGR_SUSPEND_S4)
-        tc_drv_sp(TIMER_SUSPEND_S4);
-    else if (msg_id == HM_MSG_ID_DRV_PWRMGR_RESUME_CPU)
-        tc_drv_sr(TIMER_RESUME_S3);
-    else
-        tc_drv_sr(TIMER_RESUME_S4);
-
-    err = cs_server_reply_error(msg_hdl, TMR_DRV_SUCCESS);
-    if (err != TMR_DRV_SUCCESS) {
-        hm_error("reply to PM msg error %d\n", err);
-        return err;
-    }
-    hm_debug("CPU%d handle PM msg 0x%x done\n", hm_get_current_cpu_id(), msg_id);
 
     return TMR_DRV_SUCCESS;
 }

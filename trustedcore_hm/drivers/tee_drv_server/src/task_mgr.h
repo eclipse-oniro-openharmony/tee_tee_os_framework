@@ -70,7 +70,6 @@ struct task_node *alloc_and_init_drv_node(struct drv_tlv *tlv);
 void free_task_node(struct task_node *node);
 int32_t free_drv_conf_by_service_name(const char *drv_name, uint32_t len);
 struct task_node *find_drv_node_by_taskid(uint32_t exit_pid);
-void tee_drv_pm_cmd_handle(uint16_t msg_id);
 bool check_hardware_type(const struct task_node *node, uint16_t type);
 
 #ifdef TEE_SUPPORT_DYN_CONF_DEBUG

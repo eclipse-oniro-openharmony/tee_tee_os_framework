@@ -56,12 +56,10 @@ endif
 drv_timer_c_files := src/main.c \
                      src/timer_init.c \
                      src/timer_irq.c \
-                     src/timer_pm.c \
                      src/timer_sys.c \
                      src/timer_desc.c \
                      src/timer_interrupt.c \
                      $(TOPDIR)/drivers/common/drv_call_check.c \
-                     $(TOPDIR)/drivers/common/drv_pm_check.c
 
 ifeq ($(CONFIG_TIMER_FREERUNNING_FIQ_DISABLE), true)
 flags += -DTIMER_FREE_RUNNING_FIQ_DISABLE
