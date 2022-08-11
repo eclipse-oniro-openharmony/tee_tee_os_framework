@@ -78,18 +78,3 @@ int pthread_attr_setinheritsched(pthread_attr_t *a, int flag)
 	}
 	return 0;
 }
-
-/* NOTE: not generic posix thread stuff
- *  Bind ca with task_id and set/clr shadow flag
- */
-int pthread_attr_settee(pthread_attr_t *a, int ca, int task_id, int shadow)
-{
-	if (a == NULL) return EINVAL;
-	a->_a_ca = ca;
-	a->_a_task_id = task_id;
-	if (shadow == TEESMP_THREAD_ATTR_HAS_SHADOW)
-		a->_a_flag = (unsigned int)a->_a_flag | PTHREAD_ATTR_FLAG_SHADOW;
-	else
-		a->_a_flag = (unsigned int)a->_a_flag & ~PTHREAD_ATTR_FLAG_SHADOW;
-	return 0;
-}
