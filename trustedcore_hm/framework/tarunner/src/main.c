@@ -103,10 +103,9 @@ static void load_info_print(const char *task_name, const struct env_param *param
 
     /* Always print, but not an error */
 #ifdef __aarch64__
-    std_log("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d ca=%u\n", type, task_name, hm_getpid(),
-        param->ca);
+    std_log("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d\n", type, task_name, hm_getpid());
 #else
-    std_log("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d ca=%u\n", type, task_name, hm_getpid(), param->ca);
+    std_log("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d\n", type, task_name, hm_getpid());
 #endif
 }
 
@@ -292,7 +291,7 @@ static int32_t get_routine_info(void *handle, uint32_t size, struct ta_routine_i
     return HM_OK;
 }
 
-static void lib_tee_task_entry(void *handle, uint32_t ca_pid, int32_t priority, const char *task_name, void *libtee)
+static void lib_tee_task_entry(void *handle, int32_t priority, const char *task_name, void *libtee)
 {
     struct ta_routine_info *routine = NULL;
     ta_entry_type ta_entry = { 0 };
@@ -321,7 +320,7 @@ static void lib_tee_task_entry(void *handle, uint32_t ca_pid, int32_t priority, 
     if (get_routine_info(handle, size, routine) != HM_OK)
         goto err_out;
 
-    tee_task_entry_mt(ta_entry, ca_pid, priority, task_name, routine);
+    tee_task_entry_mt(ta_entry, priority, task_name, routine);
 
     /* tee_task_entry should never return */
     hm_panic("tee task entry returns\n");
@@ -331,11 +330,11 @@ err_out:
         hm_error("free routine failed\n");
 }
 
-static void ta_tee_task_entry(ta_entry_type ta_entry, uint32_t ca_pid, int32_t priority, const char *task_name)
+static void ta_tee_task_entry(ta_entry_type ta_entry, int32_t priority, const char *task_name)
 {
     hm_info("ta link elf_main_entry\n");
 
-    tee_task_entry_mt(ta_entry, ca_pid, priority, task_name, NULL);
+    tee_task_entry_mt(ta_entry, priority, task_name, NULL);
 
     /* tee_task_entry should never return */
     hm_panic("tee task entry returns\n");
@@ -384,9 +383,9 @@ static void tee_task_handle(const char * const *argv, const struct env_param *pa
     ta_entry.ta_entry_orig = dlsym(handle, "tee_task_entry");
     /* TA has tee_task_entry */
     if (ta_entry.ta_entry_orig != NULL)
-        ta_tee_task_entry(ta_entry, param->ca, param->priority, argv[ARGV_TASK_NAME_INDEX]);
+        ta_tee_task_entry(ta_entry, param->priority, argv[ARGV_TASK_NAME_INDEX]);
     else
-        lib_tee_task_entry(handle, param->ca, param->priority, argv[ARGV_TASK_NAME_INDEX], libtee);
+        lib_tee_task_entry(handle, param->priority, argv[ARGV_TASK_NAME_INDEX], libtee);
 
     dlclose(handle);
 }

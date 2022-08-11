@@ -15,7 +15,7 @@
 #define SECOND_CHANNEL 1
 #define DEFAULT_MSG_HANDLE 0
 #define CREATE_THREAD_FAIL 0xFFFFFFFFU /* same to gtask */
-void tee_task_entry_mt(ta_entry_type ta_entry, uint32_t ca, int32_t priority, const char *name,
+void tee_task_entry_mt(ta_entry_type ta_entry, int32_t priority, const char *name,
     const struct ta_routine_info *append_args);
 
 #endif

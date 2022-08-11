@@ -100,7 +100,6 @@ static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_
     }
     hm_spawnattr_setuuid(&spawnattr, &uuid);
 
-    spawnattr.ca = 0;
     spawnattr.ptid = 0;
 
     const char *drv_loader = g_drv_loader;
@@ -166,7 +165,6 @@ static void init_spawn_buffer(struct spawn_drv_buffer *buffer)
 
     g_env[ENV_PRIORITY_INDEX] = buffer->env.priority;
     g_env[ENV_UID_INDEX] = buffer->env.uid;
-    g_env[ENV_CA_INDEX] = buffer->env.ca;
     g_env[ENV_TARGET_TYPE_INDEX] = buffer->env.target_type;
     g_env[ENV_DRV_INDEX_INDEX] = buffer->env_drv.drv_index;
     g_env[ENV_THREAD_LIMIT_INDEX] = buffer->env_drv.thread_limit;
@@ -177,7 +175,6 @@ static int32_t init_spawn_env(const struct drv_spawn_param *drv_param, struct sp
 {
     struct env_param eparam = { 0 };
     eparam.priority = HM_PRIO_TEE_DRV;
-    eparam.ca = 0;
     eparam.target_type = DRV_TARGET_TYPE;
     eparam.drv_index = drv_param->drv_index;
     eparam.thread_limit = drv_param->thread_limit;

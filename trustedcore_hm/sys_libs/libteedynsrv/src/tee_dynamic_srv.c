@@ -397,12 +397,6 @@ static TEE_Result dynamic_srv_create_thread(void *(*thread_entry)(void *), void 
         return TEE_ERROR_GENERIC;
     }
 
-    rc = pthread_attr_settee(&attr, TEESMP_THREAD_ATTR_CA_WILDCARD, TEESMP_THREAD_ATTR_CA_INHERIT,
-        TEESMP_THREAD_ATTR_HAS_SHADOW);
-    if (rc != 0) {
-        tloge("pthread attr settee failed: 0x%x\n", rc);
-        return TEE_ERROR_GENERIC;
-    }
     pthread_t thid;
     rc = pthread_create(&thid, &attr, thread_entry, thd_para);
     if (rc != 0) {

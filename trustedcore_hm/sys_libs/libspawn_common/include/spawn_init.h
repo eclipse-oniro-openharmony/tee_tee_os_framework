@@ -19,7 +19,6 @@
 enum env_index {
     ENV_PRIORITY_INDEX,
     ENV_UID_INDEX,
-    ENV_CA_INDEX,
     ENV_TARGET_TYPE_INDEX,
     ENV_DRV_INDEX_INDEX,
     ENV_THREAD_LIMIT_INDEX,
@@ -40,7 +39,6 @@ enum argv_index {
 struct env_param {
     int32_t priority;
     uint32_t uid;
-    uint32_t ca;
     uint32_t target_type;
     uint32_t drv_index;
     uint32_t thread_limit;
@@ -50,7 +48,6 @@ struct env_param {
 struct env_base_buffer {
     char priority[ARGV_SIZE];
     char uid[ARGV_SIZE];
-    char ca[ARGV_SIZE];
     char target_type[ARGV_SIZE];
 } __attribute__((packed));
 

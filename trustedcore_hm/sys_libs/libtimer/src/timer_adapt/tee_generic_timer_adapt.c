@@ -235,15 +235,6 @@ static uint32_t classic_thread_create(timer_event *t_event)
         return ret;
     }
 
-    /* set the timer_event thread's ca to zero */
-    ret = pthread_attr_settee(&thread_attr, TEESMP_THREAD_ATTR_CA_WILDCARD, TEESMP_THREAD_ATTR_TASK_ID_INHERIT,
-                              TEESMP_THREAD_ATTR_HAS_SHADOW);
-    if (ret != TMR_OK) {
-        (void)pthread_attr_destroy(&thread_attr);
-        hm_error("setstacksize failed %d\n", ret);
-        return ret;
-    }
-
     ret = pthread_create(&thread_id, &thread_attr, classic_thread, t_event);
     if (ret != TMR_OK) {
         (void)pthread_attr_destroy(&thread_attr);
