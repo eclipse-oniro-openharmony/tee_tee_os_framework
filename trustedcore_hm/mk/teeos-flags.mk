@@ -103,7 +103,7 @@ endif
 
 ifeq ($(USE_NDK_32), y)
   A32_CFLAGS += -nodefaultlibs -nostartfiles
-  LDFLAGS += $(ATOMIC_LIB) --eh-frame-hdr --allow-shlib-undefined
+  LDFLAGS += --eh-frame-hdr --allow-shlib-undefined
 endif
 
 ifeq ($(USE_NDK_64), y)
