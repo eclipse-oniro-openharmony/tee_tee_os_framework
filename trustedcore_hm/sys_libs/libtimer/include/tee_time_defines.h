@@ -246,6 +246,5 @@ struct tee_time_stamp {
     uint32_t nanos;
 };
 
-void gic_spi_notify();
 void release_timer_event(const TEE_UUID *uuid);
 #endif

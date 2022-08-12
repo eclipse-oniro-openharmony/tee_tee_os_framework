@@ -11,8 +11,6 @@
 #include <sre_errno.h>
 #include <hm_msg_type.h>
 #include <tee_time_defines.h>
-#include <tee_time_legacy.h>
 
-void gic_spi_notify();
 void release_timer_event(const TEE_UUID *uuid);
 #endif

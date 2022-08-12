@@ -423,18 +423,12 @@ task_unmap
 task_map_phy_mem
 cinit00
 tee_init
-renew_hmtimer_job_handler
 renew_hmdrv_job_handler
 tee_task_entry
 set_log_use_tid_flag
 ac_init_simple
 tee_init
 get_tlv_sharedmem
-
-#ifndef CONFIG_OFF_DRV_TIMER
-renew_hmtimer_job_handler
-hm_timer_init
-#endif
 
 sleep
 nanosleep

@@ -13,9 +13,6 @@ list(APPEND TEE_C_FLAGS
 
 list(APPEND TEE_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/drivers/drv_timer/src
-    ${PROJECT_SOURCE_DIR}/platform/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/timer/include
-    ${PROJECT_SOURCE_DIR}/drivers/drv_timer/platform/${PLATFORM_NAME}/include
     ${PREBUILD_DIR}/headers/sys/timemgr
 )
 
@@ -45,44 +42,14 @@ else()
     endif()
 endif()
 
-if ("${CONFIG_TIMER_DISABLE}" STREQUAL "y")
-    set(LIB_TIMER_C_SOURCES
-        ${LIB_TIMER_C_SOURCES}
-        src/tee_timer_stub.c
-        src/tee_time_rtc.c
-    )
-else ()
-    set(LIB_TIMER_C_SOURCES
-        ${LIB_TIMER_C_SOURCES}
-        src/tee_antiroot_time.c
-        src/tee_gp_time_api.c
-        src/tee_time_event.c
-        src/tee_time_sleep.c
-        src/tee_time_sys.c
-        src/tee_time_rtc.c
-    )
-
-    if ("${CONFIG_OFF_DRV_TIMER}" STREQUAL "y")
-        list(APPEND LIB_TIMER_C_SOURCES
-            src/timer_adapt/tee_generic_timer_adapt.c
-        )
-        if ("${CONFIG_RTC_TIMER}" STREQUAL "y")
-            list(APPEND LIB_TIMER_C_SOURCES
-                src/rtc_adapt/rtc_drv_rtc_adapt.c
-            )
-        endif()
-    else ()
-        list(APPEND LIB_TIMER_C_SOURCES
-            src/timer_adapt/tee_sec_timer_adapt.c
-            src/tee_timer_call.c
-        )
-        if ("${CONFIG_RTC_TIMER}" STREQUAL "y")
-            list(APPEND LIB_TIMER_C_SOURCES
-                src/rtc_adapt/rtc_drv_timer_adapt.c
-            )
-        endif()
-    endif()
-endif()
+set(LIB_TIMER_C_SOURCES
+    ${LIB_TIMER_C_SOURCES}
+    src/tee_gp_time_api.c
+    src/tee_time_event.c
+    src/tee_time_sleep.c
+    src/tee_time_sys.c
+    src/timer_adapt/tee_generic_timer_adapt.c
+)
 
 tee_add_library(timer STATIC
     SOURCES

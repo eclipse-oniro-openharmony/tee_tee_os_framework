@@ -431,11 +431,6 @@ ac_init_simple;
 tee_init;
 get_tlv_sharedmem;
 
-#ifndef CONFIG_OFF_DRV_TIMER
-renew_hmtimer_job_handler;
-hm_timer_init;
-#endif
-
 sleep;
 nanosleep;
 localtime;
