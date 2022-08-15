@@ -279,71 +279,6 @@ static int gic_set_irq_target(uint32_t irq, uint64_t target_cpu_id)
 }
 
 /*
- * [63:56] Reserved.
- * [55:48] AFF3
- * [47:44] RS: Controls which group of 16 values is represented by the TargetList field.
- * [43:41] Reserved.
- * [40] IRM, 0: route to Aff3.Aff2.Aff1.<target list>; 1: route to all cpus, excluding "self".
- * [39:32] AFF2
- * [31:28] Reserved.
- * [27:24] INTID
- * [23:16] AFF1
- * [15:0] Target List. The set of PEs for which SGI interrupts will be generated. Each bit corresponds to the
- * PE within a cluster with an Affinity 0 value equal to the bit number.
- */
-static void gic_send_sgi(uint32_t irq, uint32_t target_list)
-{
-    (void)irq;
-    (void)target_list;
-
-    if (target_list) {
-        uint64_t sgi1r;
-        uint64_t aff = cpu_affinity;
-        if (mt) {
-            sgi1r = ((aff >> 32) << 48) |          /* aff3 */
-                    (((aff >> 16) & 0xff) << 32) | /* aff2 */
-                    (((aff >> 8) & 0xff) << 16) |  /* aff1 */
-                    1 |                            /* if mt== true, targetlist is always 1 */
-                    ((uint64_t)irq << 24);         /* irq */
-        } else {
-            sgi1r = ((aff >> 32) << 48) |          /* aff3 */
-                    (((aff >> 16) & 0xff) << 32) | /* aff2 */
-                    (((aff >> 8) & 0xff) << 16) |  /* aff1 */
-                    (1 << 0) |               /* targetlist */
-                    ((uint64_t)irq << 24);         /* irq */
-        }
-        set_icc_sgi1r_el1(sgi1r);
-        gic_isb();
-    }
-}
-
-
-/* send a SGI to cpu(s) */
-static int gic_irq_trigger(uint32_t irq, uint32_t mode, uint32_t cpu)
-{
-    switch (cpu) {
-    case SRE_CPU0:
-        /* send sgi to cpu0 */
-        gic_send_sgi(irq, 1);
-        break;
-    case SRE_CPU1:
-    case SRE_CPU2:
-    case SRE_CPU3:
-        /* send sgi to all cpus */
-        gic_send_sgi(irq, ALL_CPU_MASK);
-        break;
-    default:
-        klog(DEBUG_LOG,
-             "[IRQ DEBUG] trigger irq[%u] on cpu[%u] in mode[%u] failed\n", irq, cpu, mode);
-        return E_EX_INVAL;
-    }
-    klog(DEBUG_LOG, "[IRQ DEBUG] trigger irq[%u] on cpu[%u] in mode[%u]\n", irq,
-         cpu, mode);
-    return E_EX_OK;
-}
-
-
-/*
  * [12:10] CPUID
  * [9:0] Interrupt ID
  */
@@ -528,12 +463,10 @@ struct gic_interface gic3_interface = {
     .__gic_set_irq_target = gic_set_irq_target,
     .__gic_set_exclusive_irq_target = gic_set_irq_target,
     .__gic_resume = gic_resume,
-    .__gic_irq_trigger = gic_irq_trigger,
     .__gic_mask_interrupt = gic_mask_interrupt,
     .__gic_unmask_interrupt = gic_unmask_interrupt,
     .__gic_read_interrupt = gic_read_interrupt,
     .__gic_end_interrupt = gic_end_interrupt,
-    .__gic_send_sgi = gic_send_sgi,
     .__gic_map_device = gic_map_device,
     .__gic_init = gic_init,
     .__gic_cpu_iface_init = gic_cpu_iface_init,

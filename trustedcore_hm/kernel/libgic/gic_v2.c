@@ -188,19 +188,6 @@ static void gic_trigger_set(uint32_t irq, uint32_t flags)
 }
 
 /*
- * seattle, portland and austin:
- *      CLUSTER_ID  CPU_ID  GIC_CPU_Interface
- * A53      0        0-3     0-3
- * A53      0        4-7     4-7
- */
-static inline uint32_t os_get_core_gic_interface(void)
-{
-    unsigned long gic_core_interface = get_mpidr_el1();
-
-    return (gic_core_interface & 0xFF) + ((gic_core_interface & 0xFF00) >> 6);
-}
-
-/*
  * Each interrupt uses 8 bit.
  * Each bit stand for one cpu.
  */
@@ -263,48 +250,6 @@ static int gic_set_irq_target(uint32_t irq, uint64_t target_cpu_id)
 static int gic_set_exclusive_irq_target(uint32_t irq, uint64_t target_cpu_id)
 {
     return gic_set_irq_target_core(irq, target_cpu_id);
-}
-
-/* send a SGI to cpu */
-static int gic_irq_trigger(uint32_t irq, uint32_t mode, uint32_t cpu)
-{
-    uint32_t sgir;
-    switch (cpu) {
-    case SRE_CPU0:
-        sgir = ((uint32_t)BIT(os_get_core_gic_interface()) <<
-            GICD_SGIR_CPUTARGETLIST_SHIFT) |
-               (mode << GICD_SGIR_NSATT_SHIFT) |
-               (irq << GICD_SGIR_SGIINTID_SHIFT);
-        write32_dist_reg(GICD_SGIR, sgir);
-        break;
-    case SRE_CPU1:
-    case SRE_CPU2:
-    case SRE_CPU3:
-        sgir = (ALL_CPU_MASK << GICD_SGIR_CPUTARGETLIST_SHIFT) |
-               (mode << GICD_SGIR_NSATT_SHIFT) |
-               (irq << GICD_SGIR_SGIINTID_SHIFT);
-        write32_dist_reg(GICD_SGIR, sgir);
-        break;
-    default:
-        klog(DEBUG_LOG,
-             "[IRQ DEBUG] trigger irq[%u] on cpu[%u] in mode[%u] failed\n", irq, cpu, mode);
-
-        return E_EX_INVAL;
-    }
-    gic_dsb(sy);
-
-    klog(DEBUG_LOG, "[IRQ DEBUG] trigger irq[%u] on cpu[%u] in mode[%u]\n", irq,
-         cpu, mode);
-
-    return E_EX_OK;
-}
-
-static void gic_send_sgi(uint32_t irq, uint32_t target_list)
-{
-    uint32_t sgir = (target_list << GICD_SGIR_CPUTARGETLIST_SHIFT) |
-            (irq << GICD_SGIR_SGIINTID_SHIFT);
-    write32_dist_reg(GICD_SGIR, sgir);
-    gic_dsb(sy);
 }
 
 static void gic_mask_interrupt(uint32_t irq)
@@ -556,12 +501,10 @@ struct gic_interface gic2_interface = {
     .__gic_set_irq_target = gic_set_irq_target,
     .__gic_set_exclusive_irq_target = gic_set_exclusive_irq_target,
     .__gic_resume = gic_resume,
-    .__gic_irq_trigger = gic_irq_trigger,
     .__gic_mask_interrupt = gic_mask_interrupt,
     .__gic_unmask_interrupt = gic_unmask_interrupt,
     .__gic_read_interrupt = gic_read_interrupt,
     .__gic_end_interrupt = gic_end_interrupt,
-    .__gic_send_sgi = gic_send_sgi,
     .__gic_map_device = gic_map_device,
     .__gic_init = gic_init,
     .__gic_cpu_iface_init = gic_cpu_iface_init,
