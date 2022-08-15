@@ -184,7 +184,7 @@ void dump_drv_conf(const struct drv_conf_t *drv_conf)
 static int32_t receive_drv_conf_list(void **list, uint16_t list_size, uint32_t item_size)
 {
     if (list == NULL || item_size == 0 || item_size >= MAX_IMAGE_LEN) {
-        tloge("invalied params while recive drv conf list\n");
+        tloge("invalied params while receive drv conf list\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -194,7 +194,7 @@ static int32_t receive_drv_conf_list(void **list, uint16_t list_size, uint32_t i
     /* list_size < 0xffff means tmp_size cannot larger than 0xFFFFFFFF */
     uint32_t tmp_size = list_size * item_size;
     if (tmp_size >= MAX_IMAGE_LEN || list_size * item_size < item_size) {
-        tloge("tmp size is too large or overflow while recive drv conf list %u\n", item_size);
+        tloge("tmp size is too large or overflow while receive drv conf list %u\n", item_size);
         return TEE_ERROR_BAD_PARAMETERS;
     }
 

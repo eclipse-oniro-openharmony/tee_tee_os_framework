@@ -7,7 +7,6 @@
 #include <securec.h>
 #include <dlist.h>
 #include <tee_log.h>
-#include <sys_timer.h>
 #include <tee_drv_internal.h>
 #include "drv_ipc_mgr.h"
 #include "task_mgr.h"
@@ -273,7 +272,7 @@ uint32_t exception_close_handle(struct task_node *node)
             tloge("something wrong, fd count is zero\n");
 
         dlist_delete(&temp->data_list);
-        tlogi("clsoe fd:0x%llx in exception handle\n", temp->fd);
+        tlogi("close fd:0x%llx in exception handle\n", temp->fd);
 
         struct task_node *dnode = temp->drv;
         if (dnode == NULL) {

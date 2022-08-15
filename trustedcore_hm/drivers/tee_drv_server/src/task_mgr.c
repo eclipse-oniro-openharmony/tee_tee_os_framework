@@ -254,7 +254,7 @@ static bool is_state_match(struct task_node *node, enum node_state except_state)
     int32_t ret = drv_robust_mutex_lock(&node->state_mtx);
     if (ret != 0) {
         tloge("get state mtx fail\n");
-        return -1;
+        return false;
     }
 
     if (node->state != except_state) {
@@ -279,17 +279,17 @@ static struct task_node *find_normal_node(const struct tee_uuid *uuid, uint32_t 
                 continue;
 
             tlogd("find uuid:0x%x\n", uuid->timeLow);
-
             /* taskid is INVALID_CALLER_PID when uninstall ta */
-            if (taskid != (uint32_t)INVALID_CALLER_PID) {
-                /* temp->pid is INVALID_CALLER_PID when ta open drv in the first time */
-                if (temp->pid == (uint32_t)INVALID_CALLER_PID) {
-                    temp->pid = pid_to_hmpid(taskid);
-                } else if (temp->pid != pid_to_hmpid(taskid)) {
-                    tloge("something wrong, uuid:0x%x pid:0x%x not match taskid:0x%x\n",
-                        uuid->timeLow, temp->pid, taskid);
-                    continue;
-                }
+            if (taskid == (uint32_t)INVALID_CALLER_PID)
+                return temp;
+
+            /* temp->pid is INVALID_CALLER_PID when ta open drv in the first time */
+            if (temp->pid == (uint32_t)INVALID_CALLER_PID) {
+                temp->pid = pid_to_hmpid(taskid);
+            } else if (temp->pid != pid_to_hmpid(taskid)) {
+                tloge("something wrong, uuid:0x%x pid:0x%x not match taskid:0x%x\n",
+                    uuid->timeLow, temp->pid, taskid);
+                continue;
             }
 
             return temp;
@@ -491,18 +491,19 @@ int32_t get_drvcall_and_fd_node(int64_t fd, const struct tee_drv_param *params,
              * since the drvcall node2 also match
              */
             data = close_get_fd_node_with_lock(node, fd);
-            if (data != NULL) {
-                if (node->ref_cnt == UINT32_MAX) {
-                    tloge("something wrong, cannot get drvcall node:0x%x task:0x%x for fd:0x%llx, just del\n",
-                        params->uuid.timeLow, node->pid, fd);
-                    del_fd_to_drvcall_node(&data, node);
-                    data = NULL;
-                    continue;
-                } else {
-                    node->ref_cnt++;
-                }
-                break;
+            if (data == NULL)
+                continue;
+
+            if (node->ref_cnt == UINT32_MAX) {
+                tloge("something wrong, cannot get drvcall node:0x%x task:0x%x for fd:0x%llx, just del\n",
+                    params->uuid.timeLow, node->pid, fd);
+                del_fd_to_drvcall_node(&data, node);
+                data = NULL;
+                continue;
+            } else {
+                node->ref_cnt++;
             }
+            break;
         }
     }
 
