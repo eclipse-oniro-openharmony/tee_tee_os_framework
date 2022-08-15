@@ -42,12 +42,6 @@ int32_t set_env_for_task(const struct env_param *param, const struct tee_uuid *u
         return -1;
     }
 
-    ret = snprintf_s(env->ca, sizeof(env->ca), sizeof(env->ca) - 1, "ca=%u", param->ca);
-    if (ret < 0) {
-        tloge("set ca:%u failed:0x%x\n", param->ca, ret);
-        return -1;
-    }
-
     ret = snprintf_s(env->target_type, sizeof(env->target_type), sizeof(env->target_type) - 1,
         "target_type=%u", param->target_type);
     if (ret < 0) {

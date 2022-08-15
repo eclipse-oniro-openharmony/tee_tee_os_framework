@@ -71,12 +71,6 @@ int32_t get_env_param(struct env_param *param)
     if (param->uid == UINT32_MAX)
         return -1;
 
-    param->ca = get_u32_env("ca");
-    if (param->ca == UINT32_MAX) {
-        hm_error("ca is invalid, use default 0\n");
-        param->ca = 0;
-    }
-
     param->target_type = get_u32_env("target_type");
     if (param->target_type >= MAX_TARGET_TYPE) {
         hm_error("invalid target_type:0x%x\n", param->target_type);

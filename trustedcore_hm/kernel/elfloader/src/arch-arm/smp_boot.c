@@ -74,13 +74,3 @@ void boot_kernel(uint64_t uart_used, uint64_t elfloader_map_size)
     ((init_kernel_t)(uintptr_t)g_kernel_info.virt_entry)(&boot_args);
     fail("elf-loader kernel_init should not return back to this spot! ");
 }
-
-#if CONFIG_MAX_NUM_NODES > 1
-
-void init_slave_cpus(void);
-
-void smp_boot(void)
-{
-    init_slave_cpus();
-}
-#endif /* CONFIG_MAX_NUM_NODES */

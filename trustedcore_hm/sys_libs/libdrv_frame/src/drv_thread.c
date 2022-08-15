@@ -197,15 +197,6 @@ static void creat_server_thread(cref_t channel, size_t stack_size, uint32_t thre
         }
     }
 
-    ret = pthread_attr_settee(&attr, TEESMP_THREAD_ATTR_CA_WILDCARD,
-                              TEESMP_THREAD_ATTR_CA_INHERIT,
-                              TEESMP_THREAD_ATTR_NO_SHADOW);
-    if (ret != 0) {
-        free(info);
-        (void)pthread_attr_destroy(&attr);
-        hm_panic("set pthread attr failed %d\n", ret);
-    }
-
     ret = init_pthread_info(info, channel, stack_size, thread_limit);
     if (ret != DRV_CALL_OK) {
         free(info);

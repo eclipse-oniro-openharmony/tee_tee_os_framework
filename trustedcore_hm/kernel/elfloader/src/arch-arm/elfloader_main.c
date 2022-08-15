@@ -12,7 +12,6 @@
 #include <elf/sys_elf.h>
 #include <elfloader.h>
 #include <data.h>
-#include <arch/smp/smp.h> // for get_current_cpu_id
 #include <uidgid.h>
 #include <arch-arm/random.h>
 #include "io.h"
@@ -1074,13 +1073,8 @@ int main(int32_t argc __attribute__((unused)), char **tee_size, char **tee_addr)
 #ifdef CONFIG_ARCH_AARCH64
     init_kernel_vspace(&g_kernel_info);
 #endif
-#if CONFIG_MAX_NUM_NODES > 1
-    smp_boot();
-#endif
 
     aslr_done();
-    /* The cpu boot entry of the current cpu do not have to change sp */
-    ASSERT(get_current_cpu_id() == 0);
     boot_kernel(g_uart_addr_used, g_elfloader_max_size);
     return 0;
 }

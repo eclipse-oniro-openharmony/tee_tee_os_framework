@@ -39,9 +39,6 @@ struct thread_info {
         ta_entry_type ta_entry;
         uint32_t inited;
         int32_t priority;
-#ifdef CONFIG_ENABLE_TEESMP
-        uint32_t ca;
-#endif
         const char *name;
         const struct ta_routine_info *append_args;
     } args;
@@ -55,7 +52,6 @@ static struct thread_info g_tinfos[TA_SESSION_MAX];
 
 struct create_thread_info {
     size_t stack_size;
-    uint32_t ca;
     int32_t priority;
 };
 
@@ -184,15 +180,7 @@ static int32_t create_ipc_channel(const char *task_name, cref_t *ch[])
 
 static void call_task_entry(const struct thread_info *pti)
 {
-    int32_t rc;
-
-#ifdef CONFIG_ENABLE_TEESMP
-    rc = hm_tcb_update_ca(hm_tcb_get_cref(), pti->args.ca);
-    if (rc != 0)
-        hm_error("tcb update ca failed: %s\n", hmapi_strerror(rc));
-#endif
-
-    rc = set_thread_priority(thread_get_cref(), pti->args.priority);
+    int32_t rc = set_thread_priority(thread_get_cref(), pti->args.priority);
     if (rc != 0)
         hm_error("set priority failed: %s\n", hmapi_strerror(rc));
 
@@ -302,15 +290,6 @@ static TEE_Result ta_create_thread(ta_entry_type entry, uint32_t inited, const s
     pti->args.priority = info->priority;
     pti->args.name = name;
     pti->args.append_args = append_args;
-#ifdef CONFIG_ENABLE_TEESMP
-    pti->args.ca = info->ca;
-    rc = pthread_attr_settee(&attr, TEESMP_THREAD_ATTR_CA_WILDCARD, TEESMP_THREAD_ATTR_CA_INHERIT,
-        TEESMP_THREAD_ATTR_NO_SHADOW);
-    if (rc) {
-        hm_error("pthread attr set tee failed: %d\n", rc);
-        goto err_out;
-    }
-#endif
 
     /* create working thread, and get its thread ref */
     rc = pthread_create(&pti->thread, &attr, tee_task_entry_thread, pti);
@@ -397,10 +376,9 @@ static void handle_thread_remove(uint32_t tid, uint32_t session_id)
         hm_error("Msg send failed\n");
 }
 
-static void tee_task_entry_handle(ta_entry_type ta_entry, uint32_t ca, int32_t priority, const char *name,
+static void tee_task_entry_handle(ta_entry_type ta_entry, int32_t priority, const char *name,
     const struct ta_routine_info *append_args)
 {
-    (void)ca;
     uint32_t cmd;
     uint32_t tid;
     uint32_t session_id;
@@ -415,12 +393,6 @@ static void tee_task_entry_handle(ta_entry_type ta_entry, uint32_t ca, int32_t p
         case CALL_TA_CREATE_THREAD:
             hm_debug("++ CALL TA CREATE THREAD\n");
             info.stack_size = entry_msg.create_msg.stack_size;
-#ifdef CONFIG_ENABLE_TEESMP
-            (void)ca;
-            info.ca = entry_msg.create_msg.ca;
-#else
-            info.ca = ca;
-#endif
             info.priority = priority;
             handle_thread_create(ta_entry, &info, name, append_args);
             break;
@@ -441,7 +413,7 @@ static void tee_task_entry_handle(ta_entry_type ta_entry, uint32_t ca, int32_t p
 }
 
 /* return from this function will cause taldr crash itself */
-void tee_task_entry_mt(ta_entry_type ta_entry, uint32_t ca, int32_t priority, const char *name,
+void tee_task_entry_mt(ta_entry_type ta_entry, int32_t priority, const char *name,
     const struct ta_routine_info *append_args)
 {
     TEE_Result ret;
@@ -461,7 +433,6 @@ void tee_task_entry_mt(ta_entry_type ta_entry, uint32_t ca, int32_t priority, co
     }
 
     info.stack_size = stack_size;
-    info.ca = ca;
     info.priority = priority;
     /* Create a working thread at startup */
     ret = ta_create_thread(ta_entry, INIT_BUILD, &info, name, append_args);
@@ -473,5 +444,5 @@ void tee_task_entry_mt(ta_entry_type ta_entry, uint32_t ca, int32_t priority, co
         return;
     }
 
-    tee_task_entry_handle(ta_entry, ca, priority, name, append_args);
+    tee_task_entry_handle(ta_entry, priority, name, append_args);
 }
