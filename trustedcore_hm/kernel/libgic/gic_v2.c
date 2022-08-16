@@ -7,7 +7,9 @@
 #include <lib/log.h>
 #include <plat/machine/hardware.h>
 #include "gic_v2.h"
-#include <smp/smp.h>
+#include <machine.h>
+#include <uapi/api/errno.h>
+#include <plat_cfg_public.h>
 
 struct gic_v2_data {
     uint64_t gic_dist_base;
@@ -20,6 +22,9 @@ static struct gic_v2_data gic = {
     .gic_cpu_base = GIC2_CONTROLLER_KADDR,
     .nr_irqs = 0,
 };
+
+/* need a fake array to get the pointer from the linker script */
+extern char hm_ivt_gic2[1];
 
 #ifdef CONFIG_AARCH32_SUSPEND_RESUME
 #define GICD_COUNT    4
