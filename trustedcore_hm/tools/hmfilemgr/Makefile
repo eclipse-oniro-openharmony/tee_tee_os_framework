@@ -30,13 +30,11 @@ LIBS := hongmeng ramfs debug syscalls pathmgr \
 
 LIBS += c vfs mmgr
 TARGET_ARCH := $(TARGET_ARCH_64)
-GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A64)
 else
 LIBS := hongmeng_a32 ramfs_a32 debug_a32 syscalls_a32 pathmgr_a32 \
 	ac_a32 security_a32 hmlog_a32 ac_policy_a32 ipc_a32
 LIBS += c_a32 vfs_a32 mmgr_a32
 TARGET_ARCH := $(TARGET_ARCH_32)
-GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A32)
 endif
 # the main part of hmfilemgr
 LIBS += hmfilemgr
@@ -51,7 +49,7 @@ hmfilemgr_dep_libs = $(addprefix $(LIB_DIR)/,$(LLIBS:%=lib%.a))
 
 hmsysmgr_lib :=
 
-hmfilemgr_c-flags  += --gcc-toolchain=$(GCC_TOOLCHAIN) --sysroot=$(SYSROOT) --target=$(TARGET_ARCH)
+hmfilemgr_c-flags  += --target=$(TARGET_ARCH)
 hmfilemgr_c-flags  += -Wall -Wextra -std=gnu11 -Oz -fno-builtin -fPIC -Wformat=2
 hmfilemgr_c-flags  += -Wdate-time -Werror -Wfloat-equal -Wshadow -fno-common -fno-strict-aliasing -pipe
 hmfilemgr_c-flags  += -fstack-protector-strong -mtune=cortex-a53 -march=armv8-a -ffunction-sections -fdata-sections -fno-omit-frame-pointer

@@ -205,21 +205,16 @@ include mk/svc-flags.mk
 # export for tools/gen_boot_image.sh
 ifeq (${HM_ARCH}, aarch32)
 	HM_TARGET_ARCH := $(TARGET_ARCH_32)
-	HM_GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A32)
 else
 	HM_TARGET_ARCH := $(TARGET_ARCH_64)
-	HM_GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A64)
 endif
-HM_SYSROOT := $(HM_GCC_TOOLCHAIN)/$(HM_TARGET_ARCH)/libc
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -fsigned-char -fno-strict-aliasing \
                    -pipe -fno-common
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 
 SDK_CPPFLAGS := $(flags) $(c-flags) -I$(PREBUILD_DIR)/headers -I$(PREBUILD_DIR)/headers/ddk/legacy -I$(PREBUILD_DIR)/headers/sys/hmapi -I$(PREBUILD_DIR)/headers/sys/hmapi/kernel -I$(PREBUILD_DIR)/headers/sys/legacy -I$(PREBUILD_DIR)/headers/ddk/hmapi
 SDK_CPPFLAGS := $(filter-out --target=$(TARGET_ARCH), $(SDK_CPPFLAGS))
-SDK_CPPFLAGS := $(filter-out --gcc-toolchain=$(GCC_TOOLCHAIN), $(SDK_CPPFLAGS))
-SDK_CPPFLAGS := $(filter-out --sysroot=$(SYSROOT), $(SDK_CPPFLAGS))
-SDK_CPPFLAGS += --gcc-toolchain=$(HM_GCC_TOOLCHAIN) --sysroot=$(HM_SYSROOT) --target=$(HM_TARGET_ARCH)
+SDK_CPPFLAGS += --target=$(HM_TARGET_ARCH)
 SDK_CPPFLAGS := $(call uniq, $(SDK_CPPFLAGS) $(GENERAL_OPTIONS))
 SDK_CPPFLAGS := $(filter-out -fsanitize=cfi, $(SDK_CPPFLAGS))
 SDK_CPPFLAGS := $(filter-out -flto, $(SDK_CPPFLAGS))

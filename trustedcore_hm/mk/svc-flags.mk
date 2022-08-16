@@ -27,12 +27,6 @@ endif
 
 RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 
-ifeq ($(ARCH),aarch64)
-ifneq ($(EH_FILE),libgcc_eh.a)
-RUNTIME_LIB_FLAG += $(EH_FILE)
-endif
-endif
-
 DRV_LDFLAGS += -z separate-loadable-segments
 
 ifeq ($(SVC_PARTITIAL_LINK), y)

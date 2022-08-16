@@ -22,12 +22,6 @@ flags += -include$(PREBUILD_DIR)/headers/autoconf.h
 
 RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 
-ifeq ($(ARCH),aarch64)
-ifneq ($(EH_FILE),libgcc_eh.a)
-RUNTIME_LIB_FLAG += $(EH_FILE)
-endif
-endif
-
 ifeq ($(CONFIG_LLVM_LTO),y)
 flags += -flto -fsplit-lto-unit
 endif

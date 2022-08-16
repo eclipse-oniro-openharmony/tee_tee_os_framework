@@ -67,7 +67,7 @@ hmsysmgr_LDFLAGS += -L$(LIB_DIR_A32)
 hmsysmgr_LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/$(PLAT)/libhwsecurec_a32/
 endif
 
-hmsysmgr_LDFLAGS += --gc-sections -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LINK_LIBS) $(LIBCOMPILER_RT_BUILTINS) $(EH_FILE) --end-group
+hmsysmgr_LDFLAGS += --gc-sections -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LINK_LIBS) $(LIBCOMPILER_RT_BUILTINS) --end-group
 hmsysmgr_LDFLAGS += -u _hm_start -e _hm_start -z max-page-size=0x1000 -nostdlib --build-id=none -z noexecstack -z now -z relro
 hmsysmgr_LDFLAGS += -s
 

@@ -1,19 +1,12 @@
 #
 #toolchain.mk
 #
-export GCC_TOOLCHAIN_BASEVER=7.5.0
-export GCC_TOOLCHAIN_FULLVER=7.5.0-2019.12
 export LLVM_TOOLCHAIN_BASEVER=8.0.1
 
 export TOOLCHAIN_ROOT=$(TEE_CLANG_DIR)
-export GCC_LD_A32 := $(TOPDIR)/prebuild/toolchains/gcc-linaro-arm-linux-gnueabi/bin/arm-linux-gnueabi-ld
-export GCC_LD_A64 := $(TOPDIR)/prebuild/toolchains/gcc-linaro-aarch64-linux-gnu/bin/aarch64-linux-gnu-ld
 
 export CLANG_TOOLCHAIN   := $(TOOLCHAIN_ROOT)
-export GCC_TOOLCHAIN_A32 := $(TEE_GCC_DIR)/arm/gcc-linaro-7.5.0-arm-linux-gnueabi
-export GCC_TOOLCHAIN_A64 := $(TEE_GCC_DIR)/aarch64/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu
-export GCC_TOOLCHAIN_GNUA32 := $(TEE_GCC_DIR)/arm/gcc-linaro-7.5.0-arm-linux-gnueabi
-export PATH := $(CLANG_TOOLCHAIN):$(GCC_TOOLCHAIN_A32)/bin:$(GCC_TOOLCHAIN_A64)/bin:$(GCC_TOOLCHAIN_GNUA32)/bin:$(PATH)
+export PATH := $(CLANG_TOOLCHAIN):$(PATH)
 CROSS_COMPILE := $(CLANG_TOOLCHAIN)
 
 CC      := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang
@@ -49,7 +42,6 @@ export TARGET_ARCH_64 := aarch64-linux-gnu
 compiler-rt = $(shell if [ -d $(TOPDIR)/../open_source ]; then echo "exist"; else echo "noexist"; fi)
 ifeq ($(ARCH), arm)
 	TARGET_ARCH := $(TARGET_ARCH_32)
-	GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_GNUA32)
 ifeq ("$(compiler-rt)", "exist")
 	LIBCOMPILER_RT_BUILTINS := $(TEE_COMPILER_DIR)/lib/arm-linux-ohosmusl/libclang_rt.builtins.a
 else
@@ -66,7 +58,6 @@ ifeq ($(CONFIG_ARM_CORTEX_A53),y)
 endif
 else
 	TARGET_ARCH := $(TARGET_ARCH_64)
-	GCC_TOOLCHAIN := $(GCC_TOOLCHAIN_A64)
 ifeq ("$(compiler-rt)", "exist")
 	LIBCOMPILER_RT_BUILTINS := $(TEE_COMPILER_DIR)/lib/aarch64-linux-ohosmusl/libclang_rt.builtins.a
 else
@@ -75,13 +66,6 @@ endif
     flags += -march=armv8-a
 endif
 
-SYSROOT := $(GCC_TOOLCHAIN)/$(TARGET_ARCH)/libc
-ISYSTEM := $(GCC_TOOLCHAIN)/$(TARGET_ARCH)/libc/usr/include
-
-flags     += --gcc-toolchain=$(GCC_TOOLCHAIN) --sysroot=$(SYSROOT) --target=$(TARGET_ARCH)
-cxx-flags += --gcc-toolchain=$(GCC_TOOLCHAIN) --sysroot=$(SYSROOT) --target=$(TARGET_ARCH)
-asflags   += --gcc-toolchain=$(GCC_TOOLCHAIN) --sysroot=$(SYSROOT) --target=$(TARGET_ARCH)
-ldflags   += --sysroot=$(SYSROOT)
-
-EH_FILE     := $(shell $(CC) $(flags) -print-file-name=libgcc_eh.a)
-ATOMIC_LIB  := $(shell $(CXX) $(flags) -print-file-name=libatomic.a)
+flags     += --target=$(TARGET_ARCH)
+cxx-flags += --target=$(TARGET_ARCH)
+asflags   += --target=$(TARGET_ARCH)
