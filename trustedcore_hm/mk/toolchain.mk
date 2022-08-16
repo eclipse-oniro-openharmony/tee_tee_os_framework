@@ -9,27 +9,27 @@ export CLANG_TOOLCHAIN   := $(TOOLCHAIN_ROOT)
 export PATH := $(CLANG_TOOLCHAIN):$(PATH)
 CROSS_COMPILE := $(CLANG_TOOLCHAIN)
 
-CC      := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang
-CXX     := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang++
-AS      := $(CROSS_COMPILE)/llvm-as
-LD      := $(CROSS_COMPILE)/ld.lld
-CPP     := $(TOPDIR)/kernel/clang-cpp
+override CC      := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang
+override CXX     := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang++
+override AS      := $(CROSS_COMPILE)/llvm-as
+override LD      := $(CROSS_COMPILE)/ld.lld
+override CPP     := $(TOPDIR)/kernel/clang-cpp
 # disable ar creating debug
-AR      := $(CROSS_COMPILE)/llvm-ar 2>/dev/null
-NM      := $(CROSS_COMPILE)/llvm-nm
-OBJCOPY := $(CROSS_COMPILE)/llvm-objcopy
-READELF := $(CROSS_COMPILE)/llvm-readelf
-STRIP   := $(CROSS_COMPILE)/llvm-strip
-RANLIB  := $(CROSS_COMPILE)/llvm-ranlib
+override AR      := $(CROSS_COMPILE)/llvm-ar 2>/dev/null
+override NM      := $(CROSS_COMPILE)/llvm-nm
+override OBJCOPY := $(CROSS_COMPILE)/llvm-objcopy
+override READELF := $(CROSS_COMPILE)/llvm-readelf
+override STRIP   := $(CROSS_COMPILE)/llvm-strip
+override RANLIB  := $(CROSS_COMPILE)/llvm-ranlib
 
-XOM     := $(TOPDIR)/tools/xom/xom
-XOM_TOOLCHAIN   := $(TOOLCHAIN_ROOT)/xom
-LLC     := $(XOM_TOOLCHAIN)/bin/llc
-CC-XOM  := $(XOM_TOOLCHAIN)/bin/clang-xom
-CXX-XOM := $(XOM_TOOLCHAIN)/bin/clang-xom
-LD-XOM  := $(XOM_TOOLCHAIN)/bin/ld.lld
-XOM_LIB_LDS := $(TOPDIR)/mk/linker.lib.xom.ld
-XOM_LDS     := $(TOPDIR)/mk/linker.xom.ld
+override XOM     := $(TOPDIR)/tools/xom/xom
+override XOM_TOOLCHAIN   := $(TOOLCHAIN_ROOT)/xom
+override LLC     := $(XOM_TOOLCHAIN)/bin/llc
+override CC-XOM  := $(XOM_TOOLCHAIN)/bin/clang-xom
+override CXX-XOM := $(XOM_TOOLCHAIN)/bin/clang-xom
+override LD-XOM  := $(XOM_TOOLCHAIN)/bin/ld.lld
+override XOM_LIB_LDS := $(TOPDIR)/mk/linker.lib.xom.ld
+override XOM_LDS     := $(TOPDIR)/mk/linker.xom.ld
 
 export LLC CC-XOM CXX-XOM XOM_LIB_LDS XOM_LDS XOM LD-XOM
 export CC CXX AS LD CPP AR NM OBJCOPY READELF STRIP
