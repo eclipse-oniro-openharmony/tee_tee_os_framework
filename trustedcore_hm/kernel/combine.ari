@@ -6,7 +6,7 @@ addlib libfutex.a
 addlib libipc.a
 addlib libsched.a
 addlib libverified.a
-addlib libsmp.a
+addlib libnotify.a
 addlib libhardware.a
 addlib libuart.a
 addlib libgic.a

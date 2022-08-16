@@ -210,7 +210,7 @@ set(KERNEL_TEEOS_LIBRARIES
     futex
     cap
     klibc
-    smp
+    notify
     traps
 )
 
