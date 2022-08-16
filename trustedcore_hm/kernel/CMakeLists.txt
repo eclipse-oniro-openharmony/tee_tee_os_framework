@@ -244,7 +244,7 @@ set(ELFLOADER_C_SRCS
     elfloader/src/arch-arm/data.c
     elfloader/src/arch-arm/random.c
     elfloader/src/arch-arm/uncompr.c
-    elfloader/src/arch-arm/smp_boot.c
+    elfloader/src/arch-arm/boot.c
     elfloader/src/arch-arm/elfloader_main.c
     elfloader/src/arch-arm/snapshot.c
     elfloader/src/usr_put_char.c
