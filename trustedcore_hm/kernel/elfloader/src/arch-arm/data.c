@@ -10,7 +10,6 @@
 #include <elfloader.h>
 #include <mmu.h>
 #include <uart_register.h>
-#include <arch/smp/smp.h>
 #include <arch/machine/hardware.h>
 
 #define DATA_SECTION_HOLD    1

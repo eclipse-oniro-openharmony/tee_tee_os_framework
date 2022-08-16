@@ -11,7 +11,6 @@
 
 #include <stdarg.h>
 #include <kernel/spinlock.h>
-#include <arch/smp/smp.h>
 
 /* put a char for printing */
 static void put_console_char(unsigned char c)
