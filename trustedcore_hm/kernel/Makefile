@@ -295,7 +295,7 @@ libcap.a        := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libcap.a
 libfutex.a      := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libfutex.a
 libipc.a        := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libipc.a
 libsched.a      := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libsched.a
-libsmp.a        := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libsmp.a
+libnotify.a     := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libnotify.a
 libcmd.a        := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libcmd.a
 libklibc.a         := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libklibc.a
 libverified.a   := $(PREBUILD_KERNEL_LIBS)/$(TEE_ARCH)/libverified.a
@@ -312,7 +312,7 @@ STATICSOURCES = $(foreach file, ${C_SOURCES_WITH_PARSE} ${KERNEL_ASM_SOURCES}, \
 OBJECTS = $(addprefix ${HMBUILD_ROOT}/, ${KERNEL_ASM_SOURCES:.S=.o} modules.a)
 KLIBS := libuart.a libgic.a libversion.a
 MODULES := libkernel.a ${KLIBS} libklibc.a libcap.a libfutex.a libipc.a libsched.a \
-	libsmp.a libverified.a libhardware.a libcmd.a
+	libnotify.a libverified.a libhardware.a libcmd.a
 
 .PHONY: all default clean preprocess
 
@@ -325,7 +325,7 @@ ${HMBUILD_ROOT}/modules.a : ${MODULES}
 	@cp $(libipc.a) ${HMBUILD_ROOT}/
 	@cp $(libcmd.a) ${HMBUILD_ROOT}/
 	@cp $(libsched.a) ${HMBUILD_ROOT}/
-	@cp $(libsmp.a) ${HMBUILD_ROOT}/
+	@cp $(libnotify.a) ${HMBUILD_ROOT}/
 	@cp $(libverified.a) ${HMBUILD_ROOT}/
 	@cp $(libhardware.a) ${HMBUILD_ROOT}/
 	@cp $(libkernel.a) ${HMBUILD_ROOT}/

@@ -90,7 +90,6 @@ void arm_switch_on_mmu(void);
 
 void boot_kernel(uint64_t uart_used, uint64_t elfloader_map_size);
 void init_cpus(void);
-void smp_boot(void);
 struct image_info *get_user_img_info();
 
 #ifdef CONFIG_KERNEL_ASLR

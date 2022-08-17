@@ -7,7 +7,8 @@
 #include <lib/log.h>
 #include <plat/machine/hardware.h>
 #include "gic_v3.h"
-#include <smp/smp.h>
+#include <machine.h>
+#include <uapi/api/errno.h>
 #include <elfloader.h>
 #include <kernel/tee.h>
 
@@ -22,6 +23,9 @@ static struct gic_v3_data gic;
 static bool mt;
 static uint64_t cpu_affinity;
 static uint64_t gicr;
+
+/* need a fake array to get the pointer from the linker script */
+extern char hm_ivt_gic3[1];
 
 static inline void write32_dist_reg(uint32_t offset, uint32_t val)
 {
