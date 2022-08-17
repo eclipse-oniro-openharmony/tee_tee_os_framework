@@ -12,7 +12,6 @@
 #include <mode/object/structures.h>
 #include <mode/sysreg.h>
 #include <mmu.h>
-#include <snapshot.h>
 
 #define KERNEL_PMD_CNT 2
 

@@ -11,7 +11,6 @@
 #include <arch/machine/registerset.h>
 #include <mmu.h>
 #include <random.h>
-#include <snapshot.h>
 
 #ifdef CONFIG_ARCH_AARCH64
 #define PAR_PA_MASK 0x0000fffffffff000 /* bit 12-47 */

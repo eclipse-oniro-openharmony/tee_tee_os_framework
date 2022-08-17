@@ -18,7 +18,6 @@
 #include <mmu.h>
 #include <plat/machine/devices.h>
 #include <uart_register.h>
-#include <snapshot.h>
 
 #if CONFIG_KERNEL_ASLR || CONFIG_SYSSERV_ASLR
 #include <arch-arm/timer.h>
