@@ -48,18 +48,6 @@ WEAK uint32_t get_rsv_mem_pool_config_num(void)
     return 0;
 }
 
-#ifdef CONFIG_AUTH_ENHANCE
-WEAK struct call_info *get_kernel_ca_whitelist(void)
-{
-    return NULL;
-}
-
-WEAK uint32_t get_kernel_ca_whitelist_num(void)
-{
-    return 0;
-}
-#endif
-
 WEAK uint32_t get_product_service_property_num(void)
 {
     return 0;
