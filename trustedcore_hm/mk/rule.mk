@@ -1,5 +1,3 @@
-include $(TOPDIR)/mk/product-flags.mk
-
 ## This function will generate $(1)_objs variables which provided
 ## the objects needed to compile to the $(1) module.
 ##
@@ -107,8 +105,14 @@ $(2): $(1)/.extracted
 endef
 
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -Wformat=2 -fsigned-char -fno-strict-aliasing \
-                   -pipe
-WARNING_OPTIONS := -Wall -Wextra -Werror
+                   -pipe -Wall -Wextra -Werror -fno-common
+
+FILTER_MODULE := open_source openssl
+
+# we need function is_filter_module to remove open source files
+is_filter_module = $(strip $(foreach module,$(FILTER_MODULE),$(findstring $(module),$1)))
+
+last_component = $(shell echo $1 | awk -F '//' '{print $$NF}')
 
 # we need function uniq to deduplication
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
@@ -132,8 +136,6 @@ $(BUILD_DIR)/%.o: %.c
 	@echo "[ CC ] $@ "
 	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(if $(call is_filter_module,$(call last_component,$@)), \
 	$(filter-out -Werror, $(flags) $(inc-flags) $(c-flags)),$(call uniq, \
-	$(if $(if $(call check_list,$(call last_component,$@)),$(findstring $(notdir $<),$(notdir $(CHOOSE_OPTIONS_2))),"need options"),$(WARNING_OPTIONS),) \
-	$(if $(findstring modem,$<)$(findstring secureboot,$<)$(findstring eSE,$<)$(findstring libdx,$@),, -fno-common) \
 	$(flags) $(inc-flags) $(c-flags) $(GENERAL_OPTIONS))) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.S
@@ -161,8 +163,6 @@ $(BUILD_DIR)/%.o: %.c
 	@echo "[ CC-XOM ] $@"
 	$(VER)$(CC-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(if $(call is_filter_module,$(call last_component,$@)), \
 	$(filter-out -Werror, $(flags) $(inc-flags) $(c-flags)),$(call uniq, \
-	$(if $(if $(call check_list,$(call last_component,$@)),$(findstring $(notdir $<),$(notdir $(CHOOSE_OPTIONS))),"need options"),$(WARNING_OPTIONS),) \
-	$(if $(findstring modem,$<)$(findstring secureboot,$<)$(findstring eSE,$<)$(findstring libdx,$@),,-fno-common) \
 	$(flags) $(inc-flags) $(c-flags) $(GENERAL_OPTIONS))) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.S
@@ -174,4 +174,16 @@ $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ asm ] $@"
 	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
+endif
+
+rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+
+DEPS := $(patsubst %.c,$(BUILD_DIR)/%.c.d,$(call rwildcard,./,*.c))
+DEPS += $(patsubst %.cxx,%$(BUILD_DIR)/.cxx.d,$(call rwildcard,./,*.cxx))
+DEPS += $(patsubst %.cpp,$(BUILD_DIR)/%.cpp.d,$(call rwildcard,./,*.cpp))
+DEPS += $(patsubst %.S,$(BUILD_DIR)/%.S.d,$(call rwildcard,./,*.S))
+DEPS += $(patsubst %.s,$(BUILD_DIR)/%.s.d,$(call rwildcard,./,*.s))
+
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEPS)
 endif
