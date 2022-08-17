@@ -22,9 +22,6 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include <irqmgr_api.h>
 #include <sys/usrsyscall.h>
 #include <sys/kuapi.h>
-#ifdef CONFIG_DYNAMIC_CPU_NUM
-#include <sys/teecall.h>
-#endif
 #include "teesmcmgr.h"
 
 static cref_t g_teesmc_hdlr;
@@ -163,27 +160,6 @@ static void create_idle_thread(pthread_t *idle_thread, size_t idle_thread_len, u
     }
 }
 
-static void get_actual_cpu_nr(int32_t *cpu_nr)
-{
-#ifdef CONFIG_DYNAMIC_CPU_NUM
-    int32_t ret;
-
-    ret = teecall_cap_get_cpu_nr(cpu_nr);
-    if (ret) {
-        error("get_cpu_nr failed: 0x%x\n", ret);
-        hm_exit(1);
-    }
-
-    if (*cpu_nr < 0 || *cpu_nr > NR_CORES) {
-        error("caution: cpu_nr %d is invald\n", *cpu_nr);
-        hm_exit(1);
-    }
-    error("get_cpu_nr: %d\n", *cpu_nr);
-#else
-    *cpu_nr = NR_CORES;
-#endif
-}
-
 /*
  * CODEREVIEW CHECKLIST
  * RET: cs_client_init: checked.
@@ -202,7 +178,7 @@ int main(void)
 {
     uint32_t i;
     int32_t rc;
-    int32_t cpu_nr = -1;
+    int32_t cpu_nr = NR_CORES;
     pthread_t smc_thread[NR_CORES] = {0};
     pthread_t idle_thread[NR_CORES] = {0};
 
@@ -217,7 +193,6 @@ int main(void)
     info("| TEE SMC Manager\n");
     info(" --\n");
 
-    get_actual_cpu_nr(&cpu_nr);
     acquire_hdlr();
     create_smc_thread(smc_thread, sizeof(smc_thread), (uint32_t)cpu_nr);
     create_idle_thread(idle_thread, sizeof(idle_thread), (uint32_t)cpu_nr);
