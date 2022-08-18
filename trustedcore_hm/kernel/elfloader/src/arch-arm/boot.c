@@ -59,7 +59,6 @@ void boot_kernel(uint64_t uart_used, uint64_t elfloader_map_size)
     /* Before and after enable mmu, kernel_ivo.virt_region_start should pointed to the same physical address */
     ASSERT(address_mapping_check(g_kernel_info.virt_region_start, g_kernel_info.phys_region_start));
 
-    hm_spinlock_release(&g_elfloader_lock);
     boot_args.user_img_info      = user_info;
     boot_args.num_apps           = g_boot_num_app;
     boot_args.kernel_img_info    = &g_kernel_info;
