@@ -107,7 +107,7 @@ endef
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -Wformat=2 -fsigned-char -fno-strict-aliasing \
                    -pipe -Wall -Wextra -Werror -fno-common
 
-FILTER_MODULE := open_source openssl
+FILTER_MODULE := open_source openssl bounds_checking_function
 
 # we need function is_filter_module to remove open source files
 is_filter_module = $(strip $(foreach module,$(FILTER_MODULE),$(findstring $(module),$1)))
@@ -141,7 +141,7 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -168,7 +168,7 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)

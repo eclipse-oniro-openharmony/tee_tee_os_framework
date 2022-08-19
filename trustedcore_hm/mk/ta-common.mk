@@ -4,22 +4,12 @@ include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
 include $(TOPDIR)/mk/common.mk
 
-# use musl lib c headers.
-inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)
-inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
 inc-flags += $(INCLUDE_PATH:%=-I%)
 
 # c & cpp flags:
-flags += -fPIC
-flags += -nostdinc -nodefaultlibs -fstack-protector-strong
-flags += -DARM_PAE=1
-flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG -DHM_DEBUG_KERNEL -DNDEBUG
-flags += -include$(PREBUILD_DIR)/headers/autoconf.h
 ifeq ($(CONFIG_DX_ENABLE), true)
 flags += -DDX_ENABLE
 endif
-
-TA_LDFLAGS += -z separate-loadable-segments
 
 # for ld flags
 ifeq ($(ARCH),aarch64)
@@ -38,7 +28,6 @@ TA_LDFLAGS += -r -d -T$(TOPDIR)/mk/ta_link.ld
 endif
 endif
 
-TA_LDFLAGS += -s
 LINK_LIBS=$(LIBS:%=-l%)
 TA_LDFLAGS += -L$(LIB_DIR)
 TA_LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) $(LINK_LIBS)

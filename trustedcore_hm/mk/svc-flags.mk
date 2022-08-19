@@ -8,26 +8,12 @@ include $(TOPDIR)/mk/toolchain.mk
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
 # use musl lib c headers.
-inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH) -I$(PREBUILD_HEADER)/gen/arch/$(ARCH) -I$(PREBUILD_LIBC_INC)/hm
-## for some header file include "alltypes.h" directly.
-inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
-
 
 # c & cpp flags:
-flags += -fPIC -fdata-sections -ffunction-sections -fstack-protector-strong
-#flags += -Wno-format -nodefaultlibs -nostdinc
-flags += -DARM_PAE=1
-flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG -DHM_DEBUG_KERNEL -DNDEBUG
-flags += -include$(PREBUILD_DIR)/headers/autoconf.h
+flags += -fdata-sections -ffunction-sections
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 
-ifeq ($(CONFIG_LLVM_LTO),y)
-flags += -flto -fsplit-lto-unit
-endif
-
 RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
-
-DRV_LDFLAGS += -z separate-loadable-segments
 
 ifeq ($(SVC_PARTITIAL_LINK), y)
 ifeq ($(ARCH),aarch64)
@@ -57,8 +43,6 @@ DRV_LDFLAGS += -L$(LIB_DIR)
 DRV_LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LIBS:%=-l%) $(RUNTIME_LIB_FLAG) --end-group
 DRV_LDFLAGS +=  -nostdlib -u $(ENTRY_POINT) -e $(ENTRY_POINT) -z max-page-size=4096
 endif #SVC_PARTITIAL_LINK
-
-DRV_LDFLAGS += -s
 
 flags += $(INCLUDES)
 

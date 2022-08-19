@@ -13,6 +13,14 @@ inc-flags += -I$(TEE_SECUREC_DIR)/include
 INCLUDE_PATH += $(PREBUILD_DIR)/headers/
 INCLUDE_PATH += $(TOPDIR)/tools/
 
+ifeq ($(TARGET_IS_HOST),)
+# use musl lib c headers.
+inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH) -I$(PREBUILD_HEADER)/gen/arch/$(ARCH) -I$(PREBUILD_LIBC_INC)/hm
+## for some header file include "alltypes.h" directly.
+inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
+flags += -nodefaultlibs -nostdinc -std=gnu11
+endif
+
 # all target flags for both c & c++ compiler
 ifneq ($(TARGET_IS_HOST),y)
 flags += -Oz
@@ -27,9 +35,12 @@ flags += -flto -fsplit-lto-unit
 endif
 endif
 
-flags += -Wall -Wextra
 # other options
+flags += -fPIC -fstack-protector-strong
 flags += -fno-omit-frame-pointer -fno-short-enums
+flags += -include$(PREBUILD_DIR)/headers/autoconf.h
+flags += -DARM_PAE=1
+flags += -DARCH_ARM -DAARCH64 -D__KERNEL_64__ -DARMV8_A -DARM_CORTEX_A53 -DDEBUG -DHM_DEBUG_KERNEL -DNDEBUG
 flags += -DHAVE_AUTOCONF
 flags += -DVFMW_EXTRA_TYPE_DEFINE -DENV_SOS_KERNEL
 ifeq ($(CONFIG_UBSAN),y)
@@ -50,6 +61,14 @@ flags += -D__FILE__=0 -Wno-builtin-macro-redefined
 ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 flags += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 endif
+
+ifeq ($(CONFIG_DEBUG_BUILD), y)
+CFLAGS += -g
+ASFLAGS += -g
+endif
+
+DRV_LDFLAGS += -s -z separate-loadable-segments
+TA_LDFLAGS += -s -z separate-loadable-segments
 
 # all target for c++ compiler
 cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin

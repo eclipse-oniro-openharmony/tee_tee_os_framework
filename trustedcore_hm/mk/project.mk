@@ -218,6 +218,7 @@ SDK_CPPFLAGS += --target=$(HM_TARGET_ARCH)
 SDK_CPPFLAGS := $(call uniq, $(SDK_CPPFLAGS) $(GENERAL_OPTIONS))
 SDK_CPPFLAGS := $(filter-out -fsanitize=cfi, $(SDK_CPPFLAGS))
 SDK_CPPFLAGS := $(filter-out -flto, $(SDK_CPPFLAGS))
+SDK_CPPFLAGS += -include$(PREBUILD_DIR)/headers/autoconf.h
 export SDK_CPPFLAGS
 
 # bootfs image
