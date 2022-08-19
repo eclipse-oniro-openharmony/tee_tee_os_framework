@@ -998,10 +998,6 @@ static void loader_init()
     aslr_init();
     init_kernel_vspace();
 #endif
-
-    if (memset(&g_elfloader_lock, 0, sizeof(struct hm_spinlock)) != 0)
-        fail("memset failed\n");
-
 }
 
 static void barrier()
@@ -1017,13 +1013,6 @@ static void barrier()
 static void aslr_done()
 {
     rand_clear();
-}
-
-static void acquire_lock()
-{
-    klog(DEBUG_LOG, "Acquire lock for cpu zero ...\n");
-    hm_spinlock_acquire(&g_elfloader_lock);
-    klog(DEBUG_LOG, "lock acuired!\n");
 }
 
 struct image_info *get_user_img_info()
@@ -1068,7 +1057,6 @@ int main(int32_t argc __attribute__((unused)), char **tee_size, char **tee_addr)
         fail("image_base_addr less than BOOT_OFFSET, maybe config errors\n");
 
     barrier();
-    acquire_lock();
 #ifdef CONFIG_ARCH_AARCH64
     init_kernel_vspace(&g_kernel_info);
 #endif

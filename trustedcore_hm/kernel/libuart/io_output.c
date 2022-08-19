@@ -10,7 +10,6 @@
 #ifdef CONFIG_PRINTING
 
 #include <stdarg.h>
-#include <kernel/spinlock.h>
 
 /* put a char for printing */
 static void put_console_char(unsigned char c)
@@ -104,7 +103,6 @@ static ulong_t print_unsigned_long_long(unsigned long long x, ulong_t base)
     return len;
 }
 
-static HM_SPINLOCK(console_lock);
 /*
  * this is a simple implementation
  * of the printf functionality
@@ -118,7 +116,6 @@ static HM_SPINLOCK(console_lock);
  */
 static ulong_t vprintf(const char *format, va_list ap)
 {
-    unsigned long irq_flags;
     unsigned int tag = 0;
     ulong_t len = 0;
     int i;
@@ -128,9 +125,6 @@ static ulong_t vprintf(const char *format, va_list ap)
 
     if (format == NULL)
         return 0;
-
-    /* console_lock is initialized above */
-    irq_flags = hm_spinlock_acquire_irqsave(&console_lock);
 
     while (*format) {
         if (tag) {
@@ -178,10 +172,8 @@ static ulong_t vprintf(const char *format, va_list ap)
             case 's':
                 pchar = va_arg(ap, char *);
                 /* gatantee not to read from NULL */
-                if (pchar == NULL) {
-                    hm_spinlock_release_irqrestore(&console_lock, irq_flags);
+                if (pchar == NULL)
                     return -1;
-                }
                 len += print_string(pchar);
                 ++format;
                 break;
@@ -204,7 +196,6 @@ static ulong_t vprintf(const char *format, va_list ap)
                     if (*(format + 1) == 'x') {
                         len += print_unsigned_long_long(va_arg(ap, unsigned long long), 16);
                     } else {
-                        hm_spinlock_release_irqrestore(&console_lock, irq_flags);
                         return -1;
                     }
                     format += 2;
@@ -219,12 +210,10 @@ static ulong_t vprintf(const char *format, va_list ap)
                     break;
 
                 default:
-                    hm_spinlock_release_irqrestore(&console_lock, irq_flags);
                     return -1;
                 }
                 break;
             default:
-                hm_spinlock_release_irqrestore(&console_lock, irq_flags);
                 return -1;
             }
             tag = 0;
@@ -243,22 +232,17 @@ static ulong_t vprintf(const char *format, va_list ap)
         }
     }
 
-    hm_spinlock_release_irqrestore(&console_lock, irq_flags);
     return len;
 }
 
 int32_t puts(const char *s)
 {
-    unsigned long irq_flags;
-
     if (s == NULL)
         return -1;
 
-    irq_flags = hm_spinlock_acquire_irqsave(&console_lock);
     for (; *s != '\0'; s++)
         kernel_putchar(*s);
     kernel_putchar('\n');
-    hm_spinlock_release_irqrestore(&console_lock, irq_flags);
     return 0;
 }
 

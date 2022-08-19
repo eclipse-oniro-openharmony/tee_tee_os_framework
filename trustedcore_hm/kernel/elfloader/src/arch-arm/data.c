@@ -17,8 +17,6 @@ ALIGN(BIT(PAGE_BITS)) VISIBLE char core_stacks[BIT(PAGE_BITS)];
 
 int g_boot_num_app = 1;
 
-HM_SPINLOCK(g_elfloader_lock);
-
 /* .uart_type invalid initialization, because g_plat_cfg must not linked to bss section */
 #ifdef NO_PLATCFG_EMBEDDED
 struct platform_info g_plat_cfg = {

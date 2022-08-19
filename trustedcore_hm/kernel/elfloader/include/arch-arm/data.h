@@ -13,13 +13,6 @@
 #include <arch/lib/barrier.h>
 #include <arch/object/structures.h>
 #include <elfloader.h>
-#include <kernel/spinlock.h>
-
-#ifdef CONFIG_ARCH_AARCH64
-#include <arch/arm/64/spinlock.h>
-#else
-#include <arch/arm/32/spinlock.h>
-#endif
 
 extern char core_stacks[BIT(PAGE_BITS)] ALIGN(BIT(PAGE_BITS));
 
@@ -55,7 +48,6 @@ extern char _end[];
 extern char _archive_start[];
 extern char _archive_end[];
 extern char _image_base_addr[];
-extern struct hm_spinlock g_elfloader_lock;
 
 typedef void (*init_kernel_t)(struct elfloader_to_kernel_args *boot_args);
 
