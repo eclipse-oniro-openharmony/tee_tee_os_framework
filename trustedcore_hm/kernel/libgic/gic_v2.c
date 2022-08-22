@@ -234,16 +234,7 @@ static int gic_set_irq_target(uint32_t irq, uint64_t target_cpu_id)
     uint32_t core_gic_interface;
     (void)target_cpu_id;
 
-#ifdef CONFIG_ENABLE_TEESMP
-    /*
-     * If cpu 0 is off, we need to migrate the irq to the next cpu that is on.
-     * We have spi notify to pull cpu from non-secure world that actually
-     * handles the irq.
-     */
     core_gic_interface = target_cpu_id;
-#else
-    core_gic_interface = os_get_core_gic_interface();
-#endif
 
     return gic_set_irq_target_core(irq, core_gic_interface);
 }
