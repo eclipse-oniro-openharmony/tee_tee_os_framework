@@ -120,13 +120,6 @@ if ("${CONFIG_CC_STACKPROTECTOR_STRONG}" STREQUAL "y")
     )
 endif()
 
-if ("${CONFIG_SMP_ARM_MPCORE}" STREQUAL "y")
-    set(DEFS
-        ${DEFS}
-        CONFIG_SMP_ARM_MPCORE
-    )
-endif()
-
 if ("${CONFIG_DEBUG_BUILD}" STREQUAL "y")
     set(CFLAGS
         ${CFLAGS}
