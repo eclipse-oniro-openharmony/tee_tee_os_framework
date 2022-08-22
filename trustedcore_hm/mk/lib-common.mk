@@ -12,10 +12,6 @@ inc-flags += $(INCLUDE_PATH:%=-I%)
 
 flags += -fdata-sections -ffunction-sections
 
-ifeq (${TARG},)
-	LIB_VENDOR_FLAGS :=
-endif
-
 ifeq ($(CONFIG_DX_ENABLE), true)
 flags += -DDX_ENABLE
 endif
@@ -27,8 +23,6 @@ endif
 ifneq ($(findstring $(CONFIG_EPS_FOR_MSP)$(CONFIG_EPS_FOR_990), true),)
 flags += -DEPS_ENABLE
 endif
-
-flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 
 # cpp flags:
 cxx-flags += -nostdinc++ -static-libstdc++

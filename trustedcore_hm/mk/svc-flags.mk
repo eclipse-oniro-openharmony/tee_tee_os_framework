@@ -7,11 +7,9 @@ include $(TOPDIR)/mk/cfg.mk
 include $(TOPDIR)/mk/toolchain.mk
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
-# use musl lib c headers.
 
 # c & cpp flags:
 flags += -fdata-sections -ffunction-sections
-flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 
 RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 
