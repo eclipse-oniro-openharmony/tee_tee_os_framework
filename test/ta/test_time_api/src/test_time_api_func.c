@@ -24,7 +24,7 @@ static TEE_Result TestGetSystemTime(TEE_Param params[4])
     TEE_Time time = {0};
     TEE_GetSystemTime(&time);
     params[1].value.a = time.seconds;
-    tlogi("GetSystemTime: %ds %dms", time.seconds, time.millis);
+    tlogi("GetSystemTime: %us %ums", time.seconds, time.millis);
     return TEE_SUCCESS;
 }
 
@@ -35,7 +35,7 @@ static TEE_Result TestGetREETime(TEE_Param params[4])
     TEE_Time time = {0};
     TEE_GetREETime(&time);
     params[1].value.a = time.seconds;
-    tlogi("GetREETime: %ds %dms", time.seconds, time.millis);
+    tlogi("GetREETime: %us %ums", time.seconds, time.millis);
     return TEE_SUCCESS;
 }
 
@@ -129,7 +129,7 @@ static TEE_Result TestGetPersistentTime()
     ret = TEE_GetTAPersistentTime(&getTime);
     if (ret != TEE_SUCCESS ||
         (getTime.seconds != RESERVED10S + WAIT5S && getTime.seconds != RESERVED10S + WAIT5S + 1)) {
-        tloge("get time fail. ret = 0x%x, get time is %ds %dms", ret, getTime.seconds, getTime.millis);
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, getTime.seconds, getTime.millis);
         return TEE_ERROR_GENERIC;
     }
 
@@ -154,7 +154,7 @@ static TEE_Result TestSetPersistentTime()
     TEE_Time getTime = {0};
     ret = TEE_GetTAPersistentTime(&getTime);
     if (ret != TEE_SUCCESS || (getTime.seconds != RESERVED10S && getTime.seconds != RESERVED10S + 1)) {
-        tloge("get time fail. ret = 0x%x, get time is %ds %dms", ret, getTime.seconds, getTime.millis);
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, getTime.seconds, getTime.millis);
         return TEE_ERROR_GENERIC;
     }
 
@@ -170,7 +170,7 @@ static TEE_Result TestSetPersistentTime()
     (void)memset_s(&getTime, sizeof(getTime), 0, sizeof(getTime));
     ret = TEE_GetTAPersistentTime(&getTime);
     if (ret != TEE_SUCCESS || (getTime.seconds != RESERVED10S && getTime.seconds != RESERVED10S + 1)) {
-        tloge("get time fail. ret = 0x%x, get time is %ds %dms", ret, getTime.seconds, getTime.millis);
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, getTime.seconds, getTime.millis);
         return TEE_ERROR_GENERIC;
     }
 
@@ -209,14 +209,14 @@ static TEE_Result TestPersistentTimeWithException()
     ret = TEE_GetTAPersistentTime(&time);
     if (ret != TEE_SUCCESS || time.seconds > UINT32_MAX - RESERVED10S + WAIT5S + 1 ||
         time.seconds < UINT32_MAX - RESERVED10S + WAIT5S - 1) {
-        tloge("get time fail. ret = 0x%x, get time is %ds %dms", ret, time.seconds, time.millis);
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, time.seconds, time.millis);
         return TEE_ERROR_GENERIC;
     }
 
     TEE_Wait(MILLISECOND * RESERVED10S); // get time is UINT32_MAX - 10s + 5s + 10s > UINT32_MAX; get time is 5s
     ret = TEE_GetTAPersistentTime(&time);
     if (ret != TEE_ERROR_OVERFLOW || time.seconds > WAIT5S + 1 || time.seconds < WAIT5S - 1) {
-        tloge("get time for overflow fail, ret = 0x%x, get time is %ds, %dms", ret, time.seconds, time.millis);
+        tloge("get time for overflow fail, ret = 0x%x, get time is %us, %ums", ret, time.seconds, time.millis);
         return TEE_ERROR_GENERIC;
     }
 

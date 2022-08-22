@@ -87,7 +87,7 @@ TEE_TEST(EmptyTest, GetPersistentTime, Function | MediumTest | Level0)
 
 /**
  * @testcase.name      : OnlyGetPersistentTime
- * @testcase.desc      : Only get persistent time
+ * @testcase.desc      : test only get persistent time
  * @testcase.expect    : return TEEC_SUCCESS
  */
 TEE_TEST(EmptyTest, OnlyGetPersistentTime, Function | MediumTest | Level0)
