@@ -32,8 +32,8 @@ int pthread_attr_init(pthread_attr_t *a)
 	a->_a_stackaddr = 0;
 	a->_a_stacksize = DEFAULT_STACK_SIZE;
 	a->_a_guardsize = DEFAULT_GUARD_SIZE;
-	a->_a_ca = TEESMP_THREAD_ATTR_INVALID;
-	a->_a_task_id = TEESMP_THREAD_ATTR_INVALID;
+	a->_a_ca = TEE_THREAD_ATTR_INVALID;
+	a->_a_task_id = TEE_THREAD_ATTR_INVALID;
 	return 0;
 }
 

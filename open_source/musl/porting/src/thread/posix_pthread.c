@@ -161,21 +161,6 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *thread_attr,
 
 	thread_attr_t th_attr;
 	(void)thread_attr_init(&th_attr);
-#ifdef CONFIG_ENABLE_TEESMP
-	th_attr.ca = TEESMP_THREAD_ATTR_CA_INHERIT;
-	th_attr.task_id = TEESMP_THREAD_ATTR_TASK_ID_INHERIT;
-	// user set ca attr
-	if ((unsigned)attr._a_ca != TEESMP_THREAD_ATTR_INVALID) {
-		th_attr.ca = (uint32_t)attr._a_ca;
-	}
-	// user set task_id attr
-	if ((unsigned)attr._a_task_id != TEESMP_THREAD_ATTR_INVALID) {
-		th_attr.task_id = (uint32_t)attr._a_task_id;
-	}
-	if ((unsigned int)attr._a_flag & PTHREAD_ATTR_FLAG_SHADOW) {
-		th_attr.flags |= TEESMP_THREAD_ATTR_F_SHADOW;
-	}
-#endif
 	th_attr.stack_vaddr = (uintptr_t)stack;
 	th_attr.stack_size = stack_size;
 	a_inc(&libc.threads_minus_1);

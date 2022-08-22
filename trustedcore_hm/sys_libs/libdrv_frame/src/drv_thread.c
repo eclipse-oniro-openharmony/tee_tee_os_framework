@@ -163,9 +163,6 @@ static int32_t init_pthread_info(struct thread_init_info *pthread_info, cref_t c
     pthread_info->func = tee_driver_thread;
     pthread_info->max_thread = thread_limit;
     pthread_info->thread_sem = &g_thread_sem;
-    pthread_info->capid = TEESMP_THREAD_ATTR_CA_WILDCARD;
-    pthread_info->task_id = TEESMP_THREAD_ATTR_CA_INHERIT;
-    pthread_info->shadow = TEESMP_THREAD_ATTR_NO_SHADOW;
     pthread_info->stack_size = stack_size;
     return DRV_CALL_OK;
 }
