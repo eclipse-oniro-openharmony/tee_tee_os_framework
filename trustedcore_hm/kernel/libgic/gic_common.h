@@ -48,10 +48,7 @@
 
 #define INT_DEFAULT_PMR        0xf0
 #define INT_DEFAULT_BPR        3
-#if defined(CONFIG_ARM_HYPERVISOR_SUPPORT)
-#define INT_DEFAULT_PRIO    0x80808080
-#define INT_DEFAULT_GRP        0xffffffff
-#elif defined(CONFIG_AARCH32_MONITOR)
+#if defined(CONFIG_AARCH32_MONITOR)
 #define INT_DEFAULT_PRIO    0x80808080
 #define INT_DEFAULT_GRP        0xffffffff
 #else

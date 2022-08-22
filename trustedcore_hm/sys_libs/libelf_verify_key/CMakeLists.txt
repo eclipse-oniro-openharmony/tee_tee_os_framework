@@ -175,13 +175,6 @@ list(APPEND TEE_C_FLAGS
     -fstack-protector-all
 )
 
-if ("${CONFIG_PLAT_HUANGLONG}" STREQUAL "y")
-    list(APPEND TEE_C_SOURCES
-        src/common/ta_load_key.c
-        ${PROJECT_SOURCE_DIR}/platform/huanglong/ta_load/tee_ta_load.c
-    )
-endif()
-
 list(APPEND TEE_C_FLAGS ${TRUSTEDCORE_PLATFORM_FLAGS})
 list(REMOVE_ITEM TEE_C_FLAGS "-Werror")
 

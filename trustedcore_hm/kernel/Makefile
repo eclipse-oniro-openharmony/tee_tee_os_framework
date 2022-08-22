@@ -20,13 +20,7 @@ ifeq ($(CONFIG_ARCH_AARCH32),y)
 	export __ARM_32__ = y
 	export KERNEL_32 = y
 	export TEE_ARCH = arm
-    ifeq ($(CONFIG_ARM_HYPERVISOR_SUPPORT),y)
-        export HM_ARCH = arm_hyp
-        export ARM_HYP = 1
-        DEFS += ARM_HYP
-    else
-        export HM_ARCH = aarch32
-    endif
+	export HM_ARCH = aarch32
 	export TYPE_SUFFIX = 32
 endif
 

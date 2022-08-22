@@ -101,9 +101,6 @@ else ifeq ($(CONFIG_HUANGLONG_LOAD_KEY_3072),y)
 flags += -DCONFIG_TA_SIGN_HUANGLONG
 endif
 
-ifeq ($(CONFIG_PLAT_HUANGLONG),y)
-libelf_verify_key_c_files += ../../platform/huanglong/ta_load/tee_ta_load.c
-endif
 ifeq ($(CONFIG_PUBKEY_SHAREMEM),true)
 libelf_verify_key_c_files := $(filter-out $(FILTEROUT_CFILES), $(libelf_sharemem_key_c_files))
 else

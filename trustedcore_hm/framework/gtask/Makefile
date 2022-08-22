@@ -43,10 +43,6 @@ else ifeq ($(CONFIG_HUANGLONG_LOAD_KEY_3072),y)
 flags += -DCONFIG_TA_SIGN_HUANGLONG
 endif
 
-ifeq ($(CONFIG_PLAT_HUANGLONG),y)
-gtask_c_files += ../../platform/huanglong/ta_load/tee_ta_load.c
-endif
-
 gtask_c_files := $(filter-out $(FILTEROUT_CFILES), $(gtask_c_files))
 
 LIBS := gtask${TARG}       \

@@ -16,16 +16,7 @@ if ("${CONFIG_ARCH_AARCH32}" STREQUAL "y")
     set(KERNEL_32 y)
     set(TEE_ARCH arm)
     set(ENV{TEE_ARCH} arm)
-    if ("${CONFIG_ARM_HYPERVISOR_SUPPORT}" STREQUAL "y")
-        set(HM_ARCH arm_hyp)
-        set(ARM_HYP 1)
-        set(DEFS
-            ${DEFS}
-            ARM_HYP
-        )
-    else()
-        set(HM_ARCH aarch32)
-    endif()
+    set(HM_ARCH aarch32)
 endif()
 
 if ("${CONFIG_ARCH_AARCH64}" STREQUAL "y")
