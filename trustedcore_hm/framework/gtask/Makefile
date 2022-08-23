@@ -78,7 +78,7 @@ ifeq ($(CONFIG_TERMINAL_DRV_SUPPORT),y)
 LIBS += devchip_api${TARG}
 endif
 
-DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
+LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
 
 ENTRY_POINT := main
 
@@ -87,7 +87,7 @@ include $(TOPDIR)/mk/svc-common.mk
 include $(TOPDIR)/mk/feature-macro.mk
 
 ifeq ($(xom32_enable),y)
-DRV_LDFLAGS += -T $(XOM_LDS)
+LDFLAGS += -T $(XOM_LDS)
 endif
 
 ifeq ($(DRIVER),gtask_a32.elf)
@@ -100,8 +100,8 @@ $(shell mkdir -p $(BUILD_DIR))
 
 ifneq ($(findstring true, $(CONFIG_TEST_INNER_SERVICE_32BIT)$(CONFIG_TEST_INNER_SERVICE_64BIT)),)
 ifeq (${TARG}, ) #64
-DRV_LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/libtest_service -ltest_service
+LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/libtest_service -ltest_service
 else
-DRV_LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/libtest_service_a32 -ltest_service_a32
+LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/libtest_service_a32 -ltest_service_a32
 endif
 endif

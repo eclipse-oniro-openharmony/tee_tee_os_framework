@@ -15,31 +15,26 @@ RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 
 ifeq ($(SVC_PARTITIAL_LINK), y)
 ifeq ($(ARCH),aarch64)
-DRV_LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -z max-page-size=4096 -T$(TOPDIR)/mk/ta_link_64.ld
+LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -z max-page-size=4096 -T$(TOPDIR)/mk/ta_link_64.ld
 flags += -fvisibility=hidden
 else
 ifeq ($(CONFIG_DYNLINK),y)
-ifeq ($(xom32_enable),y)
-DRV_LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -T$(TOPDIR)/mk/ta_link_new.xom.ld
+LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -T$(TOPDIR)/mk/ta_link_new.ld
 flags += -fvisibility=hidden
 else
-DRV_LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -T$(TOPDIR)/mk/ta_link_new.ld
-flags += -fvisibility=hidden
-endif
-else
-DRV_LDFLAGS += -r -d -T$(TOPDIR)/mk/ta_link.ld
+LDFLAGS += -r -d -T$(TOPDIR)/mk/ta_link.ld
 endif #CONFIG_DYNLINK
 endif #ARCH
 
 LINK_LIBS=$(LIBS:%=-l%)
-DRV_LDFLAGS += -L$(LIB_DIR)
-DRV_LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) $(LINK_LIBS)
+LDFLAGS += -L$(LIB_DIR)
+LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) $(LINK_LIBS)
 flags += $(INCLUDES)
 else
-DRV_LDFLAGS += -u __vsyscall_ptr --gc-sections -pie -z relro -z now
-DRV_LDFLAGS += -L$(LIB_DIR)
-DRV_LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LIBS:%=-l%) $(RUNTIME_LIB_FLAG) --end-group
-DRV_LDFLAGS +=  -nostdlib -u $(ENTRY_POINT) -e $(ENTRY_POINT) -z max-page-size=4096
+LDFLAGS += -u __vsyscall_ptr --gc-sections -pie -z relro -z now
+LDFLAGS += -L$(LIB_DIR)
+LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LIBS:%=-l%) $(RUNTIME_LIB_FLAG) --end-group
+LDFLAGS +=  -nostdlib -u $(ENTRY_POINT) -e $(ENTRY_POINT) -z max-page-size=4096
 endif #SVC_PARTITIAL_LINK
 
 flags += $(INCLUDES)
