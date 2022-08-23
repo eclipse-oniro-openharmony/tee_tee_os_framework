@@ -8,7 +8,7 @@ include $(TOPDIR)/mk/var.mk
 LIBS := ssagent${TARG}
 
 ifeq ($(CONFIG_DYNLINK),y)
-DRV_LDFLAGS += -e tee_task_entry
+LDFLAGS += -e tee_task_entry
 endif
 
 SVC_PARTITIAL_LINK = y

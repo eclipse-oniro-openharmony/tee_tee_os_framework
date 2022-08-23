@@ -16,7 +16,7 @@ include $(TOPDIR)/mk/ta-common.mk
 include $(TOPDIR)/mk/feature-macro.mk
 
 ifeq ($(CONFIG_DYNLINK),y)
-TA_LDFLAGS += -e tee_task_entry
+LDFLAGS += -e tee_task_entry
 endif
 
 ifeq ($(CONFIG_HUK_PLAT_COMPATIBLE), true)

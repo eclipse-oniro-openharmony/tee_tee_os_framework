@@ -33,52 +33,14 @@ $(2): $$($(1)_objs)
 	$$(VER)$$(AR) rD $$@ $$^
 endef
 
-## provide the app target compile rules.
-## Args:
-##  $(1)  : the $(MODULE_FOLDER) needed to be compile.
-##  $(2)  : the $(MODULE_FILE) needed to be generated.
-ifeq ($(xom32_enable),y)
-define eval_apps
+define eval_elf
 $(2): $$($(1)_objs)
 	@echo "[ LD ] $$@"
 	@test -d $$(dir $$@) || mkdir -p $$(dir $$@)
-	$$(VER)$$(LD) $$($(1)_objs) $$($(1)_extracted_objs) $$(TA_LDFLAGS) --build-id=none \
-	$$($(1)_LDFLAGS) -o $$@
-	$$(XOM) $$@
-	$$(OBJCOPY) $$@ --remove-section ".xomloc"
-endef
-
-## provide the driver target compile rules.
-## Args:
-##  $(1)  : the $(MODULE_FOLDER) needed to be compile.
-##  $(2)  : the $(MODULE_FILE) needed to be generated.
-define eval_drivers
-$(2): $$($(1)_objs)
-	@echo "[ LD ] $$@"
-	@test -d $$(dir $$@) || mkdir -p $$(dir $$@)
-	$$(VER)$$(LD) $$($(1)_objs) $$($(1)_extracted_objs) $$(DRV_LDFLAGS) --build-id=none \
-	$$($(1)_LDFLAGS) -o $$@
-	$$(XOM) $$@
-	$$(OBJCOPY) $$@ --remove-section ".xomloc"
-endef
-else
-define eval_apps
-$(2): $$($(1)_objs)
-	@echo "[ LD ] $$@"
-	@test -d $$(dir $$@) || mkdir -p $$(dir $$@)
-	$$(VER)$$(LD) $$($(1)_objs) $$($(1)_extracted_objs) $$(TA_LDFLAGS) --build-id=none \
+	$$(VER)$$(LD) $$($(1)_objs) $$($(1)_extracted_objs) $$(LDFLAGS) --build-id=none \
 	$$($(1)_LDFLAGS) -o $$@
 	$$(OBJCOPY) $$@
 endef
-define eval_drivers
-$(2): $$($(1)_objs)
-	@echo "[ LD ] $$@"
-	@test -d $$(dir $$@) || mkdir -p $$(dir $$@)
-	$$(VER)$$(LD) $$($(1)_objs) $$($(1)_extracted_objs) $$(DRV_LDFLAGS) --build-id=none \
-	$$($(1)_LDFLAGS) -o $$@
-	$$(OBJCOPY) $$@
-endef
-endif
 
 ## This function will generate $(1)_extracted_objs variables which are
 ## extracted from the $(2) archive file and provided the objects needed to
@@ -107,7 +69,7 @@ endef
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -Wformat=2 -fsigned-char -fno-strict-aliasing \
                    -pipe -Wall -Wextra -Werror -fno-common
 
-FILTER_MODULE := open_source openssl
+FILTER_MODULE := open_source openssl bounds_checking_function
 
 # we need function is_filter_module to remove open source files
 is_filter_module = $(strip $(foreach module,$(FILTER_MODULE),$(findstring $(module),$1)))
@@ -141,7 +103,7 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -168,7 +130,7 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)

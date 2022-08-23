@@ -112,24 +112,24 @@ $(thirdparty_libs):
 drivers: $(arm_frm_drivers) $(arm_driver_drivers) $(aarch64_frm_drivers) $(aarch64_driver_drivers) $(arm_test_drivers) $(aarch64_test_drivers)
 $(arm_frm_drivers): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
 	@echo "building ARCH=arm driver=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring hmsysmgr,$@)$(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C framework/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring hmsysmgr,$@)$(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C framework/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 $(arm_driver_drivers): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
 	@echo "building ARCH=arm driver=$@ target"
-	$(VER) $(MAKE) -C drivers/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all
+	$(VER) LDFLAGS= $(MAKE) -C drivers/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all
 $(arm_test_drivers): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
 	@echo "building ARCH=arm driver=$@ target"
-	$(VER) $(MAKE) -C tests/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
+	$(VER) LDFLAGS= $(MAKE) -C tests/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
 $(aarch64_frm_drivers): $(aarch64_libs) $(arm_sys_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring hmsysmgr,$@)$(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ LDFLAGS= ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring hmsysmgr,$@)$(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ LDFLAGS= ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 $(aarch64_driver_drivers): $(aarch64_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
-	$(VER) $(MAKE) -C drivers/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
+	$(VER) LDFLAGS= $(MAKE) -C drivers/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 $(aarch64_test_drivers): $(aarch64_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
-	$(VER) $(MAKE) -C tests/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
+	$(VER) LDFLAGS= $(MAKE) -C tests/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 
 # compile kernel rules
 
@@ -137,13 +137,13 @@ kernel: $(hm_kernel) $(hm_elfloader)
 $(hm_elfloader):
 	@mkdir -p $(ELFLOADER_OUTDIR)
 	@echo "compile elfloader ELFLOADER_OUTDIR is $(ELFLOADER_OUTDIR)"
-	$(VER) $(MAKE) -C kernel/$@ -f $(PREBUILD_HEADER)/.config -f Makefile \
+	$(VER) LDFLAGS= $(MAKE) -C kernel/$@ -f $(PREBUILD_HEADER)/.config -f Makefile \
 		HAVE_AUTOCONF=1 NO_PRESERVE_TIMESTAMP=1 all
 
 $(hm_kernel):
 	@mkdir -p $(KERNEL_OUTDIR)
 	@echo "compile elfloader KERNEL_OUTDIR is $(KERNEL_OUTDIR)"
-	$(VER) $(MAKE) -C $@/ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile \
+	$(VER) LDFLAGS= $(MAKE) -C $@/ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile \
 		HAVE_AUTOCONF=1 NO_PRESERVE_TIMESTAMP=1 KERNEL_SOURCE_ROOT=$(KERNEL_ROOT_PATH) all
 
 
@@ -218,6 +218,7 @@ SDK_CPPFLAGS += --target=$(HM_TARGET_ARCH)
 SDK_CPPFLAGS := $(call uniq, $(SDK_CPPFLAGS) $(GENERAL_OPTIONS))
 SDK_CPPFLAGS := $(filter-out -fsanitize=cfi, $(SDK_CPPFLAGS))
 SDK_CPPFLAGS := $(filter-out -flto, $(SDK_CPPFLAGS))
+SDK_CPPFLAGS += -include$(PREBUILD_DIR)/headers/autoconf.h
 export SDK_CPPFLAGS
 
 # bootfs image

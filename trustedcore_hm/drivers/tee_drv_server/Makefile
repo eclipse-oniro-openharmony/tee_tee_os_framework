@@ -68,7 +68,7 @@ LIBS += timer${TARG} ac${TARG}
 LIBS += teemem${TARG} teeos${TARG} spawn_common${TARG}
 
 ENTRY_POINT := main
-DRV_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
+LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
 LIBS += drv_frame${TARG}
 LIBS += ac_policy${TARG}
 LIBS += drv_shared${TARG}

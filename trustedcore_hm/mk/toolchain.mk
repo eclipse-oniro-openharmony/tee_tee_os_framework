@@ -64,6 +64,10 @@ else
 	LIBCOMPILER_RT_BUILTINS := $(PREBUILD_DIR)/libs/aarch64/libclang_rt.builtins-aarch64.a
 endif
     flags += -march=armv8-a
+ifeq ($(CONFIG_ARM_CORTEX_A53),y)
+    ASFLAGS += -march=armv8-a
+    ASFLAGS += -mcpu=cortex-a53
+endif
 endif
 
 flags     += --target=$(TARGET_ARCH)
