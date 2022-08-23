@@ -14,7 +14,6 @@
 #ifndef CONFIG_MISC_DRIVER
 #include <hm_mman_ext.h>
 #include "drv_thread.h"
-#include <hmdrv_stub.h>
 #endif
 #include "drv_module.h"
 #include "drv_param_type.h"
