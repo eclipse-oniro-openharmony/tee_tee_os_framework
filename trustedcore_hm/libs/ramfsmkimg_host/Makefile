@@ -5,6 +5,7 @@
 KERNEL = $(PWD)/kernel
 CC = cc
 CPPFLAGS :=
+LDFLAGS :=
 
 ifeq ($(USE_LIBC_32), y)
 	ARCH = arm
