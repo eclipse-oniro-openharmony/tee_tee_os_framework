@@ -83,12 +83,6 @@ list(APPEND TEE_C_FLAGS
     -fstack-protector-all
 )
 
-if ("${CONFIG_PLAT_HUANGLONG}" STREQUAL "y")
-    list(APPEND TEE_C_SOURCES
-        ${PROJECT_SOURCE_DIR}/platform/huanglong/ta_load/tee_ta_load.c
-    )
-endif()
-
 if ("${ARCH}" STREQUAL "aarch64")
     list(APPEND GTASK_LIBRARIES
         gtask
