@@ -24,7 +24,18 @@ static TEE_Result TestGetSystemTime(TEE_Param params[4])
     TEE_Time time = {0};
     TEE_GetSystemTime(&time);
     params[1].value.a = time.seconds;
-    tlogi("GetSystemTime: %ds %dms", time.seconds, time.millis);
+    tlogi("GetSystemTime: %us %ums", time.seconds, time.millis);
+    return TEE_SUCCESS;
+}
+
+static TEE_Result TestGetREETime(TEE_Param params[4])
+{
+    tlogi("[%s] begin:", __FUNCTION__);
+
+    TEE_Time time = {0};
+    TEE_GetREETime(&time);
+    params[1].value.a = time.seconds;
+    tlogi("GetREETime: %us %ums", time.seconds, time.millis);
     return TEE_SUCCESS;
 }
 
@@ -95,21 +106,15 @@ static TEE_Result TestGetPersistentTime()
 {
     tlogi("[%s] begin:", __FUNCTION__);
     TEE_Time time;
-    TEE_Result ret = TEE_GetTAPersistentTime(&time);
-    tlogi("first time to get persistent time, not check. ret = 0x%x, seconds = %u, millis = %u",
-        ret, time.seconds, time.millis);
-
     RemovePersistentTimeFile();
-    ret = TEE_GetTAPersistentTime(&time);
+    TEE_Result ret = TEE_GetTAPersistentTime(&time);
     if (ret != TEE_ERROR_TIME_NOT_SET) {
         tloge("GetTAPersistentTime fail after remove persistent time file; before set time. ret = 0x%x", ret);
         return TEE_ERROR_GENERIC;
     }
 
-    const uint32_t reserved10S = 10;
-    const uint32_t wait5S = 5;
     TEE_Time setTime = {
-        .seconds = UINT32_MAX - reserved10S,
+        .seconds = RESERVED10S,
         .millis = 0,
     };
     ret = TEE_SetTAPersistentTime(&setTime);
@@ -118,18 +123,13 @@ static TEE_Result TestGetPersistentTime()
         return TEE_ERROR_GENERIC;
     }
 
-    TEE_Wait(MILLISECOND * wait5S);
-    ret = TEE_GetTAPersistentTime(&time);
-    if (ret != TEE_SUCCESS || time.seconds > UINT32_MAX - reserved10S + wait5S + 1 ||
-        time.seconds < UINT32_MAX - reserved10S + wait5S - 1) {
-        tloge("get time fail. ret = 0x%x, get time is %ds %dms", ret, time.seconds, time.millis);
-        return TEE_ERROR_GENERIC;
-    }
-
-    TEE_Wait(MILLISECOND * reserved10S); // get time is UINT32_MAX - 10s + 5s + 10s > UINT32_MAX; get time is 5s
-    ret = TEE_GetTAPersistentTime(&time);
-    if (ret != TEE_ERROR_OVERFLOW || time.seconds > wait5S + 1 || time.seconds < wait5S - 1) {
-        tloge("get time for overflow fail, ret = 0x%x, get time is %ds, %dms", ret, time.seconds, time.millis);
+    tlogi("begin wait %us", WAIT5S);
+    TEE_Wait(MILLISECOND * WAIT5S);
+    TEE_Time getTime = {0};
+    ret = TEE_GetTAPersistentTime(&getTime);
+    if (ret != TEE_SUCCESS ||
+        (getTime.seconds != RESERVED10S + WAIT5S && getTime.seconds != RESERVED10S + WAIT5S + 1)) {
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, getTime.seconds, getTime.millis);
         return TEE_ERROR_GENERIC;
     }
 
@@ -141,10 +141,8 @@ static TEE_Result TestSetPersistentTime()
 {
     tlogi("[%s] begin:", __FUNCTION__);
     RemovePersistentTimeFile();
-    const uint32_t reserved10S = 10;
-    const uint32_t wait5S = 5;
     TEE_Time setTime = {
-        .seconds = reserved10S,
+        .seconds = RESERVED10S,
         .millis = 0,
     };
     TEE_Result ret = TEE_SetTAPersistentTime(&setTime);
@@ -155,15 +153,15 @@ static TEE_Result TestSetPersistentTime()
 
     TEE_Time getTime = {0};
     ret = TEE_GetTAPersistentTime(&getTime);
-    if (ret != TEE_SUCCESS || (getTime.seconds != reserved10S && getTime.seconds != reserved10S + 1)) {
-        tloge("get time fail. ret = 0x%x, get time is %ds %dms", ret, getTime.seconds, getTime.millis);
+    if (ret != TEE_SUCCESS || (getTime.seconds != RESERVED10S && getTime.seconds != RESERVED10S + 1)) {
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, getTime.seconds, getTime.millis);
         return TEE_ERROR_GENERIC;
     }
 
-    tlogi("begin wait %us", wait5S);
-    TEE_Wait(MILLISECOND * wait5S);
-    setTime.seconds = reserved10S;
-    ret = TEE_SetTAPersistentTime(&setTime);
+    tlogi("begin wait %us", WAIT5S);
+    TEE_Wait(MILLISECOND * WAIT5S);
+    setTime.seconds = RESERVED10S;
+    ret = TEE_SetTAPersistentTime(&setTime); // Repeated setting, can be overwritten
     if (ret != TEE_SUCCESS) {
         tloge("set time fail ret = 0x%x", ret);
         return TEE_ERROR_GENERIC;
@@ -171,8 +169,8 @@ static TEE_Result TestSetPersistentTime()
 
     (void)memset_s(&getTime, sizeof(getTime), 0, sizeof(getTime));
     ret = TEE_GetTAPersistentTime(&getTime);
-    if (ret != TEE_SUCCESS || (getTime.seconds != reserved10S && getTime.seconds != reserved10S + 1)) {
-        tloge("get time fail. ret = 0x%x, get time is %ds %dms", ret, getTime.seconds, getTime.millis);
+    if (ret != TEE_SUCCESS || (getTime.seconds != RESERVED10S && getTime.seconds != RESERVED10S + 1)) {
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, getTime.seconds, getTime.millis);
         return TEE_ERROR_GENERIC;
     }
 
@@ -180,14 +178,58 @@ static TEE_Result TestSetPersistentTime()
     return ret;
 }
 
-static TEE_Result TestGetREETime(TEE_Param params[4])
+static TEE_Result TestOnlyGetPersistentTime()
 {
     tlogi("[%s] begin:", __FUNCTION__);
+    TEE_Time time;
+    TEE_Result ret = TEE_GetTAPersistentTime(&time);
+    tlogi("only get persistent time, not check. ret = 0x%x, seconds = %u, millis = %u",
+        ret, time.seconds, time.millis);
 
-    TEE_Time time = {0};
-    TEE_GetREETime(&time);
-    params[1].value.a = time.seconds;
-    tlogi("GetREETime: %ds %dms", time.seconds, time.millis);
+    return TEE_SUCCESS;
+}
+
+static TEE_Result TestPersistentTimeWithException()
+{
+    tlogi("[%s] begin:", __FUNCTION__);
+    TEE_Time time;
+    RemovePersistentTimeFile();
+    TEE_Time setTime = {
+        .seconds = UINT32_MAX - RESERVED10S,
+        .millis = 0,
+    };
+    TEE_Result ret = TEE_SetTAPersistentTime(&setTime);
+    if (ret != TEE_SUCCESS) {
+        tloge("set time fail ret = 0x%x", ret);
+        return TEE_ERROR_GENERIC;
+    }
+
+    tlogi("before wait for %ds", WAIT5S);
+    TEE_Wait(MILLISECOND * WAIT5S);
+    ret = TEE_GetTAPersistentTime(&time);
+    if (ret != TEE_SUCCESS || time.seconds > UINT32_MAX - RESERVED10S + WAIT5S + 1 ||
+        time.seconds < UINT32_MAX - RESERVED10S + WAIT5S - 1) {
+        tloge("get time fail. ret = 0x%x, get time is %us %ums", ret, time.seconds, time.millis);
+        return TEE_ERROR_GENERIC;
+    }
+
+    TEE_Wait(MILLISECOND * RESERVED10S); // get time is UINT32_MAX - 10s + 5s + 10s > UINT32_MAX; get time is 5s
+    ret = TEE_GetTAPersistentTime(&time);
+    if (ret != TEE_ERROR_OVERFLOW || time.seconds > WAIT5S + 1 || time.seconds < WAIT5S - 1) {
+        tloge("get time for overflow fail, ret = 0x%x, get time is %us, %ums", ret, time.seconds, time.millis);
+        return TEE_ERROR_GENERIC;
+    }
+
+    // set time value max
+    time.seconds = UINT32_MAX;
+    time.millis = UINT32_MAX;
+    ret = TEE_SetTAPersistentTime(&time);
+    if (ret != TEE_SUCCESS) {
+        tloge("set time with max time value failed ret = 0x%x\n", ret);
+        return TEE_ERROR_GENERIC;
+    }
+
+    tlogi("[%s] end.", __FUNCTION__);
     return TEE_SUCCESS;
 }
 
@@ -200,8 +242,14 @@ TEE_Result TestTimeApi(uint32_t cmdId, TEE_Param params[4])
         case CMD_ID_TEST_GET_SYSTEM_TIME:
             ret = TestGetSystemTime(params);
             break;
+        case CMD_ID_TEST_GET_REE_TIME:
+            ret = TestGetREETime(params);
+            break;
         case CMD_ID_TEST_TEE_WAIT:
             ret = TestTEEWait();
+            break;
+        case CMD_ID_ONLY_GET_PERSISTENT_TIME:
+            ret = TestOnlyGetPersistentTime();
             break;
         case CMD_ID_TEST_GET_PERSISTENT_TIME:
             ret = TestGetPersistentTime();
@@ -209,8 +257,8 @@ TEE_Result TestTimeApi(uint32_t cmdId, TEE_Param params[4])
         case CMD_ID_TEST_SET_PERSISTENT_TIME:
             ret = TestSetPersistentTime();
             break;
-        case CMD_ID_TEST_GET_REE_TIME:
-            ret = TestGetREETime(params);
+        case CMD_ID_TEST_PERSISTENT_TIME_WITH_EXCEPTION:
+            ret = TestPersistentTimeWithException();
             break;
         default:
             tlogi("unknown command id, cmdId: %u\n", cmdId);

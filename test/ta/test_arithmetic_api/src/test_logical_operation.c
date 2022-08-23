@@ -108,7 +108,7 @@ TEE_Result TestBigIntGetBitCount()
 {
     tlogi("[%s] begin:", __FUNCTION__);
     const uint8_t opValue[] = {0x01, 0x11, 0x11, 0x10};
-    const uint32_t check = 17;
+    const uint32_t check = 25;
     TEE_BigInt *src = CreateBigInt(sizeof(opValue), (uint8_t *)opValue);
     uint32_t count = TEE_BigIntGetBitCount(src);
     if (count != check) {
