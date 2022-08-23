@@ -67,8 +67,7 @@ CFLAGS += -g
 ASFLAGS += -g
 endif
 
-DRV_LDFLAGS += -s -z separate-loadable-segments
-TA_LDFLAGS += -s -z separate-loadable-segments
+LDFLAGS += -s -z separate-loadable-segments
 
 # all target for c++ compiler
 cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
@@ -101,10 +100,14 @@ $(INSTALL_FILE): $(MODULE_FILE)
 	touch $(INSTALL_FILE)
 endif
 
-# compile apps
+ifneq ($(TARGET)$(DRIVER),)
 ifneq ($(TARGET),)
 INSTALL_FILE := $(APP_DIR)/$(TARGET)
 TARGET_FILE  := $(BUILD_DIR)/$(TARGET)
+else
+INSTALL_FILE := $(DRV_DIR)/$(DRIVER)
+TARGET_FILE  := $(BUILD_DIR)/$(DRIVER)
+endif
 target: $(TARGET_FILE)
 ifneq ($(PREBUILD_ARCHIVE),)
 AR_FILE = $(PREBUILD_ARCH_PLAT_LIBS)/$(PREBUILD_ARCHIVE)
@@ -113,29 +116,10 @@ $(eval $(call eval_extracted_objs,$(MODULE_FOLDER),$(AR_FILE),$(BUILD_DIR)))
 $(eval $(call eval_extract_ar,$(BUILD_DIR),$(TARGET_FILE),$(AR_FILE)))
 endif
 $(eval $(call eval_dep_libs,$(MODULE_FOLDER),$(LIB_DIR),$(LIBS:%=lib%.a)))
-$(eval $(call eval_apps,$(MODULE_FOLDER),$(TARGET_FILE)))
+$(eval $(call eval_elf,$(MODULE_FOLDER),$(TARGET_FILE)))
 $(INSTALL_FILE): $(TARGET_FILE)
 	@test -d $(APP_DIR) || mkdir -p $(APP_DIR)
-	@echo "[ INSTALL APP ] $(TARGET_FILE)"
-	$(VER)cp -rafp $(TARGET_FILE) $(INSTALL_FILE)
-	touch $(INSTALL_FILE)
-endif
-
-# compile drivers
-ifneq ($(DRIVER),)
-INSTALL_FILE := $(DRV_DIR)/$(DRIVER)
-TARGET_FILE  := $(BUILD_DIR)/$(DRIVER)
-target: $(TARGET_FILE)
-ifneq ($(PREBUILD_ARCHIVE),)
-AR_FILE = $(PREBUILD_ARCH_PLAT_LIBS)/$(PREBUILD_ARCHIVE)
-$(eval $(call eval_extracted_objs,$(MODULE_FOLDER),$(AR_FILE),$(BUILD_DIR)))
-$(eval $(call eval_extract_ar,$(BUILD_DIR),$(TARGET_FILE),$(AR_FILE)))
-endif
-$(eval $(call eval_dep_libs,$(MODULE_FOLDER),$(LIB_DIR),$(LIBS:%=lib%.a)))
-$(eval $(call eval_drivers,$(MODULE_FOLDER),$(TARGET_FILE)))
-$(INSTALL_FILE): $(TARGET_FILE)
 	@test -d $(DRV_DIR) || mkdir -p $(DRV_DIR)
-	@echo "[ INSTALL DRIVER ] $(TARGET_FILE)"
 	$(VER)cp -rafp $(TARGET_FILE) $(INSTALL_FILE)
 	touch $(INSTALL_FILE)
 endif
