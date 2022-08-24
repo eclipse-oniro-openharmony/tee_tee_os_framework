@@ -9,7 +9,6 @@
 #include "crypto_driver_adaptor.h"
 #include "crypto_mgr_syscall.h"
 #include "crypto_driver_adaptor_ops.h"
-#include "crypto_syscall.h"
 
 bool check_hal_params_is_invalid(const struct drv_data *drv, unsigned long args, uint32_t args_len,
     const struct crypto_drv_ops_t *ops);

@@ -15,7 +15,7 @@ libdrv_shared_c_files += src/tee_drv_entry.c
 libdrv_shared_c_files += src/drv_dispatch.c
 libdrv_shared_c_files += src/drv_operations.c
 
-ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
+ifneq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), )
 flags += -DCRYPTO_MGR_SERVER_ENABLE
 libdrv_shared_c_files += src/drv_random.c
 endif

@@ -94,7 +94,7 @@ add_subdirectory(vendor/${PLATFORM_NAME})
 add_subdirectory(drivers/drv_timer)
 add_subdirectory(drivers/tee_drv_server)
 add_subdirectory(drivers/base_mgr/tee_misc_driver)
-if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true")
+if ("${CRYPTO_MGR_SERVER_ENABLE}" STREQUAL "true")
 add_subdirectory(drivers/base_mgr/crypto_mgr)
 endif()
 
