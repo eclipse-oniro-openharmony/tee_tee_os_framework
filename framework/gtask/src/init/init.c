@@ -1,0 +1,230 @@
+/*$$$!!Warning: Huawei key information asset. No spread without permission.$$$*/
+/*CODEMARK:mJSkoqPZ5FEeD8fzH9bAQfhyPrkcI5cbzjotjI99J9PTkCMNHMtR+8Ejd3mKEkWbMFYmuIhV
+lw/je6uplRzXM4SMvhun8vRGD9mNqO2kY4/aQFDUiG2CG+z+BR1XavYOLbgQ6mxl4mdMDMUc
+pTTvsgNnGY+uGDhrcSrYT/yiWUcPU+7hHj/1z+1w4sei8NKrE5YtD4ycmPizGfaNhWQY5YvG
+yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
+/*$$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$*/
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: init for gtask
+ * Author: QiShuai  qishuai@huawei.com
+ * Create: 2019-12-20
+ */
+
+#include "init.h"
+#include "teesmcmgr.h"
+#include <autoconf.h>
+#include <securec.h>
+
+#include <api/kcalls.h>
+#include <sys/syscalls.h>
+#include <sys/hm_types.h>
+#include <procmgr.h>
+#include <ipclib.h>
+#include <tee_config.h>
+
+#include <cs.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <hmlog.h>
+#include "tee_inner_uuid.h"
+
+#define CASAN_DEFAULT_STACK_SIZE 0x20000
+
+/* Will be used by tloge and its variants */
+const char *g_debug_prefix = "GTask";
+
+struct proc_mem_info {
+    size_t heap_size;
+    size_t stack_size;
+};
+
+static int32_t set_proc_mem_size(const struct proc_mem_info *info, posix_spawnattr_t *spawnattr)
+{
+    int32_t ret;
+
+    if (info->stack_size != 0) {
+        ret = hm_spawnattr_setstack(spawnattr, info->stack_size);
+        if (ret != 0)
+            return ret;
+    }
+
+    if (info->heap_size != 0) {
+        ret = hm_spawnattr_setheap(spawnattr, info->heap_size);
+        if (ret != 0)
+            return ret;
+    }
+
+    return 0;
+}
+
+static int run_init_task(char *name, char *envp[], const struct proc_mem_info *info,
+                         struct tee_uuid *uuid, uint32_t *pid_ptr)
+{
+    char *subargv[] = { name, NULL };
+    pid_t pid       = 0;
+    char **p        = NULL;
+    posix_spawnattr_t spawnattr;
+    spawn_uuid_t suuid;
+    int ret;
+
+    for (p = subargv; *p != NULL; p++)
+        hm_debug("init: subargv %d: %s\n", (int)(p - subargv), *p);
+    for (p = envp; *p != NULL; p++)
+        hm_debug("init: envp %d: %s\n", (int)(p - envp), *p);
+
+    (void)memset_s(&spawnattr, sizeof(spawnattr), 0, sizeof(spawnattr));
+    (void)memset_s(&suuid, sizeof(suuid), 0, sizeof(suuid));
+    suuid.uuid = *uuid;
+
+    ret = hm_spawnattr_init(&spawnattr);
+    if (ret != 0)
+        return ret;
+
+    hm_spawnattr_setuuid(&spawnattr, &suuid);
+    if (info->stack_size != 0 || info->heap_size != 0) {
+        ret = set_proc_mem_size(info, &spawnattr);
+        if (ret != 0)
+            return ret;
+    }
+    ret = hm_spawn(&pid, subargv[0], NULL, &spawnattr, subargv, envp);
+    if (ret < 0) {
+        hm_error("spawn %s failed: %d.\n", name, ret);
+        return ret;
+    }
+
+    hm_info("init: \"%s\" started with pid %d.\n", name, pid);
+
+    if (pid_ptr != NULL)
+        *pid_ptr = (uint32_t)pid;
+
+    return 0;
+}
+
+static uint32_t g_timer_pid;
+
+uint32_t get_timer_pid(void)
+{
+    return g_timer_pid;
+}
+
+int32_t get_tee_drv_server_pid(uint32_t *task_id)
+{
+    if (task_id == NULL) {
+        hm_error("invalid task id\n");
+        return -1;
+    }
+
+    const struct drv_frame_info *drv_info_list = get_drv_frame_infos();
+    const uint32_t nr = get_drv_frame_nums();
+    uint32_t i;
+
+    for (i = 0; i < nr; i++) {
+        /* sizeof include '\0' */
+        if (strncmp(drv_info_list[i].drv_name, "tee_drv_server", sizeof("tee_drv_server")) == 0) {
+            *task_id = drv_info_list[i].pid;
+            return 0;
+        }
+    }
+
+    hm_error("tee drv server not found\n");
+    return -1;
+}
+
+bool is_sys_task(uint32_t task_id)
+{
+    const struct drv_frame_info *drv_info_list = get_drv_frame_infos();
+    const uint32_t nr = get_drv_frame_nums();
+    uint32_t i;
+
+    if (pid_to_hmpid(task_id) == pid_to_hmpid((uint32_t)RESERVED_SYSMGR_CRED) ||
+        (pid_to_hmpid(task_id) == pid_to_hmpid((uint32_t)g_timer_pid)))
+        return true;
+
+    for (i = 0; i < nr; i++) {
+        if (pid_to_hmpid(task_id) == pid_to_hmpid((uint32_t)drv_info_list[i].pid))
+            return true;
+    }
+    return false;
+}
+
+static int run_drv_frame_tasks(void)
+{
+    uint32_t i;
+    struct drv_frame_info *drv_info_list = get_drv_frame_infos();
+    const uint32_t nr = get_drv_frame_nums();
+    int ret;
+    char *envp[] = { NULL };
+    char path[HM_PATHNAME_MAX] = { 0 };
+    struct proc_mem_info info = { 0 };
+
+    for (i = 0; i < nr; i++) {
+        if (!drv_info_list[i].is_elf)
+            continue;
+        if (snprintf_s(path, HM_PATHNAME_MAX, HM_PATHNAME_MAX - 1, "/%s.elf", drv_info_list[i].drv_name) < 0) {
+            hm_error("pack path failed\n");
+            return -1;
+        }
+
+        info.stack_size = drv_info_list[i].stack_size;
+        info.heap_size = drv_info_list[i].heap_size;
+        struct tee_uuid *drv_uuid = &drv_info_list[i].uuid;
+        ret = run_init_task(path, envp, &info, drv_uuid, &drv_info_list[i].pid);
+
+        (void)memset_s(path, HM_PATHNAME_MAX, 0, HM_PATHNAME_MAX);
+        if (ret != 0)
+            hm_error("run drv: %s failed\n", drv_info_list[i].drv_name);
+    }
+
+    return 0;
+}
+
+int init_main(void)
+{
+    int ret;
+    char *envp[] = { NULL };
+    struct proc_mem_info info = {0};
+
+    struct tee_uuid smc_uuid = TEE_SMC_MGR;
+    info.stack_size = SMCMGR_STACK_SIZE;
+    ret = run_init_task("/teesmcmgr.elf", envp, &info, &smc_uuid, NULL);
+    if (ret)
+        return ret;
+/*
+ * Note: tee_drv_server may use tloge API which relies on time stamps from drv_timer process
+ * thus please keep `drv_timer.elf` before tee_drv_server
+ **/
+#if (!defined CONFIG_OFF_DRV_TIMER)
+    struct tee_uuid timer_uuid = TEE_DRV_TIMER;
+    info.stack_size = 0;
+    ret = run_init_task("/drv_timer.elf", envp, &info, &timer_uuid, &g_timer_pid);
+    if (ret)
+        return ret;
+#endif
+
+    ret = run_drv_frame_tasks();
+    if (ret)
+        return ret;
+
+    return 0;
+}
+
+/*
+ * CODEREVIEW CHECKLIST
+ * ARG: N/A
+ * RIGHTS: N/A
+ * BUFOVF: N/A
+ * INFOLEAK: N/A
+ * RET: checked
+ * RACING: N/A
+ * RESLEAK: N/A
+ * ARITHOVF: N/A
+ * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
+ */
+void init_shell(void)
+{
+    hm_error("gtask: *ERROR* GTask exit unexpectedly\n");
+    hm_exit(0);
+    while (true)
+        hm_yield();
+}

@@ -1,0 +1,191 @@
+/*$$$!!Warning: Huawei key information asset. No spread without permission.$$$*/
+/*CODEMARK:lBRwzWIfWflpkuvEPG9oHU2mxP0IzvCfvv+i+/xvfe6PT8VRR+8jz7b5YQbqzI49/C6xSBgi
+2fFxGZUs+G3nkUIkBkfRerjPcgJTCLqrXspNkFCGTLklL/GZHRhiXBwGnNKhh0MAXEOVfrQU
+iukZUWJ4vidruSf/U7e9gpUyQAooCWCSaeb3aIYEst5WD1qne8GcO+5QGB0g7/S8T09ixUGT
+nR+osDAHaIEfyoPHfIFAJAQLD0ohh2OwUozrcXB/#*/
+/*$$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$*/
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ * Description: TEE enviroment's ext interface of framework Implemention
+ * Author: Zhangdeyao  zhangdeyao@huawei.com
+ * Create: 2019-12-20
+ */
+
+#include <stddef.h>
+#include <mem_ops_ext.h>
+#include <mem_mode.h>
+#include <sys/teecall.h>
+#include <msg_ops.h>
+#include <root_status_ops.h> /* tee_read_root_status */
+#include <tee_sharemem.h>
+#include <dyn_conf_dispatch_inf.h>
+#include "tee_log.h"
+#include "ta_framework.h"
+#include "gtask_inner.h"
+#include "ext_interface.h"
+#include "mem_manager.h"
+#include "service_manager.h"
+#include "tee_ext_api.h"
+#include "tee_config.h"
+#include "securec.h"
+#include "gtask_core.h" /* for find_task */
+
+#include <sys/usrsyscall.h>
+
+static bool g_rdr_mem_registered = false;
+
+#define KERNEL_IMG_IS_ENG 1
+#define ROOTBIT           0x1
+
+TEE_Result map_rdr_mem(const smc_cmd_t *cmd)
+{
+    TEE_Param *tee_param = NULL;
+    paddr_t rdr_mem_addr;
+    uint32_t rdr_mem_size;
+    uint32_t param_types  = 0;
+    uint64_t map_mem_addr = 0;
+    bool is_cache_mem = false;
+
+    if (cmd == NULL)
+        return TEE_ERROR_BAD_PARAMETERS;
+
+    if (g_rdr_mem_registered) {
+        tloge("rdr mem already registered\n");
+        return TEE_ERROR_GENERIC;
+    }
+
+    if (cmd_global_ns_get_params(cmd, &param_types, &tee_param) != TEE_SUCCESS) {
+        tloge("failed to map operation!\n");
+        return TEE_ERROR_GENERIC;
+    }
+
+    /* check params types */
+    if ((TEE_PARAM_TYPE_GET(param_types, 0) != TEE_PARAM_TYPE_VALUE_INPUT) ||
+        (TEE_PARAM_TYPE_GET(param_types, 1) != TEE_PARAM_TYPE_VALUE_INPUT) ||
+        (TEE_PARAM_TYPE_GET(param_types, 2) != TEE_PARAM_TYPE_VALUE_INPUT)) {
+        tloge("Bad expected parameter types\n");
+        return TEE_ERROR_BAD_PARAMETERS;
+    }
+    /* this condition should never happen here */
+    if (tee_param == NULL)
+        return TEE_ERROR_BAD_PARAMETERS;
+
+    tlogd("cmd id=0x%x\n", cmd->cmd_id);
+
+    /* this will only be called once when booting up, the addr is trusted */
+    rdr_mem_addr = tee_param[0].value.a | (((paddr_t)tee_param[0].value.b) << SHIFT_OFFSET);
+    rdr_mem_size = tee_param[1].value.a;
+    is_cache_mem = tee_param[2].value.a;
+
+    // check rdr memory address.
+    if (task_map_phy_mem(0, rdr_mem_addr, rdr_mem_size, &map_mem_addr, NON_SECURE) != 0) {
+        tloge("map rdr mem addr failed\n");
+        return TEE_ERROR_GENERIC;
+    }
+
+    char chip_type[CHIP_TYPE_LEN_MAX] = {0};
+    if (tee_get_chip_type(chip_type, CHIP_TYPE_LEN_MAX) != 0) {
+        tee_push_rdr_update_addr(rdr_mem_addr, (uint32_t)rdr_mem_size,
+            is_cache_mem, "chip type not set", strlen("chip type not set") + 1);
+    } else {
+        tee_push_rdr_update_addr(rdr_mem_addr, (uint32_t)rdr_mem_size, is_cache_mem, chip_type, CHIP_TYPE_LEN_MAX);
+    }
+
+    (void)task_unmap(0, map_mem_addr, rdr_mem_size);
+
+    g_rdr_mem_registered = true;
+    return TEE_SUCCESS;
+}
+
+static TEE_Result process_get_callerinfo(uint32_t task_id, struct session_struct *cur_session)
+{
+    caller_info buffer_msg = {0};
+    struct service_struct *caller_service = NULL;
+    struct session_struct *caller_session = NULL;
+
+    uint32_t caller_id = cur_session->ta2ta_from_taskid;
+    if (caller_id != REET_TSK_ID) {
+        buffer_msg.session_type = SESSION_FROM_TA;
+        // caller id is TA
+        if (find_task(caller_id, &caller_service, &caller_session)) {
+            tlogd("succeed to find caller TA info\n");
+            if (memmove_s(&buffer_msg.caller_identity.caller_uuid, sizeof(TEE_UUID), &caller_service->property.uuid,
+                          sizeof(TEE_UUID))) {
+                tloge("memmove_s caller uuid failed\n");
+                buffer_msg.session_type = SESSION_FROM_UNKNOWN;
+            }
+        } else {
+            tloge("failed to find caller session, task id is %u\n", caller_id);
+            buffer_msg.session_type = SESSION_FROM_UNKNOWN;
+        }
+    } else {
+        buffer_msg.session_type = SESSION_FROM_CA;
+        if (memset_s(&buffer_msg.caller_identity.caller_uuid, sizeof(TEE_UUID), 0, sizeof(TEE_UUID))) {
+            tloge("memset_s caller uuid failed\n");
+            buffer_msg.session_type = SESSION_FROM_UNKNOWN;
+        }
+        if (cur_session->login_method == TEEK_LOGIN_IDENTIFY)
+            buffer_msg.smc_from_kernel_mode = TEE_SMC_FROM_KERNEL;
+    }
+
+    uint32_t ret = ipc_msg_snd(0x0, task_id, &buffer_msg, sizeof(buffer_msg));
+    if (ret) {
+        tloge("get callerinfo msg send to ta failed:0x%x\n", ret);
+        return TEE_ERROR_GENERIC;
+    }
+    return TEE_SUCCESS;
+}
+
+static TEE_Result process_get_reeinfo(uint32_t task_id, struct session_struct *session)
+{
+    struct global_to_ta_for_uid buffer_msg = {0};
+
+    /* uid is equal to userId*100000 + appId%100000 */
+    if (session->cmd_type == CMD_TYPE_NS_TO_SECURE) {
+        buffer_msg.userid = session->cmd_in.uid / PER_USER_RANGE;
+        buffer_msg.appid  = session->cmd_in.uid % PER_USER_RANGE;
+    } else {
+        buffer_msg.userid = 0;
+        buffer_msg.appid  = 0;
+    }
+    buffer_msg.cmd_id = TEE_GET_REEINFO_SUCCESS;
+
+    uint32_t ret = ipc_msg_snd(0x0, task_id, &buffer_msg, sizeof(buffer_msg));
+    if (ret) {
+        tloge("get reeinof msg send to ta failed:0x%x\n", ret);
+        return TEE_ERROR_GENERIC;
+    }
+    return TEE_SUCCESS;
+}
+
+int32_t handle_info_query(uint32_t cmd_id, uint32_t task_id, const uint8_t *msg_buf, uint32_t msg_size)
+{
+    TEE_Result ret;
+    struct service_struct *service = NULL;
+    struct session_struct *session = NULL;
+
+    (void)msg_buf;
+    (void)msg_size;
+
+    if (find_task(task_id, &service, &session) == false) {
+        tloge("find task 0x%x failed, query info %u failed\n", task_id, cmd_id);
+        return GT_ERR_END_CMD;
+    }
+
+    switch (cmd_id) {
+    case TA_GET_REEINFO:
+        ret = process_get_reeinfo(task_id, session);
+        break;
+    case TA_GET_CALLERINFO:
+        ret = process_get_callerinfo(task_id, session);
+        break;
+    default:
+        ret = TEE_ERROR_BAD_PARAMETERS;
+        tloge("invalid info query cmd %u\n", cmd_id);
+        break;
+    }
+    if (ret != TEE_SUCCESS)
+        return GT_ERR_END_CMD;
+
+    return GT_ERR_OK;
+}
