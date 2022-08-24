@@ -16,7 +16,6 @@
 #include <dlfcn.h>
 #include <sre_log.h>
 #include "drv_random.h"
-#include "crypto_syscall.h"
 #include "crypto_syscall_ec.h"
 #include "crypto_syscall_hash.h"
 #include "crypto_syscall_hmac.h"

@@ -751,9 +751,47 @@ out:
     return -1;
 }
 
-static int32_t inherit_drv_node(struct drv_conf_t *drv_conf)
+static void free_drv_perm_apply_list(struct task_tlv *dst)
 {
-    if (drv_conf == NULL) {
+    free((void *)dst->drvcall_perm_apply_list);
+    dst->drvcall_perm_apply_list = NULL;
+    dst->drvcall_perm_apply_list_size = 0;
+}
+
+static int32_t copy_drv_perm_apply_to_target(struct task_tlv *src, struct task_tlv *dst)
+{
+    if (dst->drvcall_perm_apply_list_size != 0 || dst->drvcall_perm_apply_list != NULL) {
+        tloge("drvcall perm apply list is invalied\n");
+        return -1;
+    }
+
+    uint32_t uint_size =  sizeof(struct drvcall_perm_apply_item_t);
+    if (uint_size == 0 || src->drvcall_perm_apply_list_size >= MAX_IMAGE_LEN / uint_size)
+        return -1;
+
+    if (src->drvcall_perm_apply_list_size == 0)
+        return 0;
+
+    uint32_t size = src->drvcall_perm_apply_list_size * uint_size;
+    dst->drvcall_perm_apply_list = malloc(size);
+    if (dst->drvcall_perm_apply_list == NULL) {
+        tloge("malloc for dst list failed\n");
+        return -1;
+    }
+
+    if (memcpy_s((void **)dst->drvcall_perm_apply_list, size, (void **)src->drvcall_perm_apply_list, size) != 0) {
+        tloge("memcpy for dst list failed\n");
+        free_drv_perm_apply_list(dst);
+        return -1;
+    }
+
+    dst->drvcall_perm_apply_list_size = src->drvcall_perm_apply_list_size;
+    return 0;
+}
+
+static int32_t inherit_drv_node(struct task_tlv *tlv)
+{
+    if (tlv == NULL || tlv->drv_conf == NULL) {
         tloge("invalid node while inherit drv node\n");
         return -1;
     }
@@ -763,13 +801,20 @@ static int32_t inherit_drv_node(struct drv_conf_t *drv_conf)
     dlist_for_each(pos, &g_task_list) {
         struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (temp->tlv.drv_conf != NULL &&
-            strcmp(drv_conf->mani.service_name, temp->tlv.drv_conf->mani.service_name) == 0) {
-            if (copy_drv_conf_to_target(drv_conf, temp->tlv.drv_conf) != 0) {
-                tloge("copy drv conf to %s failed\n", drv_conf->mani.service_name);
+            strcmp(tlv->drv_conf->mani.service_name, temp->tlv.drv_conf->mani.service_name) == 0) {
+            if (copy_drv_conf_to_target(tlv->drv_conf, temp->tlv.drv_conf) != 0) {
+                tloge("copy drv conf to %s failed\n", tlv->drv_conf->mani.service_name);
+                return -1;
+            }
+
+            if (copy_drv_perm_apply_to_target(tlv, &temp->tlv) != 0) {
+                free_drv_conf_list(temp->tlv.drv_conf, RECEIVE_MAX_TAG);
+                tloge("copy drv perm to %s failed\n", tlv->drv_conf->mani.service_name);
                 return -1;
             }
 
             if (add_dynamic_policy_to_drv(&temp->tlv) != 0) {
+                free_drv_perm_apply_list(&temp->tlv);
                 tloge("add dynamic policy to drv failed\n");
                 free_drv_conf_list(temp->tlv.drv_conf, RECEIVE_MAX_TAG);
                 return -1;
@@ -779,7 +824,7 @@ static int32_t inherit_drv_node(struct drv_conf_t *drv_conf)
         }
     }
 
-    tloge("inherit drv conf %s failed\n", drv_conf->mani.service_name);
+    tloge("inherit drv conf %s failed\n", tlv->drv_conf->mani.service_name);
     return -1;
 }
 
@@ -804,7 +849,7 @@ int32_t receive_task_conf(struct task_node *node)
     }
 
     if (check_hardware_type(node, HARDWARE_ENGINE_CRYPTO)) {
-        ret = inherit_drv_node(node->tlv.drv_conf);
+        ret = inherit_drv_node(&node->tlv);
         goto unlock_mtx;
     }
 

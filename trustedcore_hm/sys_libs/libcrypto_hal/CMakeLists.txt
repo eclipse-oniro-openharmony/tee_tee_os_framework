@@ -63,16 +63,11 @@ set(CRYPTOHAL_SRCS
     src/crypto_alg_config.c
 )
 
-if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true")
+if ("${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "true" OR "${CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT}" STREQUAL "false")
     list(APPEND TEE_C_DEFINITIONS CRYPTO_MGR_SERVER_ENABLE)
     set(CRYPTOHAL_SRCS
         ${CRYPTOHAL_SRCS}
         src/crypto_mgr_manager.c
-    )
-else ()
-    set(CRYPTOHAL_SRCS
-        ${CRYPTOHAL_SRCS}
-        src/crypto_manager.c
     )
 endif()
 

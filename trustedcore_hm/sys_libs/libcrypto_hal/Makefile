@@ -7,7 +7,7 @@ endif
 
 c-flags += -DOPENSSL_ENABLE
 
-ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
+ifneq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), )
 c-flags += -DCRYPTO_MGR_SERVER_ENABLE
 endif
 
