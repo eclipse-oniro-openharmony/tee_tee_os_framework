@@ -1,0 +1,187 @@
+/*$$$!!Warning: Huawei key information asset. No spread without permission.$$$*/
+/*CODEMARK:mJSkoqPZ5FEeD8fzH9bAQfhyPrkcI5cbzjotjI99J9PTkCMNHMtR+8Ejd3mKEkWbMFYmuIhV
+lw/je6uplRzXM4SMvhun8vRGD9mNqO2kY4/aQFDUiG2CG+z+BR1XavYOLbgQ6mxl4mdMDMUc
+pTTvsgNnGY+uGDhrcSrYT/yiWUcPU+7hHj/1z+1w4sei8NKrE5YtD4ycmPizGfaNhWQY5YvG
+yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
+/*$$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$*/
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: main for gtask
+ * Author: QiShuai  qishuai@huawei.com
+ * Create: 2019-12-20
+ */
+
+#include <autoconf.h>
+#include <stdio.h>
+#include <bootinfo_types.h>
+#include <ipclib.h>
+#include <mmgrapi.h>
+#include <irqmgr_api.h>
+#include <hmdrv.h>
+#include <sys/fileio.h>
+#include <timer.h>
+#include <inttypes.h>
+#include <hmlog.h>
+#include <pathmgr_api.h>
+#include <ac.h>
+#include <ac_dynamic.h>
+#include "teesmcmgr.h"
+#include "tee_crypto_api.h"
+#include "global_task.h"
+#include "init.h"
+
+#define GT_CHANNEL_NUM 2
+
+/*
+ * CODEREVIEW CHECKLIST
+ * ARG: N/A
+ * RIGHTS: N/A
+ * BUFOVF: N/A
+ * INFOLEAK: N/A
+ * RET: N/A
+ * RACING: N/A
+ * RESLEAK: N/A
+ * ARITHOVF: N/A
+ * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
+ */
+static void wait_for_kill(void)
+{
+    while (true)
+        hm_yield();
+}
+
+static rref_t g_sysctrl_ref;
+
+rref_t get_sysctrl_ref(void)
+{
+    return g_sysctrl_ref;
+}
+
+static void gtask_init(void)
+{
+    int32_t ret;
+    extern cref_t __sysmgrch;
+    struct reg_items_st reg_items = { true, true, true };
+
+    ret = hm_create_multi_ipc_channel("TEEGlobalTask", GT_CHANNEL_NUM, NULL, reg_items);
+    if (ret != 0) {
+        hm_error("GTASK: create ipc chnl failed: %d\n", ret);
+        wait_for_kill();
+    }
+
+    ret = init_main();
+    if (ret != 0) {
+        hm_error("GTASK: init failed: %d\n", ret);
+        wait_for_kill();
+    }
+}
+
+static void gtask_init_fileio_ac(void)
+{
+    int32_t ret;
+
+    ret = fileio_init();
+    if (ret != 0) {
+        hm_error("GTASK: fileio_init failed: %d\n", ret);
+        wait_for_kill();
+    }
+
+    ret = ac_init_simple();
+    if (ret != 0) {
+        hm_error("GTASK: ac_init_simple failed: %d\n", ret);
+        wait_for_kill();
+    }
+}
+
+static void gtask_init_timer_irqmgr(void)
+{
+    g_sysctrl_ref = irqmgr_acquire_sysctrl_local_irq_hdlr();
+    if (is_ref_err(g_sysctrl_ref)) {
+        hm_error("GTASK: irqmgr_acquire_sysctrl_local_irq_hdlr failed: %s\n",
+            hmapi_strerror(ref_to_err(g_sysctrl_ref)));
+        wait_for_kill();
+    }
+
+#if (!defined CONFIG_OFF_DRV_TIMER)
+    int32_t ret;
+
+    ret = hm_timer_init();
+    if (ret != 0) {
+        hm_error("GTASK: hm_timer_init failed: %d\n", ret);
+        wait_for_kill();
+    }
+#endif
+}
+
+static void gtask_set_priority(void)
+{
+    int32_t ret;
+    ret = hmapi_set_priority(HM_PRIO_TEE_GT);
+    if (ret < 0) {
+        hm_fatal("GTASK: failed to set priority to HM_PRIO_TEE_GT: %s\n", hmapi_strerror(ret));
+        wait_for_kill();
+    }
+}
+
+static void gtask_extend_utable(void)
+{
+    int32_t ret;
+
+    ret = hmapi_extend_utable();
+    if (ret < 0) {
+        hm_fatal("GTASK: failed to extend utable: %s\n", hmapi_strerror(ret));
+        wait_for_kill();
+    }
+}
+
+static void gtask_run_and_destory(void)
+{
+    int32_t ret;
+    /* smcmgr threads must be created after setting stack guard */
+    gtask_set_priority();
+    gtask_extend_utable();
+
+    gtask_main();
+    ret = pathmgr_del_path("TEEGlobalTask");
+    (void)ret;
+    hm_info("Remove GTASK path ret = %d. teesmcmgr error is expected\n", ret);
+    init_shell();
+}
+/*
+ * CODEREVIEW CHECKLIST
+ * ARG: passed from libc, valid
+ * RIGHTS: N/A
+ * BUFOVF: N/A
+ * INFOLEAK: checked
+ * RET: checked
+ * RACING: N/A
+ * RESLEAK: N/A
+ * ARITHOVF: N/A
+ * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
+ */
+
+int main(void)
+{
+    hm_info("GTASK: Starting up...\n");
+
+    /*
+     * gtask will init something :
+     * hm_mmgr_client, cs_client, ipc_channels, main, ccmgr
+     */
+    gtask_init();
+
+    gtask_init_timer_irqmgr();
+
+    gtask_init_fileio_ac();
+
+    /*
+     * gtask will set affinity to use all cpus
+     * gtask will set high priority
+     * gtask will extend utable to use more utilities
+     * use gtask_main to run
+     * finally gtask will destory itself
+     */
+    gtask_run_and_destory();
+
+    return 0;
+}
