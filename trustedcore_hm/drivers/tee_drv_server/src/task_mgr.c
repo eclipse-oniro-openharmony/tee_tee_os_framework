@@ -771,6 +771,7 @@ static int32_t inherit_drv_node(struct drv_conf_t *drv_conf)
 
             if (add_dynamic_policy_to_drv(&temp->tlv) != 0) {
                 tloge("add dynamic policy to drv failed\n");
+                free_drv_conf_list(temp->tlv.drv_conf, RECEIVE_MAX_TAG);
                 return -1;
             }
 
