@@ -1,20 +1,19 @@
+/*$$$!!Warning: Huawei key information asset. No spread without permission.$$$*/
+/*CODEMARK:mJSkoqPZ5FEeD8fzH9bAQfhyPrkcI5cbzjotjI99J9PTkCMNHMtR+8Ejd3mKEkWbMFYmuIhV
+lw/je6uplRzXM4SMvhun8vRGD9mNqO2kY4/aQFDUiG2CG+z+BR1XavYOLbgQ6mxl4mdMDMUc
+pTTvsgNnGY+uGDhrcSrYT/yiWUcPU+7hHj/1z+1w4sei8NKrE5YtD4ycmPizGfaNhWQY5YvG
+yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
+/*$$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$*/
 /*
- * Copyright (C) 2022 Huawei Technologies Co., Ltd.
- * Licensed under the Mulan PSL v2.
- * You can use this software according to the terms and conditions of the Mulan PSL v2.
- * You may obtain a copy of Mulan PSL v2 at:
- *     http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
- * PURPOSE.
- * See the Mulan PSL v2 for more details.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: smc thread functions
+ * Create: 2020-05-12
  */
-
 #include <stdio.h>
 #include <inttypes.h>
 #include <hm_msg_type.h>
-#include <pathmgr.h>
 #include <securec.h>
+#include <pathmgr_api.h>
 #include "teesmcmgr.h"
 
 #define NORMAL_MSG_ID 0xDEADBEEF
@@ -95,7 +94,11 @@ static int32_t get_drv_cref(cref_t *drv_cref)
     return -1;
 }
 
-static void tee_smc_notify_drv(int32_t cpu, enum cap_teesmc_ret ret)
+/*
+ * It will only be invoked by CPU 0, so no lock
+ * is needed to protect the assignment of platdrv.
+ */
+static void tee_smc_notify_drv(enum cap_teesmc_ret ret)
 {
     static cref_t drv = 0;
     hm_msg_header msg     = { { 0 } };
@@ -104,37 +107,32 @@ static void tee_smc_notify_drv(int32_t cpu, enum cap_teesmc_ret ret)
     if (is_ref_err(drv)) {
         err = get_drv_cref(&drv);
         if (err != 0) {
-            error("CPU%d can NOT found driver channel, error %d\n", cpu, err);
+            error("can NOT found driver channel, error %d\n", err);
             tee_smc_pm_fallback_for_error(ret);
             return;
         }
     }
 
-    debug("CPU%d notify driver start id %u\n", cpu, ret);
+    debug("notify driver start id %u\n", ret);
     msg.send.msg_class = HM_MSG_HEADER_CLASS_DRV_PWRMGR;
     msg.send.msg_id = tee_smc_pm_ret_to_msg_id(ret);
     msg.send.msg_size = sizeof(msg);
     err = hmex_channel_msgnotify(drv, &msg, sizeof(msg));
     if (err == 0) {
-        info("CPU%d notify driver done id %u\n", cpu, ret);
+        info("notify driver done id %u\n", ret);
     } else {
-        error("CPU%d fail to notify driver id %d, error %d\n", cpu, ret, err);
+        error("fail to notify driver id %d, error %d\n", ret, err);
         tee_smc_pm_fallback_for_error(ret);
     }
 }
-
-static void hmapi_configure(int32_t core)
+static void hmapi_configure(void)
 {
     int32_t err;
 
     err = hmapi_set_priority(HM_PRIO_TEE_SMCMGR);
     if (err < 0)
         fatal("hmapi set priority failed: %s\n", hmapi_strerror(err));
-    struct aff_bits_t aff = {0};
-    hmapi_set_affinity_bits((uint32_t)core, &aff);
-    err = hmapi_set_affinity(&aff);
-    if (err < 0)
-        fatal("hmapi set affinity failed: %s\n", hmapi_strerror(err));
+
     err = hmex_disable_local_irq(get_sysctrl_hdlr(), hmapi_tcb_cref());
     if (err < 0)
         fatal("hmex disable local irq failed: %s\n", hmapi_strerror(err));
@@ -142,8 +140,8 @@ static void hmapi_configure(int32_t core)
 
 __attribute__((noreturn)) void *tee_smc_thread(void *arg)
 {
+    (void)arg;
     int32_t err;
-    int32_t core = (int32_t)(uintptr_t)(arg);
     errno_t ret_s;
     struct hmcap_teesmc_smc_buf smc_buf = {0};
     struct gtask_msg normal_msg = {0};
@@ -154,8 +152,8 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
     if (ret_s != EOK)
         fatal("memory copy failed\n");
 
-    info("Start teesmc for core %d\n", core);
-    hmapi_configure(core);
+    info("Start teesmc\n");
+    hmapi_configure();
     hmapi_yield();
 
     while (1) {
@@ -174,10 +172,11 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
             if (smc_buf.ops == HMCAP_TEESMC_OPS_NORMAL ||
                 smc_buf.ops == HMCAP_TEESMC_OPS_ABORT_TASK)
                 err = hmapi_notify(get_gtask_channel_hdlr(), NULL, 0);
+
             if (err < 0)
                 error("failed to notify gtask, err=0x%x\n", err);
         } else if (flag) {
-            tee_smc_notify_drv(core, err);
+            tee_smc_notify_drv(err);
         } else {
             error("unexpected err=%x\n", err);
         }

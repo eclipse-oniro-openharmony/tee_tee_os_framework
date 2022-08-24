@@ -19,18 +19,11 @@ endif
 PWD := $(shell pwd)
 
 gtask_c_files := $(wildcard src/*.c)
-
-# Source files required to build the target
-gtask_ASM_files := $(wildcard src/*.S)
-gtask_ASM_files += $(wildcard src/*/*.S)
-gtask_ASM_files += $(wildcard src/*/*/*.S)
 gtask_c_files   += $(wildcard src/*/*.c)
 gtask_c_files   += $(wildcard src/*/*/*.c)
 
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gtask/include
-inc-flags += -I$(TOPDIR)/framework/gtask/src/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/src/tee_config
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/include
@@ -43,29 +36,20 @@ inc-flags += -I$(PREBUILD_SYS)/mmgr
 inc-flags += -I$(PREBUILD_SYS)/mmgr_sysmgr
 inc-flags += -I$(PREBUILD_SYS)/huk
 inc-flags += -I$(PREBUILD_SYS)/elf_verify
-inc-flags += -I$(TOPDIR)/../../tee_os_kernel/framework/teesmcmgr/src
+inc-flags += -I$(PWD)/../teesmcmgr/src
 inc-flags += -I$(PWD)/src/init
 inc-flags += -I$(PWD)/src/include
 inc-flags += -I$(PWD)/src/app_load
 inc-flags += -I$(PWD)/src/framework
 inc-flags += -I$(PWD)/src/task_adaptor
 inc-flags += -I$(PWD)/src/manager
-inc-flags += -I$(TOPDIR)/sys_libs/libswcrypto_engine/include
-inc-flags += -I$(TOPDIR)/sys_libs/libcrypto_hal/include
 inc-flags += -I$(TOPDIR)/sys_libs/libac_policy/include
-inc-flags += -I$(PWD)/../../services/ssa/src/secure_storage_agent
 inc-flags += -I$(PWD)/src
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfbuilder/include
 inc-flags += -I$(TOPDIR)/drivers/tee_drv_server/src
 inc-flags += -I$(TOPDIR)/drivers/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include # struct sglist
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel/
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext/
-inc-flags += -I$(TOPDIR)/sys_libs/libtimer/include/
-inc-flags += -I$(TEE_ZLIB_DIR)
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
-inc-flags += -I$(TOPDIR)/sys_libs/libtee_cmscbb/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)
@@ -98,10 +82,6 @@ LIBS := c_shared${TARG}        \
     dynconfmgr${TARG}      \
     dynconfbuilder${TARG}  \
     spawn_common${TARG}
-
-ifneq ($(CONFIG_NO_VENDOR_LIB_EMBEDDED), true)
-LIBS += vendor_static${TARG}
-endif
 
 LIBS += base_shared${TARG}
 
