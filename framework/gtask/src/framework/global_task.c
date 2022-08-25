@@ -33,7 +33,6 @@ nR+osDAHaIEfyoPHfIFAJAQLD0ohh2OwUozrcXB/#*/
 #include "tee_init.h"
 #include <string.h>
 #include <ipclib.h>
-#include "tee_service.h"
 #include "init.h"
 #include "initlib.h"
 #include "gtask_config.h"
@@ -47,6 +46,7 @@ nR+osDAHaIEfyoPHfIFAJAQLD0ohh2OwUozrcXB/#*/
 #include "tee_ns_cmd_dispatch.h"
 #include "tee_s_cmd_dispatch.h"
 #include "tee_compat_check.h"
+#include "tee_load_lib.h"
 
 #define GT_MSG_REV_SIZE 512
 
@@ -540,7 +540,6 @@ static int32_t gtask_main_init(void)
         while (1)
             hm_yield();
     }
-    init_tee_service();
     init_internal_tasks();
 #ifdef __aarch64__
     tlogi("Gtask (64bit) Execute Successfully and jump to Linux kernel\n");

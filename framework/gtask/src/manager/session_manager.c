@@ -28,7 +28,6 @@ nR+osDAHaIEfyoPHfIFAJAQLD0ohh2OwUozrcXB/#*/
 #include "securec.h"
 
 #include <sys/usrsyscall.h>
-#include "tee_service.h"
 #include "gtask_adapt.h"
 #include "dynload.h"
 #include "task_adaptor_pub.h"
@@ -879,7 +878,6 @@ int32_t release_session(struct service_struct *service, struct session_struct *s
     if (sre_ret != SUCC_RET)
         tloge("task del error fail 1\n");
 
-    del_remained_sess_node(session);
     release_pam_node(session->pam_node);
     task_del_mem_region(&(session->map_mem), service->is_service_dead);
 

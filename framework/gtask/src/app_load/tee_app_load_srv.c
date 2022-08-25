@@ -33,7 +33,6 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include "dynload.h"
 #include "tee_load_lib.h"
 
-#include "tee_service.h"
 #include "drvcall_dyn_conf_builder.h"
 #include "drv_dyn_conf_builder.h"
 #include "target_type.h"
@@ -277,11 +276,6 @@ TEE_Result need_load_app(const smc_cmd_t *cmd)
     errno_t eret = memcpy_s(&srv_uuid, sizeof(TEE_UUID), params->memref.buffer, sizeof(TEE_UUID));
     if (eret != EOK)
         return TEE_ERROR_SECURITY;
-
-    if (is_dyn_service(&srv_uuid)) {
-        tloge("dyn srvc is forbidden to be opened by CA\n");
-        return TEE_ERROR_ACCESS_DENIED;
-    }
 
     if (need_load_srv(&srv_uuid) == false) {
         tlogd("no need load app\n");
