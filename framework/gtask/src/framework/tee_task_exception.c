@@ -21,7 +21,6 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==# */
 #include "initlib.h"
 #include "gtask_config_hal.h"
 #include "tee_config.h"
-#include "tee_service.h"
 #include "task_adaptor_pub.h"
 #include "gtask_core.h"
 #include "gtask_inner.h"
@@ -322,7 +321,7 @@ static TEE_Result process_kill_task(struct service_struct *srv, const struct ses
     tlogi("start process kill task, block task name=%s, session id=0x%x, ca pid=%u\n", srv->name, sess->session_id,
         sess->cmd_in.ca_pid);
 
-    if (sess->agent_pending || is_session_calling_dyn_srvc(sess->session_id)) {
+    if (sess->agent_pending) {
         tloge("killing a agent pending ta or dyn svc, delay it, cmd id = 0x%x\n", sess->cmd_in.cmd_id);
         return TEE_ERROR_BUSY;
     }

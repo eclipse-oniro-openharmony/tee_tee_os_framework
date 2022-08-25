@@ -12,7 +12,6 @@
 #include "gtask_msg.h"
 #include "gtask_adapt.h"
 #include "tee_task_exception.h"
-#include "tee_service.h"
 #include "tee_internal_task_pub.h"
 #include "tee_app_load_srv.h"
 #include "task_adaptor_pub.h"
@@ -20,6 +19,7 @@
 #include "mem_manager.h"
 #include "agent_manager.h"
 #include "ext_interface.h"
+#include "tee_load_lib.h"
 
 static void s_cmd_response(smc_cmd_t *cmd, uint32_t ret_task_id)
 {
