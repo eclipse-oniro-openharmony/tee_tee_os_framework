@@ -26,4 +26,8 @@ bool get_dyn_client_name(bool is_64bit,  char *client, uint32_t size);
 int dynamic_load_lib_elf(const load_elf_func_params *param, const struct service_struct *service,
                          const TEE_UUID *uuid, uint64_t memid, tee_img_type_t type);
 uint32_t sre_release_dynamic_region(const TEE_UUID *uuid, uint32_t release);
+TEE_Result load_elf_to_tee(const TEE_UUID *uuid, const char *task_name, bool buildin,
+                           bool dyn_conf_registed, struct service_attr *service_attr);
+int elf_param_check(uint32_t stack_size, uint32_t heap_size, uint32_t mani_ext_size);
+TEE_Result varify_elf_arch(const char *elf, int file_size, bool *ta_64bit);
 #endif

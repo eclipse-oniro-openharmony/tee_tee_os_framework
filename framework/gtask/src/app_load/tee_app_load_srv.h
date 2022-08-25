@@ -18,8 +18,4 @@ void free_img_load_buf(void);
 TEE_Result rename_tmp_file(const char *new_name, uint32_t len);
 int32_t process_register_elf_req(uint32_t cmd_id, uint32_t task_id, const uint8_t *msg_buf, uint32_t msg_size);
 void elf_verify_crash_callback(void);
-TEE_Result load_elf_to_tee(const char *file_buffer, int32_t file_size, uint32_t stack_size,
-                           uint32_t task_amount, uint32_t heap_size, const TEE_UUID *uuid,
-                           const char *task_name, bool buildin, bool dyn_conf_registed,
-                           tee_img_type_t img_type);
 #endif
