@@ -91,8 +91,12 @@ uint32_t sre_release_dynamic_region(const TEE_UUID *uuid, uint32_t release)
 }
 
 #define ELF_TYPE_OFFSET 4
-static TEE_Result varify_elf_arch(const char *elf, int file_size, bool *ta_64bit)
+TEE_Result varify_elf_arch(const char *elf, int file_size, bool *ta_64bit)
 {
+    if (elf == NULL || ta_64bit == NULL) {
+        tloge("Parameters is null\n");
+        return TEE_ERROR_GENERIC;
+    }
     if (file_size < (int)(ELF_TYPE_OFFSET * sizeof(uint8_t) + sizeof(uint8_t))) {
         tloge("file size is invalid\n");
         return TEE_ERROR_GENERIC;
@@ -112,41 +116,31 @@ static TEE_Result varify_elf_arch(const char *elf, int file_size, bool *ta_64bit
     return TEE_SUCCESS;
 }
 
-static inline int load_elf_param_check(const char *file_buffer, uint32_t stack_size,
-                                       uint32_t task_amount, uint32_t heap_size,
-                                       const TEE_UUID *uuid, const char *task_name)
+int elf_param_check(uint32_t stack_size, uint32_t heap_size, uint32_t mani_ext_size)
 {
-    if ((file_buffer == NULL) || (uuid == NULL) || (task_name == NULL) || (task_amount > TA_SESSION_MAX) ||
-        (task_amount == 0) || (stack_size == 0) || (stack_size > MAX_STACK_SIZE) || (heap_size == 0))
+    stack_size = PAGE_ALIGN_UP(stack_size);
+    if ((stack_size == 0) || (stack_size > MAX_STACK_SIZE) || (heap_size == 0) || mani_ext_size > NOTIFY_MAX_LEN) {
+        tloge("Parameters check failed. stack size = %u, heap size = %u, manifest extend size = %u\n",
+              stack_size, heap_size, mani_ext_size);
         return -1;
-
+    }
     return 0;
 }
 
-TEE_Result load_elf_to_tee(const char *file_buffer, int file_size, uint32_t stack_size,
-                           uint32_t task_amount, uint32_t heap_size, const TEE_UUID *uuid,
-                           const char *task_name, bool buildin, bool dyn_conf_registed,
-                           tee_img_type_t img_type)
+TEE_Result load_elf_to_tee(const TEE_UUID *uuid, const char *task_name, bool buildin,
+                           bool dyn_conf_registed, struct service_attr *service_attr)
 {
     TEE_Result ret;
     uint32_t uw_ret;
-    struct service_attr service_attr = { 0 };
-
-    stack_size = PAGE_ALIGN_UP(stack_size);
+    if (uuid == NULL || task_name == NULL || service_attr == NULL) {
+        tloge("check Parameters failed\n");
     /* cmd no need to check. */
-    if (load_elf_param_check(file_buffer, stack_size, task_amount, heap_size, uuid, task_name) != 0)
         return TEE_ERROR_GENERIC;
+    }
 
     /* check if dynamic service already exist */
     if (dynamic_service_exist(uuid, buildin))
         return TEE_ERROR_GENERIC;
-
-    bool ta_64bit = false;
-    ret           = varify_elf_arch(file_buffer, file_size, &ta_64bit);
-    if (ret != TEE_SUCCESS) {
-        tloge("varify elf architecture failed %x\n", ret);
-        return TEE_ERROR_GENERIC;
-    }
 
     tlogd("task name is %s, ta_64bit:%d\n", task_name, ta_64bit);
 
@@ -154,11 +148,7 @@ TEE_Result load_elf_to_tee(const char *file_buffer, int file_size, uint32_t stac
     if (uw_ret != 0)
         return TEE_ERROR_GENERIC;
 
-    service_attr.build_in     = buildin;
-    service_attr.ta_64bit     = ta_64bit;
-    service_attr.img_type     = img_type;
-
-    ret = register_service(task_name, uuid, dyn_conf_registed, &service_attr);
+    ret = register_service(task_name, uuid, dyn_conf_registed, service_attr);
     if (ret != 0)
         tloge("register service \"%s\" fail: 0x%x\n", task_name, ret);
 
