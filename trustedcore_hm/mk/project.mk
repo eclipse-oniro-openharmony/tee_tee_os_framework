@@ -122,8 +122,8 @@ $(arm_test_drivers): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_
 	$(VER) LDFLAGS= $(MAKE) -C tests/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
 $(aarch64_frm_drivers): $(aarch64_libs) $(arm_sys_libs) link_aarch64_libs link_arm_libs frameworks
 	@echo "building ARCH=aarch64 driver=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ LDFLAGS= ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring hmsysmgr,$@)$(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C framework/$@ LDFLAGS= ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C framework/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring hmsysmgr,$@)$(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C framework/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 $(aarch64_driver_drivers): $(aarch64_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C drivers/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
@@ -133,9 +133,9 @@ $(aarch64_test_drivers): $(aarch64_libs) link_aarch64_libs link_arm_libs
 
 frameworks:
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/gtask ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C ../framework/gtask LDFLAGS= ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/gtask ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/teesmcmgr ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C ../framework/teesmcmgr LDFLAGS= ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/teesmcmgr ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile kernel rules
 

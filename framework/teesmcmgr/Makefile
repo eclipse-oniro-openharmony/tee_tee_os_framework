@@ -23,15 +23,9 @@ $(BUILD_DIR)/$(TA_NAME): $(BUILD_DIR)/$(TARGETS)
 	cp $< $@
 
 # Libraries
-ifeq ($(CONFIG_ARCH_AARCH64),y)
-LIBS := c_shared
-LDFLAGS += --dynamic-linker=libc_shared.so
-else
-LIBS := c_shared_a32
-LDFLAGS += --dynamic-linker=libc_shared_a32.so
-endif
+LIBS := c_shared$(TARG)
+LDFLAGS += --dynamic-linker=libc_shared$(TARG).so
 ENTRY_POINT := _hm_start
-LDFLAGS += -T $(TOPDIR)/../../tee_os_kernel/tools/common/app-arm-eabi.lds
 
 include $(TOPDIR)/mk/svc-common.mk
 
