@@ -43,11 +43,6 @@ struct platform_info g_plat_cfg = {
             /* .start, .end */
             /* the first region should be UART6 */
             { CPU_CTLR_ADDR, CPU_CTLR_ADDR + CPU_CTLR_SIZE },
-            { SEC_TRNG0_BASE, SEC_TRNG0_BASE + SEC_TRNG0_SIZE },
-            { SEC_CLK_BASE, SEC_CLK_BASE + SEC_CLK_SIZE },
-            { SEC_KLAD_BASE, SEC_KLAD_BASE + SEC_KLAD_SIZE },
-            { SEC_OTP_BASE, SEC_OTP_BASE + SEC_OTP_SIZE },
-            { TIMER1_BASE, TIMER1_BASE + TIMER1_BASE_SIZE },
             /* this is terminator */
             { 0, 0 }
         }
