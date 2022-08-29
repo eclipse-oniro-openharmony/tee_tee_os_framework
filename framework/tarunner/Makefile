@@ -1,0 +1,32 @@
+# Copyright Huawei Technologies Co., Ltd. 2010-2019. All rights reserved.
+
+# DRIVER is a driver
+
+DRIVER := tarunner${TARG}.elf
+
+include $(TOPDIR)/mk/var.mk
+
+tarunner_c_files := $(wildcard src/*.c)
+
+
+# Libraries
+LIBS := c_shared${TARG}
+
+inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
+inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
+inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/src/
+inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(PREBUILD_DIR)/sys/hmapi
+inc-flags += -I$(TOPDIR)/../framework/gtask/src/framework
+
+# drv makefile will fully link a binary.
+include $(TOPDIR)/mk/svc-common.mk
+tarunner_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so -e main
+
+ifeq ($(xom32_enable),y)
+tarunner_LDFLAGS += -T $(XOM_LDS)
+endif
+
+ifneq (, $(filter $(TRUSTEDCORE_CHIP_CHOOSE), WITH_CHIP_TDA4 WITH_CHIP_HI1951 WITH_CHIP_HI1981 WITH_CHIP_HI1911))
+tarunner_LDFLAGS += -E
+endif
