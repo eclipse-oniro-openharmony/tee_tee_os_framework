@@ -19,8 +19,8 @@
 #include <test_comm_cmdid.h>
 #include <test_tcf_cmdid.h>
 
-#define CA_PKGN_VENDOR "/vendor/bin/tee_test_tcf"
-#define CA_PKGN_SYSTEM "/system/bin/tee_test_tcf"
+#define CA_PKGN_VENDOR "/vendor/bin/tee_test_tcf_api"
+#define CA_PKGN_SYSTEM "/system/bin/tee_test_tcf_api"
 #define CA_UID 0
 
 #define SMC_TA_TESTIDENTITY_LOGIN 0xF0000000
@@ -75,7 +75,7 @@ TEE_Result CmdTEEGetPropertyAsIdentity_withoutEnum(uint32_t nParamTypes, TEE_Par
             break;
     }
 
-    if ((cmdResult == TEE_SUCCESS)) {
+    if (cmdResult == TEE_SUCCESS) {
         if ((nResultIdentity.login == (uint32_t)SMC_TA_TESTIDENTITY_LOGIN) &&
             (nResultIdentity.uuid.timeLow == (uint32_t)SMC_TA_TESTIDENTITY_TIMELOW) &&
             (nResultIdentity.uuid.timeMid == (uint16_t)SMC_TA_TESTIDENTITY_TIMEMID) &&
@@ -95,7 +95,7 @@ TEE_Result CmdTEEGetPropertyAsU32(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
-    uint32_t nIntResult;
+    uint32_t nIntResult = 0;
     uint32_t caseId;
     char outStr[MAXLEN_U32] = { 0 };
     TEE_Result cmdResult;
@@ -499,7 +499,7 @@ TEE_Result CmdTEEOpenTASession(uint32_t nParamTypes, TEE_Param pParams[4])
     uint32_t nReturnOrigin = 0;
     uint32_t hint = TEE_MALLOC_FILL_ZERO;
     uint32_t nSize = DEFAULT_BUFFER_SIZE;
-    TEE_TASessionHandle nsession;
+    TEE_TASessionHandle nsession = 0;
     TEE_Result nTmpResult;
     char *pBufferIn = NULL;
 

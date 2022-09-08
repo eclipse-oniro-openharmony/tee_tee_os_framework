@@ -17,6 +17,10 @@
 #include <tee_mem_mgmt_api.h>
 #include <securec.h>
 
+#define CA_PKGN_VENDOR "/vendor/bin/tee_test_client_api"
+#define CA_PKGN_SYSTEM "/system/bin/tee_test_client_api"
+#define CA_UID 0
+
 // The test case uses the same string to pass the input and output test of buffer during REE and tee communication
 char *g_teeOutput = "TEEMEM_OUTPUT";
 char *g_teeInout = "the param is TEEMEM_INOUT";
@@ -166,9 +170,16 @@ static TEE_Result TestAllType(uint32_t paramTypes, TEE_Param params[4])
 TEE_Result TA_CreateEntryPoint(void)
 {
     tlogd("---- TA_CreateEntryPoint --------- \n");
-    TEE_Result ret = AddCaller_CA_exec("/system/bin/tee_test_store", 0);
+
+    ret = AddCaller_CA_exec(CA_PKGN_VENDOR, CA_UID);
     if (ret != TEE_SUCCESS) {
-        tloge("add caller failed, ret: 0x%x\n", ret);
+        tloge("add caller failed, ret: 0x%x", ret);
+        return ret;
+    }
+
+    ret = AddCaller_CA_exec(CA_PKGN_SYSTEM, CA_UID);
+    if (ret != TEE_SUCCESS) {
+        tloge("add caller failed, ret: 0x%x", ret);
         return ret;
     }
 

@@ -20,8 +20,8 @@
 #include <test_tcf_cmdid.h>
 #include <test_comm_cmdid.h>
 
-#define CA_PKGN_VENDOR "/vendor/bin/tee_test_tcf"
-#define CA_PKGN_SYSTEM "/system/bin/tee_test_tcf"
+#define CA_PKGN_VENDOR "/vendor/bin/tee_test_tcf_api"
+#define CA_PKGN_SYSTEM "/system/bin/tee_test_tcf_api"
 #define CA_UID 0
 
 #define BOOLEAN_TRUE "true"
@@ -115,7 +115,7 @@ TEE_Result CmdTEEGetPropertyAsBool(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
-    bool nOutputBool;
+    bool nOutputBool = true;
     uint32_t caseId;
     TEE_Result cmdResult;
 
@@ -160,7 +160,7 @@ TEE_Result CmdTEEGetPropertyAsU32(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
-    uint32_t nIntResult;
+    uint32_t nIntResult = 0;
     uint32_t caseId;
     char outStr[MAXLEN_U32] = { 0 };
     TEE_Result cmdResult;
@@ -203,7 +203,7 @@ TEE_Result CmdTEEGetPropertyAsU64(uint32_t nParamTypes, TEE_Param pParams[4])
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
     char outStr[MAXLEN_U64] = { 0 };
-    uint64_t nIntResult;
+    uint64_t nIntResult = 0;
     uint32_t caseId;
     TEE_Result cmdResult;
 

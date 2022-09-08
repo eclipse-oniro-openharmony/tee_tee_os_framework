@@ -26,7 +26,6 @@ typedef uint32_t TEE_TASessionHandle;
 #define TESTSIZE 16
 #define BIG_SIZE 1024
 #define MAX_SHARE_SIZE 0x100000
-#define MAX_HEAP_SIZE 0x120000
 
 #define ENUMERATOR1 1
 #define MAX_ENUMERATOR 1023
