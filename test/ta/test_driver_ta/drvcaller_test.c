@@ -19,6 +19,10 @@
 #include <tee_log.h>
 #include <test_drv_cmdid.h>
 
+#define CA_PKGN_VENDOR "/vendor/bin/tee_test_drv"
+#define CA_PKGN_SYSTEM "/system/bin/tee_test_drv"
+#define CA_UID 0
+
 #define DRV_UUID1                                          \
     {                                                      \
         0x11112222, 0x0000, 0x0000,                        \
@@ -109,9 +113,16 @@ static TEE_Result TeeTestDrive(uint32_t cmd)
 TEE_Result TA_CreateEntryPoint(void)
 {
     tlogi("---- TA_CreateEntryPoint ----------- \n");
-    TEE_Result ret = AddCaller_CA_exec("/system/bin/tee_test_drv", 0);
+
+    ret = AddCaller_CA_exec(CA_PKGN_VENDOR, CA_UID);
     if (ret != TEE_SUCCESS) {
-        tloge("add caller failed, ret: 0x%x\n", ret);
+        tloge("add caller failed, ret: 0x%x", ret);
+        return ret;
+    }
+
+    ret = AddCaller_CA_exec(CA_PKGN_SYSTEM, CA_UID);
+    if (ret != TEE_SUCCESS) {
+        tloge("add caller failed, ret: 0x%x", ret);
         return ret;
     }
 
