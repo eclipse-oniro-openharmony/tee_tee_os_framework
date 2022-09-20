@@ -22,6 +22,6 @@ void init_shell(void);
 bool is_sys_task(uint32_t task_id);
 uint32_t get_timer_pid(void);
 rref_t get_sysctrl_ref(void);
-int32_t get_tee_drv_server_pid(uint32_t *task_id);
+int32_t get_drvmgr_pid(uint32_t *task_id);
 
 #endif

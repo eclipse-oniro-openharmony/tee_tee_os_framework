@@ -10,7 +10,7 @@ export CONFIG_PERMSRV_64BIT := false
 export ENABLE_CPP := true
 export ENABLE_CPP_STATIC := true
 export CONFIG_GMLIB_IMPORT := true
-export CONFIG_TEE_DRV_SERVER_64BIT := false
+export CONFIG_DRVMGR_64BIT := false
 export CONFIG_DYN_CONF := true
 export CONFIG_NO_VENDOR_LIB_EMBEDDED := true
 

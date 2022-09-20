@@ -46,14 +46,14 @@ struct file_stat_entry {
     { "/hivcodec.elf", 18, 1001, 00040 },
     { "/file_encry.elf", 19, 19, 00040 },
     /*
-     * gtask spawn tee_drv_server
-     * tee_drv_server spawn tarunner
+     * gtask spawn drvmgr
+     * drvmgr spawn tarunner
      * gtask gid is 1000, tarunner and other ta gid is 1001
-     * so set tee_drv_server gid to 1002
+     * so set drvmgr gid to 1002
      * otherwise it will be failed in check_file_permission when spawn tarunner
      * if the parent process gid equal with the child process gid
      */
-    { "/tee_drv_server.elf", 20, 1002, 07005 },
+    { "/drvmgr.elf", 20, 1002, 07005 },
     { "/libc_shared.so", 0, 1001, 00040 },
     { "/libc_shared_a32.so", 0, 1001, 00040 },
     { "/libtee_shared.so", 0, 1001, 00040 },

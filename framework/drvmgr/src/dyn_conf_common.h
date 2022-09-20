@@ -3,8 +3,8 @@
  * Description: drv and drvcall dynamic permission common header
  * Create: 2021-02-03
  */
-#ifndef TEE_DRV_SERVER_DYN_CONF_COMMON_H
-#define TEE_DRV_SERVER_DYN_CONF_COMMON_H
+#ifndef DRVMGR_DYN_CONF_COMMON_H
+#define DRVMGR_DYN_CONF_COMMON_H
 
 #include <stdint.h>
 #include <tee_defines.h>

@@ -108,7 +108,7 @@ uint32_t get_timer_pid(void)
     return g_timer_pid;
 }
 
-int32_t get_tee_drv_server_pid(uint32_t *task_id)
+int32_t get_drvmgr_pid(uint32_t *task_id)
 {
     if (task_id == NULL) {
         hm_error("invalid task id\n");
@@ -121,13 +121,13 @@ int32_t get_tee_drv_server_pid(uint32_t *task_id)
 
     for (i = 0; i < nr; i++) {
         /* sizeof include '\0' */
-        if (strncmp(drv_info_list[i].drv_name, "tee_drv_server", sizeof("tee_drv_server")) == 0) {
+        if (strncmp(drv_info_list[i].drv_name, "drvmgr", sizeof("drvmgr")) == 0) {
             *task_id = drv_info_list[i].pid;
             return 0;
         }
     }
 
-    hm_error("tee drv server not found\n");
+    hm_error("drvmgr not found\n");
     return -1;
 }
 
@@ -191,8 +191,8 @@ int init_main(void)
     if (ret)
         return ret;
 /*
- * Note: tee_drv_server may use tloge API which relies on time stamps from drv_timer process
- * thus please keep `drv_timer.elf` before tee_drv_server
+ * Note: drvmgr may use tloge API which relies on time stamps from drv_timer process
+ * thus please keep `drv_timer.elf` before drvmgr
  **/
 #if (!defined CONFIG_OFF_DRV_TIMER)
     struct tee_uuid timer_uuid = TEE_DRV_TIMER;

@@ -3,8 +3,8 @@
  * Description: define auth function
  * Create: 2021-03-17
  */
-#ifndef TEE_DRV_SERVER_SRC_DRV_AUTH_H
-#define TEE_DRV_SERVER_SRC_DRV_AUTH_H
+#ifndef DRVMGR_SRC_DRV_AUTH_H
+#define DRVMGR_SRC_DRV_AUTH_H
 #include <stdint.h>
 #include <stdbool.h>
 #include <tee_defines.h>

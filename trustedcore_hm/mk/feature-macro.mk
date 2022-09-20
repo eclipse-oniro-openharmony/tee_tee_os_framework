@@ -84,11 +84,11 @@ ifeq ($(CONFIG_KMS), true)
 flags += -DTEE_SUPPORT_KMS
 endif
 
-ifeq ($(CONFIG_TEE_DRV_SERVER_64BIT), true)
+ifeq ($(CONFIG_DRVMGR_64BIT), true)
 flags += -DTEE_SUPPORT_DRV_SERVER_64BIT
 endif
 
-ifeq ($(CONFIG_TEE_DRV_SERVER_64BIT), false)
+ifeq ($(CONFIG_DRVMGR_64BIT), false)
 flags += -DTEE_SUPPORT_DRV_SERVER_32BIT
 endif
 

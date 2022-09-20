@@ -16,7 +16,7 @@
 #include "drv_thread.h"
 #include "drv_process_mgr.h"
 
-const char *g_debug_prefix = "tee_drv_server";
+const char *g_debug_prefix = "drvmgr";
 
 int32_t drv_framework_init(const struct drv_frame_t *drv_frame)
 {
@@ -32,9 +32,9 @@ int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((u
         [HM_MSG_HEADER_CLASS_ACMGR_PUSH] = ac_dispatch,
     };
 
-    hm_info("tee drv server main begin\n");
+    hm_info("drvmgr main begin\n");
 
-    struct drv_frame_t drv_frame = { "tee_drv_server", true, NULL };
+    struct drv_frame_t drv_frame = { "drvmgr", true, NULL };
 
     cref_t ch = 0;
 
@@ -65,7 +65,7 @@ int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((u
     (void)register_base_drv_node();
 
     /* stack_size set 0 will use default size */
-    ret = drv_thread_init("tee_drv_server_multi", 0, DRV_THREAD_MAX);
+    ret = drv_thread_init("drvmgr_multi", 0, DRV_THREAD_MAX);
     if (ret != 0) {
         hm_error("drv thread init fail\n");
         hm_exit(ret);

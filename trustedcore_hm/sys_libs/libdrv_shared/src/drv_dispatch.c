@@ -1,6 +1,6 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- * Description: tee_drv_server dispatch function define when receive cmd
+ * Description: drvmgr dispatch function define when receive cmd
  * Create: 2021-03-01
  */
 #include "drv_dispatch.h"
