@@ -3,8 +3,8 @@
  * Description: declare funtion send msg to driver process
  * Create: 2022-01-01
  */
-#ifndef TEE_DRV_SERVER_SRC_DRV_RANDOM_H
-#define TEE_DRV_SERVER_SRC_DRV_RANDOM_H
+#ifndef DRVMGR_SRC_DRV_RANDOM_H
+#define DRVMGR_SRC_DRV_RANDOM_H
 
 #include <stdint.h>
 #include <tee_defines.h>

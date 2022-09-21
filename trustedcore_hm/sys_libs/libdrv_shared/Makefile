@@ -10,7 +10,7 @@ libdrv_shared_c_files += src/drv_share.c
 libdrv_shared_c_files += $(TOPDIR)/sys_libs/libdrv_frame/src/drv_thread.c
 libdrv_shared_c_files += $(TOPDIR)/sys_libs/libdrv_frame/src/drv_param_ops.c
 
-ifneq ($(CONFIG_TEE_DRV_SERVER_64BIT), )
+ifneq ($(CONFIG_DRVMGR_64BIT), )
 libdrv_shared_c_files += src/tee_drv_entry.c
 libdrv_shared_c_files += src/drv_dispatch.c
 libdrv_shared_c_files += src/drv_operations.c
@@ -32,7 +32,7 @@ inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/include
 
-ifneq ($(CONFIG_TEE_DRV_SERVER_64BIT), )
+ifneq ($(CONFIG_DRVMGR_64BIT), )
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
 inc-flags += -I$(TOPDIR)/drivers/common/

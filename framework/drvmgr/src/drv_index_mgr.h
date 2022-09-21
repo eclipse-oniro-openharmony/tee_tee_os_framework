@@ -3,8 +3,8 @@
  * Description: declare driver index function
  * Create: 2021-07-19
  */
-#ifndef TEE_DRV_SERVER_SRC_DRV_INDEX_MGR_H
-#define TEE_DRV_SERVER_SRC_DRV_INDEX_MGR_H
+#ifndef DRVMGR_SRC_DRV_INDEX_MGR_H
+#define DRVMGR_SRC_DRV_INDEX_MGR_H
 #include <stdint.h>
 
 #define DRV_INDEX_MAX 1024

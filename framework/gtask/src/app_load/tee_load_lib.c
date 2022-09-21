@@ -265,8 +265,8 @@ int32_t handle_unlink_dynamic_drv(uint32_t cmd_id, uint32_t task_id, const uint8
     }
 
     uint32_t drv_id;
-    if (get_tee_drv_server_pid(&drv_id) != 0) {
-        tloge("get tee drv server taskid failed\n");
+    if (get_drvmgr_pid(&drv_id) != 0) {
+        tloge("get drvmgr taskid failed\n");
         return GT_ERR_END_CMD;
     }
 

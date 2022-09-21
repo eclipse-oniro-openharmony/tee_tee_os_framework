@@ -4,8 +4,8 @@
  * Create: 2021-02-03
  */
 
-#ifndef TEE_DRV_SERVER_DRV_DYN_CONF_MGR_H
-#define TEE_DRV_SERVER_DRV_DYN_CONF_MGR_H
+#ifndef DRVMGR_DRV_DYN_CONF_MGR_H
+#define DRVMGR_DRV_DYN_CONF_MGR_H
 
 #include <arch/types.h>
 #include <hm_msg_type.h>

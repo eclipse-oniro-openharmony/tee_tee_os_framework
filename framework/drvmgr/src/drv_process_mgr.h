@@ -3,8 +3,8 @@
  * Description: define driver so structure and function
  * Create: 2021-07-19
  */
-#ifndef TEE_DRV_SERVER_SRC_DRV_PROCESS_MGR_H
-#define TEE_DRV_SERVER_SRC_DRV_PROCESS_MGR_H
+#ifndef DRVMGR_SRC_DRV_PROCESS_MGR_H
+#define DRVMGR_SRC_DRV_PROCESS_MGR_H
 #include <stdint.h>
 #include <tee_defines.h>
 #include "drv_dyn_conf_mgr.h"

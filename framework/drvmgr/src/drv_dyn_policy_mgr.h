@@ -4,8 +4,8 @@
  * Create: 2021-07-22
  */
 
-#ifndef TEE_DRV_SERVER_SRC_DRV_DYN_POLICY_MGR_H
-#define TEE_DRV_SERVER_SRC_DRV_DYN_POLICY_MGR_H
+#ifndef DRVMGR_SRC_DRV_DYN_POLICY_MGR_H
+#define DRVMGR_SRC_DRV_DYN_POLICY_MGR_H
 
 #include "task_mgr.h"
 

@@ -136,6 +136,8 @@ frameworks:
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/gtask ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/teesmcmgr ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/teesmcmgr ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/drvmgr ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/drvmgr ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile kernel rules
 

@@ -15,7 +15,7 @@ AC_DEFINE_SUBJ_BEG(pub_ta_add)
     { AC_SID_DRV_TIMER, 0, NULL },
     { AC_SID_HMCCMGR, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { AC_SID_TEE_DRV_SERVER, 0, NULL },
+    { AC_SID_DRVMGR, 0, NULL },
 #endif
     T_POLICY(ta_add)
 AC_DEFINE_SUBJ_END(pub_ta_add)
@@ -31,7 +31,7 @@ AC_DEFINE_SUBJ_END(task_mapfile)
 AC_DEFINE_SUBJ_BEG(pub_spawn)
     { AC_SID_GTASK, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { AC_SID_TEE_DRV_SERVER, 0, NULL },
+    { AC_SID_DRVMGR, 0, NULL },
 #endif
     T_POLICY(spawn)
 AC_DEFINE_SUBJ_END(pub_spawn)
@@ -51,7 +51,7 @@ AC_DEFINE_SUBJ_BEG(pub_proc_status)
     { AC_SID_DRV_TIMER, 0, NULL },
     { AC_SID_FILEMGR, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { AC_SID_TEE_DRV_SERVER, 0, NULL },
+    { AC_SID_DRVMGR, 0, NULL },
 #endif
     T_POLICY(proc_status)
 AC_DEFINE_SUBJ_END(pub_proc_status)
@@ -62,7 +62,7 @@ AC_DEFINE_SUBJ_END(pub_virt2phys)
 
 AC_DEFINE_SUBJ_BEG(pub_dyn_plc)
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { AC_SID_TEE_DRV_SERVER, 0, NULL },
+    { AC_SID_DRVMGR, 0, NULL },
 #endif
     T_POLICY(dyn_plc)
 AC_DEFINE_SUBJ_END(pub_dyn_plc)
@@ -70,7 +70,7 @@ AC_DEFINE_SUBJ_END(pub_dyn_plc)
 AC_DEFINE_SUBJ_BEG(pub_get_uuid)
     { AC_SID_DRV_TIMER, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { AC_SID_TEE_DRV_SERVER, 0, NULL },
+    { AC_SID_DRVMGR, 0, NULL },
 #endif
     { AC_SID_GTASK, 0, NULL },
 AC_DEFINE_SUBJ_END(pub_get_uuid)
@@ -80,7 +80,7 @@ AC_DEFINE_SUBJ_BEG(pub_fops)
     { AC_SID_TALDR, 0, NULL },
     { AC_SID_GTASK, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { AC_SID_TEE_DRV_SERVER, 0, NULL },
+    { AC_SID_DRVMGR, 0, NULL },
 #endif
 #if defined(TEE_SUPPORT_PERM_64BIT) || defined(TEE_SUPPORT_PERM_32BIT)
     { AC_SID_TEE_SERVICE_PERM, 0, NULL },
@@ -114,7 +114,7 @@ AC_DEFINE_SUBJ_BEG(pub_teesmc_acquire)
     { AC_SID_TEESMCMGR, 0, NULL },
     { AC_SID_DRV_TIMER, 0, NULL },
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { AC_SID_TEE_DRV_SERVER, 0, NULL },
+    { AC_SID_DRVMGR, 0, NULL },
 #endif
     T_POLICY(teesmc_acquire)
 AC_DEFINE_SUBJ_END(pub_teesmc_acquire)

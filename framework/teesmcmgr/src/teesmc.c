@@ -84,7 +84,7 @@ static int32_t get_drv_cref(cref_t *drv_cref)
 {
     cref_t drv = 0;
 
-    int32_t err = pathmgr_acquire("tee_drv_server", &drv);
+    int32_t err = pathmgr_acquire("drvmgr", &drv);
     if (!(err != EOK || is_ref_err(drv))) {
         info("found tee driver server channel\n");
         *drv_cref = drv;

@@ -3,8 +3,8 @@
  * Description: declare drv fd manager function
  * Create: 2021-07-17
  */
-#ifndef TEE_DRV_SERVER_SRC_DRV_FD_OPS_H
-#define TEE_DRV_SERVER_SRC_DRV_FD_OPS_H
+#ifndef DRVMGR_SRC_DRV_FD_OPS_H
+#define DRVMGR_SRC_DRV_FD_OPS_H
 
 #include <stdint.h>
 #include <pthread.h>

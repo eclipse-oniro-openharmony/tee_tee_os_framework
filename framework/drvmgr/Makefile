@@ -1,9 +1,9 @@
-# tee_drv_server compile rule
+# drvmgr compile rule
 # Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
 
-DRIVER := tee_drv_server.elf
+DRIVER := drvmgr.elf
 
-override SOURCE_DIR:=$(TOPDIR)/drivers/tee_drv_server
+override SOURCE_DIR:=$(TOPDIR)/../framework/drvmgr
 
 include $(TOPDIR)/mk/feature-macro.mk
 include $(TOPDIR)/mk/var.mk
@@ -14,7 +14,7 @@ include $(TOPDIR)/mk/plat.mk
 NO_OBJFILE_SORT = y
 
 # Source files required to build the target
-tee_drv_server_c_files := src/main.c \
+drvmgr_c_files := src/main.c \
 		src/drv_dispatch.c \
 		src/drv_fd_ops.c \
 		src/drv_process_mgr.c \
@@ -58,7 +58,7 @@ inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/sys/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
 inc-flags += -I$(TOPDIR)/drivers/include
-inc-flags += -I$(TOPDIR)/drivers/tee_drv_server/src
+inc-flags += -I$(TOPDIR)/../framework/drvmgr/src
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include/
@@ -82,18 +82,18 @@ include $(TOPDIR)/mk/drv-common.mk
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
 LIBS += hmdrv${TARG}
-tee_drv_server_LDFLAGS += --whole-archive -lteeconfig${TARG} --no-whole-archive
+drvmgr_LDFLAGS += --whole-archive -lteeconfig${TARG} --no-whole-archive
 
 ifeq (${TARG},_a32)
 ifeq ($(xom32_enable),y)
-tee_drv_server_LDFLAGS += -T$(XOM_LDS)
+drvmgr_LDFLAGS += -T$(XOM_LDS)
 endif
 endif
 
 install:
-	@echo "tee_drv_server strip begin"
+	@echo "drvmgr strip begin"
 	@$(READELF) -W -s $(INSTALL_FILE) | grep ' FUNC ' | \
 		awk -v path=$(INSTALL_FILE) '{printf " -K "$$8} END {printf(" %s", path)}' | \
 		xargs -L 1 -s 262144 $(STRIP)
-	@echo "tee_drv_server strip end"
+	@echo "drvmgr strip end"
 

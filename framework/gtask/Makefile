@@ -47,7 +47,7 @@ inc-flags += -I$(TOPDIR)/sys_libs/libac_policy/include
 inc-flags += -I$(PWD)/src
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfbuilder/include
-inc-flags += -I$(TOPDIR)/drivers/tee_drv_server/src
+inc-flags += -I$(PWD)/../drvmgr/src
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 

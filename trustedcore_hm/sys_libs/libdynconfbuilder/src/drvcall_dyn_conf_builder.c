@@ -41,7 +41,7 @@ static void free_drvcall_conf(struct drvcall_conf_t *drvcall_conf)
 int32_t init_drvcall_conf(struct drvcall_perm_apply_t *drvcall_perm_apply,
                           const struct conf_queue_t *conf_queue)
 {
-    struct tee_uuid drv_server_uuid = TEE_DRV_SERVER;
+    struct tee_uuid drv_server_uuid = DRVMGR;
 
     if (drvcall_perm_apply == NULL || conf_queue == NULL) {
         hm_error("invalid drvcall perm or conf queue\n");
@@ -274,7 +274,7 @@ static int32_t send_drvcall_conf(const struct drvcall_conf_t *drvcall_conf, uint
     };
 
     /* the main thread just handle register cmd */
-    return hm_drv_call_new("tee_drv_server", REGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
+    return hm_drv_call_new("drvmgr", REGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
 }
 
 static int32_t send_drvcall_uuid(const struct tee_uuid *uuid, uint32_t uuid_size)
@@ -289,7 +289,7 @@ static int32_t send_drvcall_uuid(const struct tee_uuid *uuid, uint32_t uuid_size
         0,
     };
 
-    return hm_drv_call_new("tee_drv_server_multi", UNREGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
+    return hm_drv_call_new("drvmgr_multi", UNREGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
 }
 
 void dump_drvcall_conf(void)
@@ -297,7 +297,7 @@ void dump_drvcall_conf(void)
     uint64_t args[] = {};
     uint32_t lens[] = {};
 
-    (void)hm_drv_call_new("tee_drv_server_multi", DUMP_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
+    (void)hm_drv_call_new("drvmgr_multi", DUMP_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
 }
 
 void uninstall_drvcall_permission(const void *obj, uint32_t obj_size)

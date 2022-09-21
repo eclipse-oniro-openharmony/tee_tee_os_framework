@@ -29,7 +29,7 @@ static uint32_t g_drv_index;
 
 static int32_t hunt_drv_mgr_pid(msg_pid_t *pid)
 {
-    uint32_t ret = ipc_hunt_by_name(0, "tee_drv_server", pid);
+    uint32_t ret = ipc_hunt_by_name(0, "drvmgr", pid);
     if (ret != 0) {
         printf("get drv mgr pid failed\n");
         return -1;

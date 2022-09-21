@@ -11,8 +11,8 @@
 
 static struct drv_frame_info g_drv_frame_configs[] = {
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
-    { "tee_drv_server", AC_SID_TEE_DRV_SERVER, 0, TASKMAP2TASK_J, 0, 0, TEE_DRV_SERVER, true },
-    { "tee_drv_server_multi", AC_SID_TEE_DRV_SERVER, 0, TASKMAP2TASK_J, 0, 0, TEE_DRV_SERVER, false },
+    { "drvmgr", AC_SID_DRVMGR, 0, TASKMAP2TASK_J, 0, 0, DRVMGR, true },
+    { "drvmgr_multi", AC_SID_DRVMGR, 0, TASKMAP2TASK_J, 0, 0, DRVMGR, false },
 #endif
 };
 

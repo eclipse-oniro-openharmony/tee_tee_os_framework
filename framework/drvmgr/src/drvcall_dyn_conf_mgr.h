@@ -4,8 +4,8 @@
  * Create: 2021-02-03
  */
 
-#ifndef TEE_DRV_SERVER_DRVCALL_DYN_CONF_MGR_H
-#define TEE_DRV_SERVER_DRVCALL_DYN_CONF_MGR_H
+#ifndef DRVMGR_DRVCALL_DYN_CONF_MGR_H
+#define DRVMGR_DRVCALL_DYN_CONF_MGR_H
 
 #include <stdint.h>
 #include <pthread.h>

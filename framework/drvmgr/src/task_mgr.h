@@ -4,8 +4,8 @@
  * Create: 2021-12-28
  */
 
-#ifndef TEE_DRV_SERVER_TASK_MGR_H
-#define TEE_DRV_SERVER_TASK_MGR_H
+#ifndef DRVMGR_TASK_MGR_H
+#define DRVMGR_TASK_MGR_H
 
 #include <stdint.h>
 #include <pthread.h>
