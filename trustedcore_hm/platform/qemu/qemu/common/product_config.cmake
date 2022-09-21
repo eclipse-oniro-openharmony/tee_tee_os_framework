@@ -1,4 +1,0 @@
-set(CONFIG_EXPORT_OPENSSL_SYMBOL true)
-set(CONFIG_CRYPTO_SUPPORT_EC25519 true)
-
-include(${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/modules/modules.cmake)
