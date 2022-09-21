@@ -35,13 +35,6 @@ else
 arm_frm_drivers += hmsysmgr
 endif
 
-ifeq ($(CONFIG_TA_64BIT), true)
-aarch64_frm_drivers += tarunner
-endif
-ifeq ($(CONFIG_TA_64BIT), false)
-arm_frm_drivers += tarunner
-endif
-
 ifdef CONFIG_SSA_64BIT
 ifeq ($(CONFIG_SSA_64BIT), true)
 aarch64_frm_drivers += ssa

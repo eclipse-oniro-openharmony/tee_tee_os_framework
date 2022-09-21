@@ -109,7 +109,7 @@ $(thirdparty_libs):
 
 # compile drivers rules
 
-frameworks := gtask teesmcmgr drvmgr
+frameworks := gtask teesmcmgr drvmgr tarunner
 
 drivers: $(arm_frm_drivers) $(arm_driver_drivers) $(aarch64_frm_drivers) $(aarch64_driver_drivers) $(arm_test_drivers) $(aarch64_test_drivers)
 $(arm_frm_drivers): $(arm_sys_libs)  $(arm_pro_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs $(frameworks)
