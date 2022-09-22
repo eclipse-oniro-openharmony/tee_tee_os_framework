@@ -150,6 +150,10 @@ $(HDR_INSTALL_DIR)/.timestamp:
 	$(VER) if [ -f "$(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h" ] ; then \
 	cp $(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h $(HDR_INSTALL_DIR)/; fi;
 	touch $(HDR_INSTALL_DIR)/.timestamp
+	@echo "before lib/teelib ${EXPORT_HDRS}"
+	$(VER) for l in $(teelib); do \
+		($(MAKE) -C lib/teelib/$$l HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
+	done
 
 ## install libs:
 install_libs:

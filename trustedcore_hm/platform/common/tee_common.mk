@@ -11,7 +11,7 @@ arm_host_libs += libhwsecurec_host
 arm_pro_libs +=
 arm_chip_libs += ramfsmkimg_host
 aarch64_libs += libac_policy libteeagentcommon libteeagentcommon_client libdrv_frame
-aarch64_sys_libs += libhmdrv_stub libtimer libswcrypto_engine libcrypto_hal libdynconfmgr libdynconfbuilder libspawn_common libelf_verify_key libteedynsrv
+aarch64_sys_libs += libhmdrv_stub libtimer libswcrypto_engine libdynconfmgr libdynconfbuilder libspawn_common libelf_verify_key libteedynsrv
 hm_kernel    := kernel
 hm_elfloader := elfloader
 #Compile ext_libs for hm-apps
