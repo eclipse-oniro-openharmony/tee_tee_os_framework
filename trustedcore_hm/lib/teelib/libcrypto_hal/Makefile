@@ -45,6 +45,6 @@ libcrypto_hal_c_files += $(wildcard src/*.c) \
                          $(wildcard src/boringssl/*.c)
 
 # Header files/directories this library provides
-EXPORT_HDRS := $(wildcard $(TOPDIR)/sys_libs/libcrypto_hal/include/*)
+EXPORT_HDRS := $(wildcard $(TOPDIR)/lib/teelib/libcrypto_hal/include/*)
 
 include $(TOPDIR)/mk/lib-common.mk
