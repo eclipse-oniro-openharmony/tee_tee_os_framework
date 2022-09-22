@@ -1,3 +1,0 @@
-include(${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/product_config.cmake)
-include(${PLATFORM_DIR}/${PLATFORM_NAME}/${PRODUCT_NAME}/common/product_config.cmake)
-include(${PLATFORM_DIR}/common/tee_common.cmake)

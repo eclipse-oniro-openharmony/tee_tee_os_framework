@@ -1,7 +1,0 @@
-add_subdirectory(gtask)
-add_subdirectory(huk_service)
-add_subdirectory(permission_service)
-add_subdirectory(se_service)
-add_subdirectory(ssa)
-add_subdirectory(tarunner)
-add_subdirectory(hmsysmgr)
