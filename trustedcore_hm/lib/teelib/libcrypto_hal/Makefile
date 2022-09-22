@@ -19,8 +19,6 @@ inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi/common # tee_property_inner.h
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(PREBUILD_HEADER)/openssl
-else
-inc-flags += -I$(PREBUILD_HEADER)/mbedtls
 endif
 
 # Source files required to build the target
