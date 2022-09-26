@@ -14,6 +14,7 @@ endif
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
+inc-flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi/common # tee_property_inner.h
 
