@@ -11,45 +11,6 @@
 
 #define MAX_SECONDS  0xFFFFFFFF
 
-int32_t nanosleep(const struct timespec *req, struct timespec *rem)
-{
-    uint32_t mill_second;
-    uint32_t ret;
-
-    if ((req == NULL) || (req->tv_nsec >= NS_PER_SECONDS) || (req->tv_nsec < 0) || (req->tv_sec < 0) ||
-        ((req->tv_sec + 1) >= (long)(MAX_SECONDS / MS_PER_SECONDS)))
-        return TMR_ERR;
-
-    mill_second = (uint32_t)((req->tv_sec * MS_PER_SECONDS) + (req->tv_nsec / NS_PER_MSEC));
-    struct timer_ops_t *time_ops = NULL;
-    time_ops = get_time_ops();
-    if (time_ops == NULL)
-        return TMR_ERR;
-
-    ret = time_ops->sleep(mill_second);
-    if (ret != TMR_OK)
-        return TMR_ERR;
-
-    if (rem != NULL) {
-        rem->tv_sec  = 0;
-        rem->tv_nsec = 0;
-    }
-
-    return TMR_OK;
-}
-
-uint32_t sleep(uint32_t seconds)
-{
-    struct timespec tv;
-    tv.tv_nsec = 0;
-    tv.tv_sec  = seconds;
-
-    if (nanosleep(&tv, &tv) != TMR_OK)
-        return tv.tv_sec;
-
-    return TMR_OK;
-}
-
 void delay_us(uint32_t microseconds)
 {
     uint64_t counts = 0;

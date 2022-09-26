@@ -29,16 +29,6 @@ int hm_timer_init(void)
     return time_ops->hm_timer_init();
 }
 
-int renew_hmtimer_job_handler(void)
-{
-    struct timer_ops_t *time_ops = NULL;
-    time_ops = get_time_ops();
-    if (time_ops == NULL || time_ops->renew_hmtimer_job_handler == NULL)
-        return TMR_OK;
-
-    return time_ops->renew_hmtimer_job_handler();
-}
-
 static uint32_t increment_overflow(uint32_t *year, uint32_t carry)
 {
     if (carry > (UINT_MAX - *year)) {
