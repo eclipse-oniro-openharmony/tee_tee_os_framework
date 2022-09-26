@@ -10,6 +10,7 @@ MODULE := libtimer${TARG}.a
 flags += -fno-builtin
 
 inc-flags += -I$(TOPDIR)/lib/teelib/libtimer/include
+inc-flags += -I$(TOPDIR)/lib/teelib/libagent/include
 inc-flags += -I$(PREBUILD_DIR)/headers/sys/timemgr
 ifeq (${TARG}, _a32)
 inc-flags += -I$(TOPDIR)/lib/teelib/libtimer/include/arm

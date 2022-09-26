@@ -28,6 +28,7 @@ endif
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
+inc-flags += -I$(TOPDIR)/lib/teelib/libagent_base/include
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src
 inc-flags += -I$(PLATFORM_DIR)/common/include
