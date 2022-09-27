@@ -31,6 +31,7 @@ inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/include
+inc-flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include
 
 ifneq ($(CONFIG_DRVMGR_64BIT), )
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include

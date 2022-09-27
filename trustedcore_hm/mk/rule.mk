@@ -21,6 +21,10 @@ $(1)_objs  = $$(addprefix $(BUILD_DIR)/,$$($(1)_c_obj_files))
 $(1)_objs += $$(addprefix $(BUILD_DIR)/,$$($(1)_cpp_obj_files))
 $(1)_objs += $$(addprefix $(BUILD_DIR)/,$$($(1)_asm_obj_files))
 $(1)_objs += $$(addprefix $(BUILD_DIR)/,$$($(1)_ASM_obj_files))
+$(1)_objs += $$(addprefix $(BUILD_DIR)/,$$(patsubst %.c,%.o,$$(CFILES)))
+$(1)_objs += $$(addprefix $(BUILD_DIR)/,$$(patsubst %.cpp,%.o,$$(CPPFILES)))
+$(1)_objs += $$(addprefix $(BUILD_DIR)/,$$(patsubst %.s,%.o,$$(asmFILES)))
+$(1)_objs += $$(addprefix $(BUILD_DIR)/,$$(patsubst %.S,%.o,$$(ASMFILES)))
 endef
 
 ## provide the static linked target compile rules.
@@ -86,57 +90,61 @@ ifneq ($(xom32_enable),y)
 $(BUILD_DIR)/%.o: %.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CXX ] $@"
-	$(VER)$(CXX) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $<
+	$(VER)$(CXX) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.cxx
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CXX ] $@"
-	$(VER)$(CXX) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $<
+	$(VER)$(CXX) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CC ] $@ "
 	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(if $(call is_filter_module,$(call last_component,$@)), \
-	$(filter-out -Werror, $(flags) $(inc-flags) $(c-flags)),$(call uniq, \
-	$(flags) $(inc-flags) $(c-flags) $(GENERAL_OPTIONS))) -c -o $@ $<
+	$(filter-out -Werror, $(CFLAGS) $(CPPFLAGS)),$(call uniq, \
+	$(CFLAGS) $(CPPFLAGS) $(GENERAL_OPTIONS))) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -D__ASM__ -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ asm ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -c -o $@ $<
 else
 $(BUILD_DIR)/%.o: %.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CXX-XOM ] $@"
-	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $<
+	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.cxx
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CXX-XOM ] $@"
-	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(cxx-flags) -c -o $@ $<
+	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CC-XOM ] $@"
 	$(VER)$(CC-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(if $(call is_filter_module,$(call last_component,$@)), \
-	$(filter-out -Werror, $(flags) $(inc-flags) $(c-flags)),$(call uniq, \
-	$(flags) $(inc-flags) $(c-flags) $(GENERAL_OPTIONS))) -c -o $@ $<
+	$(filter-out -Werror, $(CFLAGS) $(CPPFLAGS)),$(call uniq, \
+	$(CFLAGS) $(CPPFLAGS) $(GENERAL_OPTIONS))) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -D__ASM__ -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ asm ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(flags) $(inc-flags) $(CXXFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -c -o $@ $<
 endif
+
+CPPFLAGS += $(inc-flags)
+CFLAGS += $(flags) $(c-flags)
+CXXFLAGS += $(cxx-flags)
 
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 

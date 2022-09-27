@@ -7,6 +7,7 @@ inc-flags += -I$(TOPDIR)/drivers/include # dynion.h
 inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
 inc-flags += -I$(TOPDIR)/platform/common/tee_config
 inc-flags += -I$(TOPDIR)/libs/syslib/libmmgr/include
+inc-flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr_sysmgr
 
