@@ -4,6 +4,7 @@
 MODULE := libspawn_common$(TARG).a
 
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
 
 # Source files required to build the target
 libspawn_common_c_files += $(wildcard src/*.c)

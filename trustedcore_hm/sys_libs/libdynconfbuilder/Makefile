@@ -14,6 +14,8 @@ inc-flags += -I$(TOPDIR)/../framework/drvmgr/src
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
 inc-flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy
 
 # Source files required to build the target
 libdynconfbuilder_c_files += $(wildcard src/*.c)

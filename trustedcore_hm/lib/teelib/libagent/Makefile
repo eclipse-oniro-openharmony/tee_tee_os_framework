@@ -8,6 +8,8 @@ CFILES := $(wildcard src/*.c)
 
 CPPFLAGS += -I$(TOPDIR)/lib/teelib/libagent/include/
 CPPFLAGS += -I$(TOPDIR)/lib/teelib/libagent_base/include/
+CPPFLAGS += -I$(TOPDIR)/lib/teelib/libteeos/include/tee/
+CPPFLAGS += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy/
 CPPFLAGS += -Wall
 
 include $(TOPDIR)/mk/lib-common.mk

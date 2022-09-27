@@ -52,6 +52,9 @@ inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 inc-flags += -I$(TOPDIR)/lib/teelib/libagent_base/include/
 inc-flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include/
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

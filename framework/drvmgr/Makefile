@@ -64,6 +64,9 @@ inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 inc-flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include/
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include
 inc-flags += -I$(TOPDIR)/platform/common/tee_config/
 inc-flags += -I$(TOPDIR)/drivers/common
 

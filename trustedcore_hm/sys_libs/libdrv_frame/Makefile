@@ -6,6 +6,10 @@ flags += -fno-builtin
 flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 flags += -I$(TOPDIR)/lib/teelib/libtimer/include/
 flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include
+flags += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy
+flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+flags += -I$(TOPDIR)/lib/teelib/libteeos/src/log/
+
 flags += -I$(TOPDIR)/drivers/common
 flags += -I$(TOPDIR)/drivers/include
 flags += -I$(TOPDIR)/platform/common/tee_config

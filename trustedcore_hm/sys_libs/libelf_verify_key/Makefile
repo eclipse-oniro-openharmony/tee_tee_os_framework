@@ -35,6 +35,7 @@ libelf_verify_key_c_files := $(wildcard src/*.c)
 libelf_verify_key_c_files += $(wildcard src/common/*.c)
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gtask/include
 inc-flags += -I$(TOPDIR)/sys_libs/libelf_verify_key/src/
+inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src/
 inc-flags += -I$(PLATFORM_DIR)/common/tee_config
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config

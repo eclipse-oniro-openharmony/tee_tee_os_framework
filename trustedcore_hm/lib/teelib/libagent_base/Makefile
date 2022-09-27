@@ -8,6 +8,8 @@ MODULE := libagent_base${TARG}.a
 CFILES := $(wildcard src/*.c)
 
 CPPFLAGS += -I$(TOPDIR)/lib/teelib/libagent_base/include/
+CPPFLAGS += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+CPPFLAGS += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/include
 
 include $(TOPDIR)/mk/lib-common.mk
