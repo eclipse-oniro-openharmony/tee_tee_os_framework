@@ -10,7 +10,7 @@ se_service_c_files := $(wildcard src/*.c)
 LIBS += sesrv${TARG}
 
 inc-flags += -I$(PLATFORM_DIR)/common/include
-inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 include $(TOPDIR)/mk/ta-common.mk
 include $(TOPDIR)/mk/feature-macro.mk

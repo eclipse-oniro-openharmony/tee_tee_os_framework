@@ -12,6 +12,7 @@ export VER
 export LIBS_DIR := $(TOPDIR)/libs
 export APPS_DIR := $(TOPDIR)/apps
 export PLATFORM_DIR := $(TOPDIR)/platform
+export TEELIB := $(TOPDIR)/../lib/teelib
 
 XOM-TOOL := $(TOPDIR)/tools/xom
 XOM := $(XOM-TOOL)/xom
@@ -152,7 +153,7 @@ $(HDR_INSTALL_DIR)/.timestamp:
 	touch $(HDR_INSTALL_DIR)/.timestamp
 	@echo "before lib/teelib ${EXPORT_HDRS}"
 	$(VER) for l in $(teelib); do \
-		($(MAKE) -C lib/teelib/$$l HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
+		($(MAKE) -C $(TEELIB)/$$l HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done
 
 ## install libs:

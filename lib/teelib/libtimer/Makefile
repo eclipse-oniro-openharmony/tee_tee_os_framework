@@ -9,15 +9,15 @@ MODULE := libtimer${TARG}.a
 
 flags += -fno-builtin
 
-inc-flags += -I$(TOPDIR)/lib/teelib/libtimer/include
-inc-flags += -I$(TOPDIR)/lib/teelib/libagent/include
-inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy
-inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+inc-flags += -I$(TEELIB)/libtimer/include
+inc-flags += -I$(TEELIB)/libagent/include
+inc-flags += -I$(TEELIB)/libteeos/include/legacy
+inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(PREBUILD_DIR)/headers/sys/timemgr
 ifeq (${TARG}, _a32)
-inc-flags += -I$(TOPDIR)/lib/teelib/libtimer/include/arm
+inc-flags += -I$(TEELIB)/libtimer/include/arm
 else
-inc-flags += -I$(TOPDIR)/lib/teelib/libtimer/include/aarch64
+inc-flags += -I$(TEELIB)/libtimer/include/aarch64
 endif
 
 ifeq ($(chip_type), es)

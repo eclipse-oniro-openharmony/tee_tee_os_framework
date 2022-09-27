@@ -7,9 +7,9 @@ MODULE := libswcrypto_engine${TARG}.a
 c-flags += -DARM_PAE=1 -D__ARM_ARCH_=7 -DTARGET_PRODUCT_VAL=\"$(TARGET_BOARD_PLATFORM)\"
 
 inc-flags += -I$(TOPDIR)/sys_libs/libswcrypto_engine/include
-inc-flags += -I$(TOPDIR)/lib/teelib/libcrypto_hal/include
-inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include
-inc-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
+inc-flags += -I$(TEELIB)/libcrypto_hal/include
+inc-flags += -I$(TEELIB)/libteeos/include
+inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
 inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
 inc-flags += -I$(TOPDIR)/vendor/common/include # chip_info.h

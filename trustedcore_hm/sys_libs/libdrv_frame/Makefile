@@ -4,11 +4,11 @@ include $(TOPDIR)/mk/var.mk
 
 flags += -fno-builtin
 flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
-flags += -I$(TOPDIR)/lib/teelib/libtimer/include/
-flags += -I$(TOPDIR)/lib/teelib/libhmdrv/include
-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/legacy
-flags += -I$(TOPDIR)/lib/teelib/libteeos/include/tee
-flags += -I$(TOPDIR)/lib/teelib/libteeos/src/log/
+flags += -I$(TEELIB)/libtimer/include/
+flags += -I$(TEELIB)/libhmdrv/include
+flags += -I$(TEELIB)/libteeos/include/legacy
+flags += -I$(TEELIB)/libteeos/include/tee
+flags += -I$(TEELIB)/libteeos/src/log/
 
 flags += -I$(TOPDIR)/drivers/common
 flags += -I$(TOPDIR)/drivers/include
