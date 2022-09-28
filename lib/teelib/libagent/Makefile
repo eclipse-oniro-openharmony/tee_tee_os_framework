@@ -6,8 +6,10 @@ MODULE := libagent${TARG}.a
 # Source files required to build the target
 CFILES := $(wildcard src/*.c)
 
-CPPFLAGS += -I$(TOPDIR)/lib/teelib/libagent/include/
-CPPFLAGS += -I$(TOPDIR)/lib/teelib/libagent_base/include/
+CPPFLAGS += -I$(TEELIB)/libagent/include/
+CPPFLAGS += -I$(TEELIB)/libagent_base/include/
+CPPFLAGS += -I$(TEELIB)/libteeos/include/tee/
+CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy/
 CPPFLAGS += -Wall
 
 include $(TOPDIR)/mk/lib-common.mk

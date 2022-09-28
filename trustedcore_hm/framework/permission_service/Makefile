@@ -21,6 +21,7 @@ LIBS += base_shared${TARG}
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src
+inc-flags += -I$(TEELIB)/libteeos/include/tee
 c-flags += -I$(TOPDIR)/framework/permission_service/src
 
 permission_service_c_files += $(wildcard src/auth/tee_auth_sign_rsa.c)

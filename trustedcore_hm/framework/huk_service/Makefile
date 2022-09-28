@@ -10,6 +10,7 @@ huk_service_c_files := $(wildcard src/*.c)
 LIBS += huksrv${TARG}
 
 inc-flags += -I$(TOPDIR)/framework/huk_service/include
+inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 include $(TOPDIR)/mk/ta-common.mk

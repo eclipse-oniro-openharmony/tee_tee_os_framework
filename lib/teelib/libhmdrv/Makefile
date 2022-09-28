@@ -4,8 +4,10 @@
 # Targets
 MODULE := libhmdrv${TARG}.a
 
-CPPFLAGS += -I$(TOPDIR)/lib/teelib/libhmdrv/include
+CPPFLAGS += -I$(TEELIB)/libhmdrv/include
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libteeconfig/include
+CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
+CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 
 # Source files required to build the target
 CFILES := $(wildcard src/*.c)

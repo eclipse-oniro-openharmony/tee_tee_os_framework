@@ -19,7 +19,7 @@ libbase_shared: libteeconfig libtimer libteeagentcommon libteeagentcommon_client
 libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 
-teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv
+teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos
 
 libs: $(arm_libs) $(arm_sys_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(vendor_libs) $(thirdparty_libs) $(host_tools)
 	@echo "libsok"
@@ -72,8 +72,8 @@ $(vendor_libs):$(arm_chip_libs) $(aarch64_arm_chip_libs)
 
 $(teelib):
 	@echo "building teelibs=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C lib/teelib/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C lib/teelib/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile ext_libs rules
 ext_libs: $(arm_ext_libs) $(arm_vendor_ext_libs) $(arm_open_source_libs) $(aarch64_ext_libs) $(aarch64_open_source_libs) $(aarch64_vendor_ext_libs) $(aarch64_inner_ext_libs) $(thirdparty_libs)
