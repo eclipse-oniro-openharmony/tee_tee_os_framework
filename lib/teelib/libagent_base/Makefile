@@ -11,5 +11,6 @@ CPPFLAGS += -I$(TEELIB)/libagent_base/include/
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
+CPPFLAGS += -I$(TEELIB)/libcrypto/include
 
 include $(TOPDIR)/mk/lib-common.mk

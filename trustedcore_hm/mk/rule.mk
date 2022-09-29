@@ -107,12 +107,12 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -D__ASM__ -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(ASFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ asm ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(ASFLAGS) -c -o $@ $<
 else
 $(BUILD_DIR)/%.o: %.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
@@ -134,17 +134,18 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/%.o: %.S
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -D__ASM__ -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(ASFLAGS) -D__ASM__ -c -o $@ $<
 
 $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ asm ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CFLAGS) $(ASFLAGS) -c -o $@ $<
+	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(ASFLAGS) -c -o $@ $<
 endif
 
 CPPFLAGS += $(inc-flags)
 CFLAGS += $(flags) $(c-flags)
 CXXFLAGS += $(cxx-flags)
+ASFLAGS += $(asflags)
 
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
