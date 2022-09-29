@@ -15,7 +15,7 @@ CPPFLAGS += -I$(TEELIB)/libpermission_service/src
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libswcrypto_engine/include
+CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/include
 CPPFLAGS += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/sys/elf_verify
 
