@@ -10,6 +10,6 @@ CFILES := $(wildcard src/*.c)
 CPPFLAGS += -I$(TEELIB)/libagent_base/include/
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/include
+CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
 
 include $(TOPDIR)/mk/lib-common.mk

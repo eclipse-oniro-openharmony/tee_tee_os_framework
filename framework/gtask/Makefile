@@ -26,7 +26,7 @@ inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gta
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/src/tee_config
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
-inc-flags += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/include
+inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 
 inc-flags += -I$(PREBUILD_HEADER)/openssl
 inc-flags += -I$(PREBUILD_SYS)/irqmgr
