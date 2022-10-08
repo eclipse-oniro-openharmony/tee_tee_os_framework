@@ -172,53 +172,6 @@ TEE_Result rslot_file_msg_call(perm_srv_req_msg_t *req_msg, perm_srv_reply_msg_t
     return reply_msg->reply.ret;
 }
 
-TEE_Result tee_crl_cert_process(const uint8_t *crl_cert, uint32_t crl_cert_size)
-{
-    perm_srv_req_msg_t req_msg;
-    perm_srv_reply_msg_t reply_msg;
-
-    uint8_t *crl_shared = NULL;
-    uint32_t crl_size;
-
-    tee_perm_init_msg(&req_msg, &reply_msg);
-    errno_t rc;
-    TEE_Result ret = TEE_ERROR_GENERIC;
-
-    if (crl_cert == NULL) {
-        tloge("bad parameter for points\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-    if (crl_cert_size == 0 || crl_cert_size > MAX_PERM_SRV_BUFF_SIZE) {
-        tloge("bad parameter for size!\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    crl_size   = crl_cert_size;
-    crl_shared = tee_alloc_sharemem_aux(&g_permsrv_uuid, crl_size);
-    if (crl_shared == NULL) {
-        tloge("malloc sharedBuff failed, size=0x%x\n", crl_size);
-        return TEE_ERROR_OUT_OF_MEMORY;
-    }
-    rc = memmove_s(crl_shared, crl_size, crl_cert, crl_cert_size);
-    if (rc != EOK) {
-        tloge("copy the conf error, rc = 0x%x", rc);
-        ret = TEE_ERROR_SECURITY;
-        goto clean;
-    }
-
-    req_msg.header.send.msg_id             = SET_CRL_CERT_CMD;
-    req_msg.req_msg.crl_cert.crl_cert_buff = (uintptr_t)crl_shared;
-    req_msg.req_msg.crl_cert.crl_cert_size = crl_size;
-    reply_msg.reply.ret                    = TEE_ERROR_GENERIC;
-
-    ret = rslot_file_msg_call(&req_msg, &reply_msg);
-
-clean:
-    if (crl_shared != NULL)
-        (void)tee_free_sharemem(crl_shared, crl_size);
-    return ret;
-}
-
 TEE_Result tee_ta_ctrl_list_process(const uint8_t *ctrl_list, uint32_t ctrl_list_size)
 {
     perm_srv_req_msg_t req_msg;

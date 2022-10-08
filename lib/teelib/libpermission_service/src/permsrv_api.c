@@ -14,7 +14,6 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include "tee_log.h"
 #include "permsrv_api.h"
 #include "permsrv_api_imp.h"
-#include "permsrv_api_cms.h"
 /* follow function for global task */
 
 void tee_ext_register_ta(const TEE_UUID *uuid, uint32_t task_id, uint32_t user_id)
@@ -51,23 +50,6 @@ void tee_ext_load_file(void)
     permsrv_load_file();
 }
 
-TEE_Result tee_ext_get_sfs_capability(const TEE_UUID *uuid, uint64_t *result)
-{
-    TEE_Result res;
-    if (result == NULL || uuid == NULL) {
-        tloge("get sfs capability bad parameter");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    perm_srv_permsrsp_t response = { 0 };
-
-    res = get_permission_by_type(uuid, 0, CHECK_BY_UUID, PERM_TYPE_SFS_CAPABILITY, &response);
-
-    *result = response.sfs_capability;
-
-    return res;
-}
-
 TEE_Result tee_ext_get_se_capability(const TEE_UUID *uuid, uint64_t *result)
 {
     TEE_Result res;
@@ -83,29 +65,6 @@ TEE_Result tee_ext_get_se_capability(const TEE_UUID *uuid, uint64_t *result)
     *result = response.se_capability;
 
     return res;
-}
-
-TEE_Result tee_ext_crl_cert_process(const char *crl_cert, uint32_t crl_cert_size)
-{
-    TEE_Result ret;
-
-    if (crl_cert == NULL) {
-        tloge("crl cert process bad parameter!\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    if (crl_cert_size == 0) {
-        tloge("crl cert process bad parameter, size error!\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    ret = tee_crl_cert_process((uint8_t *)crl_cert, crl_cert_size);
-    if (ret != TEE_SUCCESS) {
-        tloge("Failed to do crl cert process\n");
-        return ret;
-    }
-
-    return ret;
 }
 
 TEE_Result tee_ext_ta_ctrl_list_process(const char *ctrl_list, uint32_t ctrl_list_size)
@@ -131,30 +90,9 @@ TEE_Result tee_ext_ta_ctrl_list_process(const char *ctrl_list, uint32_t ctrl_lis
     return ret;
 }
 
-TEE_Result tee_ext_get_manage_info(const TEE_UUID *uuid, uint32_t *manager)
-{
-    TEE_Result res;
-    if (manager == NULL || uuid == NULL) {
-        tloge("get manage info bad parameter");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    perm_srv_permsrsp_t response = { 0 };
-
-    res      = get_permission_by_type(uuid, 0, CHECK_BY_UUID, PERM_TYPE_MANAGE_INFO, &response);
-    *manager = response.manager;
-
-    return res;
-}
-
 TEE_Result tee_ext_elf_verify_req(const void *req, uint32_t len)
 {
     return permsrv_elf_verify(req, len);
-}
-
-TEE_Result tee_ext_crl_update(const uint8_t *buffer, uint32_t size)
-{
-    return permsrv_crl_update(buffer, size);
 }
 
 TEE_Result tee_ext_ca_hashfile_verify(const uint8_t *buf, uint32_t size)

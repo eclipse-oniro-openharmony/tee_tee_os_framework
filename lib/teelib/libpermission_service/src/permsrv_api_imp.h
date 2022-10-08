@@ -22,8 +22,6 @@ TEE_Result get_permission_by_type(const TEE_UUID *uuid, uint32_t taskid, uint32_
 
 void permsrv_registerta(const TEE_UUID *uuid, uint32_t task_id, uint32_t user_id, uint32_t opt_type);
 
-TEE_Result tee_crl_cert_process(const uint8_t *crl_cert, uint32_t crl_cert_size);
-
 TEE_Result tee_cert_import(const uint8_t *cert_buf, uint32_t cert_size, const uint8_t *pub_key, uint32_t pub_key_size);
 
 TEE_Result tee_ta_ctrl_list_process(const uint8_t *ctrl_list, uint32_t ctrl_list_size);

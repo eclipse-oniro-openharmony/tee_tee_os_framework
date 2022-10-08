@@ -28,13 +28,10 @@ ifeq ($(CONFIG_APP_TEE_PERM),y)
         CFILES += $(wildcard src/permsrv_api_cert.c)
     endif
 else
-    CFILES += $(wildcard src/stub/permsrv_api_stub.c)
     ifeq ($(CONFIG_DYN_IMPORT_CERT),y)
         CPPFLAGS += -DDYN_IMPORT_CERT=1
         CFILES += $(wildcard src/stub/permsrv_api_cert_stub.c)
     endif
 endif
-
-CFILES += $(wildcard src/stub/permsrv_api_cms_stub.c)
 
 include $(TOPDIR)/mk/lib-common.mk
