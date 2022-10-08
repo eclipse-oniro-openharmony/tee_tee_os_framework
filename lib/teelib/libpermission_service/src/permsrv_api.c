@@ -94,13 +94,3 @@ TEE_Result tee_ext_elf_verify_req(const void *req, uint32_t len)
 {
     return permsrv_elf_verify(req, len);
 }
-
-TEE_Result tee_ext_ca_hashfile_verify(const uint8_t *buf, uint32_t size)
-{
-    if (buf == NULL || size == 0) {
-        tloge("params is invaild\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    return permsrv_ca_hashfile_verfiy(buf, size);
-}

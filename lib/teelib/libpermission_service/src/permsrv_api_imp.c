@@ -237,33 +237,6 @@ void permsrv_load_file()
     g_init_state = INIT_STATE_READY;
 }
 
-TEE_Result check_ta2ta_caller_permission(const TEE_UUID *uuid, uint32_t cmd)
-{
-    if (uuid == NULL) {
-        tloge("invalid uuid\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-    perm_srv_req_msg_t req_msg;
-    perm_srv_reply_msg_t reply_msg;
-
-    tee_perm_init_msg(&req_msg, &reply_msg);
-    req_msg.header.send.msg_id            = QUER_TA2TA_PERM_CMD;
-    req_msg.req_msg.query_ta2ta_perm.uuid = *uuid;
-    req_msg.req_msg.query_ta2ta_perm.cmd  = cmd;
-
-    if (perm_srv_msg_call(PERM_PATH, &req_msg, &reply_msg) < 0) {
-        tloge("check ta2ta caller permission msg send failed!\n");
-        return TEE_ERROR_GENERIC;
-    }
-
-    /* return TEE_ERROR_ACCESS_DENIED  in case: */
-    /* communication with permission service is OK but ret value is not TEE_SUCCESS */
-    if (reply_msg.reply.ret != TEE_SUCCESS)
-        return TEE_ERROR_ACCESS_DENIED;
-
-    return TEE_SUCCESS;
-}
-
 TEE_Result permsrv_elf_verify(const void *verify_req, uint32_t len)
 {
     errno_t rc;
@@ -295,44 +268,4 @@ TEE_Result permsrv_elf_verify(const void *verify_req, uint32_t len)
     }
 
     return TEE_SUCCESS;
-}
-
-TEE_Result permsrv_ca_hashfile_verfiy(const uint8_t *buf, uint32_t size)
-{
-    if (buf == NULL || size == 0 || size > HASH_FILE_MAX_SIZE) {
-        tloge("invaild params\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    TEE_Result ret = TEE_SUCCESS;
-    perm_srv_req_msg_t req_msg;
-    perm_srv_reply_msg_t reply_msg;
-
-    uint8_t *share_addr = tee_alloc_sharemem_aux(&g_permsrv_uuid, size);
-    if (share_addr == NULL) {
-        tloge("malloc share mem failed, size %u\n", size);
-        return TEE_ERROR_OUT_OF_MEMORY;
-    }
-
-    if (memcpy_s(share_addr, size, buf, size) != 0) {
-        tloge("copy buf fail\n");
-        ret = TEE_ERROR_SECURITY;
-        goto clean;
-    }
-
-    tee_perm_init_msg(&req_msg, &reply_msg);
-    req_msg.header.send.msg_id        = CA_HASHFILE_VERIFY_CMD;
-    req_msg.req_msg.ca_hashfile_verify.buffer = (uintptr_t)share_addr;
-    req_msg.req_msg.ca_hashfile_verify.size   = size;
-    reply_msg.reply.ret               = TEE_ERROR_GENERIC;
-
-    if (perm_srv_msg_call(PERMSRV_FILE_OPT, &req_msg, &reply_msg) < 0) {
-        tloge("msg send fail\n");
-        ret = reply_msg.reply.ret;
-    }
-
-clean:
-    if (share_addr != NULL)
-        (void)tee_free_sharemem(share_addr, size);
-    return ret;
 }

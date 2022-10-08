@@ -30,13 +30,9 @@ void permsrv_notify_unload_ta(const TEE_UUID *uuid);
 
 void permsrv_load_file();
 
-TEE_Result check_ta2ta_caller_permission(const TEE_UUID *uuid, uint32_t cmd);
-
 TEE_Result permsrv_elf_verify(const void *verify_req, uint32_t len);
 
 TEE_Result permsrv_crt_export(uint8_t *dst, uint32_t *len, uint32_t limit);
 
 TEE_Result permsrv_crt_remove(void);
-
-TEE_Result permsrv_ca_hashfile_verfiy(const uint8_t *buf, uint32_t size);
 #endif /* __PERSRV_API_IMP_H__ */

@@ -24,5 +24,4 @@ void tee_ext_load_file(void);
 TEE_Result tee_ext_get_se_capability(const TEE_UUID *uuid, uint64_t *result);
 TEE_Result tee_ext_ta_ctrl_list_process(const char *ctrl_list, uint32_t ctrl_list_size);
 TEE_Result tee_ext_elf_verify_req(const void *req, uint32_t len);
-TEE_Result tee_ext_ca_hashfile_verify(const uint8_t *buf, uint32_t size);
 #endif
