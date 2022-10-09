@@ -19,7 +19,7 @@ libbase_shared: libteeconfig libtimer libteeagentcommon libteeagentcommon_client
 libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 
-teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service libswcrypto_engine
+teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service libswcrypto_engine libtaentry
 
 libs: $(arm_libs) $(arm_sys_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(vendor_libs) $(thirdparty_libs) $(host_tools)
 	@echo "libsok"
