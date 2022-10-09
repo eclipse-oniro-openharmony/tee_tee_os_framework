@@ -9,7 +9,7 @@ crypto_mgr_c_files += $(wildcard src/*.c) \
 
 inc-flags += -I$(PLATFORM_DIR)/common/tee_config
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
-inc-flags += -I$(TOPDIR)/../framework/drvmgr/src
+inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/drivers/common
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include
