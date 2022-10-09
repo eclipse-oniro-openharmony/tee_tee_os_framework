@@ -3,9 +3,7 @@
 
 MODULE := libtaentry${TARG}.a
 
-ALL_CFILE := $(wildcard src/*.c)
-EXCEPT_CFILE := $(wildcard src/client_auth_user_name.c)
-CFILES := $(filter-out  $(EXCEPT_CFILE), $(ALL_CFILE))
+CFILES := $(wildcard src/*.c)
 
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext
 CPPFLAGS += -I$(TEELIB)/libteeos/include

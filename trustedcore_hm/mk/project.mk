@@ -142,8 +142,8 @@ $(aarch64_test_drivers): $(aarch64_libs) link_aarch64_libs link_arm_libs
 
 $(frameworks):
 	@echo "tee_os_framework framework compile $@"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile kernel rules
 
