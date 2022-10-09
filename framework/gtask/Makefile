@@ -57,6 +57,7 @@ inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libpermission_service/include
 inc-flags += -I$(TEELIB)/libcrypto/include
+inc-flags += -I$(TEELIB)/libtimer/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

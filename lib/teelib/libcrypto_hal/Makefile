@@ -11,6 +11,7 @@ ifneq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), )
 c-flags += -DCRYPTO_MGR_SERVER_ENABLE
 endif
 
+inc-flags += -I$(TEELIB)/libcrypto_hal/include
 inc-flags += -I$(TOPDIR)/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
@@ -19,6 +20,7 @@ inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libcrypto/include
+inc-flags += -I$(TEELIB)/libswcrypto_engine/include
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi/common # tee_property_inner.h
 
@@ -29,8 +31,5 @@ endif
 # Source files required to build the target
 libcrypto_hal_c_files += $(wildcard src/*.c) \
                          $(wildcard src/boringssl/*.c)
-
-# Header files/directories this library provides
-EXPORT_HDRS := $(wildcard $(TEELIB)/libcrypto_hal/include/*)
 
 include $(TOPDIR)/mk/lib-common.mk

@@ -13,6 +13,3 @@ flags += -fno-builtin
 #c-flags += -Wall -Wno-parentheses -Wno-unused-parameter
 
 include $(TOPDIR)/mk/lib-common.mk
-
-# Header files/directories this library provides
-EXPORT_HDRS := $(wildcard include/*)
