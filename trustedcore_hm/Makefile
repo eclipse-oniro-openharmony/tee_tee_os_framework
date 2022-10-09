@@ -14,6 +14,10 @@ export APPS_DIR := $(TOPDIR)/apps
 export PLATFORM_DIR := $(TOPDIR)/platform
 export TEELIB := $(TOPDIR)/../lib/teelib
 export FRAMEWORK_PATH := $(TOPDIR)/../framework
+export SYSLIB := $(TOPDIR)/../lib/syslib
+export K_TEELIB := $(TOPDIR)/../../tee_os_kernel/libs/teelib
+export K_SYSLIB := $(TOPDIR)/../../tee_os_kernel/libs/syslib
+export SERVICES_PATH := $(TOPDIR)/../services
 
 XOM-TOOL := $(TOPDIR)/tools/xom
 XOM := $(XOM-TOOL)/xom

@@ -37,17 +37,17 @@ endif
 
 ifdef CONFIG_SSA_64BIT
 ifeq ($(CONFIG_SSA_64BIT), true)
-aarch64_frm_drivers += ssa
+aarch64_services_drivers += ssa
 else
-arm_frm_drivers += ssa
+arm_services_drivers += ssa
 endif
 endif
 
 ifdef CONFIG_PERMSRV_64BIT
 ifeq ($(CONFIG_PERMSRV_64BIT), true)
-aarch64_frm_drivers += permission_service
+aarch64_services_drivers += permission_service
 else
-arm_frm_drivers += permission_service
+arm_services_drivers += permission_service
 endif
 endif
 
@@ -65,12 +65,12 @@ product_apps += $(OUTPUTDIR)/aarch64/drivers/tarunner.elf
 endif
 
 ifeq ($(CONFIG_HUK_SERVICE_64BIT), true)
-aarch64_frm_drivers += huk_service
+aarch64_services_drivers += huk_service
 product_apps += $(OUTPUTDIR)/aarch64/apps/huk_service.elf
 check-a64-syms-y += $(OUTPUTDIR)/aarch64/apps/huk_service.elf
 endif
 ifeq ($(CONFIG_HUK_SERVICE_32BIT), true)
-arm_frm_drivers += huk_service
+arm_services_drivers += huk_service
 product_apps += $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
 check-syms-y += $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf
 $(OUTPUTDIR)/arm/apps/huk_service_a32/huk_service.elf:
