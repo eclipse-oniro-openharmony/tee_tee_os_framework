@@ -6,7 +6,7 @@ MODULE := libswcrypto_engine${TARG}.a
 
 c-flags += -DARM_PAE=1 -D__ARM_ARCH_=7 -DTARGET_PRODUCT_VAL=\"$(TARGET_BOARD_PLATFORM)\"
 
-inc-flags += -I$(TOPDIR)/sys_libs/libswcrypto_engine/include
+inc-flags += -I$(TEELIB)/libswcrypto_engine/include
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
@@ -59,6 +59,6 @@ endif
 c-flags += -DOPENSSL_ENABLE
 libswcrypto_engine_c_files := $(filter-out src/stub/rsa_wrapper_stub.c, $(libswcrypto_engine_c_files))
 
-EXPORT_HDRS := $(wildcard $(TOPDIR)/sys_libs/libswcrypto_engine/include/*)
+EXPORT_HDRS := $(wildcard $(TEELIB)/libswcrypto_engine/include/*)
 
 include $(TOPDIR)/mk/lib-common.mk

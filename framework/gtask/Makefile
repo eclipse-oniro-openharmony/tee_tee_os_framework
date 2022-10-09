@@ -55,6 +55,7 @@ inc-flags += -I$(TEELIB)/libhmdrv/include/
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
+inc-flags += -I$(TEELIB)/libpermission_service/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

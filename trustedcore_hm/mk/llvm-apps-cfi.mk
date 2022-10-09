@@ -12,7 +12,7 @@ apps-sanitize-cfi += -fvisibility=default
 endif
 
 ifeq ($(ARCH),aarch64)
-cfi-no-icall := libswcrypto_engine.a tarunner.elf libtimer.a libcrypto_hal.a libteeos.a
+cfi-no-icall := libswcrypto_engine.a tarunner.elf libtimer.a libcrypto_hal.a libteeos.a libpermission_service.a
 
 ifneq ($(filter $(cfi-no-icall),$(MODULE)), )
 apps-sanitize-cfi += -fno-sanitize=cfi-icall
@@ -27,7 +27,7 @@ else #32bit
 ifeq ($(PLATFORM_NAME),mtk)
 cfi-no-icall := libswcrypto_engine_a32.a tarunner_a32.elf libtimer_a32.a libcrypto_hal_a32.a 
 else
-cfi-no-icall := libswcrypto_engine_a32.a tarunner_a32.elf libtimer_a32.a libcrypto_hal_a32.a libdrv_frame_a32.a libteeos_a32.a
+cfi-no-icall := libswcrypto_engine_a32.a tarunner_a32.elf libtimer_a32.a libcrypto_hal_a32.a libdrv_frame_a32.a libteeos_a32.a libpermission_service_a32.a
 endif
 
 no-cfi:=
