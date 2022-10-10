@@ -25,9 +25,9 @@ ifneq (, $(filter $(TARGET_BOARD_PLATFORM), baltimore))
 flags += -DCONFIG_GENERIC_ROT
 flags += -DCONFIG_GENERIC_ART
 endif
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/kernel/
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
+inc-flags += -I$(TEELIB)/libteeconfig/include/TEE_ext
+inc-flags += -I$(TEELIB)/libteeconfig/include/kernel/
+inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libagent_base/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
@@ -44,9 +44,6 @@ libteeconfig_c_files += $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/
 ifeq ($(CONFIG_TEST_CA_CHECK), y)
     libteeconfig_c_files += src/tee_test_config/tee_test_calist.c
 endif
-
-EXPORT_HDRS += $(wildcard include/*)
-EXPORT_HDRS += $(wildcard include/*/*.h)
 
 ifeq ($(CONFIG_HISI_MSPC_IPC_TEST), true)
 c-flags += -DCONFIG_HISI_MSPC_IPC_TEST

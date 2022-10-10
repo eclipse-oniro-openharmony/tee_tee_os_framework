@@ -12,7 +12,7 @@ flags += -I$(TEELIB)/libteeos/src/log/
 
 flags += -I$(DRIVERS_PATH)/include
 flags += -I$(TOPDIR)/platform/common/tee_config
-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
+flags += -I$(TEELIB)/libteeconfig/include/
 flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
 # Source files required to build the target

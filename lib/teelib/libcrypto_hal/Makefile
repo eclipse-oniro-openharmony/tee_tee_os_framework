@@ -14,7 +14,7 @@ endif
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
 inc-flags += -I$(DRIVERS_PATH)/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(DRIVERS_PATH)/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
+inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include

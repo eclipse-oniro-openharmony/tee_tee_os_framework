@@ -38,7 +38,7 @@ inc-flags += -I$(TEELIB)/libteeos/include/legacy
 
 ifneq ($(CONFIG_DRVMGR_64BIT), )
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
+inc-flags += -I$(TEELIB)/libteeconfig/include
 endif
 
 include $(TOPDIR)/mk/feature-macro.mk

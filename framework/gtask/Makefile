@@ -23,7 +23,7 @@ gtask_c_files   += $(wildcard src/*/*.c)
 gtask_c_files   += $(wildcard src/*/*/*.c)
 
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gtask/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/src/tee_config
+inc-flags += -I$(TEELIB)/libteeconfig/src/tee_config
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
@@ -58,6 +58,9 @@ inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libpermission_service/include
 inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libtimer/include
+inc-flags += -I$(TEELIB)/libteeconfig/include
+inc-flags += -I$(TEELIB)/libteeconfig/include/kernel
+inc-flags += -I$(TEELIB)/libteeconfig/include/TEE_ext
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)
