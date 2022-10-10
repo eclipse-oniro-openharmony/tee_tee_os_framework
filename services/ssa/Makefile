@@ -6,11 +6,11 @@ CFILES := $(wildcard src/*/*.c)
 include $(TOPDIR)/mk/var.mk
 
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libteeconfig/include/TEE_ext/
+CPPFLAGS += -I$(TEELIB)/libteeconfig/include/TEE_ext/
 CPPFLAGS += -I$(TEELIB)/libteeos/src/TEE/permission_service
-CPPFLAGS += -I$(K_SYSLIB)/libteemem/include # mem_ops_ext.h
+CPPFLAGS += -I$(TEELIB)/libteemem/include # mem_ops_ext.h
 CPPFLAGS += -I$(K_SYSLIB)/libipc/include # msg_ops.h
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libteeconfig/include
+CPPFLAGS += -I$(TEELIB)/libteeconfig/include
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libtee_shared/include
 CPPFLAGS += -I$(K_TEELIB)/libssa/src
