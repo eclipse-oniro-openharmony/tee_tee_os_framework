@@ -21,7 +21,7 @@ inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TOPDIR)/drivers/include
 inc-flags += -I$(PREBUILD_DIR)/sys/hmapi
-inc-flags += -I$(TOPDIR)/../framework/gtask/src/framework
+inc-flags += -I$(FRAMEWORK_PATH)/gtask/src/framework
 
 # drv makefile will fully link a binary.
 include $(TOPDIR)/mk/svc-common.mk

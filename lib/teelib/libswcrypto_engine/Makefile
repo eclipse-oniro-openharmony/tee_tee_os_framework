@@ -10,6 +10,7 @@ inc-flags += -I$(TEELIB)/libswcrypto_engine/include
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
+inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
 inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
 inc-flags += -I$(TOPDIR)/vendor/common/include # chip_info.h
@@ -58,7 +59,5 @@ endif
 
 c-flags += -DOPENSSL_ENABLE
 libswcrypto_engine_c_files := $(filter-out src/stub/rsa_wrapper_stub.c, $(libswcrypto_engine_c_files))
-
-EXPORT_HDRS := $(wildcard $(TEELIB)/libswcrypto_engine/include/*)
 
 include $(TOPDIR)/mk/lib-common.mk

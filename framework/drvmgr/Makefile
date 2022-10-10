@@ -3,7 +3,7 @@
 
 DRIVER := drvmgr.elf
 
-override SOURCE_DIR:=$(TOPDIR)/../framework/drvmgr
+override SOURCE_DIR:=$(FRAMEWORK_PATH)/drvmgr
 
 include $(TOPDIR)/mk/feature-macro.mk
 include $(TOPDIR)/mk/var.mk
@@ -58,7 +58,7 @@ inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/sys/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
 inc-flags += -I$(TOPDIR)/drivers/include
-inc-flags += -I$(TOPDIR)/../framework/drvmgr/src
+inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include/

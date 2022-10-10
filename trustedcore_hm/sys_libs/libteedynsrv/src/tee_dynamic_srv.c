@@ -17,9 +17,8 @@
 #include <procmgr_ext.h>
 #include <pthread.h>
 #include "tee_init.h"
-#include "tee_ext_api.h"
+#include "tee_mem_mgmt_api.h"
 #include "tee_log.h"
-#include "tee_init.h"
 #include "securec.h"
 #include "ipclib.h"
 #include "tee_internal_task_pub.h"

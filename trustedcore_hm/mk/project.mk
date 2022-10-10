@@ -19,7 +19,8 @@ libbase_shared: libteeconfig libtimer libteeagentcommon libteeagentcommon_client
 libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 
-teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service libswcrypto_engine
+teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
+	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto
 
 libs: $(arm_libs) $(arm_sys_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(vendor_libs) $(thirdparty_libs) $(host_tools)
 	@echo "libsok"
@@ -142,8 +143,8 @@ $(aarch64_test_drivers): $(aarch64_libs) link_aarch64_libs link_arm_libs
 
 $(frameworks):
 	@echo "tee_os_framework framework compile $@"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C ../framework/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile kernel rules
 

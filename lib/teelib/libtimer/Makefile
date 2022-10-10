@@ -36,13 +36,5 @@ libtimer_c_files := $(wildcard src/*.c)
 libtimer_c_files += $(wildcard src/*/*.c)
 endif
 
-# Header files/directories this library provides
-EXPORT_HDRS := $(wildcard include/*)
-ifeq (${TARG}, _a32)
-EXPORT_HDRS += $(wildcard include/arm/*.h)
-else
-EXPORT_HDRS += $(wildcard include/aarch64/*.h)
-endif
-
 include $(TOPDIR)/mk/lib-common.mk
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)

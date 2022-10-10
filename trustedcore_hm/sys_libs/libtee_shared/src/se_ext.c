@@ -7,7 +7,9 @@
 #include "hmdrv.h"
 #include <sre_syscalls_id.h>
 #include <string.h>
-#include "tee_internal_api.h"
+#include "tee_defines.h"
+#include "tee_core_api.h"
+#include "tee_log.h"
 
 #define TEE_SERVICE_SEM                                    \
     {                                                      \

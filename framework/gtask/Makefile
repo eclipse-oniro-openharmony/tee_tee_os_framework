@@ -26,7 +26,7 @@ inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gta
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/src/tee_config
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
-inc-flags += -I$(TOPDIR)/sys_libs/libteeagentcommon_client/include
+inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 
 inc-flags += -I$(PREBUILD_HEADER)/openssl
 inc-flags += -I$(PREBUILD_SYS)/irqmgr
@@ -56,6 +56,8 @@ inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libpermission_service/include
+inc-flags += -I$(TEELIB)/libcrypto/include
+inc-flags += -I$(TEELIB)/libtimer/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

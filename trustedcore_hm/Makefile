@@ -13,6 +13,7 @@ export LIBS_DIR := $(TOPDIR)/libs
 export APPS_DIR := $(TOPDIR)/apps
 export PLATFORM_DIR := $(TOPDIR)/platform
 export TEELIB := $(TOPDIR)/../lib/teelib
+export FRAMEWORK_PATH := $(TOPDIR)/../framework
 
 XOM-TOOL := $(TOPDIR)/tools/xom
 XOM := $(XOM-TOOL)/xom
