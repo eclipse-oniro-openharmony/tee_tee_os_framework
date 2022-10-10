@@ -10,6 +10,7 @@ inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libtimer/include
+inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/ddk/hmapi/
 # Libraries
 include $(TOPDIR)/mk/feature-macro.mk

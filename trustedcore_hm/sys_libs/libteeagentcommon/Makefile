@@ -10,6 +10,7 @@ inc-flags += -I$(TOPDIR)/sys_libs/libteeagentcommon/src
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libcrypto/include
+inc-flags += -I$(TEELIB)/libteemem/include
 
 # Libraries
 

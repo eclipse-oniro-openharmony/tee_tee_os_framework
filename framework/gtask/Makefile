@@ -61,6 +61,7 @@ inc-flags += -I$(TEELIB)/libtimer/include
 inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libteeconfig/include/kernel
 inc-flags += -I$(TEELIB)/libteeconfig/include/TEE_ext
+inc-flags += -I$(TEELIB)/libteemem/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

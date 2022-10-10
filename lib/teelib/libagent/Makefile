@@ -10,6 +10,7 @@ CPPFLAGS += -I$(TEELIB)/libagent/include/
 CPPFLAGS += -I$(TEELIB)/libagent_base/include/
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee/
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy/
+CPPFLAGS += -I$(TEELIB)/libteemem/include
 CPPFLAGS += -Wall
 
 include $(TOPDIR)/mk/lib-common.mk

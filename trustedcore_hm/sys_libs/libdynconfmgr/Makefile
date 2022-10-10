@@ -12,6 +12,7 @@ inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include
 inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
+inc-flags += -I$(TEELIB)/libteemem/include
 
 # Source files required to build the target
 libdynconfmgr_c_files += $(wildcard src/*.c)
