@@ -9,6 +9,7 @@
 #include <securec.h>
 #include <hmlog.h>
 #include <tee_ext_api.h>
+#include <tee_mem_mgmt_api.h>
 
 static bool check_multiply_overflow(uint32_t a, uint32_t b)
 {

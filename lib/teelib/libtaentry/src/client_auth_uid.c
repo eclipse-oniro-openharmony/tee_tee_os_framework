@@ -15,6 +15,7 @@ nR+osDAHaIEfyoPHfIFAJAQLD0ohh2OwUozrcXB/#*/
 #include <string.h>
 #include <securec.h>
 #include <tee_ext_api.h>
+#include <tee_mem_mgmt_api.h>
 #include <tee_log.h>
 #include "elf_main_entry.h"
 

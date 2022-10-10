@@ -16,7 +16,6 @@ inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
-inc-flags += -I$(TEELIB)/libcrypto/include
 
 # Source files required to build the target
 libdynconfbuilder_c_files += $(wildcard src/*.c)

@@ -20,6 +20,7 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include "tee_reserved_api.h"
 #include "tee_log.h"
 #include "tee_ext_api.h"
+#include "tee_mem_mgmt_api.h"
 #include "tee_ta2ta.h"
 
 /* TLS support for running_info per session */

@@ -8,7 +8,6 @@
 #define __TEE_HW_EXT_API_LEGACY_H__
 
 #include "tee_defines.h"
-#include "tee_crypto_api.h"
 
 TEE_Result TEE_EXT_GetSeCapability(const TEE_UUID *uuid, uint64_t *result);
 

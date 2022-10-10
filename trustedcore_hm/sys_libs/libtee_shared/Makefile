@@ -10,7 +10,6 @@ inc-flags += -I$(TOPDIR)/libs/syslib/libmmgr/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
-inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr_sysmgr
 
