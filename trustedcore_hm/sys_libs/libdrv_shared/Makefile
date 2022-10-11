@@ -27,7 +27,7 @@ endif
 endif
 
 include $(TOPDIR)/mk/lib-common.mk
-inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/include

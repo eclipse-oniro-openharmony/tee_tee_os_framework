@@ -170,7 +170,7 @@ ifeq ($(CONFIG_DRVMGR_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/drivers/drvmgr.elf
 check-syms-y += $(OUTPUTDIR)/aarch64/drivers/drvmgr.elf
 ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), true)
-aarch64_driver_drivers += /base_mgr/tee_misc_driver
+aarch64_driver_drivers += tee_misc_driver
 product_apps += $(OUTPUTDIR)/aarch64/drivers/tee_misc_driver.elf
 check-syms-y += $(OUTPUTDIR)/aarch64/drivers/tee_misc_driver.elf
 endif
@@ -179,19 +179,19 @@ ifeq ($(CONFIG_DRVMGR_64BIT), false)
 product_apps += $(OUTPUTDIR)/arm/drivers/drvmgr.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/drvmgr.elf
 ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), false)
-arm_driver_drivers += /base_mgr/tee_misc_driver
+arm_driver_drivers += tee_misc_driver
 product_apps += $(OUTPUTDIR)/arm/drivers/tee_misc_driver.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/tee_misc_driver.elf
 endif
 endif
 
 ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), true)
-aarch64_driver_drivers += /base_mgr/crypto_mgr
+aarch64_driver_drivers += crypto_mgr
 product_apps += $(OUTPUTDIR)/aarch64/drivers/crypto_mgr.elf
 check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/crypto_mgr.elf
 endif
 ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), false)
-arm_driver_drivers += base_mgr/crypto_mgr
+arm_driver_drivers += crypto_mgr
 product_apps += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 endif

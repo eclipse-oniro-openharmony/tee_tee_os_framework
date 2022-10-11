@@ -18,6 +18,7 @@ export SYSLIB := $(TOPDIR)/../lib/syslib
 export K_TEELIB := $(TOPDIR)/../../tee_os_kernel/libs/teelib
 export K_SYSLIB := $(TOPDIR)/../../tee_os_kernel/libs/syslib
 export SERVICES_PATH := $(TOPDIR)/../services
+export DRIVERS_PATH := $(TOPDIR)/../drivers
 
 XOM-TOOL := $(TOPDIR)/tools/xom
 XOM := $(XOM-TOOL)/xom
