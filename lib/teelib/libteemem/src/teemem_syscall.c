@@ -26,7 +26,6 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include <mem_page_ops.h>
 #include <mem_mode.h>
 #include <hmdrv.h>
-#include <boot_sharedmem.h>
 #include <sre_syscalls_id.h>
 #include <mem_ops_ext.h>
 

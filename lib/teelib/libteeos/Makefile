@@ -23,8 +23,6 @@ CPPFLAGS += -I$(DRIVERS_PATH)/include
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
 CPPFLAGS += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/sys/mmgr
 CPPFLAGS += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/sys/mmgr_sysmgr
-CPPFLAGS += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/sys/ssa
-CPPFLAGS += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/sys/huk
 CPPFLAGS += -I$(TEELIB)/libteeos/include
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
@@ -32,6 +30,7 @@ CPPFLAGS += -I$(TEELIB)/libteeos/src/tee
 CPPFLAGS += -I$(TEELIB)/libteemem/include
 CPPFLAGS += -I$(TEELIB)/libssa/src
 CPPFLAGS += -I$(TEELIB)/libssa/include
+CPPFLAGS += -I$(TEELIB)/libhuk/include
 
 # Source files required to build the target
 ASMFILES := $(wildcard src/*.S)

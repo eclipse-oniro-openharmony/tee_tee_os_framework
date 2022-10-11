@@ -30,11 +30,9 @@ inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 
 inc-flags += -I$(PREBUILD_HEADER)/openssl
 inc-flags += -I$(PREBUILD_SYS)/irqmgr
-inc-flags += -I$(PREBUILD_SYS)/ssa
 inc-flags += -I$(PREBUILD_SYS)/se_service
 inc-flags += -I$(PREBUILD_SYS)/mmgr
 inc-flags += -I$(PREBUILD_SYS)/mmgr_sysmgr
-inc-flags += -I$(PREBUILD_SYS)/huk
 inc-flags += -I$(PREBUILD_SYS)/elf_verify
 inc-flags += -I$(PWD)/../teesmcmgr/src
 inc-flags += -I$(PWD)/src/init
@@ -64,6 +62,7 @@ inc-flags += -I$(TEELIB)/libteeconfig/include/TEE_ext
 inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(TEELIB)/libssa/src
 inc-flags += -I$(TEELIB)/libssa/include
+inc-flags += -I$(TEELIB)/libhuk/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

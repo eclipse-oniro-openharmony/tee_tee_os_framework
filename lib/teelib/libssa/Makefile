@@ -11,7 +11,7 @@ CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libteeos/include
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee # tee_inner_uuid.h
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
-CPPFLAGS += -I$(PREBUILD_DIR)/headers/sys/huk
+CPPFLAGS += -I$(TEELIB)/libhuk/include
 
 CFLAGS += -DOPENSSL_ENABLE
 A32_CFLAGS += -DOPENSSL_ENABLE
