@@ -16,6 +16,8 @@ CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include
 CPPFLAGS += -I$(TEELIB)/libteeos/src/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
+CPPFLAGS += -I$(TEELIB)/libteemem/include
+CPPFLAGS += -I$(TEELIB)/libssa/include
 
 CFILES   := $(wildcard src/*.c)
 

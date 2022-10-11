@@ -7,6 +7,7 @@ libteeagentcommon_client_c_files += $(wildcard src/*.c)
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
+inc-flags += -I$(TEELIB)/libteemem/include
 #c-flags += -Wno-unused-parameter
 flags += -fno-builtin
 

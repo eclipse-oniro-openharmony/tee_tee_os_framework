@@ -60,13 +60,14 @@ inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(DRVLIB)/common/libdrv_frame/include/
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
+inc-flags += -I$(TEELIB)/libteeconfig/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 inc-flags += -I$(TEELIB)/libhmdrv/include/
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
+inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(TOPDIR)/platform/common/tee_config/
 
 #inc-flags += -I$(TOPDIR)../../hm-teeos/libs/syslib/libsyscalls/include

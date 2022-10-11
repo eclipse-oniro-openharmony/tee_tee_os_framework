@@ -23,18 +23,16 @@ gtask_c_files   += $(wildcard src/*/*.c)
 gtask_c_files   += $(wildcard src/*/*/*.c)
 
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gtask/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/src/tee_config
+inc-flags += -I$(TEELIB)/libteeconfig/src/tee_config
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 
 inc-flags += -I$(PREBUILD_HEADER)/openssl
 inc-flags += -I$(PREBUILD_SYS)/irqmgr
-inc-flags += -I$(PREBUILD_SYS)/ssa
 inc-flags += -I$(PREBUILD_SYS)/se_service
 inc-flags += -I$(PREBUILD_SYS)/mmgr
 inc-flags += -I$(PREBUILD_SYS)/mmgr_sysmgr
-inc-flags += -I$(PREBUILD_SYS)/huk
 inc-flags += -I$(PREBUILD_SYS)/elf_verify
 inc-flags += -I$(PWD)/../teesmcmgr/src
 inc-flags += -I$(PWD)/src/init
@@ -58,6 +56,13 @@ inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libpermission_service/include
 inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libtimer/include
+inc-flags += -I$(TEELIB)/libteeconfig/include
+inc-flags += -I$(TEELIB)/libteeconfig/include/kernel
+inc-flags += -I$(TEELIB)/libteeconfig/include/TEE_ext
+inc-flags += -I$(TEELIB)/libteemem/include
+inc-flags += -I$(TEELIB)/libssa/src
+inc-flags += -I$(TEELIB)/libssa/include
+inc-flags += -I$(TEELIB)/libhuk/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

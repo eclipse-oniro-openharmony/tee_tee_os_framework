@@ -7,7 +7,6 @@
 
 #ifndef __DYN_LOAD_H_
 #define __DYN_LOAD_H_
-#include "ta_framework.h"
 #include "gtask_core.h"
 
 typedef struct {

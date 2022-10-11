@@ -35,10 +35,11 @@ inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
+inc-flags += -I$(TEELIB)/libteemem/include
 
 ifneq ($(CONFIG_DRVMGR_64BIT), )
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
+inc-flags += -I$(TEELIB)/libteeconfig/include
 endif
 
 include $(TOPDIR)/mk/feature-macro.mk

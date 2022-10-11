@@ -20,7 +20,7 @@ libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
-	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto
+	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk
 
 libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(vendor_libs) $(thirdparty_libs) $(host_tools)
 	@echo "libsok"

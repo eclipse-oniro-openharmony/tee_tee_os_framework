@@ -14,13 +14,15 @@ endif
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
 inc-flags += -I$(DRIVERS_PATH)/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(DRIVERS_PATH)/include
-inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
+inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libswcrypto_engine/include
+inc-flags += -I$(TEELIB)/libteemem/include
+inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi/common # tee_property_inner.h
 
