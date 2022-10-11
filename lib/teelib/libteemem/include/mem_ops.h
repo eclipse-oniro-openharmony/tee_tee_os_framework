@@ -41,13 +41,6 @@ struct mem_type {
     cache_mode_type cache_mode;
 };
 
-/* get physical memory address of input virtual address */
-paddr_t virt_mem_to_phys(uintptr_t v_addr);
-
-/* map non_secure memory to TEE, can set cache_mode and secure_mode */
-int32_t task_map_phy_mem_type(uint32_t task_id, paddr_t phy_addr, uint32_t size, uint64_t *virt_addr,
-                              struct mem_type *mode_type);
-
 int32_t task_map_phy_mem_type_ex(uint32_t task_id, paddr_t phy_addr, uint32_t size, uint64_t *virt_addr,
                                  const struct mem_type *mode_type, map_type type);
 #ifdef __cplusplus

@@ -24,9 +24,6 @@ int32_t task_map_phy_mem(uint32_t task_id, paddr_t phy_addr, uint32_t size,
 /* unmap memory from task_id, input address is 64bit */
 int32_t task_unmap(uint32_t task_id, uint64_t va_addr, uint32_t size);
 
-/* get physicall address of input virtual address, with teecall permission check */
-uint64_t __virt_to_phys(uintptr_t addr);
-
 /* get physicall address of input virtual address, with policy permission check */
 uint64_t tee_virt_to_phys(uintptr_t addr);
 
