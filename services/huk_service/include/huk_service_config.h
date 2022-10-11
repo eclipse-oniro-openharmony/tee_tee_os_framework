@@ -12,8 +12,5 @@ struct huk_access_table {
     uint32_t cmd_id;
     TEE_UUID uuid;
 };
-
-bool is_huk_service_compatible_plat(void);
 bool check_huk_access_permission(const uint32_t cmd_id, const TEE_UUID *uuid);
-
 #endif

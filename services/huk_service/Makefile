@@ -30,14 +30,6 @@ inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(TEELIB)/libssa/src
 inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
-ifeq ($(CONFIG_DYNLINK),y)
-LDFLAGS += -e tee_task_entry
-endif
-
-ifeq ($(CONFIG_HUK_PLAT_COMPATIBLE), true)
-flags += -DTEE_HUK_PLAT_COMPATIBLE
-endif
-
 LDFLAGS += -z noexecstack
 
 include $(TOPDIR)/mk/ta-common.mk

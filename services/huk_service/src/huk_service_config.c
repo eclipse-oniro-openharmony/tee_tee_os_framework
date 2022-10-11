@@ -10,35 +10,10 @@
 #include <tee_log.h>
 #include "huk_service_msg.h"
 
-bool is_huk_service_compatible_plat(void)
-{
-#ifdef TEE_HUK_PLAT_COMPATIBLE
-    return true;
-#else
-    return false;
-#endif
-}
-
 static const struct huk_access_table g_huk_access_table[] = {
-    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_RPMB },
     { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_SSA },
-    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_KEYMASTER },
-    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_GATEKEEPER },
-    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_RPMB },
     { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_SSA },
-    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_KEYMASTER },
-    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_GATEKEEPER },
-    { CMD_HUK_DERIVE_PLAT_ROOT_KEY, TEE_SERVICE_KDS },
-    { CMD_HUK_DERIVE_PLAT_ROOT_KEY, TEE_SERVICE_DPHDCP },
     { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_GLOBAL },
-    { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_HDCP },
-    { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_SIGNTOOL },
-#ifdef DEF_ENG
-    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_UT },
-    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_UT },
-    { CMD_HUK_DERIVE_PLAT_ROOT_KEY, TEE_SERVICE_UT },
-    { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_UT },
-#endif
 };
 
 bool check_huk_access_permission(const uint32_t cmd_id, const TEE_UUID *uuid)

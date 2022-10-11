@@ -53,32 +53,6 @@ struct cmd_operate_config_s {
     cmd_func operate_func;
 };
 
-uint32_t WEAK g_ta_bss_start = BSS_START_MAGIC;
-uint32_t WEAK g_ta_bss_end = BSS_END_MAGIX;
-static void huk_clear_ta_bss(void)
-{
-#ifndef CONFIG_DYNLINK
-    uint32_t ta_bss_start = (uint32_t)&g_ta_bss_start;
-    uint32_t ta_bss_end = (uint32_t)&g_ta_bss_end;
-
-    if (g_ta_bss_start == BSS_START_MAGIC && g_ta_bss_end == BSS_END_MAGIX) {
-        tlogd("only weak bss define\n");
-        return;
-    }
-
-    if (ta_bss_end > ta_bss_start) {
-        int32_t sret = memset_s((void *)ta_bss_start, ta_bss_end - ta_bss_start,
-                                0, ta_bss_end - ta_bss_start);
-        if (sret != EOK)
-            tloge("elf _s fail. line = %d, sret = %d\n", __LINE__, sret);
-    } else if (ta_bss_end == ta_bss_start) {
-        tlogd("bss size is zero \n");
-    } else {
-        tloge("ta bss address is error\n");
-    }
-#endif
-}
-
 static cref_t huk_get_mymsghdl(void)
 {
     struct hmapi_thread_local_storage *tls = NULL;
@@ -146,13 +120,9 @@ ret_flow:
     }
 }
 
-#ifdef CONFIG_DYNLINK
-__attribute__((section(".magic"), visibility("default")))
-const char g_magic_string[MAGIC_STR_LEN] = "Dynamically linked.";
-#endif
-
 __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
 {
+    (void)init_build;
     struct huk_srv_msg msg;
     spawn_uuid_t uuid;
     cref_t ch = 0;
@@ -161,9 +131,6 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     struct channel_ipc_args ipc_args = {0};
 
     (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
-    if (init_build == 0)
-        huk_clear_ta_bss();
-
     cref_t msghdl = huk_get_mymsghdl();
     if (is_ref_err(msghdl) != 0) {
         tloge("Cannot create msg hdl, %s\n", hmapi_strerror((int)msghdl));

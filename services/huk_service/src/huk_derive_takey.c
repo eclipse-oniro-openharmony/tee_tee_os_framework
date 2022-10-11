@@ -78,12 +78,7 @@ static TEE_Result huk_derive_takey(uint64_t vmaddr_salt_shared, uint32_t salt_si
         return TEE_ERROR_BAD_PARAMETERS;
 
     TEE_Result ret = TEE_ERROR_SECURITY;
-    uint32_t salt_tmp_size = salt_size;
-    bool is_old_compatible = is_huk_service_compatible_plat() &&
-        check_huk_access_permission(huk_access->cmd_id, &(huk_access->uuid));
-    if (!is_old_compatible)
-        salt_tmp_size += (uint32_t)sizeof(TEE_UUID);
-
+    uint32_t salt_tmp_size = salt_size + (uint32_t)sizeof(TEE_UUID);
     uint8_t *salt_tmp = TEE_Malloc(salt_tmp_size, 0);
     if (salt_tmp == NULL) {
         tloge("huk derive takey malloc salt memory failed\n");
@@ -99,9 +94,7 @@ static TEE_Result huk_derive_takey(uint64_t vmaddr_salt_shared, uint32_t salt_si
     if (rc != EOK)
         goto end_clean;
 
-    if (!is_old_compatible)
-        (void)memcpy_s(salt_tmp + salt_size, sizeof(TEE_UUID), &(huk_access->uuid), sizeof(TEE_UUID));
-
+    (void)memcpy_s(salt_tmp + salt_size, sizeof(TEE_UUID), &(huk_access->uuid), sizeof(TEE_UUID));
     ret = do_derive_takey(salt_tmp, salt_tmp_size, key_tmp, key_size, 1);
     if (ret == TEE_SUCCESS) {
         if (memcpy_s((uint8_t *)(uintptr_t)vmaddr_key_shared, key_size, key_tmp, key_size) != EOK) {

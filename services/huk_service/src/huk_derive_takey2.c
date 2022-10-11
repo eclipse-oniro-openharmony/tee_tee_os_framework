@@ -58,12 +58,7 @@ static TEE_Result do_derive_takey2_iter(const struct huk_access_table *huk_acces
 {
     TEE_Result ret;
     uint32_t salt_tmp_size = salt_shard->size > ITER_DERIVE_KEY2_SIZE ? salt_shard->size : ITER_DERIVE_KEY2_SIZE;
-
-    bool is_compatible = is_huk_service_compatible_plat() &&
-        check_huk_access_permission(huk_access->cmd_id, &(huk_access->uuid));
-    if (!is_compatible)
-        salt_tmp_size += (uint32_t)sizeof(TEE_UUID);
-
+    salt_tmp_size += (uint32_t)sizeof(TEE_UUID);
     uint8_t *salt_tmp = TEE_Malloc(salt_tmp_size, 0);
     if (salt_tmp == NULL) {
         tloge("huk derive takey malloc salt memory failed\n");
@@ -83,9 +78,7 @@ static TEE_Result do_derive_takey2_iter(const struct huk_access_table *huk_acces
         goto clean;
     }
 
-    if (!is_compatible)
-        (void)memcpy_s(salt_tmp + salt_shard->size, sizeof(TEE_UUID), &(huk_access->uuid), sizeof(TEE_UUID));
-
+    (void)memcpy_s(salt_tmp + salt_shard->size, sizeof(TEE_UUID), &(huk_access->uuid), sizeof(TEE_UUID));
     for (uint32_t i = 0; i < outer_iter_num; i++) {
         ret = do_derive_takey2(salt_tmp, salt_tmp_size, key_tmp, takey_shared->size, inner_iter_num);
         if (ret != TEE_SUCCESS)
