@@ -18,14 +18,13 @@ inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/sys/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
 inc-flags += -I$(DRIVERS_PATH)/include
-inc-flags += -I$(TOPDIR)/drivers/base_mgr/misc_driver/src
-inc-flags += -I$(TOPDIR)/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
+inc-flags += -I$(DRIVERS_PATH)/misc_driver/src
+inc-flags += -I$(DRIVERS_PATH)/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
-inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
+inc-flags += -I$(DRVLIB)/common/libdrv_frame/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
-inc-flags += -I$(TOPDIR)/drivers/common
 c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 

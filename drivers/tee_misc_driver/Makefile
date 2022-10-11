@@ -20,12 +20,11 @@ inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(DRIVERS_PATH)/tee_misc_driver/src
 inc-flags += -I$(DRIVERS_PATH)/crypto_mgr/src/crypto_ioctl
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
-inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
+inc-flags += -I$(DRVLIB)/common/libdrv_frame/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 inc-flags += -I$(TEELIB)/libteeos/include/tee
-inc-flags += -I$(TOPDIR)/drivers/common
 c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 

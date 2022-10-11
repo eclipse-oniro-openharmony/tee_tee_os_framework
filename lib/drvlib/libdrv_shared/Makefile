@@ -7,8 +7,8 @@ libdrv_shared_c_files :=
 
 libdrv_shared_c_files += src/io_operations.c
 libdrv_shared_c_files += src/drv_share.c
-libdrv_shared_c_files += $(TOPDIR)/sys_libs/libdrv_frame/src/drv_thread.c
-libdrv_shared_c_files += $(TOPDIR)/sys_libs/libdrv_frame/src/drv_param_ops.c
+libdrv_shared_c_files += $(DRVLIB)/common/libdrv_frame/src/drv_thread.c
+libdrv_shared_c_files += $(DRVLIB)/common/libdrv_frame/src/drv_param_ops.c
 
 ifneq ($(CONFIG_DRVMGR_64BIT), )
 libdrv_shared_c_files += src/tee_drv_entry.c
@@ -29,8 +29,8 @@ endif
 include $(TOPDIR)/mk/lib-common.mk
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
-inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include
-inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/include
+inc-flags += -I$(DRVLIB)/common/libdrv_frame/include
+inc-flags += -I$(DRVLIB)/libdrv_shared/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
@@ -39,7 +39,6 @@ inc-flags += -I$(TEELIB)/libteeos/include/legacy
 ifneq ($(CONFIG_DRVMGR_64BIT), )
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
-inc-flags += -I$(TOPDIR)/drivers/common/
 endif
 
 include $(TOPDIR)/mk/feature-macro.mk
