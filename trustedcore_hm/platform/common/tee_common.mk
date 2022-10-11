@@ -6,14 +6,14 @@ ifneq ($(CONFIG_NO_VENDOR_LIB_EMBEDDED), true)
 endif
 
 arm_libs +=
-arm_sys_libs += libtee_shared libbase_shared libspawn_common libelf_verify_key libteedynsrv
+arm_sys_libs += libtee_shared libbase_shared libspawn_common libelf_verify_key
 arm_drv_libs += libdrv_shared
 arm_host_libs += libhwsecurec_host
 arm_pro_libs +=
 arm_chip_libs += ramfsmkimg_host
 aarch64_libs += libac_policy libteeagentcommon
 aarch64_drv_common_libs += libdrv_frame
-aarch64_sys_libs += libhmdrv_stub libdynconfmgr libdynconfbuilder libspawn_common libelf_verify_key libteedynsrv
+aarch64_sys_libs += libhmdrv_stub libdynconfmgr libdynconfbuilder libspawn_common libelf_verify_key
 hm_kernel    := kernel
 hm_elfloader := elfloader
 #Compile ext_libs for hm-apps
