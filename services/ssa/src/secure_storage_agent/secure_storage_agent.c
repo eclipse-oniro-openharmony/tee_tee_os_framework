@@ -30,7 +30,6 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include "tee_internal_task_pub.h"
 #include "ssa_fs.h"
 #include <huk_service_msg.h>
-#include <huk_service.h>
 
 bool g_is_ssa_reg = false;
 

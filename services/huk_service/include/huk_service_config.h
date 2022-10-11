@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
  * Description: huk service config.
  * Create: 2020-05-22
  */
@@ -8,9 +8,12 @@
 
 #include <tee_defines.h>
 
+struct huk_access_table {
+    uint32_t cmd_id;
+    TEE_UUID uuid;
+};
+
 bool is_huk_service_compatible_plat(void);
-TEE_Result check_huk_access_permission(const TEE_UUID *uuid);
-bool is_kds_uuid(const TEE_UUID *uuid);
-bool is_ta_access_kds_permission(const TEE_UUID *uuid);
-bool is_provisionkey_access(const TEE_UUID *uuid);
+bool check_huk_access_permission(const uint32_t cmd_id, const TEE_UUID *uuid);
+
 #endif

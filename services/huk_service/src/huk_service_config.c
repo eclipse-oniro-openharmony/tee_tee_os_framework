@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
  * Description: huk service config.
  * Create: 2020-05-22
  */
@@ -8,6 +8,7 @@
 #include <tee_inner_uuid.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_log.h>
+#include "huk_service_msg.h"
 
 bool is_huk_service_compatible_plat(void)
 {
@@ -18,80 +19,38 @@ bool is_huk_service_compatible_plat(void)
 #endif
 }
 
-static const TEE_UUID g_huk_ta_access[] = {
-    TEE_SERVICE_SSA,
-    TEE_SERVICE_KEYMASTER,
-    TEE_SERVICE_GATEKEEPER,
+static const struct huk_access_table g_huk_access_table[] = {
+    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_RPMB },
+    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_SSA },
+    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_KEYMASTER },
+    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_GATEKEEPER },
+    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_RPMB },
+    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_SSA },
+    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_KEYMASTER },
+    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_GATEKEEPER },
+    { CMD_HUK_DERIVE_PLAT_ROOT_KEY, TEE_SERVICE_KDS },
+    { CMD_HUK_DERIVE_PLAT_ROOT_KEY, TEE_SERVICE_DPHDCP },
+    { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_GLOBAL },
+    { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_HDCP },
+    { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_SIGNTOOL },
+#ifdef DEF_ENG
+    { CMD_HUK_DERIVE_TAKEY,         TEE_SERVICE_UT },
+    { CMD_HUK_DERIVE_TAKEY2,        TEE_SERVICE_UT },
+    { CMD_HUK_DERIVE_PLAT_ROOT_KEY, TEE_SERVICE_UT },
+    { CMD_HUK_PROVISION_KEY,        TEE_SERVICE_UT },
+#endif
 };
-static const uint32_t g_huk_ta_access_number = sizeof(g_huk_ta_access) / sizeof(g_huk_ta_access[0]);
 
-/* This permission check is only used on compatible platforms */
-TEE_Result check_huk_access_permission(const TEE_UUID *uuid)
+bool check_huk_access_permission(const uint32_t cmd_id, const TEE_UUID *uuid)
 {
-    uint32_t i;
-
-    if (uuid == NULL) {
-        tloge("huk check the TA uuid failed\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-    for (i = 0; i < g_huk_ta_access_number; i++) {
-        if (TEE_MemCompare(uuid, &g_huk_ta_access[i], sizeof(*uuid)) == 0)
-            return TEE_SUCCESS;
-    }
-
-    tlogd("huk check the TA is not supported, uuid is 0x%x\n", uuid->timeLow);
-    return TEE_ERROR_GENERIC;
-}
-
-bool is_kds_uuid(const TEE_UUID *uuid)
-{
-    TEE_UUID kds_uuid = TEE_SERVICE_KDS;
-
     if (uuid == NULL)
         return false;
 
-    if (TEE_MemCompare(uuid, &kds_uuid, sizeof(kds_uuid)) == 0)
-        return true;
-
-    return false;
-}
-
-static const TEE_UUID g_huk_ta2kds_access[] = {
-    TEE_SERVICE_DPHDCP,
-};
-static const uint32_t g_huk_ta2kds_access_number = sizeof(g_huk_ta2kds_access) / sizeof(g_huk_ta2kds_access[0]);
-bool is_ta_access_kds_permission(const TEE_UUID *uuid)
-{
     uint32_t i;
-
-    if (uuid == NULL)
-        return false;
-
-    for (i = 0; i < g_huk_ta2kds_access_number; i++) {
-        if (TEE_MemCompare(uuid, &g_huk_ta2kds_access[i], sizeof(*uuid)) == 0)
+    for (i = 0; i < sizeof(g_huk_access_table) / sizeof(g_huk_access_table[0]); i++) {
+        if (cmd_id == g_huk_access_table[i].cmd_id &&
+            TEE_MemCompare(uuid, &g_huk_access_table[i].uuid, sizeof(*uuid)) == 0)
             return true;
     }
-    return false;
-}
-
-static TEE_UUID g_provisionkey_uuid[] = {
-    TEE_SERVICE_GLOBAL,
-    TEE_SERVICE_HDCP,
-    TEE_SERVICE_SIGNTOOL,
-};
-static const uint32_t g_provisionkey_uuid_num = sizeof(g_provisionkey_uuid) / sizeof(g_provisionkey_uuid[0]);
-
-bool is_provisionkey_access(const TEE_UUID *uuid)
-{
-    uint32_t i;
-
-    if (uuid == NULL)
-        return false;
-
-    for (i = 0; i < g_provisionkey_uuid_num; i++) {
-        if (TEE_MemCompare(uuid, &g_provisionkey_uuid[i], sizeof(*uuid)) == 0)
-            return true;
-    }
-
     return false;
 }

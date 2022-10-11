@@ -1,0 +1,152 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: huk derive takey
+ * Create: 2022-10-08
+ */
+#include "huk_derive_takey.h"
+#include <securec.h>
+#include <sys/mman.h>
+#include <tee_log.h>
+#include <tee_mem_mgmt_api.h>
+#include <mem_ops_ext.h>
+#include <crypto_driver_adaptor.h>
+#include <crypto_hal_derive_key.h>
+#include "huk_service_config.h"
+
+TEE_Result huk_task_takey_msg_check(const struct huk_srv_msg *msg)
+{
+    if ((msg == NULL) || (msg->data.takey_msg.salt_buf == 0) ||
+        (msg->data.takey_msg.salt_size == 0) ||
+        (msg->data.takey_msg.salt_size > CMAC_DERV_MAX_DATA_IN_SIZE)) {
+        tloge("huk derive takey check salt messages failed\n");
+        return TEE_ERROR_BAD_PARAMETERS;
+    }
+
+    if ((msg->data.takey_msg.key_buf == 0) ||
+        (msg->data.takey_msg.key_size == 0) ||
+        (msg->data.takey_msg.key_size > CMAC_DERV_MAX_DATA_IN_SIZE)) {
+        tloge("huk derive takey check key messages failed\n");
+        return TEE_ERROR_BAD_PARAMETERS;
+    }
+    return TEE_SUCCESS;
+}
+
+int32_t huk_srv_map_from_task(uint32_t in_task_id, uint64_t va_addr, uint32_t size,
+    uint32_t out_task_id, uint64_t *virt_addr)
+{
+    (void)out_task_id;
+    uint64_t vaddr;
+    int32_t ret;
+
+    ret = tee_map_sharemem(in_task_id, va_addr, size, &vaddr);
+    if (ret == 0)
+        *virt_addr = (uintptr_t)vaddr;
+    else
+        tloge("huk map from %u failed\n", in_task_id);
+
+    return ret;
+}
+
+void huk_srv_task_unmap(uint64_t virt_addr, uint32_t size)
+{
+    if (virt_addr == 0)
+        return;
+    if (munmap((void *)(uintptr_t)virt_addr, size) != 0)
+        tloge("huk srv unmap error\n");
+}
+
+TEE_Result do_derive_takey(const uint8_t *salt_tmp, uint32_t salt_size, uint8_t *key_tmp, uint32_t key_size,
+    uint32_t inner_iter_num)
+{
+    uint32_t derive_type = CRYPTO_KEYTYPE_HUK;
+
+    struct memref_t salt = {0};
+    salt.buffer = (uintptr_t)salt_tmp;
+    salt.size = salt_size;
+
+    struct memref_t cmac = {0};
+    cmac.buffer = (uintptr_t)key_tmp;
+    cmac.size = key_size;
+
+    return tee_crypto_derive_root_key(derive_type, &salt, &cmac, inner_iter_num);
+}
+
+static TEE_Result huk_derive_takey(uint64_t vmaddr_salt_shared, uint32_t salt_size,
+    uint64_t vmaddr_key_shared, uint32_t key_size, const struct huk_access_table *huk_access)
+{
+    if (salt_size > CMAC_DERV_MAX_DATA_IN_SIZE)
+        return TEE_ERROR_BAD_PARAMETERS;
+
+    TEE_Result ret = TEE_ERROR_SECURITY;
+    uint32_t salt_tmp_size = salt_size;
+    bool is_old_compatible = is_huk_service_compatible_plat() &&
+        check_huk_access_permission(huk_access->cmd_id, &(huk_access->uuid));
+    if (!is_old_compatible)
+        salt_tmp_size += (uint32_t)sizeof(TEE_UUID);
+
+    uint8_t *salt_tmp = TEE_Malloc(salt_tmp_size, 0);
+    if (salt_tmp == NULL) {
+        tloge("huk derive takey malloc salt memory failed\n");
+        return TEE_ERROR_OUT_OF_MEMORY;
+    }
+    uint8_t *key_tmp = TEE_Malloc(key_size, 0);
+    if (key_tmp == NULL) {
+        tloge("huk derive takey malloc key memory failed\n");
+        TEE_Free(salt_tmp);
+        return TEE_ERROR_OUT_OF_MEMORY;
+    }
+    errno_t rc = memcpy_s(salt_tmp, salt_tmp_size, (uint8_t *)(uintptr_t)vmaddr_salt_shared, salt_size);
+    if (rc != EOK)
+        goto end_clean;
+
+    if (!is_old_compatible)
+        (void)memcpy_s(salt_tmp + salt_size, sizeof(TEE_UUID), &(huk_access->uuid), sizeof(TEE_UUID));
+
+    ret = do_derive_takey(salt_tmp, salt_tmp_size, key_tmp, key_size, 1);
+    if (ret == TEE_SUCCESS) {
+        if (memcpy_s((uint8_t *)(uintptr_t)vmaddr_key_shared, key_size, key_tmp, key_size) != EOK) {
+            tloge("huk copy takey failed\n");
+            ret = TEE_ERROR_SECURITY;
+        }
+    } else {
+        tloge("huk cmac derive takey failed\n");
+    }
+end_clean:
+    (void)memset_s(salt_tmp, salt_tmp_size, 0, salt_tmp_size);
+    TEE_Free(salt_tmp);
+    (void)memset_s(key_tmp, key_size, 0, key_size);
+    TEE_Free(key_tmp);
+    return ret;
+}
+
+TEE_Result huk_task_derive_takey(const struct huk_srv_msg *msg, struct huk_srv_rsp *rsp,
+    uint32_t self_pid, uint32_t sndr_pid, const TEE_UUID *uuid)
+{
+    uint64_t vmaddr_salt_shared = 0;
+    uint64_t vmaddr_takey_shared = 0;
+    TEE_Result ret = huk_task_takey_msg_check(msg);
+    if (ret != TEE_SUCCESS) {
+        rsp->data.ret = ret;
+        return ret;
+    }
+
+    uint32_t salt_size = msg->data.takey_msg.salt_size;
+    uint32_t key_size = msg->data.takey_msg.key_size;
+    if (huk_srv_map_from_task(sndr_pid, msg->data.takey_msg.key_buf, key_size, self_pid, &vmaddr_takey_shared) != 0) {
+        tloge("huk service map takey buffer from 0x%x failed\n", sndr_pid);
+        rsp->data.ret = TEE_ERROR_GENERIC;
+        return rsp->data.ret;
+    }
+    if (huk_srv_map_from_task(sndr_pid, msg->data.takey_msg.salt_buf, salt_size, self_pid, &vmaddr_salt_shared) != 0) {
+        tloge("huk service map salt buffer from 0x%x failed\n", sndr_pid);
+        huk_srv_task_unmap(vmaddr_takey_shared, key_size);
+        rsp->data.ret = TEE_ERROR_GENERIC;
+        return rsp->data.ret;
+    }
+    struct huk_access_table huk_access = { msg->header.send.msg_id, *uuid };
+    ret = huk_derive_takey(vmaddr_salt_shared, salt_size, vmaddr_takey_shared, key_size, &huk_access);
+    huk_srv_task_unmap(vmaddr_salt_shared, salt_size);
+    huk_srv_task_unmap(vmaddr_takey_shared, key_size);
+    rsp->data.ret = ret;
+    return ret;
+}
