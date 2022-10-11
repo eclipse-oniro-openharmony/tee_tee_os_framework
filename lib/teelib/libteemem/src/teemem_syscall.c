@@ -77,20 +77,6 @@ int32_t task_map_phy_mem_ex(uint32_t task_id, paddr_t phy_addr, uint32_t size,
     return HM_OK;
 }
 
-int32_t task_map_phy_mem_type_ex(uint32_t task_id, paddr_t phy_addr, uint32_t size, uint64_t *virt_addr,
-                                 const struct mem_type *mode_type, map_type type)
-{
-    int32_t prot;
-
-    if (mode_type == NULL) {
-        hm_error("map phy mem type ex invalid\n");
-        return HM_ERROR;
-    }
-
-    prot = get_prot_by_secure_cache_mode(mode_type->secure_mode, mode_type->cache_mode);
-    return task_map_phy_mem_ex(task_id, phy_addr, size, virt_addr, prot, type);
-}
-
 int32_t task_map_phy_mem(uint32_t task_id, paddr_t phy_addr, uint32_t size, uint64_t *virt_addr,
                          secure_mode_type secure_mode)
 {

@@ -41,8 +41,6 @@ struct mem_type {
     cache_mode_type cache_mode;
 };
 
-int32_t task_map_phy_mem_type_ex(uint32_t task_id, paddr_t phy_addr, uint32_t size, uint64_t *virt_addr,
-                                 const struct mem_type *mode_type, map_type type);
 #ifdef __cplusplus
 #if __cplusplus
 }
