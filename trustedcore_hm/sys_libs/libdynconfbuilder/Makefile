@@ -11,7 +11,7 @@ endif
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfbuilder/include
 inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
-inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee

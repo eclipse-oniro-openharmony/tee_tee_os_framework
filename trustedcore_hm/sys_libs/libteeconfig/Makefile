@@ -32,8 +32,8 @@ inc-flags += -I$(TEELIB)/libagent_base/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
-inc-flags += -I$(TOPDIR)/drivers/include
-inc-flags += -I$(TOPDIR)/drivers/base_mgr/tee_misc_driver/src
+inc-flags += -I$(DRIVERS_PATH)/include
+inc-flags += -I$(DRIVERS_PATH)/tee_misc_driver/src
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 

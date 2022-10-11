@@ -19,7 +19,7 @@ inc-flags += -I$(TEELIB)/libagent_base/include/
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
-inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(PREBUILD_DIR)/sys/hmapi
 inc-flags += -I$(FRAMEWORK_PATH)/gtask/src/framework
 

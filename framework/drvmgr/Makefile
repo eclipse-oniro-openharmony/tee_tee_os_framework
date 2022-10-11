@@ -57,7 +57,7 @@ c-flags += -DTA_LOG_LEVEL=2
 inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/sys/hmapi
 inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
-inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(TOPDIR)/sys_libs/libdrv_frame/include/
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include/

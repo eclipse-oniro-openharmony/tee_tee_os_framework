@@ -12,8 +12,8 @@ c-flags += -DCRYPTO_MGR_SERVER_ENABLE
 endif
 
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
-inc-flags += -I$(TOPDIR)/drivers/base_mgr/crypto_mgr/src/crypto_ioctl
-inc-flags += -I$(TOPDIR)/drivers/include
+inc-flags += -I$(DRIVERS_PATH)/crypto_mgr/src/crypto_ioctl
+inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(TOPDIR)/sys_libs/libteeconfig/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
