@@ -6,7 +6,7 @@ ifneq ($(CONFIG_NO_VENDOR_LIB_EMBEDDED), true)
 endif
 
 arm_libs +=
-arm_sys_libs += libtee_shared libbase_shared libspawn_common libelf_verify_key
+arm_sys_libs += libbase_shared libspawn_common libelf_verify_key
 arm_drv_libs += libdrv_shared
 arm_host_libs += libhwsecurec_host
 arm_pro_libs +=

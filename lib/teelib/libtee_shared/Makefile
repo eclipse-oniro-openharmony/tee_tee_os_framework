@@ -4,7 +4,7 @@ SONAME := libtee_shared$(TARG).so
 libtee_shared_c_files := $(wildcard src/*.c)
 
 inc-flags += -I$(DRIVERS_PATH)/include # dynion.h
-inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
+inc-flags += -I$(TEELIB)/libtee_shared/include
 inc-flags += -I$(TOPDIR)/platform/common/tee_config
 inc-flags += -I$(TOPDIR)/libs/syslib/libmmgr/include
 inc-flags += -I$(TEELIB)/libhmdrv/include

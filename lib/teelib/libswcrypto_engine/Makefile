@@ -14,8 +14,7 @@ inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(TEELIB)/libhuk/include
-inc-flags += -I$(TOPDIR)/sys_libs/libtee_shared/include
-inc-flags += -I$(TOPDIR)/vendor/common/include # chip_info.h
+inc-flags += -I$(TEELIB)/libtee_shared/include
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
 inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi
 
