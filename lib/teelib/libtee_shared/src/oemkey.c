@@ -12,12 +12,6 @@
 #include "tee_sharemem.h"
 #include "tee_log.h"
 
-#ifdef CONFIG_QEMU_LITE_PLAT
-#define PLAT_INFO_SIZE 16
-static uint8_t g_plat_info[PLAT_INFO_SIZE] = { 0xbc, 0x7a, 0x99, 0x82, 0xb2, 0xd, 0x54, 0xb1,
-                                               0xa8, 0xf1, 0xc3, 0xf6, 0x36, 0x8, 0x10, 0xc9 };
-#endif
-
 __attribute__((visibility("default"))) \
 uint32_t tee_hal_get_provision_key(uint8_t *oem_key, size_t key_size)
 {
@@ -25,18 +19,8 @@ uint32_t tee_hal_get_provision_key(uint8_t *oem_key, size_t key_size)
     uint32_t ret = tee_get_oemkey_info(oem_key, key_size);
     return ret;
 #else
-#ifdef CONFIG_QEMU_LITE_PLAT
-    if (oem_key == NULL || key_size != PLAT_INFO_SIZE)
-        return 1;
-
-    if (memcpy_s(oem_key, key_size, g_plat_info, PLAT_INFO_SIZE) != EOK)
-        return 1;
-
-    return 0;
-#else
     (void)oem_key;
     (void)key_size;
     return TEE_ERROR_NOT_SUPPORTED;
-#endif
 #endif
 }

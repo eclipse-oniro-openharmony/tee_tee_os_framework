@@ -56,18 +56,13 @@ endif
 
 EXTERN_FILE := oh_extern.txt
 EXPORT_FILE := oh_export.txt
-ALIAS_FILE  := oh_alias.txt
 
-${BUILD_DIR}/$(EXTERN_FILE): $(EXTERN_FILE) ${BUILD_DIR}/$(EXPORT_FILE) ${BUILD_DIR}/$(ALIAS_FILE)
+${BUILD_DIR}/$(EXTERN_FILE): $(EXTERN_FILE) ${BUILD_DIR}/$(EXPORT_FILE)
 	@echo "preprocess ${BUILD_DIR}/$(EXTERN_FILE)"
 	@mkdir -p $(@D)
 	@${CC} ${flags} -P -E -o $@ -x c $<
 ${BUILD_DIR}/$(EXPORT_FILE): $(EXPORT_FILE)
 	@echo "preprocess ${BUILD_DIR}/$(EXPORT_FILE)"
-	@mkdir -p $(@D)
-	@${CC} ${flags} -P -E -o $@ -x c $<
-${BUILD_DIR}/$(ALIAS_FILE): $(ALIAS_FILE)
-	@echo "preprocess ${BUILD_DIR}/$(ALIAS_FILE)"
 	@mkdir -p $(@D)
 	@${CC} ${flags} -P -E -o $@ -x c $<
 ld-flags := -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -lagent_base$(TARG) -lhmdrv$(TARG) \
@@ -85,8 +80,6 @@ ifeq ($(findstring true, $(CONFIG_SEM) $(CONFIG_SE_SERVICE_32BIT) $(CONFIG_SE_SE
 ld-flags += -lse$(TARG)
 endif
 
-ALIAS_SYM := $(shell cat $(ALIAS_FILE) | awk '{print "--defsym="$$1}' | tr "\n" " ")
-
 ld-flags += -z separate-loadable-segments
 
 ifeq (${TARG}, _a32)
@@ -99,7 +92,7 @@ $(MODULE_FILE): $(BUILD_DIR)/$(EXTERN_FILE) $(libtee_shared_objs)
 	@echo "LibTEE [LD] $@ LIB_DIR=$(LIB_DIR)"
 	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections --version-script=$(BUILD_DIR)/$(EXPORT_FILE) -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group \
-		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096 $(ALIAS_SYM)
+		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096
 	$(VER)$(XOM) $@
 	$(VER)$(OBJCOPY) $@ --remove-section ".xomloc"
 else
@@ -107,6 +100,6 @@ $(MODULE_FILE): $(BUILD_DIR)/$(EXTERN_FILE) $(libtee_shared_objs)
 	@echo "LibTEE [LD] $@ LIB_DIR=$(LIB_DIR)"
 	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections --version-script=$(BUILD_DIR)/$(EXPORT_FILE) -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group \
-		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096 $(ALIAS_SYM)
+		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096
 	$(VER)$(OBJCOPY) $@
 endif
