@@ -13,6 +13,7 @@ export LIBS_DIR := $(TOPDIR)/libs
 export APPS_DIR := $(TOPDIR)/apps
 export PLATFORM_DIR := $(TOPDIR)/platform
 export TEELIB := $(TOPDIR)/../lib/teelib
+export DRVLIB := $(TOPDIR)/../lib/drvlib
 export FRAMEWORK_PATH := $(TOPDIR)/../framework
 export SYSLIB := $(TOPDIR)/../lib/syslib
 export K_TEELIB := $(TOPDIR)/../../tee_os_kernel/libs/teelib
