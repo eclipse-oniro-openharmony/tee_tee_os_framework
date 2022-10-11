@@ -29,8 +29,8 @@ inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(K_TEELIB)/libhuk/include
-inc-flags += -I$(K_TEELIB)/libssa/include
-inc-flags += -I$(K_TEELIB)/libssa/src
+inc-flags += -I$(TEELIB)/libssa/include
+inc-flags += -I$(TEELIB)/libssa/src
 
 ifeq ($(CONFIG_DYNLINK),y)
 LDFLAGS += -e tee_task_entry
