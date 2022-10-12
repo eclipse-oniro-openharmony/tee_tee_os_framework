@@ -69,6 +69,7 @@ inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(TOPDIR)/platform/common/tee_config/
+inc-flags += -I$(SYSLIB)/libelf_verify/include
 
 #inc-flags += -I$(TOPDIR)../../hm-teeos/libs/syslib/libsyscalls/include
 LIBS += c_shared${TARG}
