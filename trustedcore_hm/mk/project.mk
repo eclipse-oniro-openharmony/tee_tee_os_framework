@@ -22,7 +22,7 @@ libdrv_shared: libteeconfig
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv libtee_shared
 
-libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(vendor_libs) $(thirdparty_libs) $(host_tools)
+libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(thirdparty_libs) $(host_tools)
 	@echo "libsok"
 $(arm_libs): $(arm_pro_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_chip_libs)
 	@echo "arm_lib_ok"
@@ -75,11 +75,6 @@ $(aarch64_arm_chip_libs):
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	@echo "aarch_lib"
-$(vendor_libs):$(arm_chip_libs) $(aarch64_arm_chip_libs)
-	@echo "building ARCH=aarch64 libs=$@ target"
-	$(VER) $(MAKE) -C vendor/$(PLATFORM_NAME)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	$(VER) $(MAKE) -C vendor/$(PLATFORM_NAME)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "vendor_lib_64"
 
 $(teelib):
 	@echo "building teelibs=$@ target"
@@ -87,16 +82,12 @@ $(teelib):
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile ext_libs rules
-ext_libs: $(arm_ext_libs) $(arm_vendor_ext_libs) $(arm_open_source_libs) $(aarch64_ext_libs) $(aarch64_open_source_libs) $(aarch64_vendor_ext_libs) $(aarch64_inner_ext_libs) $(thirdparty_libs)
+ext_libs: $(arm_ext_libs) $(arm_open_source_libs) $(aarch64_ext_libs) $(aarch64_open_source_libs) $(aarch64_inner_ext_libs) $(thirdparty_libs)
 	@echo "ext_lib"
 $(arm_ext_libs):
 	@echo "building ARCH=arm arm_ext_libs=$@ target"
 	$(VER) $(MAKE) -C thirdparty/opensource/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
 	@echo "arm_ext_lib"
-$(arm_vendor_ext_libs): link_aarch64_libs
-	@echo "building ARCH=arm arm_vendor_ext_libs=$@ target"
-	$(VER) $(MAKE) -C thirdparty/vendor/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "arm_vendor_ext_lib"
 $(arm_open_source_libs):
 	@echo "building ARCH=arm arm_open_source_libs=$@ target"
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
@@ -106,10 +97,6 @@ $(aarch64_ext_libs):
 	@echo "building ARCH=aarch64 ext_lib=$@ target"
 	$(VER) $(MAKE) -C thirdparty/opensource/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 	@echo "aarch_ext_lib"
-$(aarch64_vendor_ext_libs):
-	@echo "building ARCH=aarch64 ext_lib=$@ target"
-	$(VER) $(MAKE) -C thirdparty/vendor/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "aarch64_vendor_ext_lib"
 $(aarch64_inner_ext_libs):
 	@echo "building ARCH=aarch64 ext_lib=$@ target"
 	$(VER) $(MAKE) -C thirdparty/huawei/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all

@@ -82,24 +82,9 @@ endif
 
 ld-flags += -z separate-loadable-segments
 
-ifeq (${TARG}, _a32)
-ifeq ($(xom32_enable), y)
-	ld-flags += -T$(XOM_LIB_LDS)
-endif
-endif
-ifeq ($(xom32_enable), y)
-$(MODULE_FILE): $(BUILD_DIR)/$(EXTERN_FILE) $(libtee_shared_objs)
-	@echo "LibTEE [LD] $@ LIB_DIR=$(LIB_DIR)"
-	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections --version-script=$(BUILD_DIR)/$(EXPORT_FILE) -o $@ \
-		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group \
-		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096
-	$(VER)$(XOM) $@
-	$(VER)$(OBJCOPY) $@ --remove-section ".xomloc"
-else
 $(MODULE_FILE): $(BUILD_DIR)/$(EXTERN_FILE) $(libtee_shared_objs)
 	@echo "LibTEE [LD] $@ LIB_DIR=$(LIB_DIR)"
 	$(VER)$(LD) --shared -X -EL -z text -z now -z relro -z noexecstack --gc-sections --version-script=$(BUILD_DIR)/$(EXPORT_FILE) -o $@ \
 		$^ -L$(LIB_DIR) -L$(PREBUILD_LIBS)/$(ARCH) --start-group \
 		$(LIBCOMPILER_RT_BUILTINS) --end-group $(ld-flags) -nostdlib -z max-page-size=4096
 	$(VER)$(OBJCOPY) $@
-endif

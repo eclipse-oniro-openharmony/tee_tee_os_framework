@@ -21,12 +21,6 @@ export K_SYSLIB := $(TOPDIR)/../../tee_os_kernel/libs/syslib
 export SERVICES_PATH := $(TOPDIR)/../services
 export DRIVERS_PATH := $(TOPDIR)/../drivers
 
-XOM-TOOL := $(TOPDIR)/tools/xom
-XOM := $(XOM-TOOL)/xom
-XOM_LIB_LDS := $(TOPDIR)/mk/linker.lib.xom.ld
-XOM_LDS := $(TOPDIR)/mk/linker.xom.ld
-export XOM XOM_LIB_LDS XOM_LDS
-
 ## if O=xxx, using outsize output directory.
 ifneq ($(O),)
 export OUTPUTDIR := $(O)
@@ -134,10 +128,6 @@ $(HDR_INSTALL_DIR)/.timestamp:
 	$(VER) for l in $(arm_ext_libs); do \
 		($(MAKE) -C thirdparty/opensource/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done
-	@echo "before vendorext-lib ${EXPORT_HDRS} arm_vendor_ext_libs=$(arm_vendor_ext_libs)"
-	$(VER) for l in $(arm_vendor_ext_libs); do \
-		($(MAKE) -C thirdparty/vendor/$$l ARCH=arm TARG=_a32 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done
 	@echo "before opensorce-lib ${EXPORT_HDRS} arm_open_source_libs=$(arm_open_source_libs)"
 	$(VER) for l in $(arm_open_source_libs); do \
 		($(MAKE) -C sys_libs/$$l ARCH=arm TARG=_a32 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
@@ -145,10 +135,6 @@ $(HDR_INSTALL_DIR)/.timestamp:
 	@echo "before aarch64ext-lib ${EXPORT_HDRS} aarch64_ext_libs=$(aarch64_ext_libs)"
 	$(VER) for l in $(aarch64_ext_libs); do \
 		($(MAKE) -C thirdparty/opensource/$$l ARCH=aarch64 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done
-	@echo "before aarch64vendorext-lib ${EXPORT_HDRS} aarch64_vendor_ext_libs=$(aarch64_vendor_ext_libs)"
-	$(VER) for l in $(aarch64_vendor_ext_libs); do \
-		($(MAKE) -C thirdparty/vendor/$$l ARCH=aarch64 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done
 	@echo "before opensorce-lib ${EXPORT_HDRS} aarch64_open_source_libs=$(aarch64_open_source_libs)"
 	$(VER) for l in $(aarch64_open_source_libs); do \

@@ -17,7 +17,6 @@ inc-flags += -I$(TEELIB)/libcrypto_hal/include/
 inc-flags += -I$(TEELIB)/libteeconfig/include/
 inc-flags += -I$(TEELIB)/libteeconfig/include/TEE_ext/
 inc-flags += -I$(TEELIB)/libtee_shared/include/
-inc-flags += -I$(TOPDIR)/vendor/common/include/
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 inc-flags += -I$(K_SYSLIB)/libsyscalls/include
 inc-flags += -I$(TEELIB)/libteemem/include

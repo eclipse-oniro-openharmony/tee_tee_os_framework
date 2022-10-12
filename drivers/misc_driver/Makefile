@@ -28,12 +28,6 @@ inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
 c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
-ifeq (${TARG},_a32)
-ifeq ($(xom32_enable),y)
-	misc_driver_LDFLAGS += -T$(XOM_LDS)
-endif
-endif
-
 SVC_PARTITIAL_LINK = y
 include $(TOPDIR)/mk/svc-common.mk
 
