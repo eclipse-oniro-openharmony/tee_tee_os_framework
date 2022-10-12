@@ -11,7 +11,6 @@
 #include <mem_ops_ext.h>
 #include <crypto_driver_adaptor.h>
 #include <crypto_hal_derive_key.h>
-#include "huk_service_config.h"
 
 TEE_Result huk_task_takey_msg_check(const struct huk_srv_msg *msg)
 {

@@ -31,12 +31,8 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include <tee_config.h>
 #include <tee_ss_agent_api.h>
 #include "huk_derive_takey.h"
-#include "huk_derive_takey2.h"
 #include "huk_get_deviceid.h"
-#include "huk_provision_key.h"
-#include "huk_derive_plat_root_key.h"
 #include "huk_service_msg.h"
-#include "huk_service_config.h"
 
 #define MAGIC_STR_LEN               20
 
@@ -76,9 +72,6 @@ static cref_t huk_get_mymsghdl(void)
 static const struct cmd_operate_config_s g_cmd_operate_config[] = {
     { CMD_HUK_DERIVE_TAKEY,         huk_task_derive_takey },
     { CMD_HUK_GET_DEVICEID,         huk_task_get_deviceid },
-    { CMD_HUK_PROVISION_KEY,        huk_task_provision_key },
-    { CMD_HUK_DERIVE_PLAT_ROOT_KEY, huk_task_derive_plat_root_key },
-    { CMD_HUK_DERIVE_TAKEY2,        huk_task_derive_takey2_iter },
 };
 #define CMD_COUNT (sizeof(g_cmd_operate_config) / sizeof(g_cmd_operate_config[0]))
 

@@ -9,6 +9,11 @@
 #include <tee_defines.h>
 #include "huk_service_msg.h"
 
+struct huk_access_table {
+    uint32_t cmd_id;
+    TEE_UUID uuid;
+};
+
 int32_t huk_srv_map_from_task(uint32_t in_task_id, uint64_t va_addr, uint32_t size,
     uint32_t out_task_id, uint64_t *virt_addr);
 void huk_srv_task_unmap(uint64_t virt_addr, uint32_t size);

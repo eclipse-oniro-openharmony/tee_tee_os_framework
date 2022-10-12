@@ -14,7 +14,6 @@
 #include <crypto_hal_derive_key.h>
 #include <tee_config.h>
 #include "huk_derive_takey.h"
-#include "huk_service_config.h"
 
 #define TEE_DEVICE_ID_LEN sizeof(TEE_UUID)
 
