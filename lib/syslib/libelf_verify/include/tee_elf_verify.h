@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: tee app image load service head file
+ * Author: yuanhao34@huawei.com
+ * Create: 2021.7.1
+ */
+#ifndef TEE_ELF_VERIFY_H
+#define TEE_ELF_VERIFY_H
+
+#include <ta_lib_img_unpack.h>
+#include "tee_defines.h"
+#include "ta_framework.h"
+
+typedef struct {
+    uint32_t version;
+    uint32_t img_size;
+    char tmp_file[MAX_TAFS_NAME_LEN];
+} __attribute__((__packed__)) elf_verify_req;
+
+typedef struct {
+    char service_name[SERVICE_NAME_MAX_IN_MANIFEST];
+    uint32_t service_name_len;
+    TEE_UUID srv_uuid;
+    manifest_extension_t mani_ext;
+    ta_property_t ta_property;
+    ta_payload_hdr_t payload_hdr;
+    int32_t off_manifest_buf;
+    int32_t off_ta_elf;
+    TEE_Result verify_result;
+    bool conf_registed;
+    bool dyn_conf_registed;
+} elf_verify_reply;
+
+typedef struct {
+    uint8_t *elf_hash;
+    uint32_t hash_size;
+} elf_hash_data;
+#define MAX_IMAGE_HASH_SIZE 64
+
+TEE_Result secure_elf_verify(const elf_verify_req *req, elf_verify_reply *rep);
+
+TEE_Result tee_secure_img_parse_manifest_v3(const uint8_t *manifest_ext, uint32_t *ext_size,
+                                            bool control, const uint32_t config_target_type);
+
+#endif

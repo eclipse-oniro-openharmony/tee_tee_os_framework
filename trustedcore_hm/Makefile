@@ -15,11 +15,13 @@ export PLATFORM_DIR := $(TOPDIR)/platform
 export TEELIB := $(TOPDIR)/../lib/teelib
 export DRVLIB := $(TOPDIR)/../lib/drvlib
 export FRAMEWORK_PATH := $(TOPDIR)/../framework
+export K_FRAMEWORK := $(TOPDIR)/../../tee_os_kernel/framework
 export SYSLIB := $(TOPDIR)/../lib/syslib
 export K_TEELIB := $(TOPDIR)/../../tee_os_kernel/libs/teelib
 export K_SYSLIB := $(TOPDIR)/../../tee_os_kernel/libs/syslib
 export SERVICES_PATH := $(TOPDIR)/../services
 export DRIVERS_PATH := $(TOPDIR)/../drivers
+export K_THIRDPARTY := $(TOPDIR)/../../tee_os_kernel/thirdparty
 
 ## if O=xxx, using outsize output directory.
 ifneq ($(O),)

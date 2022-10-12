@@ -18,7 +18,7 @@ CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
 CPPFLAGS += -I$(TEELIB)/libteemem/include
-CPPFLAGS += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/sys/elf_verify
+CPPFLAGS += -I$(SYSLIB)/libelf_verify/include
 
 CFILES   := $(wildcard src/permsrv_api_imp.c)
 
