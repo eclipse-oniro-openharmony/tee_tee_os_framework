@@ -17,13 +17,8 @@ LDFLAGS += -x -z text -z now -z relro -z max-page-size=4096 -shared -z noexecsta
 flags += -fvisibility=hidden
 else
 ifeq ($(CONFIG_DYNLINK),y)
-ifeq ($(xom32_enable),y)
-LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -T$(TOPDIR)/mk/ta_link_new.xom.ld
-flags += -fvisibility=hidden
-else
 LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -T$(TOPDIR)/mk/ta_link_new.ld
 flags += -fvisibility=hidden
-endif
 else
 LDFLAGS += -r -d -T$(TOPDIR)/mk/ta_link.ld
 endif

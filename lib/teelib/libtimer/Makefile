@@ -21,16 +21,6 @@ else
 inc-flags += -I$(TEELIB)/libtimer/include/aarch64
 endif
 
-ifeq ($(chip_type), es)
-inc-flags += -I$(TOPDIR)/../../../../../vendor/hisi/ap/platform/$(TARGET_BOARD_PLATFORM)_es
-else
-ifeq ($(chip_type), cs2)
-inc-flags += -I$(TOPDIR)/../../../../../vendor/hisi/ap/platform/$(TARGET_BOARD_PLATFORM)_cs2
-else
-inc-flags += -I$(TOPDIR)/../../../../../vendor/hisi/ap/platform/$(TARGET_BOARD_PLATFORM)
-endif
-endif
-
 # Source files required to build the target
 ifeq ($(CONFIG_OFF_DRV_TIMER), y)
 libtimer_c_files := $(wildcard src/*.c)

@@ -88,12 +88,6 @@ flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 LIBS += hmdrv${TARG}
 drvmgr_LDFLAGS += --whole-archive -lteeconfig${TARG} --no-whole-archive
 
-ifeq (${TARG},_a32)
-ifeq ($(xom32_enable),y)
-drvmgr_LDFLAGS += -T$(XOM_LDS)
-endif
-endif
-
 install:
 	@echo "drvmgr strip begin"
 	@$(READELF) -W -s $(INSTALL_FILE) | grep ' FUNC ' | \

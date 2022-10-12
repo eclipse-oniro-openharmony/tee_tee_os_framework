@@ -22,18 +22,7 @@ override READELF := $(CROSS_COMPILE)/llvm-readelf
 override STRIP   := $(CROSS_COMPILE)/llvm-strip
 override RANLIB  := $(CROSS_COMPILE)/llvm-ranlib
 
-override XOM     := $(TOPDIR)/tools/xom/xom
-override XOM_TOOLCHAIN   := $(TOOLCHAIN_ROOT)/xom
-override LLC     := $(XOM_TOOLCHAIN)/bin/llc
-override CC-XOM  := $(XOM_TOOLCHAIN)/bin/clang-xom
-override CXX-XOM := $(XOM_TOOLCHAIN)/bin/clang-xom
-override LD-XOM  := $(XOM_TOOLCHAIN)/bin/ld.lld
-override XOM_LIB_LDS := $(TOPDIR)/mk/linker.lib.xom.ld
-override XOM_LDS     := $(TOPDIR)/mk/linker.xom.ld
-
-export LLC CC-XOM CXX-XOM XOM_LIB_LDS XOM_LDS XOM LD-XOM
 export CC CXX AS LD CPP AR NM OBJCOPY READELF STRIP
-
 
 # clang need `--target=$(TARGET_ARCH)` option
 export TARGET_ARCH_32 := arm-linux-gnueabi

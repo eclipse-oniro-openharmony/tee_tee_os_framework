@@ -116,10 +116,6 @@ ENTRY_POINT := main
 include $(TOPDIR)/mk/svc-common.mk
 include $(TOPDIR)/mk/feature-macro.mk
 
-ifeq ($(xom32_enable),y)
-LDFLAGS += -T $(XOM_LDS)
-endif
-
 ifeq ($(DRIVER),gtask_a32.elf)
 flags := $(filter-out -flto -fsplit-lto-unit,$(flags))
 endif

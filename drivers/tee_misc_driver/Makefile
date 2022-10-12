@@ -28,12 +28,6 @@ inc-flags += -I$(TEELIB)/libteeos/include/tee
 c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
-ifeq (${TARG},_a32)
-ifeq ($(xom32_enable),y)
-	tee_misc_driver_LDFLAGS += -T$(XOM_LDS)
-endif
-endif
-
 SVC_PARTITIAL_LINK = y
 include $(TOPDIR)/mk/svc-common.mk
 

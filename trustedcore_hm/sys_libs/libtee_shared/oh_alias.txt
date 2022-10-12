@@ -1,3 +1,0 @@
-get_subject_CN=get_subject_x509_cn
-get_subject_OU=get_subject_x509_ou
-__tee_hal_get_dieid=tee_ext_get_dieid

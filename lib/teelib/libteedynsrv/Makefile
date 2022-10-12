@@ -5,7 +5,7 @@
 MODULE := libteedynsrv${TARG}.a
 
 libteedynsrv_c_files += $(wildcard src/*.c)
-inc-flags += -I$(TOPDIR)/sys_libs/libteedynsrv/include
+inc-flags += -I$(TEELIB)/libteedynsrv/include
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy

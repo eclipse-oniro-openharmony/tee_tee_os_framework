@@ -86,7 +86,6 @@ uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 is_abs_path = $(filter $(shell echo $1 | head -c 1),/)
 
 ## compile object file rules:
-ifneq ($(xom32_enable),y)
 $(BUILD_DIR)/%.o: %.cpp
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ CXX ] $@"
@@ -113,34 +112,6 @@ $(BUILD_DIR)/%.o: %.s
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo "[ asm ] $@"
 	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(ASFLAGS) -c -o $@ $<
-else
-$(BUILD_DIR)/%.o: %.cpp
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CXX-XOM ] $@"
-	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/%.o: %.cxx
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CXX-XOM ] $@"
-	$(VER)$(CXX-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/%.o: %.c
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ CC-XOM ] $@"
-	$(VER)$(CC-XOM) -MMD -MP -MF $(BUILD_DIR)/$<.d $(if $(call is_filter_module,$(call last_component,$@)), \
-	$(filter-out -Werror, $(CFLAGS) $(CPPFLAGS)),$(call uniq, \
-	$(CFLAGS) $(CPPFLAGS) $(GENERAL_OPTIONS))) -c -o $@ $<
-
-$(BUILD_DIR)/%.o: %.S
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ ASM ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(ASFLAGS) -D__ASM__ -c -o $@ $<
-
-$(BUILD_DIR)/%.o: %.s
-	@test -d $(dir $@) || mkdir -p $(dir $@)
-	@echo "[ asm ] $@"
-	$(VER)$(CC) -MMD -MP -MF $(BUILD_DIR)/$<.d $(CPPFLAGS) $(ASFLAGS) -c -o $@ $<
-endif
 
 CPPFLAGS += $(inc-flags)
 CFLAGS += $(flags) $(c-flags)
