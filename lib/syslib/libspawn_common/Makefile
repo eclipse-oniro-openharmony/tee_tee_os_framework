@@ -3,7 +3,7 @@
 
 MODULE := libspawn_common$(TARG).a
 
-inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include
+inc-flags += -I$(SYSLIB)/libspawn_common/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 
 # Source files required to build the target

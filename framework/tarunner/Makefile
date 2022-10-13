@@ -12,7 +12,7 @@ tarunner_c_files := $(wildcard src/*.c)
 # Libraries
 LIBS := c_shared${TARG}
 
-inc-flags += -I$(TOPDIR)/sys_libs/libspawn_common/include/
+inc-flags += -I$(SYSLIB)/libspawn_common/include/
 inc-flags += -I$(DRVLIB)/libdrv_shared/src/
 inc-flags += -I$(TEELIB)/libteeconfig/include/
 inc-flags += -I$(TEELIB)/libagent_base/include/
