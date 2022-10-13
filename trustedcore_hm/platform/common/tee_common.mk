@@ -7,9 +7,9 @@ arm_drv_libs += libdrv_shared
 arm_host_libs += libhwsecurec_host
 arm_pro_libs +=
 arm_chip_libs += ramfsmkimg_host
-aarch64_libs += libac_policy libteeagentcommon
+aarch64_libs += libac_policy
 aarch64_drv_common_libs += libdrv_frame
-aarch64_sys_libs += libhmdrv_stub libdynconfmgr libdynconfbuilder
+aarch64_sys_libs += libdynconfmgr libdynconfbuilder
 hm_kernel    := kernel
 hm_elfloader := elfloader
 #Compile ext_libs for hm-apps

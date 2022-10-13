@@ -11,20 +11,20 @@ crypto_lib :=
 else
 crypto_lib :=
 endif
-libtee_shared_a32: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
-libtee_shared: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
+libtee_shared_a32: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
+libtee_shared: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
 
-libbase_shared_a32: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
-libbase_shared: libteeconfig libtimer libteeagentcommon libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
+libbase_shared_a32: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
+libbase_shared: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
 
 libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
-	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv libtee_shared
+	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv
 syslib := libelf_verify libspawn_common libelf_verify_key
 
-libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(thirdparty_libs) $(host_tools)
+libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(thirdparty_libs) $(host_tools) libtee_shared
 	@echo "libsok"
 $(arm_libs): $(arm_pro_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_chip_libs)
 	@echo "arm_lib_ok"
@@ -87,6 +87,11 @@ $(syslib):
 	@echo "bulding syslibs=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(SYSLIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(SYSLIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+
+libtee_shared: $(teelib)
+	@echo "building libtee_shared target"
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile ext_libs rules
 ext_libs: $(arm_ext_libs) $(arm_open_source_libs) $(aarch64_ext_libs) $(aarch64_open_source_libs) $(aarch64_inner_ext_libs) $(thirdparty_libs)
