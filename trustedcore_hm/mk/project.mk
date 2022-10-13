@@ -14,9 +14,6 @@ endif
 libtee_shared_a32: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
 libtee_shared: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib) libteedynsrv
 
-libbase_shared_a32: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
-libbase_shared: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine libac_policy $(crypto_lib)
-
 libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 

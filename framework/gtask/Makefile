@@ -96,8 +96,6 @@ LIBS := c_shared${TARG}        \
     dynconfbuilder${TARG}  \
     spawn_common${TARG}
 
-LIBS += base_shared${TARG}
-
 ifeq ($(findstring y, $(CONFIG_APP_TEE_PERM)$(CONFIG_APP_TEE_PERM_A32)),)
 LIBS += elf_verify${TARG} \
     elf_verify_key${TARG} \

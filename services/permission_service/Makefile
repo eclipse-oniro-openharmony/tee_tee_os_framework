@@ -14,8 +14,6 @@ LIBS += elf_verify${TARG} \
     dynconfmgr${TARG}     \
     dynconfbuilder${TARG}
 
-LIBS += base_shared${TARG}
-
 inc-flags += -I$(PLATFORM_DIR)/common/include
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(DRIVERS_PATH)/tee_misc_driver/src

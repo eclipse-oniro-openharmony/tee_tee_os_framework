@@ -58,8 +58,6 @@ struct file_stat_entry {
     { "/libc_shared_a32.so", 0, 1001, 00040 },
     { "/libtee_shared.so", 0, 1001, 00040 },
     { "/libtee_shared_a32.so", 0, 1001, 00040 },
-    { "/libbase_shared.so", 0, 1001, 00040 },
-    { "/libbase_shared_a32.so", 0, 1001, 00040 },
     { "/libc++_shared.so", 0, 1001, 00040 },
     { "/libc++_shared_a32.so", 0, 1001, 00040 },
     { "/libtest_shared.so", 0, 1001, 00040 },
