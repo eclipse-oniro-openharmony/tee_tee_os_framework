@@ -19,7 +19,7 @@ libdrv_shared: libteeconfig
 
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv
-syslib := libelf_verify libspawn_common libelf_verify_key
+syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
 
 libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(thirdparty_libs) $(host_tools) libtee_shared
 	@echo "libsok"
@@ -59,7 +59,7 @@ $(aarch64_libs): $(aarch64_sys_libs) $(aarch64_arm_chip_libs)
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	@echo "aarch_lib"
-$(aarch64_drv_common_libs): $(aarch64_sys_libs) $(aarch64_arm_chip_libs)
+$(aarch64_drv_common_libs): $(aarch64_sys_libs) $(aarch64_arm_chip_libs) $(syslib)
 	@echo "building ARCH=aarch64 aarch64_drv_common_libs=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)

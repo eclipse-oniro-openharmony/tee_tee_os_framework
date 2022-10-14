@@ -45,8 +45,8 @@ inc-flags += -I$(SYSLIB)/libelf_verify/include
 inc-flags += -I$(TEELIB)/libpermission_service/src
 inc-flags += -I$(SYSLIB)/libelf_verify_key/src/
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
-inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include/
-inc-flags += -I$(TOPDIR)/sys_libs/libdynconfbuilder/include/
+inc-flags += -I$(SYSLIB)/libdynconfmgr/include/
+inc-flags += -I$(SYSLIB)/libdynconfbuilder/include/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/auth/tee_auth_sign_rsa.h
 
