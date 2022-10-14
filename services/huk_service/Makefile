@@ -10,8 +10,6 @@ CFILES := $(wildcard src/*.c)
 inc-flags += -I$(SERVICES_PATH)/huk_service/include
 inc-flags += -I$(SERVICES_PATH)/huk_service/src
 inc-flags += -I$(TEELIB)/libteeos/include/tee
-inc-flags += -I$(PLATFORM_DIR)/common/include
-inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TEELIB)/libswcrypto_engine/include/
 inc-flags += -I$(TEELIB)/libcrypto_hal/include/
 inc-flags += -I$(TEELIB)/libteeconfig/include/
@@ -30,6 +28,7 @@ inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libhuk/include
 inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(TEELIB)/libssa/src
+inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
 ifeq ($(CONFIG_DYNLINK),y)
 LDFLAGS += -e tee_task_entry

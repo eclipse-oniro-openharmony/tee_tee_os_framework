@@ -39,8 +39,6 @@ inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libswcrypto_engine/include
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
 inc-flags += -I$(DRIVERS_PATH)/tee_misc_driver/src/
-inc-flags += -I$(PLATFORM_DIR)/common/tee_config
-inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 
 ifeq ($(CONFIG_PUBKEY_SHAREMEM),true)
 libelf_sharemem_key_c_files := $(wildcard src/*.c)

@@ -12,7 +12,6 @@ flags += -I$(TEELIB)/libteeos/src/log/
 flags += -I$(TEELIB)/libteemem/include
 
 flags += -I$(DRIVERS_PATH)/include
-flags += -I$(TOPDIR)/platform/common/tee_config
 flags += -I$(TEELIB)/libteeconfig/include/
 flags += -I$(PREBUILD_HEADER)/sys/hmapi
 

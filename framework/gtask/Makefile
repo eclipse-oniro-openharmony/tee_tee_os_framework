@@ -25,7 +25,6 @@ gtask_c_files   += $(wildcard src/*/*/*.c)
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gtask/include
 inc-flags += -I$(TEELIB)/libteeconfig/src/tee_config
 inc-flags += -I$(PLATFORM_DIR)/common/include
-inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 
 inc-flags += -I$(PREBUILD_HEADER)/openssl
