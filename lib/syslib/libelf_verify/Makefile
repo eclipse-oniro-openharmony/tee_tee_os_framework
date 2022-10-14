@@ -47,7 +47,6 @@ CPPFLAGS += -I$(SERVICES_PATH)/permission_service/src
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee # ta_framework.h
 CPPFLAGS += -I$(TEELIB)/libcrypto/include
 CPPFLAGS += -I$(K_FRAMEWORK)/teesmcmgr/src
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libbase_shared/include
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libac_policy/include

@@ -42,16 +42,14 @@ $(STAGE_DIR)/bootfs.img: $(boot-fs-files-y) FORCE
 		$(TOOLS)/check-syms.sh $$i \
 			$(PREBUILD_LIBS)/arm/libc_shared_a32.so \
 			$(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so \
-			$(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so \
-			$(OUTPUTDIR)/arm/obj/arm/libbase_shared/libbase_shared_a32.so; \
+			$(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so; \
 	done ;\
 	for i in $(check-a64-syms-y) ; do \
 		echo " [ CHECK a64 SYMS ]: $$i" ;\
 		$(TOOLS)/check-syms.sh $$i \
 			$(PREBUILD_LIBS)/aarch64/libc_shared.so \
 			$(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so \
-			$(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so \
-			$(OUTPUTDIR)/aarch64/obj/aarch64/libbase_shared/libbase_shared.so; \
+			$(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so; \
 	done ; fi
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo " [ MAKING BOOT RAMFS ]: $@"

@@ -2,14 +2,14 @@
 #Compile libs for hm-apps
 
 arm_libs +=
-arm_sys_libs += libbase_shared
+arm_sys_libs +=
 arm_drv_libs += libdrv_shared
 arm_host_libs += libhwsecurec_host
 arm_pro_libs +=
 arm_chip_libs += ramfsmkimg_host
-aarch64_libs += libac_policy libteeagentcommon
+aarch64_libs += libac_policy
 aarch64_drv_common_libs += libdrv_frame
-aarch64_sys_libs += libhmdrv_stub libdynconfmgr libdynconfbuilder
+aarch64_sys_libs += libdynconfmgr libdynconfbuilder
 hm_kernel    := kernel
 hm_elfloader := elfloader
 #Compile ext_libs for hm-apps
@@ -102,15 +102,11 @@ endif
 ifeq ($(CONFIG_TA_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so
 check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so
-product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libbase_shared/libbase_shared.so
-check-a64-syms-y += $(OUTPUTDIR)/aarch64/obj/aarch64/libbase_shared/libbase_shared.so
 endif
 
 ifeq ($(CONFIG_TA_32BIT), true)
 product_apps += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
 check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
-product_apps += $(OUTPUTDIR)/arm/obj/arm/libbase_shared/libbase_shared_a32.so
-check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libbase_shared/libbase_shared_a32.so
 product_apps += $(OUTPUTDIR)/arm/drivers/tarunner_a32.elf
 endif
 
