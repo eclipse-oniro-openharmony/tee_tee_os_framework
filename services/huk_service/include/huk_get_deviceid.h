@@ -10,6 +10,6 @@
 #include "huk_service_msg.h"
 
 TEE_Result huk_task_get_deviceid(const struct huk_srv_msg *msg, struct huk_srv_rsp *rsp,
-    uint32_t self_pid, uint32_t sndr_pid, const TEE_UUID *uuid);
+    uint32_t sndr_pid, const TEE_UUID *uuid);
 
 #endif

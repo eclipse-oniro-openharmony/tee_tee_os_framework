@@ -42,7 +42,7 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #define BSS_END_MAGIX   0x87654321
 
 typedef TEE_Result (*cmd_func)(const struct huk_srv_msg *msg, struct huk_srv_rsp *rsp,
-                               uint32_t self_pid, uint32_t sndr_pid, const TEE_UUID *uuid);
+    uint32_t sndr_pid, const TEE_UUID *uuid);
 
 struct cmd_operate_config_s {
     uint32_t cmd_id;
@@ -97,7 +97,7 @@ static void handle_cmd(const struct huk_srv_msg *msg, cref_t msghdl, uint32_t sn
     for (i = 0; i < CMD_COUNT; i++) {
         if ((cmd_id != g_cmd_operate_config[i].cmd_id) || (g_cmd_operate_config[i].operate_func == NULL))
             continue;
-        rsp.data.ret = g_cmd_operate_config[i].operate_func(msg, &rsp, self_pid, sndr_pid, uuid);
+        rsp.data.ret = g_cmd_operate_config[i].operate_func(msg, &rsp, sndr_pid, uuid);
         if (rsp.data.ret != TEE_SUCCESS && rsp.data.ret != TEE_ERROR_NOT_SUPPORTED)
             tloge("cmd 0x%x error, ret = 0x%x\n", cmd_id, rsp.data.ret);
         break;

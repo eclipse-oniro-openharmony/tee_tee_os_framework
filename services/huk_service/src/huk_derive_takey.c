@@ -12,8 +12,13 @@
 #include <crypto_driver_adaptor.h>
 #include <crypto_hal_derive_key.h>
 
-TEE_Result huk_task_takey_msg_check(const struct huk_srv_msg *msg)
+static TEE_Result huk_task_takey_param_check(const struct huk_srv_msg *msg, const TEE_UUID *uuid)
 {
+    if (uuid == NULL) {
+        tloge("huk derive takey check uuid failed\n");
+        return TEE_ERROR_BAD_PARAMETERS;
+    }
+
     if ((msg == NULL) || (msg->data.takey_msg.salt_buf == 0) ||
         (msg->data.takey_msg.salt_size == 0) ||
         (msg->data.takey_msg.salt_size > CMAC_DERV_MAX_DATA_IN_SIZE)) {
@@ -30,10 +35,8 @@ TEE_Result huk_task_takey_msg_check(const struct huk_srv_msg *msg)
     return TEE_SUCCESS;
 }
 
-int32_t huk_srv_map_from_task(uint32_t in_task_id, uint64_t va_addr, uint32_t size,
-    uint32_t out_task_id, uint64_t *virt_addr)
+static int32_t huk_srv_map_from_task(uint32_t in_task_id, uint64_t va_addr, uint32_t size, uint64_t *virt_addr)
 {
-    (void)out_task_id;
     uint64_t vaddr;
     int32_t ret;
 
@@ -46,7 +49,7 @@ int32_t huk_srv_map_from_task(uint32_t in_task_id, uint64_t va_addr, uint32_t si
     return ret;
 }
 
-void huk_srv_task_unmap(uint64_t virt_addr, uint32_t size)
+static void huk_srv_task_unmap(uint64_t virt_addr, uint32_t size)
 {
     if (virt_addr == 0)
         return;
@@ -54,7 +57,7 @@ void huk_srv_task_unmap(uint64_t virt_addr, uint32_t size)
         tloge("huk srv unmap error\n");
 }
 
-TEE_Result do_derive_takey(const uint8_t *salt_tmp, uint32_t salt_size, uint8_t *key_tmp, uint32_t key_size,
+static TEE_Result do_derive_takey(const uint8_t *salt_tmp, uint32_t salt_size, uint8_t *key_tmp, uint32_t key_size,
     uint32_t inner_iter_num)
 {
     uint32_t derive_type = CRYPTO_KEYTYPE_HUK;
@@ -76,7 +79,7 @@ static TEE_Result huk_derive_takey(uint64_t vmaddr_salt_shared, uint32_t salt_si
     if (salt_size > CMAC_DERV_MAX_DATA_IN_SIZE)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    TEE_Result ret = TEE_ERROR_SECURITY;
+    TEE_Result ret = TEE_ERROR_GENERIC;
     uint32_t salt_tmp_size = salt_size + (uint32_t)sizeof(TEE_UUID);
     uint8_t *salt_tmp = TEE_Malloc(salt_tmp_size, 0);
     if (salt_tmp == NULL) {
@@ -98,7 +101,7 @@ static TEE_Result huk_derive_takey(uint64_t vmaddr_salt_shared, uint32_t salt_si
     if (ret == TEE_SUCCESS) {
         if (memcpy_s((uint8_t *)(uintptr_t)vmaddr_key_shared, key_size, key_tmp, key_size) != EOK) {
             tloge("huk copy takey failed\n");
-            ret = TEE_ERROR_SECURITY;
+            ret = TEE_ERROR_GENERIC;
         }
     } else {
         tloge("huk cmac derive takey failed\n");
@@ -112,11 +115,13 @@ end_clean:
 }
 
 TEE_Result huk_task_derive_takey(const struct huk_srv_msg *msg, struct huk_srv_rsp *rsp,
-    uint32_t self_pid, uint32_t sndr_pid, const TEE_UUID *uuid)
+    uint32_t sndr_pid, const TEE_UUID *uuid)
 {
     uint64_t vmaddr_salt_shared = 0;
     uint64_t vmaddr_takey_shared = 0;
-    TEE_Result ret = huk_task_takey_msg_check(msg);
+    if (rsp == NULL)
+        return TEE_ERROR_BAD_PARAMETERS;
+    TEE_Result ret = huk_task_takey_param_check(msg, uuid);
     if (ret != TEE_SUCCESS) {
         rsp->data.ret = ret;
         return ret;
@@ -124,12 +129,12 @@ TEE_Result huk_task_derive_takey(const struct huk_srv_msg *msg, struct huk_srv_r
 
     uint32_t salt_size = msg->data.takey_msg.salt_size;
     uint32_t key_size = msg->data.takey_msg.key_size;
-    if (huk_srv_map_from_task(sndr_pid, msg->data.takey_msg.key_buf, key_size, self_pid, &vmaddr_takey_shared) != 0) {
+    if (huk_srv_map_from_task(sndr_pid, msg->data.takey_msg.key_buf, key_size, &vmaddr_takey_shared) != 0) {
         tloge("huk service map takey buffer from 0x%x failed\n", sndr_pid);
         rsp->data.ret = TEE_ERROR_GENERIC;
         return rsp->data.ret;
     }
-    if (huk_srv_map_from_task(sndr_pid, msg->data.takey_msg.salt_buf, salt_size, self_pid, &vmaddr_salt_shared) != 0) {
+    if (huk_srv_map_from_task(sndr_pid, msg->data.takey_msg.salt_buf, salt_size, &vmaddr_salt_shared) != 0) {
         tloge("huk service map salt buffer from 0x%x failed\n", sndr_pid);
         huk_srv_task_unmap(vmaddr_takey_shared, key_size);
         rsp->data.ret = TEE_ERROR_GENERIC;
