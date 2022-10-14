@@ -8,7 +8,7 @@ ifeq ($(CONFIG_DYN_CONF), true)
 flags += -DTEE_SUPPORT_DYN_CONF
 endif
 
-inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include
+inc-flags += -I$(SYSLIB)/libdynconfmgr/include
 inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy

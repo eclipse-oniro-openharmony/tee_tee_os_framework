@@ -8,8 +8,8 @@ ifeq ($(CONFIG_DYN_CONF), true)
 flags += -DTEE_SUPPORT_DYN_CONF
 endif
 
-inc-flags += -I$(TOPDIR)/sys_libs/libdynconfbuilder/include
-inc-flags += -I$(TOPDIR)/sys_libs/libdynconfmgr/include
+inc-flags += -I$(SYSLIB)/libdynconfbuilder/include
+inc-flags += -I$(SYSLIB)/libdynconfmgr/include
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(SYSLIB)/libspawn_common/include
