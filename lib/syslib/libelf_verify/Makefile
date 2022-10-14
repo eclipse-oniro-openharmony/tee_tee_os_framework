@@ -51,8 +51,8 @@ CPPFLAGS += -I$(TOPDIR)/sys_libs/libbase_shared/include
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libac_policy/include
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libelf_verify_key/include/
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libelf_verify_key/src/
+CPPFLAGS += -I$(SYSLIB)/libelf_verify_key/include/
+CPPFLAGS += -I$(SYSLIB)/libelf_verify_key/src/
 CPPFLAGS += -I$(TEELIB)/libteemem/include
 CPPFLAGS += -I$(K_SYSLIB)/libipc/include # msg_ops.h
 CPPFLAGS += -I$(TOPDIR)/sys_libs/libdynconfmgr/include
@@ -83,7 +83,6 @@ endif
 # Source files required to build the target
 CPPFLAGS += -I$(SOURCE_DIR)/include/
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libelf_verify_key/src/
 
 CFLAGS += -DOPENSSL_ENABLE
 
