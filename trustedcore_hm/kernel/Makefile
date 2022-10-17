@@ -164,7 +164,6 @@ INCLUDES += "-I$(KERNEL_ROOT_PATH)/libuart/pl011_v500"
 INCLUDES += "-I$(KERNEL_ROOT_PATH)/libuart/uart_lpc"
 INCLUDES += "-I$(KERNEL_ROOT_PATH)/libversion"
 INCLUDES += "-I$(KERNEL_ROOT_PATH)/elfloader/include"
-INCLUDES += "-I$(KERNEL_ROOT_PATH)/../platform/common/include"
 
 ifeq (${HM_ARCH}, ia32)
 INCLUDES += "-I${PREBUILD_HEADER}/arch/$(ARCH)/arch/32"
@@ -187,6 +186,7 @@ endif # HM_ARCH==aarch64
 endif # HM_ARCH==aarch32
 
 INCLUDES += "-I${PREBUILD_HEADER}"
+INCLUDES += "-I${PREBUILD_HEADER}/sys/hmapi"
 INCLUDES += "-I${PREBUILD_HEADER}/kernel/capability"
 INCLUDES += "-I${PREBUILD_HEADER}/kernel/include"
 INCLUDES += "-I${PREBUILD_HEADER}/kernel/include/uapi"

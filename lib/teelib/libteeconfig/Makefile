@@ -35,13 +35,10 @@ inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(DRIVERS_PATH)/tee_misc_driver/src
 inc-flags += -I$(TEELIB)/libteemem/include
-inc-flags += -I$(PLATFORM_DIR)/common/include
-inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 
 # Source files required to build the target
 libteeconfig_c_files += $(wildcard src/drv_hal/*.c)
 libteeconfig_c_files += $(wildcard src/tee_config/*.c)
-libteeconfig_c_files += $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config/product_config.c
 ifeq ($(CONFIG_TEST_CA_CHECK), y)
     libteeconfig_c_files += src/tee_test_config/tee_test_calist.c
 endif

@@ -7,8 +7,6 @@ include $(TOPDIR)/mk/var.mk
 crypto_mgr_c_files += $(wildcard src/*.c) \
                       $(wildcard src/crypto_ioctl/*.c)
 
-inc-flags += -I$(PLATFORM_DIR)/common/tee_config
-inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(DRVLIB)/common/libdrv_frame/include

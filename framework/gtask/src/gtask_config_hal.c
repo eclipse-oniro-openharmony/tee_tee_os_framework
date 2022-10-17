@@ -12,7 +12,6 @@
 #include <tee_config.h>
 #include "gtask_config.h"
 #include "product_config_hal.h"
-#include "product_uuid_public.h"
 #include "tee_inner_uuid.h"
 
 static const TEE_UUID g_uncommit_whitelist[] = {

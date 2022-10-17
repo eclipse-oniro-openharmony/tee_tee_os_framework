@@ -14,8 +14,6 @@ LIBS += elf_verify${TARG} \
     dynconfmgr${TARG}     \
     dynconfbuilder${TARG}
 
-inc-flags += -I$(PLATFORM_DIR)/common/include
-inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/common/tee_config
 inc-flags += -I$(DRIVERS_PATH)/tee_misc_driver/src
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libpermission_service/include
@@ -49,6 +47,7 @@ inc-flags += -I$(SYSLIB)/libdynconfmgr/include/
 inc-flags += -I$(SYSLIB)/libdynconfbuilder/include/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/auth/tee_auth_sign_rsa.h
+inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(K_TEELIB)/libopenssl/openssl/include

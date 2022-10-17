@@ -71,6 +71,7 @@ INCLUDE_DIRS += $(PREBUILD_HEADER)/zlib
 INCLUDE_DIRS += $(HDR_L_DIR)/
 INCLUDE_DIRS += $(PREBUILD_HEADER)/
 INCLUDE_DIRS += $(PREBUILD_HEADER)/sys/
+INCLUDE_DIRS += $(PREBUILD_HEADER)/sys/hmapi
 INCLUDE_DIRS += $(PREBUILD_HEADER)/ddk/hmapi/
 INCLUDE_DIRS += $(TOPDIR)/sys_libs/libelf/include/
 INCLUDE_DIRS += $(TOPDIR)/sys_libs/libcpio/include
@@ -88,7 +89,6 @@ INCLUDE_DIRS += $(PREBUILD_HEADER)/kernel/klibc
 INCLUDE_DIRS += $(PREBUILD_LIBC_INC)/
 INCLUDE_DIRS += $(PREBUILD_LIBC_INC)/arch/$(ARCH)
 INCLUDE_DIRS += $(PREBUILD_LIBC_INC)/arch/generic
-INCLUDE_DIRS += $(TOPDIR)/platform/common/include
 INCLUDE_DIRS += $(TOPDIR)/platform/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/plat_cfg
 
 INCLUDE_DIRS += $(TOPDIR)/../../../../hisi/ap/platform
