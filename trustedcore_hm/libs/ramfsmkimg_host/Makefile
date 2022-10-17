@@ -20,8 +20,6 @@ endif
 
 TOPDIR = $(CURDIR)/../..
 include $(TOPDIR)/mk/var.mk
-CPPFLAGS += -I$(TOPDIR)/libs/libvfs_host/include
-CPPFLAGS += -I$(TOPDIR)/libs/libramfs_host/include
 CPPFLAGS += -I$(TOPDIR)/libs/ramfsmkimg_host/include
 CPPFLAGS += -I$(PREBUILD_HEADER)/host
 CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi
