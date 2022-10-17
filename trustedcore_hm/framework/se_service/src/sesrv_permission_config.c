@@ -4,7 +4,6 @@
  * Create: 2019-12-28
  */
 #include "sesrv_permission_config.h"
-#include "product_uuid_public.h"
 #include "tee_defines.h"
 #include "tee_mem_mgmt_api.h"
 #include "tee_inner_uuid.h"
