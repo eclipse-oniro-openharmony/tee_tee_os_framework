@@ -65,9 +65,9 @@ endif
 export GCC_PLUGIN
 
 # default target
-PHONY += ext_libs libs kernel drivers apps package open_source_libs
-all: $(GCC_PLUGIN) $(RT_LIB) install_headers setup_links kernel ext_libs libs drivers apps package open_source_libs
-tees: kernel setup_links ext_libs libs drivers apps open_source_libs
+PHONY += ext_libs libs drivers apps package open_source_libs
+all: $(GCC_PLUGIN) $(RT_LIB) install_headers setup_links ext_libs libs drivers apps package open_source_libs
+tees: setup_links ext_libs libs drivers apps open_source_libs
 drivers: setup_links ext_libs libs link_libs open_source_libs
 apps: setup_links ext_libs libs link_libs open_source_libs
 package: hmfilemgr
