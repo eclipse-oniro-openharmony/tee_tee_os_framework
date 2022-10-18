@@ -119,8 +119,12 @@ TEE_Result huk_task_derive_takey(const struct huk_srv_msg *msg, struct huk_srv_r
 {
     uint64_t vmaddr_salt_shared = 0;
     uint64_t vmaddr_takey_shared = 0;
-    if (rsp == NULL)
+
+    if (rsp == NULL) {
+        tloge("huk derive takey check rsp failed\n");
         return TEE_ERROR_BAD_PARAMETERS;
+    }
+
     TEE_Result ret = huk_task_takey_param_check(msg, uuid);
     if (ret != TEE_SUCCESS) {
         rsp->data.ret = ret;
