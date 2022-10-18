@@ -23,7 +23,7 @@ ifeq ($(TARGET_IS_ARM32),y)
 	ARCH = arm
 endif
 
-TOPDIR = $(CURDIR)/../../..
+TOPDIR = $(CURDIR)/../../../trustedcore_hm
 include $(TOPDIR)/mk/var.mk
 
 flags = -Wall -Wextra -Werror -DSECUREC_MEMSET_INDIRECT_USE=0 -fstack-protector-strong -fPIC
@@ -76,7 +76,7 @@ flags += -fno-builtin-aligned_alloc \
 
 flags += -DCC_IDENTIFICATION
 
-TEEOSDIR = $(CURDIR)/../../../../../tee_os_kernel
+TEEOSDIR = $(TOPDIR)/../../tee_os_kernel
 CPPFLAGS += -I$(STAGE_DIR)/include/debug
 CPPFLAGS += -I$(PREBUILD_LIBC_INC)
 inc-flags += -I$(PREBUILD_LIBC_INC) \

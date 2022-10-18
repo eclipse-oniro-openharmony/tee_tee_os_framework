@@ -22,6 +22,8 @@ export K_SYSLIB := $(TOPDIR)/../../tee_os_kernel/libs/syslib
 export SERVICES_PATH := $(TOPDIR)/../services
 export DRIVERS_PATH := $(TOPDIR)/../drivers
 export K_THIRDPARTY := $(TOPDIR)/../../tee_os_kernel/thirdparty
+export BUILD_TOOLS := $(TOPDIR)/../build/tools
+export THIRDPARTY_LIBS := $(TOPDIR)/../lib/thirdparty
 
 ## if O=xxx, using outsize output directory.
 ifneq ($(O),)
@@ -116,7 +118,7 @@ $(HDR_INSTALL_DIR)/.timestamp:
 	done;
 	@echo "before armchip ${EXPORT_HDRS} arm_chip_libs=$(arm_chip_libs)"
 	$(VER) for l in $(arm_chip_libs); do \
-		($(MAKE) -C libs/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
+		($(MAKE) -C $(BUILD_TOOLS)/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done;
 	@echo "before aarch64-sys-lib ${EXPORT_HDRS} aarch64_sys_libs=$(aarch64_sys_libs) aarch64_libs=$(aarch64_libs)"
 	$(VER) for l in $(aarch64_sys_libs); do \

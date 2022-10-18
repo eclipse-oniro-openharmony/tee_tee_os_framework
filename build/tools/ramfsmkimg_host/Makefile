@@ -18,9 +18,8 @@ ifeq ($(TARGET_IS_ARM32),y)
 	ARCH = arm
 endif
 
-TOPDIR = $(CURDIR)/../..
 include $(TOPDIR)/mk/var.mk
-CPPFLAGS += -I$(TOPDIR)/libs/ramfsmkimg_host/include
+CPPFLAGS += -I$(BUILD_TOOLS)/ramfsmkimg_host/include
 CPPFLAGS += -I$(PREBUILD_HEADER)/host
 CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi
 CPPFLAGS += -I$(PREBUILD_HEADER)/inner_sdk/hmapi
@@ -49,31 +48,31 @@ LDFLAGS += -L$(OUTPUTDIR)/aarch64/obj/aarch64/libhwsecurec_host
 LDFLAGS += -L/usr/lib/x86_64-linux-gnu
 LDFLAGS += -lhwsecurec_host
 
-C_SRCS := $(wildcard $(TOPDIR)/libs/ramfsmkimg_host/src/*.c)
-C_OBJS := $(addprefix $(TOPDIR)/libs/ramfsmkimg_host/src/,$(notdir $(patsubst %.c,%.o,$(C_SRCS))))
+C_SRCS := $(wildcard $(BUILD_TOOLS)/ramfsmkimg_host/src/*.c)
+C_OBJS := $(addprefix $(BUILD_TOOLS)/ramfsmkimg_host/src/,$(notdir $(patsubst %.c,%.o,$(C_SRCS))))
 
 # $(1)	Relative or absolute pathname to C file
 define c_to_o
-$(TOPDIR)/libs/ramfsmkimg_host/src/$(patsubst %.c,%.o,$(notdir $(1))): $(1)
+$(BUILD_TOOLS)/ramfsmkimg_host/src/$(patsubst %.c,%.o,$(notdir $(1))): $(1)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $$@ $$^
 endef
 
 install_headers:
 
 all: stage
-	mv $(TOPDIR)/libs/ramfsmkimg_host/ramfsmkimg $(PREBUILD_TOOLS)/
-	rm $(TOPDIR)/libs/ramfsmkimg_host/src/main.o
-	rm $(TOPDIR)/libs/ramfsmkimg_host/.done-fetch
+	mv $(BUILD_TOOLS)/ramfsmkimg_host/ramfsmkimg $(PREBUILD_TOOLS)/
+	rm $(BUILD_TOOLS)/ramfsmkimg_host/src/main.o
+	rm $(BUILD_TOOLS)/ramfsmkimg_host/.done-fetch
 stage: build
-fetch: $(TOPDIR)/libs/ramfsmkimg_host/.done-fetch
+fetch: $(BUILD_TOOLS)/ramfsmkimg_host/.done-fetch
 
-$(TOPDIR)/libs/ramfsmkimg_host/.done-fetch:
-	mkdir -p $(TOPDIR)/libs/ramfsmkimg_host
+$(BUILD_TOOLS)/ramfsmkimg_host/.done-fetch:
+	mkdir -p $(BUILD_TOOLS)/ramfsmkimg_host
 	touch $@
 
-build: $(TOPDIR)/libs/ramfsmkimg_host/.done-fetch $(TOPDIR)/libs/ramfsmkimg_host/ramfsmkimg
+build: $(BUILD_TOOLS)/ramfsmkimg_host/.done-fetch $(BUILD_TOOLS)/ramfsmkimg_host/ramfsmkimg
 
-$(TOPDIR)/libs/ramfsmkimg_host/ramfsmkimg: $(C_OBJS)
+$(BUILD_TOOLS)/ramfsmkimg_host/ramfsmkimg: $(C_OBJS)
 	pwd
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
