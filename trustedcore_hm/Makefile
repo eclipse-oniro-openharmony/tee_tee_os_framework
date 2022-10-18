@@ -86,6 +86,13 @@ link_arm_libs: libs ext_libs open_source_libs
 			echo "link prebuild library: $$link" ; \
 		fi \
 	done
+	mkdir -p $(OUTPUTDIR)/elfloader
+	mkdir -p $(OUTPUTDIR)/kernel
+	cp -a $(OUTPUTDIR)/arm/libs/elfloader.o $(OUTPUTDIR)/elfloader/.
+	cp -a $(OUTPUTDIR)/arm/libs/kernel.elf $(OUTPUTDIR)/kernel/.
+	cp -a $(OUTPUTDIR)/arm/libs/libuart.a $(OUTPUTDIR)/kernel/.
+	cp -a $(OUTPUTDIR)/arm/libs/libhardware.a $(OUTPUTDIR)/kernel/.
+	cp -a $(OUTPUTDIR)/arm/libs/libklibc.a $(OUTPUTDIR)/kernel/.
 link_aarch64_libs: libs ext_libs
 	@echo "[link] aarch libs=$(libs) ext_libs=$(ext_libs)"
 	$(VER) PBD=$(PREBUILD_LIBS)/aarch64/ ; \
