@@ -19,7 +19,7 @@ ifeq ($(TARGET_IS_ARM32),y)
 	ARCH = arm
 endif
 
-TOPDIR = $(CURDIR)/../../..
+TOPDIR = $(CURDIR)/../../../trustedcore_hm
 ifeq ($(PLATFORM_DIR),)
 	PLATFORM_DIR = $(TOPDIR)/platform
 endif

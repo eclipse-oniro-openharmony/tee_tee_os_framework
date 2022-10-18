@@ -30,7 +30,7 @@ $(arm_libs): $(arm_pro_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_chip_libs)
 	@echo "liblib"
 $(arm_host_libs):
 	@echo "building ARCH=arm_hostlibs=$@ target"
-	$(VER) $(MAKE) -C $(if $(filter libhwsecurec_host,$@),thirdparty/huawei/$@,libs/$@) ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
+	$(VER) $(MAKE) -C $(if $(filter libhwsecurec_host,$@),$(THIRDPARTY_LIBS)/$@,libs/$@) ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 	@echo "arm_host_lib"
 $(host_tools):$(arm_host_libs)
 	@echo "building ARCH=arm_aarch64 host_tools= $@ target"
@@ -52,7 +52,7 @@ $(arm_drv_libs):
 	echo "arm_drv_libs"
 $(arm_chip_libs):$(arm_host_libs)
 	@echo "building ARCH=arm_chip libs=$@ target"
-	$(VER) $(MAKE) -C libs/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
+	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
 	@echo "arm_chip_lib"
 $(aarch64_libs): $(aarch64_sys_libs) $(aarch64_arm_chip_libs)
 	@echo "building ARCH=aarch64 aarch64_libs=$@ target"
@@ -117,8 +117,8 @@ $(aarch64_open_source_libs):
 	@echo "aarch64_open_source_lib"
 $(thirdparty_libs):
 	echo "building ARCH=arm_chip_aarch64 libs=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C thirdparty/huawei/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C thirdparty/huawei/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(THIRDPARTY_LIBS)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(THIRDPARTY_LIBS)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	echo "thirdparty_libs"
 
 # compile drivers rules
