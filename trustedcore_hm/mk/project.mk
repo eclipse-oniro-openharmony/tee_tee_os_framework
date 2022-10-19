@@ -158,22 +158,6 @@ $(frameworks):
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
-# compile kernel rules
-
-kernel: $(hm_kernel) $(hm_elfloader)
-$(hm_elfloader):
-	@mkdir -p $(ELFLOADER_OUTDIR)
-	@echo "compile elfloader ELFLOADER_OUTDIR is $(ELFLOADER_OUTDIR)"
-	$(VER) LDFLAGS= $(MAKE) -C kernel/$@ -f $(PREBUILD_HEADER)/.config -f Makefile \
-		HAVE_AUTOCONF=1 NO_PRESERVE_TIMESTAMP=1 all
-
-$(hm_kernel):
-	@mkdir -p $(KERNEL_OUTDIR)
-	@echo "compile elfloader KERNEL_OUTDIR is $(KERNEL_OUTDIR)"
-	$(VER) LDFLAGS= $(MAKE) -C $@/ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile \
-		HAVE_AUTOCONF=1 NO_PRESERVE_TIMESTAMP=1 KERNEL_SOURCE_ROOT=$(KERNEL_ROOT_PATH) all
-
-
 COMPARE_IMAGE := 0
 WITH_LOG_ENCODE := false
 

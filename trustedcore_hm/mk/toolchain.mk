@@ -13,7 +13,7 @@ override CC      := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang
 override CXX     := $(SOURCEANALYZER) $(CCACHE) $(CROSS_COMPILE)/clang++
 override AS      := $(CROSS_COMPILE)/llvm-as
 override LD      := $(CROSS_COMPILE)/ld.lld
-override CPP     := $(TOPDIR)/kernel/clang-cpp
+override CPP     := $(srctree)/kernel/clang-cpp
 # disable ar creating debug
 override AR      := $(CROSS_COMPILE)/llvm-ar 2>/dev/null
 override NM      := $(CROSS_COMPILE)/llvm-nm
