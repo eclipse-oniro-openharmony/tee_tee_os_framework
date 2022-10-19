@@ -27,9 +27,9 @@ aarch64_ext_libs +=
 aarch64_open_source_libs +=
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
-aarch64_frm_drivers += hmsysmgr
+aarch64_frm_drivers +=
 else
-arm_frm_drivers += hmsysmgr
+arm_frm_drivers +=
 endif
 
 ifdef CONFIG_SSA_64BIT
