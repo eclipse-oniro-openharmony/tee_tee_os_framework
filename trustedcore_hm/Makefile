@@ -77,6 +77,14 @@ mods: drv_mods
 
 PHONY += link_libs link_arm_libs link_aarch64_libs
 link_libs: link_arm_libs link_aarch64_libs
+	mkdir -p $(OUTPUTDIR)/elfloader
+	mkdir -p $(OUTPUTDIR)/kernel
+	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/elfloader.o $(OUTPUTDIR)/elfloader/.
+	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/kernel.elf $(OUTPUTDIR)/kernel/.
+	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libuart.a $(OUTPUTDIR)/kernel/.
+	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libhardware.a $(OUTPUTDIR)/kernel/.
+	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libklibc.a $(OUTPUTDIR)/kernel/.
+
 link_arm_libs: libs ext_libs open_source_libs
 	@echo "[link] libs=$(libs) ext_libs=$(ext_libs) open_source_libs=$(open_source_libs)"
 	$(VER) PBD=$(PREBUILD_LIBS)/arm/ ; \
@@ -88,13 +96,7 @@ link_arm_libs: libs ext_libs open_source_libs
 			echo "link prebuild library: $$link" ; \
 		fi \
 	done
-	mkdir -p $(OUTPUTDIR)/elfloader
-	mkdir -p $(OUTPUTDIR)/kernel
-	cp -a $(OUTPUTDIR)/arm/libs/elfloader.o $(OUTPUTDIR)/elfloader/.
-	cp -a $(OUTPUTDIR)/arm/libs/kernel.elf $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/arm/libs/libuart.a $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/arm/libs/libhardware.a $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/arm/libs/libklibc.a $(OUTPUTDIR)/kernel/.
+
 link_aarch64_libs: libs ext_libs
 	@echo "[link] aarch libs=$(libs) ext_libs=$(ext_libs)"
 	$(VER) PBD=$(PREBUILD_LIBS)/aarch64/ ; \

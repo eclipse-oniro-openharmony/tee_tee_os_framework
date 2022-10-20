@@ -16,11 +16,7 @@
 static uint8_t *g_load_key = NULL;
 bool is_wb_protecd_ta_key(void)
 {
-#ifdef CONFIG_WHITE_BOX_KEY
-    return true;
-#else
     return false;
-#endif
 }
 
 #define WB_KEY_TAG "wb"
