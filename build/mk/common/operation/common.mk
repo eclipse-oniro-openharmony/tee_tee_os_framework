@@ -7,8 +7,6 @@ endif
 # default target
 default: all
 
-include $(TOPDIR)/mk/asan.mk
-
 inc-flags += -I$(TEE_SECUREC_DIR)/include
 INCLUDE_PATH += $(PREBUILD_DIR)/headers/
 INCLUDE_PATH += $(TOPDIR)/tools/
@@ -109,12 +107,6 @@ INSTALL_FILE := $(DRV_DIR)/$(DRIVER)
 TARGET_FILE  := $(BUILD_DIR)/$(DRIVER)
 endif
 target: $(TARGET_FILE)
-ifneq ($(PREBUILD_ARCHIVE),)
-AR_FILE = $(PREBUILD_ARCH_PLAT_LIBS)/$(PREBUILD_ARCHIVE)
-$(warning MODULE ${MODULE_FOLDER} lib_dir=${LIB_DIR})
-$(eval $(call eval_extracted_objs,$(MODULE_FOLDER),$(AR_FILE),$(BUILD_DIR)))
-$(eval $(call eval_extract_ar,$(BUILD_DIR),$(TARGET_FILE),$(AR_FILE)))
-endif
 $(eval $(call eval_dep_libs,$(MODULE_FOLDER),$(LIB_DIR),$(LIBS:%=lib%.a)))
 $(eval $(call eval_elf,$(MODULE_FOLDER),$(TARGET_FILE)))
 $(INSTALL_FILE): $(TARGET_FILE)

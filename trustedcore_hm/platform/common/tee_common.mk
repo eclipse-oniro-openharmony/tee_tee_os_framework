@@ -1,29 +1,11 @@
 #ta loader and gtask sysmgr core service packages of 64 bit runntime
 #Compile libs for hm-apps
 
-arm_libs +=
-arm_sys_libs +=
 arm_drv_libs += libdrv_shared
 arm_host_libs += libhwsecurec_host
-arm_pro_libs +=
 arm_chip_libs += ramfsmkimg_host
-aarch64_libs +=
 aarch64_drv_common_libs += libdrv_frame
-aarch64_sys_libs +=
-hm_kernel    := kernel
-hm_elfloader := elfloader
 #Compile ext_libs for hm-apps
-arm_ext_libs +=
-host_tools +=
-
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-arm_open_source_libs +=
-else
-arm_open_source_libs +=
-endif
-arm_open_source_libs +=
-aarch64_ext_libs +=
-aarch64_open_source_libs +=
 
 ifdef CONFIG_SSA_64BIT
 ifeq ($(CONFIG_SSA_64BIT), true)
@@ -181,9 +163,3 @@ arm_driver_drivers += crypto_mgr
 product_apps += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 endif
-
-ifeq ($(CONFIG_KMS), true)
-aarch64_sys_apps += kms
-product_apps += $(OUTPUTDIR)/aarch64/apps/kms.elf
-endif
-

@@ -33,13 +33,7 @@ $(INSTALL_FILE): $(MODULE_FILE)
 	@echo "[ INSTALL ] $(MODULE_FILE)"
 	$(VER)cp -rafp $(MODULE_FILE) $(LIB_DIR)
 
-ifeq ($(findstring true, $(CONFIG_GATEKEEPER_32BIT) $(CONFIG_GATEKEEPER_64BIT)), true)
-flags += -DSUPPORT_GATEKEEPER_TA
-inc-flags += -I$(TOPDIR)/sys_apps/gatekeeper/src/task_gatekeeper
-libtee_shared_c_files :=  $(filter-out src/gk_auth_token_stub.c, $(libtee_shared_c_files))
-else
 libtee_shared_c_files :=  $(filter-out src/gk_auth_token.c, $(libtee_shared_c_files))
-endif
 
 ifeq ($(strip $(TARGET_BUILD_VARIANT)), user)
 flags += -DDEF_BUILDUSERMODE
@@ -75,7 +69,7 @@ else
 ld-flags += -lopenssl${TARG}
 endif
 
-ifeq ($(findstring true, $(CONFIG_SEM) $(CONFIG_SE_SERVICE_32BIT) $(CONFIG_SE_SERVICE_64BIT)), true)
+ifeq ($(findstring true, $(CONFIG_SE_SERVICE_32BIT) $(CONFIG_SE_SERVICE_64BIT)), true)
 ld-flags += -lse$(TARG)
 endif
 

@@ -21,30 +21,16 @@ teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libper
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
 
+<<<<<<< HEAD
 libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(host_tools) libtee_shared
+=======
+libs: $(arm_drv_libs) $(arm_chip_libs) $(aarch64_drv_common_libs) $(thirdparty_libs) libtee_shared
+>>>>>>> tee_os_framework: Delete unused code
 	@echo "libsok"
-$(arm_libs): $(arm_pro_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_chip_libs)
-	@echo "arm_lib_ok"
-	@echo "building ARCH=arm libs=$@ target"
-	$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "liblib"
 $(arm_host_libs):
 	@echo "building ARCH=arm_hostlibs=$@ target"
 	$(VER) $(MAKE) -C $(if $(filter libhwsecurec_host,$@),$(THIRDPARTY_LIBS)/$@,libs/$@) ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 	@echo "arm_host_lib"
-$(host_tools):$(arm_host_libs)
-	@echo "building ARCH=arm_aarch64 host_tools= $@ target"
-	$(VER) $(MAKE) -C tools/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "host_tools"
-$(arm_pro_libs):
-	@echo "building ARCH=arm_pro libs=$@ target"
-	$(VER) $(MAKE) -C libs/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "arm_pro_lib"
-$(arm_sys_libs):
-	@echo "building ARCH=arm sys_libs=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	echo "arm_sys_lib"
 $(arm_drv_libs):
 	@echo "building ARCH=arm drv_libs=$@ target"
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
@@ -54,21 +40,11 @@ $(arm_chip_libs):$(arm_host_libs)
 	@echo "building ARCH=arm_chip libs=$@ target"
 	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
 	@echo "arm_chip_lib"
-$(aarch64_libs): $(aarch64_sys_libs) $(aarch64_arm_chip_libs)
-	@echo "building ARCH=aarch64 aarch64_libs=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	@echo "aarch_lib"
-$(aarch64_drv_common_libs): $(aarch64_sys_libs) $(aarch64_arm_chip_libs) $(syslib)
+$(aarch64_drv_common_libs): $(aarch64_arm_chip_libs) $(syslib)
 	@echo "building ARCH=aarch64 aarch64_drv_common_libs=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	@echo "aarch64_drv_common_libs"
-$(aarch64_sys_libs): $(teelib) $(syslib)
-	@echo "building ARCH=aarch64 libs=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	echo "aarch_lib"
 $(aarch64_arm_chip_libs):
 	@echo "building ARCH=arm_chip_aarch64 libs=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
@@ -90,53 +66,27 @@ libtee_shared: $(teelib)
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
-# compile ext_libs rules
-ext_libs: $(arm_ext_libs) $(arm_open_source_libs) $(aarch64_ext_libs) $(aarch64_open_source_libs) $(aarch64_inner_ext_libs)
-	@echo "ext_lib"
-$(arm_ext_libs):
-	@echo "building ARCH=arm arm_ext_libs=$@ target"
-	$(VER) $(MAKE) -C thirdparty/opensource/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "arm_ext_lib"
-$(arm_open_source_libs):
-	@echo "building ARCH=arm arm_open_source_libs=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	@echo "arm_open_source_lib"
-$(aarch64_ext_libs):
-	@echo "building ARCH=aarch64 ext_lib=$@ target"
-	$(VER) $(MAKE) -C thirdparty/opensource/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "aarch_ext_lib"
-$(aarch64_inner_ext_libs):
-	@echo "building ARCH=aarch64 ext_lib=$@ target"
-	$(VER) $(MAKE) -C thirdparty/huawei/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "aarch64_inner_ext_lib"
-$(aarch64_open_source_libs):
-	@echo "building ARCH=aarch64 ext_lib=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	@echo "aarch64_open_source_lib"
-
 # compile drivers rules
 
 frameworks := gtask teesmcmgr drvmgr tarunner
 
 drivers: $(arm_services_drivers) $(arm_driver_drivers) $(aarch64_services_drivers) $(aarch64_driver_drivers) $(arm_test_drivers) $(aarch64_test_drivers)
-$(arm_services_drivers): $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs $(frameworks)
+$(arm_services_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs $(frameworks)
 	@echo "building ARCH=arm driver=$@ target"
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-$(arm_driver_drivers): $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
+$(arm_driver_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
 	@echo "building ARCH=arm driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C $(DRIVERS_PATH)/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all
-$(arm_test_drivers): $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
+$(arm_test_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
 	@echo "building ARCH=arm driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C tests/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
-$(aarch64_services_drivers): $(aarch64_libs) $(aarch64_drv_common_libs) $(arm_sys_libs) $(arm_drv_libs) link_aarch64_libs link_arm_libs $(frameworks)
+$(aarch64_services_drivers): $(aarch64_drv_common_libs) $(arm_drv_libs) link_aarch64_libs link_arm_libs $(frameworks)
 	@echo "building ARCH=aarch64 driver=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-$(aarch64_driver_drivers): $(aarch64_libs) $(aarch64_drv_common_libs) link_aarch64_libs link_arm_libs
+$(aarch64_driver_drivers): $(aarch64_drv_common_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C $(DRIVERS_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-$(aarch64_test_drivers): $(aarch64_libs) $(aarch64_drv_common_libs) link_aarch64_libs link_arm_libs
+$(aarch64_test_drivers): $(aarch64_drv_common_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C tests/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 

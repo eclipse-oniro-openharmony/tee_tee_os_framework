@@ -9,8 +9,6 @@ export TOPDIR := $(CURDIR)
 export TOOLS      := $(TOPDIR)/tools
 export TOOLS_ROOT := $(TOPDIR)/prebuild/$(HM_SDK_VER)/tools
 export VER
-export LIBS_DIR := $(TOPDIR)/libs
-export APPS_DIR := $(TOPDIR)/apps
 export PLATFORM_DIR := $(TOPDIR)/platform
 export TEELIB := $(TOPDIR)/../lib/teelib
 export DRVLIB := $(TOPDIR)/../lib/drvlib
@@ -57,13 +55,7 @@ HDR_INSTALL_DIR:=$(HDR_L_DIR)
 $(shell test -d $(HDR_INSTALL_DIR) || mkdir -p $(HDR_INSTALL_DIR))
 endif
 
-ifeq ($(CONFIG_GCC_PLUGINS), y)
-GCC_PLUGIN := gcc-plugins
-HM_APPS_GCC_PLUGINS_PATH := $(TOPDIR)
-include $(HM_APPS_GCC_PLUGINS_PATH)/tools/gcc-plugins/mk/gcc-plugins.mk
-else
 GCC_PLUGIN :=
-endif
 export GCC_PLUGIN
 
 # default target
@@ -117,21 +109,9 @@ clean_links:
 ## install headers:
 install_headers: setup_links $(HDR_INSTALL_DIR)/.timestamp
 $(HDR_INSTALL_DIR)/.timestamp:
-	@echo "before armsys ${EXPORT_HDRS} arm_sys_libs=$(arm_sys_libs) arm_libs=$(arm_libs)"
-	$(VER) for l in $(arm_sys_libs); do \
-		($(MAKE) -C sys_libs/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done;
-	@echo "before armpro ${EXPORT_HDRS} arm_pro_libs=$(arm_pro_libs)"
-	$(VER) for l in $(arm_pro_libs); do \
-		($(MAKE) -C libs/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done;
 	@echo "before armchip ${EXPORT_HDRS} arm_chip_libs=$(arm_chip_libs)"
 	$(VER) for l in $(arm_chip_libs); do \
 		($(MAKE) -C $(BUILD_TOOLS)/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done;
-	@echo "before aarch64-sys-lib ${EXPORT_HDRS} aarch64_sys_libs=$(aarch64_sys_libs) aarch64_libs=$(aarch64_libs)"
-	$(VER) for l in $(aarch64_sys_libs); do \
-		($(MAKE) -C sys_libs/$$l ARCH=aarch64 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done;
 	@echo "before aarch64-armchip-lib ${EXPORT_HDRS} aarch64_arm_chip_libs=$(aarch64_arm_chip_libs)"
 	$(VER) for l in $(aarch64_arm_chip_libs); do \
@@ -140,18 +120,6 @@ $(HDR_INSTALL_DIR)/.timestamp:
 	@echo "before armext-lib ${EXPORT_HDRS} arm_ext_libs=$(arm_ext_libs)"
 	$(VER) for l in $(arm_ext_libs); do \
 		($(MAKE) -C thirdparty/opensource/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done
-	@echo "before opensorce-lib ${EXPORT_HDRS} arm_open_source_libs=$(arm_open_source_libs)"
-	$(VER) for l in $(arm_open_source_libs); do \
-		($(MAKE) -C sys_libs/$$l ARCH=arm TARG=_a32 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done
-	@echo "before aarch64ext-lib ${EXPORT_HDRS} aarch64_ext_libs=$(aarch64_ext_libs)"
-	$(VER) for l in $(aarch64_ext_libs); do \
-		($(MAKE) -C thirdparty/opensource/$$l ARCH=aarch64 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done
-	@echo "before opensorce-lib ${EXPORT_HDRS} aarch64_open_source_libs=$(aarch64_open_source_libs)"
-	$(VER) for l in $(aarch64_open_source_libs); do \
-		($(MAKE) -C sys_libs/$$l ARCH=aarch64 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done
 	@echo "before tools ${EXPORT_HDRS}"
 	$(VER) if [ -f "$(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h" ] ; then \

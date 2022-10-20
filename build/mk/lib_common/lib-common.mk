@@ -12,10 +12,6 @@ inc-flags += $(INCLUDE_PATH:%=-I%)
 
 flags += -fdata-sections -ffunction-sections
 
-ifeq ($(CONFIG_DX_ENABLE), true)
-flags += -DDX_ENABLE
-endif
-
 ifeq ($(CONFIG_TRNG_ENABLE), true)
 flags += -DTRNG_ENABLE
 endif

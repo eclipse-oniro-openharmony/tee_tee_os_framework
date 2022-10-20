@@ -77,55 +77,8 @@ KERNEL_SYMSTR_TOTAL_SIZE=$(expr "${KERNEL_TOTAL_SIZE}" - "${KERNEL_SYMTAB_OFFSET
 KERNEL_SYMTAB_SIZE=$(readelf -S -W "${KERNEL_ELF}" 2>/dev/null | awk '{if ($2==".symtab") {print $6} else {if ($3==".symtab") {print $7}}}')
 KERNEL_SYM_HEAD="${KERNEL_SYMTAB_OFFSET},${KERNEL_SYMTAB_SIZE},${KERNEL_SYMSTR_TOTAL_SIZE}"
 
-if [ "${TEEOS_IMG_ENCRYPT}" == true ]; then
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_HI3660" ];then
-		KECC1PUB_PLAT=kecc1pub_chicago
-	fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_HI3650" ];then
-		KECC1PUB_PLAT=kecc1pub_austin
-	fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_HI6250" ];then
-		KECC1PUB_PLAT=kecc1pub_dallas
-	fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_MT6873" ];then
-		KRSAPUB_PLAT=krsapub_mt6873.pem
-		MTK_FLAG=1
-	fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_MT6853" ];then
-		KRSAPUB_PLAT=krsapub_mt6853.pem
-		MTK_FLAG=1
-	fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_MT6768" ];then
-		KRSAPUB_PLAT=krsapub_mt6768.pem
-		MTK_FLAG=1
-	fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_MT6885" ];then
-		KRSAPUB_PLAT=krsapub_mt6885.pem
-		MTK_FLAG=1
-        fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_MT6765" ] || [ "${CHIP_CHOOSE}" == "WITH_CHIP_MT6761" ];then
-		KRSAPUB_PLAT=krsapub_mt676x.pem
-		MTK_FLAG=1
-	fi
-	if [ "${CHIP_CHOOSE}" == "WITH_CHIP_HI1620" ];then
-		KRSAPUB_PLAT=krsapub_kp920.pem
-	fi
-fi
-
-if [ "${CHIP_CHOOSE}" == "WITH_CHIP_HI1620" ];then
-	KPENG_FLAG=1
-fi
-
 GOT_SIZE=0
-if [ "${MTK_FLAG}" ];then
-  "${CURDIR}"/header_mtk.py "${DST_PATH}" "${KERNEL_PATH}" "${KERNEL_TEXT_BASE}" "${GOT_SIZE}" "${KERNEL_SYM_HEAD}" "${COMPARE_IMAGE}" "${IMAGE_LOAD_ADDR}" "${KRSAPUB_PLAT}"
-elif [ "${KPENG_FLAG}" ];then
-  "${CURDIR}"/header_kunpeng.py  "${DST_PATH}" "${KERNEL_PATH}" "${KERNEL_TEXT_BASE}" "${GOT_SIZE}" "${KERNEL_SYM_HEAD}" "${COMPARE_IMAGE}" "${IMAGE_LOAD_ADDR}" ${KRSAPUB_PLAT}
-elif [ "${CHIP_CHOOSE}" == "WITH_CHIP_HI5651T" ];then
-  "${CURDIR}"/header_router.py "${DST_PATH}" "${KERNEL_PATH}" "${KERNEL_TEXT_BASE}" "${GOT_SIZE}" "${KERNEL_SYM_HEAD}" "${COMPARE_IMAGE}" "${IMAGE_LOAD_ADDR}" "${KRSAPUB_PLAT}"
-else
-  "${CURDIR}"/header.py  "${DST_PATH}" "${KERNEL_PATH}" "${KERNEL_TEXT_BASE}" "${GOT_SIZE}" "${KERNEL_SYM_HEAD}" "${COMPARE_IMAGE}" "${IMAGE_LOAD_ADDR}" "${KECC1PUB_PLAT}"
-fi
+"${CURDIR}"/header.py  "${DST_PATH}" "${KERNEL_PATH}" "${KERNEL_TEXT_BASE}" "${GOT_SIZE}" "${KERNEL_SYM_HEAD}" "${COMPARE_IMAGE}" "${IMAGE_LOAD_ADDR}" "${KECC1PUB_PLAT}"
 RET="$?"
 if [ 0 -ne "${RET}" ];then
     echo "failed to do header.py ret is ${RET}"

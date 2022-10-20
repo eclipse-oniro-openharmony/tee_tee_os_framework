@@ -129,11 +129,3 @@ flags += -DTA_LOG_LEVEL=2
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),openssl)
 flags += -DOPENSSL_ENABLE
 endif
-
-ifneq ($(findstring true, $(CONFIG_TEST_INNER_SERVICE_32BIT)$(CONFIG_TEST_INNER_SERVICE_64BIT)),)
-ifeq (${TARG}, ) #64
-LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/libtest_service -ltest_service
-else
-LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/libtest_service_a32 -ltest_service_a32
-endif
-endif

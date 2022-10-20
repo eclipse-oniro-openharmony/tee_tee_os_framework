@@ -15,14 +15,14 @@ RUNTIME_LIB_FLAG := $(LIBCOMPILER_RT_BUILTINS)
 
 ifeq ($(SVC_PARTITIAL_LINK), y)
 ifeq ($(ARCH),aarch64)
-LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -z max-page-size=4096 -T$(TOPDIR)/mk/ta_link_64.ld
+LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -z max-page-size=4096
 flags += -fvisibility=hidden
 else
 ifeq ($(CONFIG_DYNLINK),y)
-LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack -T$(TOPDIR)/mk/ta_link_new.ld
+LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack
 flags += -fvisibility=hidden
 else
-LDFLAGS += -r -d -T$(TOPDIR)/mk/ta_link.ld
+LDFLAGS += -r -d
 endif #CONFIG_DYNLINK
 endif #ARCH
 
