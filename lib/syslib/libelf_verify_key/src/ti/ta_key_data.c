@@ -8,30 +8,18 @@
 #include <tee_log.h>
 
 #include "ta_load_key.h"
-#ifdef CONFIG_WHITE_BOX_KEY
-#include "wb_key.h"
-#else
 #if CONFIG_TA_DECRYPT_ECIES_MDC
 #include "ecies_wrapped_key_tda4_mdc.h"
-#endif
 #endif
 
 bool is_wb_protecd_ta_key(void)
 {
-#ifdef CONFIG_WHITE_BOX_KEY
-    return true;
-#else
     return false;
-#endif
 }
 
 struct key_data g_key_data[] = {
 #ifdef DYN_TA_SUPPORT_V3
-#ifdef CONFIG_WHITE_BOX_KEY
-    { WB_KEY, V3_TYPE_3072, (uint8_t *)&g_wb_key, sizeof(g_wb_key) },
-#else
     { ECIES_KEY, V3_TYPE_3072, (uint8_t *)&g_ecies_key, sizeof(g_ecies_key) },
-#endif
 #endif
 };
 

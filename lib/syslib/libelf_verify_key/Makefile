@@ -27,10 +27,6 @@ else
 $(error "dynamic TA format not supported, please check CONFIG_DYN_TA_FORMAT")
 endif
 
-ifeq ($(ENABLE_TA_LOAD_WHITE_BOX_KEY),true)
-flags += -DCONFIG_WHITE_BOX_KEY
-endif
-
 libelf_verify_key_c_files := $(wildcard src/*.c)
 libelf_verify_key_c_files += $(wildcard src/common/*.c)
 inc-flags += -I$(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/gtask/include
