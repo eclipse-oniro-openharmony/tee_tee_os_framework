@@ -6,11 +6,6 @@
 # compile libs rules
 
 include $(BUILD_CONFIG)/arch_config.mk
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
-crypto_lib :=
-else
-crypto_lib :=
-endif
 libtee_shared_a32: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine $(crypto_lib) libteedynsrv
 libtee_shared: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine $(crypto_lib) libteedynsrv
 
@@ -20,32 +15,24 @@ libdrv_shared: libteeconfig
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
+drvlib := libdrv_frame
 
-libs: $(arm_drv_libs) $(arm_chip_libs) $(aarch64_drv_common_libs) libtee_shared
+libs: libtee_shared libdrv_shared ramfsmkimg_host $(syslib)
 	@echo "libsok"
-$(arm_host_libs):
-	@echo "building ARCH=arm_hostlibs=$@ target"
-	$(VER) $(MAKE) -C $(if $(filter libhwsecurec_host,$@),$(THIRDPARTY_LIBS)/$@,libs/$@) ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "arm_host_lib"
-$(arm_drv_libs):
-	@echo "building ARCH=arm drv_libs=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	echo "arm_drv_libs"
-$(arm_chip_libs):$(arm_host_libs)
-	@echo "building ARCH=arm_chip libs=$@ target"
-	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
-	@echo "arm_chip_lib"
-$(aarch64_drv_common_libs): $(syslib)
-	@echo "building ARCH=aarch64 aarch64_drv_common_libs=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	@echo "aarch64_drv_common_libs"
+
+ramfsmkimg_host:
+	@echo "building ramfsmkimg_host"
+	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ -f $(PREBUILD_HEADER)/.config -f Makefile all
 
 $(teelib):
 	@echo "building teelibs=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+
+$(drvlib):
+	@echo "building drvlibs=$@ target"
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 $(syslib):
 	@echo "bulding syslibs=$@ target"
@@ -57,28 +44,44 @@ libtee_shared: $(teelib)
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
+libdrv_shared: $(drvlib)
+	@echo "building libdrv_shared target"
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+
 # compile drivers rules
 
 frameworks := gtask teesmcmgr drvmgr tarunner
+service := huk_service
 
-drivers: $(arm_services_drivers) $(arm_driver_drivers) $(aarch64_services_drivers) $(aarch64_driver_drivers)
-$(arm_services_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs $(frameworks)
-	@echo "building ARCH=arm driver=$@ target"
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-$(arm_driver_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
+ifdef CONFIG_SSA_64BIT
+service += ssa
+endif
+
+ifdef CONFIG_PERMSRV_64BIT
+service += permission_service
+endif
+
+drivers := crypto_mgr
+
+ifdef CONFIG_TEE_MISC_DRIVER_64BIT
+drivers += tee_misc_driver
+endif
+
+$(drivers):
 	@echo "building ARCH=arm driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C $(DRIVERS_PATH)/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all
-$(aarch64_services_drivers): $(aarch64_drv_common_libs) $(arm_drv_libs) link_aarch64_libs link_arm_libs $(frameworks)
-	@echo "building ARCH=aarch64 driver=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-$(aarch64_driver_drivers): $(aarch64_drv_common_libs) link_aarch64_libs link_arm_libs
-	@echo "building ARCH=aarch64 driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C $(DRIVERS_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 
 $(frameworks):
 	@echo "tee_os_framework framework compile $@"
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(FRAMEWORK_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
+
+$(service):
+	@echo "tee_os_framework service compile $@"
+	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
+	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 COMPARE_IMAGE := 0
 WITH_LOG_ENCODE := false

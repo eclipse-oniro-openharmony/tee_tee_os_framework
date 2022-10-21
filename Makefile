@@ -19,6 +19,8 @@ export K_SYSLIB := $(TOPDIR)/../tee_os_kernel/libs/syslib
 export SERVICES_PATH := $(TOPDIR)/services
 export DRIVERS_PATH := $(TOPDIR)/drivers
 export K_THIRDPARTY := $(TOPDIR)/../tee_os_kernel/thirdparty
+export THIRDPARTY_LIBS := $(TOPDIR)/lib/thirdparty
+
 export BUILD_TOOLS := $(TOPDIR)/build/tools
 export BUILD_PACK := $(TOPDIR)/build/mk/pack
 export BUILD_LIB := $(TOPDIR)/build/mk/lib_common
@@ -28,7 +30,6 @@ export BUILD_FRAMEWORK := $(TOPDIR)/build/mk/framework_common
 export BUILD_CFI := $(TOPDIR)/build/mk/common/cfi
 export BUILD_CONFIG := $(TOPDIR)/build/mk/common/config
 export BUILD_OPERATION := $(TOPDIR)/build/mk/common/operation
-export THIRDPARTY_LIBS := $(TOPDIR)/lib/thirdparty
 
 ## if O=xxx, using outsize output directory.
 ifneq ($(O),)
@@ -66,13 +67,13 @@ GCC_PLUGIN :=
 export GCC_PLUGIN
 
 # default target
-PHONY += ext_libs libs drivers apps package open_source_libs
-all: $(GCC_PLUGIN) $(RT_LIB) install_headers setup_links ext_libs libs drivers apps package open_source_libs
-tees: setup_links ext_libs libs drivers apps open_source_libs
-drivers: setup_links ext_libs libs link_libs open_source_libs
-apps: setup_links ext_libs libs link_libs open_source_libs
+PHONY += libs $(drivers) $(frameworks) $(service) package
+all: $(GCC_PLUGIN) install_headers setup_links libs $(drivers) $(frameworks) $(service) package
+tees: setup_links libs $(drivers) $(frameworks) $(service)
+$(drivers): setup_links libs link_libs
+$(frameworks): setup_links libs link_libs
+$(service): setup_links libs link_libs
 package: hmfilemgr
-mods: drv_mods
 
 PHONY += link_libs link_arm_libs link_aarch64_libs
 link_libs: link_arm_libs link_aarch64_libs
@@ -84,8 +85,8 @@ link_libs: link_arm_libs link_aarch64_libs
 	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libhardware.a $(OUTPUTDIR)/kernel/.
 	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libklibc.a $(OUTPUTDIR)/kernel/.
 
-link_arm_libs: libs ext_libs open_source_libs
-	@echo "[link] libs=$(libs) ext_libs=$(ext_libs) open_source_libs=$(open_source_libs)"
+link_arm_libs: libs
+	@echo "[link] libs=$(libs)"
 	$(VER) PBD=$(PREBUILD_LIBS)/arm/ ; \
 	for lib in `ls $$PBD`; do \
 		link=$(OUTPUTDIR)/arm/libs/$$lib ; \
@@ -96,8 +97,8 @@ link_arm_libs: libs ext_libs open_source_libs
 		fi \
 	done
 
-link_aarch64_libs: libs ext_libs
-	@echo "[link] aarch libs=$(libs) ext_libs=$(ext_libs)"
+link_aarch64_libs: libs
+	@echo "[link] aarch libs=$(libs)"
 	$(VER) PBD=$(PREBUILD_LIBS)/aarch64/ ; \
 	for lib in `ls $$PBD`; do \
 		link=$(OUTPUTDIR)/aarch64/libs/$$lib ; \
@@ -116,22 +117,10 @@ clean_links:
 ## install headers:
 install_headers: setup_links $(HDR_INSTALL_DIR)/.timestamp
 $(HDR_INSTALL_DIR)/.timestamp:
-	@echo "before armchip ${EXPORT_HDRS} arm_chip_libs=$(arm_chip_libs)"
-	$(VER) for l in $(arm_chip_libs); do \
-		($(MAKE) -C $(BUILD_TOOLS)/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done;
-	@echo "before armext-lib ${EXPORT_HDRS} arm_ext_libs=$(arm_ext_libs)"
-	$(VER) for l in $(arm_ext_libs); do \
-		($(MAKE) -C thirdparty/opensource/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done
 	@echo "before tools ${EXPORT_HDRS}"
 	$(VER) if [ -f "$(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h" ] ; then \
 	cp $(PLATFORM_DIR)/${PLATFORM_NAME}/${PRODUCT_NAME}/${CHIP_NAME}/plat_cfg/plat_cfg.h $(HDR_INSTALL_DIR)/; fi;
 	touch $(HDR_INSTALL_DIR)/.timestamp
-	@echo "before lib/teelib ${EXPORT_HDRS}"
-	$(VER) for l in $(teelib); do \
-		($(MAKE) -C $(TEELIB)/$$l HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done
 
 ## install libs:
 install_libs:
