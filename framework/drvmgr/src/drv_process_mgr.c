@@ -41,7 +41,7 @@ int32_t create_spawn_sync_msg_info(void)
 {
     int32_t ret = hm_create_ipc_native(DRV_SPAWN_SYNC_NAME, &g_drv_spawn_sync_channel);
     if (ret != 0) {
-        /* called by drvmgr main, drv_timer may not init, use hm_error instead of tloge */
+        /* called by drvmgr main, use hm_error instead of tloge */
         hm_error("create spawn sync channel fail\n");
         return -1;
     }

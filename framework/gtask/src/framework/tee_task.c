@@ -154,7 +154,6 @@ static timer_event *start_timeout(void)
     struct timer_private_data_kernel dummy = { 0 };
     timeval_t val;
 
-    /* Pass the timeout channel to drv_timer */
     dummy.dev_id = 1;
     dummy.type   = TIMER_CALLBACK_TIMEOUT;
 

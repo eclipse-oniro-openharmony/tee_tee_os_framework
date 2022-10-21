@@ -2,7 +2,6 @@ export CONFIG_TA_64BIT := false
 export CONFIG_TA_32BIT := true
 export CONFIG_SSA_64BIT := false
 export CONFIG_GTASK_64BIT := false
-export CONFIG_DRV_TIMER_64BIT := false
 export CONFIG_OH32_SEC_ENABLE := true
 export CONFIG_HUK_SERVICE_32BIT := true
 export CONFIG_TA_SIGN_KEY_CBG := true
