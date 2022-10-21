@@ -63,12 +63,9 @@ HDR_INSTALL_DIR:=$(HDR_L_DIR)
 $(shell test -d $(HDR_INSTALL_DIR) || mkdir -p $(HDR_INSTALL_DIR))
 endif
 
-GCC_PLUGIN :=
-export GCC_PLUGIN
-
 # default target
 PHONY += libs $(drivers) $(frameworks) $(service) package
-all: $(GCC_PLUGIN) install_headers setup_links libs $(drivers) $(frameworks) $(service) package
+all: install_headers setup_links libs $(drivers) $(frameworks) $(service) package
 tees: setup_links libs $(drivers) $(frameworks) $(service)
 $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
