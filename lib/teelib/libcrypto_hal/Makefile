@@ -1,5 +1,5 @@
 MODULE := libcrypto_hal${TARG}.a
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_CONFIG)/feature-macro.mk
 
 ifeq ($(CONFIG_CRYPTO_SUPPORT_EC25519),true)
 c-flags += -DCRYPTO_SSL_SUPPORT_EC25519
@@ -34,4 +34,4 @@ endif
 libcrypto_hal_c_files += $(wildcard src/*.c) \
                          $(wildcard src/boringssl/*.c)
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

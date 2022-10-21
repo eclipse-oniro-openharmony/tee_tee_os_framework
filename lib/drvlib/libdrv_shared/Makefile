@@ -26,7 +26,7 @@ flags += -DTEE_SUPPORT_DRV_FD_DUMP
 endif
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
 inc-flags += -I$(DRVLIB)/common/libdrv_frame/include
@@ -42,7 +42,7 @@ inc-flags += -I$(SYSLIB)/libspawn_common/include
 inc-flags += -I$(TEELIB)/libteeconfig/include
 endif
 
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_CONFIG)/feature-macro.mk
 
 MODULE_FILE = $(BUILD_DIR)/$(SONAME)
 INSTALL_FILE = $(LIB_DIR)/$(SONAME)

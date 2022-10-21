@@ -1,2 +1,2 @@
-include $(TOPDIR)/mk/svc-flags.mk
-include $(TOPDIR)/mk/common.mk
+include $(BUILD_SERVICE)/svc-flags.mk
+include $(BUILD_OPERATION)/common.mk

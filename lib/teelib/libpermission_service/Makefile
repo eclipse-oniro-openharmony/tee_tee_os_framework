@@ -30,4 +30,4 @@ ifeq ($(CONFIG_APP_TEE_PERM),y)
     endif
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

@@ -47,8 +47,8 @@ ifeq ($(CONFIG_HISI_MSPC_IPC_TEST), true)
 c-flags += -DCONFIG_HISI_MSPC_IPC_TEST
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_LIB)/lib-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk
 flags += -DTARGET_PRODUCT_VAL=\"$(TARGET_BOARD_PLATFORM)\"
 
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)

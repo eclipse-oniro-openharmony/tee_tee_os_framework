@@ -2,7 +2,7 @@
 # Print all commands if V=3; maximum verbosity.
 # Copyright Huawei Technologies Co., Ltd. 2010-2019. All rights reserved.]
 set -e
-source ./tools/gen_boot_function.sh
+source ${BUILD_TOOLS}/generate_img/gen_boot_function.sh
 
 V=3
 
@@ -41,7 +41,7 @@ done
 
 # Get the script's location.
 SCRIPT_PATH=$(readlink -f ${BASH_SOURCE[0]})
-SCRIPT_DIR=$(dirname "${SCRIPT_PATH}")
+SCRIPT_DIR=$(dirname "${SCRIPT_PATH}")/lds
 
 # Create working directory.
 # Warning: mktemp functions differently on Linux and OSX.

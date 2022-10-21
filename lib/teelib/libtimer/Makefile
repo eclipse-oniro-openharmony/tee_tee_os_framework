@@ -27,5 +27,5 @@ libtimer_c_files := $(wildcard src/*.c)
 libtimer_c_files += $(wildcard src/*/*.c)
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)

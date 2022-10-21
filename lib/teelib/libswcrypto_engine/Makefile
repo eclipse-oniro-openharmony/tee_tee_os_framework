@@ -61,4 +61,4 @@ endif
 c-flags += -DOPENSSL_ENABLE
 libswcrypto_engine_c_files := $(filter-out src/stub/rsa_wrapper_stub.c, $(libswcrypto_engine_c_files))
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

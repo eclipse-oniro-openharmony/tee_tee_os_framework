@@ -28,7 +28,7 @@ export CC CXX AS LD CPP AR NM OBJCOPY READELF STRIP
 export TARGET_ARCH_32 := arm-linux-gnueabi
 export TARGET_ARCH_64 := aarch64-linux-gnu
 
-compiler-rt = $(shell if [ -d $(TOPDIR)/../open_source ]; then echo "exist"; else echo "noexist"; fi)
+compiler-rt = $(shell if [ -d $(TOPDIR)/open_source ]; then echo "exist"; else echo "noexist"; fi)
 ifeq ($(ARCH), arm)
 	TARGET_ARCH := $(TARGET_ARCH_32)
 ifeq ("$(compiler-rt)", "exist")

@@ -5,7 +5,6 @@ libtee_shared_c_files := $(wildcard src/*.c)
 
 inc-flags += -I$(DRIVERS_PATH)/include # dynion.h
 inc-flags += -I$(TEELIB)/libtee_shared/include
-inc-flags += -I$(TOPDIR)/libs/syslib/libmmgr/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
@@ -13,8 +12,8 @@ inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr_sysmgr
 
-include $(TOPDIR)/mk/lib-common.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_LIB)/lib-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk
 
 ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), false)
 flags += -DCONFIG_TEE_MISC_DRIVER

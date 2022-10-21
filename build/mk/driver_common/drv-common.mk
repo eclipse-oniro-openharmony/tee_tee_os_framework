@@ -1,2 +1,2 @@
-include $(TOPDIR)/mk/drv-flags.mk
-include $(TOPDIR)/mk/common.mk
+include $(BUILD_DRIVER)/drv-flags.mk
+include $(BUILD_OPERATION)/common.mk

@@ -6,22 +6,29 @@ endif
 
 ## hm-sdk directories:
 export TOPDIR := $(CURDIR)
-export TOOLS      := $(TOPDIR)/tools
+export TOOLS      := $(TOPDIR)/build/tools
 export TOOLS_ROOT := $(TOPDIR)/prebuild/$(HM_SDK_VER)/tools
 export VER
-export PLATFORM_DIR := $(TOPDIR)/platform
-export TEELIB := $(TOPDIR)/../lib/teelib
-export DRVLIB := $(TOPDIR)/../lib/drvlib
-export FRAMEWORK_PATH := $(TOPDIR)/../framework
-export K_FRAMEWORK := $(TOPDIR)/../../tee_os_kernel/framework
-export SYSLIB := $(TOPDIR)/../lib/syslib
-export K_TEELIB := $(TOPDIR)/../../tee_os_kernel/libs/teelib
-export K_SYSLIB := $(TOPDIR)/../../tee_os_kernel/libs/syslib
-export SERVICES_PATH := $(TOPDIR)/../services
-export DRIVERS_PATH := $(TOPDIR)/../drivers
-export K_THIRDPARTY := $(TOPDIR)/../../tee_os_kernel/thirdparty
-export BUILD_TOOLS := $(TOPDIR)/../build/tools
-export THIRDPARTY_LIBS := $(TOPDIR)/../lib/thirdparty
+export PLATFORM_DIR := $(TOPDIR)/trustedcore_hm/platform
+export TEELIB := $(TOPDIR)/lib/teelib
+export DRVLIB := $(TOPDIR)/lib/drvlib
+export FRAMEWORK_PATH := $(TOPDIR)/framework
+export SYSLIB := $(TOPDIR)/lib/syslib
+export K_TEELIB := $(TOPDIR)/../tee_os_kernel/libs/teelib
+export K_SYSLIB := $(TOPDIR)/../tee_os_kernel/libs/syslib
+export SERVICES_PATH := $(TOPDIR)/services
+export DRIVERS_PATH := $(TOPDIR)/drivers
+export K_THIRDPARTY := $(TOPDIR)/../tee_os_kernel/thirdparty
+export BUILD_TOOLS := $(TOPDIR)/build/tools
+export BUILD_PACK := $(TOPDIR)/build/mk/pack
+export BUILD_LIB := $(TOPDIR)/build/mk/lib_common
+export BUILD_SERVICE := $(TOPDIR)/build/mk/service_common
+export BUILD_DRIVER := $(TOPDIR)/build/mk/driver_common
+export BUILD_FRAMEWORK := $(TOPDIR)/build/mk/framework_common
+export BUILD_CFI := $(TOPDIR)/build/mk/common/cfi
+export BUILD_CONFIG := $(TOPDIR)/build/mk/common/config
+export BUILD_OPERATION := $(TOPDIR)/build/mk/common/operation
+export THIRDPARTY_LIBS := $(TOPDIR)/lib/thirdparty
 
 ## if O=xxx, using outsize output directory.
 ifneq ($(O),)
@@ -36,8 +43,8 @@ default: all
 
 # top directory use aarch64
 ARCH = aarch64
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/plat.mk
+include $(BUILD_CONFIG)/var.mk
+include $(TOPDIR)/trustedcore_hm/mk/plat.mk
 export PLAT_CFG_DIR := $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/plat_cfg
 export PLAT_COMMON_DIR := $(PLATFORM_DIR)/common
 ifneq ($(strip $(TARGET_BOARD_PLATFORM)), )
@@ -45,9 +52,9 @@ ifeq ($(LIBS_INSTALL_DIR),)
 include $(PLATFORM_DIR)/$(PLATFORM_NAME)/platform.mk
 endif
 endif
-include $(TOPDIR)/mk/toolchain.mk
+include $(BUILD_CONFIG)/toolchain.mk
 -include $(PREBUILD_HM_INC)/.config
-include $(TOPDIR)/mk/project.mk
+include $(BUILD_OPERATION)/project.mk
 
 # for install header
 ifeq ($(HDR_INSTALL_DIR),)
@@ -113,10 +120,6 @@ $(HDR_INSTALL_DIR)/.timestamp:
 	$(VER) for l in $(arm_chip_libs); do \
 		($(MAKE) -C $(BUILD_TOOLS)/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
 	done;
-	@echo "before aarch64-armchip-lib ${EXPORT_HDRS} aarch64_arm_chip_libs=$(aarch64_arm_chip_libs)"
-	$(VER) for l in $(aarch64_arm_chip_libs); do \
-		($(MAKE) -C libs/$$l ARCH=aarch64 HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
-	done;
 	@echo "before armext-lib ${EXPORT_HDRS} arm_ext_libs=$(arm_ext_libs)"
 	$(VER) for l in $(arm_ext_libs); do \
 		($(MAKE) -C thirdparty/opensource/$$l ARCH=arm HDR_INSTALL_DIR=$(HDR_INSTALL_DIR) install_headers;) \
@@ -142,7 +145,7 @@ hmfilemgr: $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
 $(STAGE_DIR)/bootfs.img:
 $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr: $(STAGE_DIR)/bootfs.img
 	@echo "Building hmfilemgr"
-	$(MAKE) -C tools/hmfilemgr ARCH=$(TEE_ARCH) -j
+	$(MAKE) -C $(BUILD_TOOLS)/hmfilemgr ARCH=$(TEE_ARCH) -j
 
 PHONY += teehm.img trustedcore.img
 package: $(STAGE_DIR)/trustedcore.img
@@ -150,9 +153,6 @@ package: $(STAGE_DIR)/trustedcore.img
 PHONY += release
 release:
 	@echo "!!compile release"
-	sh $(TOPDIR)/tools/ddk/generate_sdk.sh
-	sh $(TOPDIR)/tools/ddk/gener_tee_sdk.sh
-	sh $(TOPDIR)/tools/ddk/gener_mk_sdk.sh
 	@rm -rf tools/elf_extract
 
 PHONY += clean

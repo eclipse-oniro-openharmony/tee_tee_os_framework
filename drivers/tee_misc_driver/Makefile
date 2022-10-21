@@ -3,9 +3,9 @@
 
 DRIVER := tee_misc_driver.elf
 
-include $(TOPDIR)/mk/feature-macro.mk
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/plat.mk
+include $(BUILD_CONFIG)/feature-macro.mk
+include $(BUILD_CONFIG)/var.mk
+include $(TOPDIR)/trustedcore_hm/mk/plat.mk
 -include $(PREBUILD_HM_INC)/.config
 
 tee_misc_driver_c_files := $(wildcard src/*.c)
@@ -29,7 +29,7 @@ c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
 SVC_PARTITIAL_LINK = y
-include $(TOPDIR)/mk/svc-common.mk
+include $(BUILD_SERVICE)/svc-common.mk
 
 install:
 	@echo "tee_misc_driver strip begin"

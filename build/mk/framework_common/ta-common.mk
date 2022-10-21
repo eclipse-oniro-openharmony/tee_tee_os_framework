@@ -1,8 +1,8 @@
 TARGET_IS_TA := y
 # setup toolchain
-include $(TOPDIR)/mk/cfg.mk
-include $(TOPDIR)/mk/toolchain.mk
-include $(TOPDIR)/mk/common.mk
+include $(BUILD_CONFIG)/cfg.mk
+include $(BUILD_CONFIG)/toolchain.mk
+include $(BUILD_OPERATION)/common.mk
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
 
@@ -24,7 +24,7 @@ LDFLAGS += -L$(LIB_DIR)
 LDFLAGS += -L$(PREBUILD_ARCH_PLAT_LIBS) $(LINK_LIBS)
 flags += $(INCLUDES)
 
-include $(TOPDIR)/mk/llvm-apps-cfi.mk
+include $(BUILD_CFI)/llvm-apps-cfi.mk
 
 ### HM_NOTE: where added this flags  while compiling hm-teeos
 ### 	     do it later.

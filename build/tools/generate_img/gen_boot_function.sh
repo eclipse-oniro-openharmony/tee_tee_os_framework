@@ -26,7 +26,7 @@ fail() {
 do_others() {
     # Strip CPIO metadata if possible.
     if [ "${DDK_FLAG}" != "true" ]; then
-        CPIO_STRIP="$TOPDIR"/tools/cpio-strip/cpio-strip
+        CPIO_STRIP="$BUILD_TOOLS"/generate_img/cpio-strip/cpio-strip
     else
         CPIO_STRIP="$TOPDIR"/prebuild/hm-teeos-release/tools/cpio-strip
     fi
@@ -62,7 +62,6 @@ do_others() {
     mkdir -p "$LINKER_DIR"
     ARCHIVE_FLAGS="-DUNZIP_SIZE=${UNZIP_SIZE}"
     ${CC} ${SDK_CPPFLAGS} ${ARCHIVE_FLAGS} -P -E \
-            -I"${PWD}"/kernel/elfloader/include/arch-arm/ \
             -o "${LINKER_DIR}/linker.lds_pp" \
             -x c "${SCRIPT_DIR}/linker.lds"
 
@@ -74,8 +73,6 @@ do_others() {
         if [ "${CONFIG_NO_PLATCFG_EMBEDDED}" != "true" ]; then
             ${CC} ${SDK_CPPFLAGS} -I"${PLAT_CFG_DIR}"/ \
                 -I"${PLAT_COMMON_DIR}"/include/ \
-                -I${TOPDIR}/kernel/elfloader/include/ \
-                -I${TOPDIR}/kernel/libuart/ \
                 -I${TOPDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \
                 -I${TOPDIR}/prebuild/hm-teeos-local-release/headers/kernel/include/arch/arm/uapi/ \
                 -I${OUTPUTDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \

@@ -16,4 +16,4 @@ ifeq ($(CONFIG_TEST_CA_CHECK),y)
     CPPFLAGS += -I$(TEELIB)/libteeconfig/src/tee_test_config
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

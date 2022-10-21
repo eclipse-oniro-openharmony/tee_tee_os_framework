@@ -3,7 +3,7 @@
 # TARGET is an app
 TARGET := permission_service${TARG}.elf
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 CFILES := $(wildcard src/*.c)
 CFILES += $(wildcard src/auth/tee_auth_sign_rsa.c)
 
@@ -69,5 +69,5 @@ ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),openssl)
 CFLAGS += -DOPENSSL_ENABLE
 endif
 
-include $(TOPDIR)/mk/ta-common.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_FRAMEWORK)/ta-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk

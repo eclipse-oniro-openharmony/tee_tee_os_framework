@@ -11,7 +11,6 @@ CPPFLAGS += -I$(TEELIB)/libcrypto/include
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/src
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
-CPPFLAGS += -I$(TOPDIR)/libs/libcrypto_common
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include
 CPPFLAGS += -I$(TEELIB)/libteeos/src/tee
@@ -37,9 +36,9 @@ A32_CFLAGS += -DMAX_SRC_SIZE=512000
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 CFLAGS += -DOPENSSL_ENABLE
 A32_CFLAGS += -DOPENSSL_ENABLE
-CPPFLAGS += -I$(TOPDIR)/../open_source/OpenSSL/include
-CPPFLAGS += -I$(TOPDIR)/../open_source/OpenSSL/crypto
-CPPFLAGS += -I$(TOPDIR)/../open_source/OpenSSL/crypto/include
+CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/include
+CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/crypto
+CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/crypto/include
 endif
 
 ifeq (${TARG}, _a32)
@@ -50,4 +49,4 @@ ifeq (${TARG}, )
 ASMFILES += $(wildcard src/aarch64/*.S)
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

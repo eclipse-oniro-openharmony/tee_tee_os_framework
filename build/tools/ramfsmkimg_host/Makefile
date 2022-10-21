@@ -2,7 +2,6 @@
 # Description: makeflie for rmfs
 # Create: 2019-08-20
 
-KERNEL = $(PWD)/kernel
 CC = cc
 CPPFLAGS :=
 LDFLAGS :=
@@ -18,7 +17,7 @@ ifeq ($(TARGET_IS_ARM32),y)
 	ARCH = arm
 endif
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 CPPFLAGS += -I$(BUILD_TOOLS)/ramfsmkimg_host/include
 CPPFLAGS += -I$(PREBUILD_HEADER)/host
 CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi

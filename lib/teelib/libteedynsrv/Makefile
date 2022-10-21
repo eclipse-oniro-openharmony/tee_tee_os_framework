@@ -13,7 +13,7 @@ inc-flags += -I$(TEELIB)/libtimer/include
 inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(TOPDIR)/prebuild/hm-teeos-local-release/headers/ddk/hmapi/
 # Libraries
-include $(TOPDIR)/mk/feature-macro.mk
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk
+include $(BUILD_LIB)/lib-common.mk
 
 

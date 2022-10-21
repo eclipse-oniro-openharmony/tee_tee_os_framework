@@ -3,7 +3,7 @@
 # TARGET is an app
 TARGET := huk_service${TARG}.elf
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 
 CFILES := $(wildcard src/*.c)
 
@@ -32,5 +32,5 @@ inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
 LDFLAGS += -z noexecstack
 
-include $(TOPDIR)/mk/ta-common.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_FRAMEWORK)/ta-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk

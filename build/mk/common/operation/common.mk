@@ -71,11 +71,11 @@ LDFLAGS += -s -z separate-loadable-segments
 cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
 
 #include the sub makefile as needed
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/rule.mk
+include $(BUILD_CONFIG)/var.mk
+include $(BUILD_OPERATION)/rule.mk
 #shoule keep the same value with hm-apps/trustedcore_hm/config.mk
 
-include $(TOPDIR)/mk/plat.mk
+include $(TOPDIR)/trustedcore_hm/mk/plat.mk
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 CFLAGS   += ${TRUSTEDCORE_PLATFORM_FLAGS}
 CPPFLAGS += ${TRUSTEDCORE_PLATFORM_FLAGS}

@@ -5,7 +5,7 @@
 # ramdisk tools, run on host
 # compile libs rules
 
-include $(TOPDIR)/mk/arch_config.mk
+include $(BUILD_CONFIG)/arch_config.mk
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)
 crypto_lib :=
 else
@@ -21,11 +21,7 @@ teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libper
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
 
-<<<<<<< HEAD
-libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(host_tools) libtee_shared
-=======
-libs: $(arm_drv_libs) $(arm_chip_libs) $(aarch64_drv_common_libs) $(thirdparty_libs) libtee_shared
->>>>>>> tee_os_framework: Delete unused code
+libs: $(arm_drv_libs) $(arm_chip_libs) $(aarch64_drv_common_libs) libtee_shared
 	@echo "libsok"
 $(arm_host_libs):
 	@echo "building ARCH=arm_hostlibs=$@ target"
@@ -40,16 +36,11 @@ $(arm_chip_libs):$(arm_host_libs)
 	@echo "building ARCH=arm_chip libs=$@ target"
 	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
 	@echo "arm_chip_lib"
-$(aarch64_drv_common_libs): $(aarch64_arm_chip_libs) $(syslib)
+$(aarch64_drv_common_libs): $(syslib)
 	@echo "building ARCH=aarch64 aarch64_drv_common_libs=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(DRVLIB)/common/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	@echo "aarch64_drv_common_libs"
-$(aarch64_arm_chip_libs):
-	@echo "building ARCH=arm_chip_aarch64 libs=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	@echo "aarch_lib"
 
 $(teelib):
 	@echo "building teelibs=$@ target"
@@ -70,25 +61,19 @@ libtee_shared: $(teelib)
 
 frameworks := gtask teesmcmgr drvmgr tarunner
 
-drivers: $(arm_services_drivers) $(arm_driver_drivers) $(aarch64_services_drivers) $(aarch64_driver_drivers) $(arm_test_drivers) $(aarch64_test_drivers)
+drivers: $(arm_services_drivers) $(arm_driver_drivers) $(aarch64_services_drivers) $(aarch64_driver_drivers)
 $(arm_services_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs $(frameworks)
 	@echo "building ARCH=arm driver=$@ target"
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 $(arm_driver_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
 	@echo "building ARCH=arm driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C $(DRIVERS_PATH)/$@ ARCH=arm TARG=_a32 -f $(PREBUILD_HEADER)/.config -f Makefile all
-$(arm_test_drivers): $(arm_drv_libs) $(arm_chip_libs) link_arm_libs link_aarch64_libs
-	@echo "building ARCH=arm driver=$@ target"
-	$(VER) LDFLAGS= $(MAKE) -C tests/$@ ARCH=arm -f $(PREBUILD_HEADER)/.config -f Makefile all
 $(aarch64_services_drivers): $(aarch64_drv_common_libs) $(arm_drv_libs) link_aarch64_libs link_arm_libs $(frameworks)
 	@echo "building ARCH=aarch64 driver=$@ target"
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 $(aarch64_driver_drivers): $(aarch64_drv_common_libs) link_aarch64_libs link_arm_libs
 	@echo "building ARCH=aarch64 driver=$@ target"
 	$(VER) LDFLAGS= $(MAKE) -C $(DRIVERS_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
-$(aarch64_test_drivers): $(aarch64_drv_common_libs) link_aarch64_libs link_arm_libs
-	@echo "building ARCH=aarch64 driver=$@ target"
-	$(VER) LDFLAGS= $(MAKE) -C tests/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all
 
 $(frameworks):
 	@echo "tee_os_framework framework compile $@"
@@ -103,7 +88,7 @@ WITH_LOG_ENCODE := false
 boot-apps := $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
 boot-apps += $(PREBUILD_LIBS)/$(TEE_ARCH)/hmsysmgr
 
-HM_APPS_TOOLS := $(TOPDIR)/tools
+HM_APPS_TOOLS := $(BUILD_TOOLS)/generate_img
 HM_APPS_LIBCPIO := $(TOPDIR)/../../tee_os_kernel/libs/syslib/libcpio
 
 .PHONY : cpio-strip
@@ -118,9 +103,9 @@ cpio-strip :
 DDK_FLAG:=false
 $(STAGE_DIR)/teehm.img.elf: $(ELFLOADER_OUTDIR)/elfloader.o hmfilemgr cpio-strip
 	@echo "[GEN_IMAGE] $@"
-	$(VER) $(TOOLS)/smart-strip.sh $(boot-apps)
+	$(VER) $(BUILD_TOOLS)/generate_img/smart-strip.sh $(boot-apps)
 	$(VER) DDK_FLAG=$(DDK_FLAG) CONFIG_NO_PLATCFG_EMBEDDED=$(CONFIG_NO_PLATCFG_EMBEDDED) PREBUILD_DIR=$(PREBUILD_DIR) ELFLOADER_DIR=$(ELFLOADER_OUTDIR) OUTPUTDIR=$(OUTPUTDIR)\
-		KERNEL_OUTDIR=$(KERNEL_OUTDIR) $(TOOLS)/gen_boot_image.sh $(KERNEL_OUTDIR)/kernel.elf $(boot-apps) $@ 2>&1 \
+		KERNEL_OUTDIR=$(KERNEL_OUTDIR) BUILD_TOOLS=$(BUILD_TOOLS) $(BUILD_TOOLS)/generate_img/gen_boot_image.sh $(KERNEL_OUTDIR)/kernel.elf $(boot-apps) $@ 2>&1 \
 		| while read line; do echo " [GEN_IMAGE] $$line"; done; \
 		exit ${PIPESTATUS[0]}
 
@@ -133,22 +118,22 @@ endif
 
 $(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
 	@echo "[Installing $@]"
-	$(VER) IMAGE_ROOT=$(STAGE_DIR) $(TOOLS)/packimg.sh \
+	$(VER) IMAGE_ROOT=$(STAGE_DIR) $(BUILD_TOOLS)/pack_img/packimg.sh \
 		$(TRUSTEDCORE_PLATFORM_CHOOSE) \
 		$(COMPARE_IMAGE) \
 		$(TRUSTEDCORE_CHIP_CHOOSE) \
 		$(WITH_TEEOS_ENCRYPT) \
 		$(WITH_LOG_ENCODE)
 ifneq ($(CODE_CHECKER),y)
-	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/syslib/libc/clean_libc.sh  $(TOPDIR)/../../tee_os_kernel
-	$(VER) $(TOPDIR)/../../tee_os_kernel/libs/teelib/libopenssl/clean_openssl.sh $(TOPDIR)/../../tee_os_kernel
+	$(VER) $(TOPDIR)/../tee_os_kernel/libs/syslib/libc/clean_libc.sh  $(TOPDIR)/../tee_os_kernel
+	$(VER) $(TOPDIR)/../tee_os_kernel/libs/teelib/libopenssl/clean_openssl.sh $(TOPDIR)/../tee_os_kernel
 
 endif
 ifneq ($(VERSION_DDK),y)
-	$(VER) rm -rf $(TOPDIR)/tools/cpio-strip/cpio-strip
+	$(VER) rm -rf $(BUILD_TOOLS)/generate_img/cpio-strip/cpio-strip
 endif
 
-include mk/svc-flags.mk
+include $(BUILD_SERVICE)/svc-flags.mk
 
 # export for tools/gen_boot_image.sh
 ifeq (${HM_ARCH}, aarch32)
@@ -170,4 +155,4 @@ SDK_CPPFLAGS += -include$(PREBUILD_DIR)/headers/autoconf.h
 export SDK_CPPFLAGS
 
 # bootfs image
-include $(TOPDIR)/mk/bootfs.mk
+include $(BUILD_PACK)/bootfs.mk

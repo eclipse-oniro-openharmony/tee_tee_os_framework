@@ -7,8 +7,8 @@ TARGET := hmfilemgr
 
 # used by common/var.mk
 MODULE_FOLDER := $(shell basename $(CURDIR))
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/toolchain.mk
+include $(BUILD_CONFIG)/var.mk
+include $(BUILD_CONFIG)/toolchain.mk
 
 BOOTIMG := $(STAGE_DIR)/bootfs.img
 PREBUILD_FILEMGR_OBJ := $(PREBUILD_APPS)/$(TARGET)/src
@@ -64,9 +64,9 @@ endif
 
 filemgr_LDFLAGS += -L$(LIB_DIR)
 ifeq ($(CONFIG_ARCH_AARCH64),y)
-filemgr_LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/$(PLAT)/libhwsecurec/
+filemgr_LDFLAGS += -L$(TOPDIR)/../tee_os_kernel/build/arm/$(PLAT)/libhwsecurec/
 else
-filemgr_LDFLAGS += -L$(TOPDIR)/../../tee_os_kernel/build/arm/$(PLAT)/libhwsecurec_a32/
+filemgr_LDFLAGS += -L$(TOPDIR)/../tee_os_kernel/build/arm/$(PLAT)/libhwsecurec_a32/
 endif
 filemgr_LDFLAGS += --gc-sections -L$(PREBUILD_ARCH_PLAT_LIBS) --start-group $(LINK_LIBS) $(LIBCOMPILER_RT_BUILTINS) --end-group
 filemgr_LDFLAGS += -u _hm_start -e _hm_start -z max-page-size=0x1000 -nostdlib --build-id=none -z noexecstack -z relro -z now

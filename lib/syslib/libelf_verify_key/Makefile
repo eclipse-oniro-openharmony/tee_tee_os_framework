@@ -4,8 +4,8 @@
 # TARGET is a lib
 MODULE := libelf_verify_key${TARG}.a
 
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_CONFIG)/var.mk
+include $(BUILD_CONFIG)/feature-macro.mk
 
 ifneq ($(chip_type),cs2)
 flags += -DWITH_CHIP_CS
@@ -52,6 +52,6 @@ else
 libelf_verify_key_c_files := $(filter-out $(FILTEROUT_CFILES), $(libelf_verify_key_c_files))
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk
 EXPORT_HDRS := $(wildcard include/*)
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)

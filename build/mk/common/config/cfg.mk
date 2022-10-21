@@ -1,4 +1,4 @@
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 PREBUILD_SDK  := $(PREBUILD_DIR)/headers/sdk
 PREBUILD_INNER_SDK  := $(PREBUILD_DIR)/headers/inner_sdk
 PREBUILD_DDK  := $(PREBUILD_DIR)/headers/ddk

@@ -16,4 +16,4 @@ CPPFLAGS += -I$(TEELIB)/libhuk/include
 CFLAGS += -DOPENSSL_ENABLE
 A32_CFLAGS += -DOPENSSL_ENABLE
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

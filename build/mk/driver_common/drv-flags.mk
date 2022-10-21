@@ -3,8 +3,8 @@ ENTRY_POINT ?= _hm_start
 
 TARGET_IS_DRV := y
 # setup toolchain
-include $(TOPDIR)/mk/cfg.mk
-include $(TOPDIR)/mk/toolchain.mk
+include $(BUILD_CONFIG)/cfg.mk
+include $(BUILD_CONFIG)/toolchain.mk
 
 inc-flags += $(INCLUDE_PATH:%=-I%)
 
@@ -19,4 +19,4 @@ LDFLAGS +=  -nostdlib -u $(ENTRY_POINT) -e $(ENTRY_POINT) -z max-page-size=0x100
 
 flags += $(INCLUDES)
 
-include $(TOPDIR)/mk/llvm-apps-cfi.mk
+include $(BUILD_CFI)/llvm-apps-cfi.mk

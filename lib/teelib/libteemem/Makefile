@@ -11,4 +11,4 @@ CPPFLAGS += -I$(PREBUILD_HEADER)/sys/mmgr
 # Source files required to build the target
 CFILES := $(wildcard src/*.c)
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

@@ -4,8 +4,8 @@
 
 DRIVER := gtask${TARG}.elf
 
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/plat.mk
+include $(BUILD_CONFIG)/var.mk
+include $(TOPDIR)/trustedcore_hm/mk/plat.mk
 ifeq ($(CONFIG_DYN_TA_FORMAT),1)
 flags += -DDYN_TA_SUPPORT_V3
 else ifeq ($(CONFIG_DYN_TA_FORMAT),2)
@@ -40,7 +40,6 @@ inc-flags += -I$(PWD)/src/app_load
 inc-flags += -I$(PWD)/src/framework
 inc-flags += -I$(PWD)/src/task_adaptor
 inc-flags += -I$(PWD)/src/manager
-inc-flags += -I$(TOPDIR)/sys_libs/libac_policy/include
 inc-flags += -I$(PWD)/src
 inc-flags += -I$(SYSLIB)/libdynconfmgr/include
 inc-flags += -I$(SYSLIB)/libdynconfbuilder/include
@@ -110,8 +109,8 @@ LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
 ENTRY_POINT := main
 
 # drv makefile will fully link a binary.
-include $(TOPDIR)/mk/svc-common.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_SERVICE)/svc-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk
 
 ifeq ($(DRIVER),gtask_a32.elf)
 flags := $(filter-out -flto -fsplit-lto-unit,$(flags))
