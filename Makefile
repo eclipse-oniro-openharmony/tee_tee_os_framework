@@ -149,6 +149,7 @@ $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr: $(STAGE_DIR)/bootfs.img
 
 PHONY += teehm.img trustedcore.img
 package: $(STAGE_DIR)/trustedcore.img
+	@echo "!!generate trustedcore.img success"
 
 PHONY += release
 release:
@@ -160,7 +161,7 @@ clean: clean_links
 	@rm -rf $(OUTPUTDIR)
 	@rm -rf sec_trustedcore.img
 	@rm -rf tools/linker.lds_pp
-	@rm -rf prebuild/hm-teeos-release/tools/ramfsmkimg
+	@rm -rf prebuild
 clober: clean
 	@rm -rf prebuild/toolchains
 
