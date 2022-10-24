@@ -159,7 +159,7 @@ boot-apps := $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
 boot-apps += $(PREBUILD_LIBS)/$(TEE_ARCH)/hmsysmgr
 
 HM_APPS_TOOLS := $(TOPDIR)/tools
-HM_APPS_LIBCPIO := $(TOPDIR)/sys_libs/libcpio
+HM_APPS_LIBCPIO := $(TOPDIR)/../../tee_os_kernel/libs/syslib/libcpio
 
 .PHONY : cpio-strip
 cpio-strip :
