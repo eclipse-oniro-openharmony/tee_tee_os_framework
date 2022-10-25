@@ -73,9 +73,8 @@ cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
 #include the sub makefile as needed
 include $(BUILD_CONFIG)/var.mk
 include $(BUILD_OPERATION)/rule.mk
-#shoule keep the same value with hm-apps/trustedcore_hm/config.mk
 
-include $(TOPDIR)/trustedcore_hm/mk/plat.mk
+include $(OLD_TOPDIR)/mk/plat.mk
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 CFLAGS   += ${TRUSTEDCORE_PLATFORM_FLAGS}
 CPPFLAGS += ${TRUSTEDCORE_PLATFORM_FLAGS}

@@ -21,7 +21,7 @@ endif
 
 TOPDIR = $(CURDIR)/../../..
 ifeq ($(PLATFORM_DIR),)
-	PLATFORM_DIR = $(TOPDIR)/trustedcore_hm/platform
+	PLATFORM_DIR = $(OLD_TOPDIR)/platform
 endif
 
 ifneq ($(O),)

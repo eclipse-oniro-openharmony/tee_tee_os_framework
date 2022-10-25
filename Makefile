@@ -6,10 +6,11 @@ endif
 
 ## hm-sdk directories:
 export TOPDIR := $(CURDIR)
+export OLD_TOPDIR := $(TOPDIR)/trustedcore_hm
 export TOOLS      := $(TOPDIR)/build/tools
 export TOOLS_ROOT := $(TOPDIR)/prebuild/$(HM_SDK_VER)/tools
 export VER
-export PLATFORM_DIR := $(TOPDIR)/trustedcore_hm/platform
+export PLATFORM_DIR := $(OLD_TOPDIR)/platform
 export TEELIB := $(TOPDIR)/lib/teelib
 export DRVLIB := $(TOPDIR)/lib/drvlib
 export FRAMEWORK_PATH := $(TOPDIR)/framework
@@ -45,7 +46,7 @@ default: all
 # top directory use aarch64
 ARCH = aarch64
 include $(BUILD_CONFIG)/var.mk
-include $(TOPDIR)/trustedcore_hm/mk/plat.mk
+include $(OLD_TOPDIR)/mk/plat.mk
 export PLAT_CFG_DIR := $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/plat_cfg
 export PLAT_COMMON_DIR := $(PLATFORM_DIR)/common
 ifneq ($(strip $(TARGET_BOARD_PLATFORM)), )
