@@ -5,7 +5,7 @@ VER := @
 endif
 
 ## hm-sdk directories:
-export TOPDIR := $(CURDIR)
+export TOPDIR := $(CURDIR)/../
 export OLD_TOPDIR := $(TOPDIR)/config
 export TOOLS      := $(TOPDIR)/build/tools
 export TOOLS_ROOT := $(TOPDIR)/prebuild/$(HM_SDK_VER)/tools
