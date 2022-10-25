@@ -25,7 +25,7 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include "tee_log.h"
 #include "tee_ss_agent_api.h"
 #include "ta_framework.h"
-#include <tee_internal_huk_api.h>
+#include <huk_get_device_id.h>
 #include "tee_property_inner.h"
 
 #define PROP_ERROR   (-1)
