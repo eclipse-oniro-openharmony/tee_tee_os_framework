@@ -15,7 +15,7 @@ ifeq ($(CONFIG_DYNLINK_TEST), y)
 boot-fs-files-y += $(PREBUILD_LIBS)/arm/libtest_shared_a32.so
 endif
 
-# hm-apps, select by hm-apps config.mk
+# tee framework, select by tee framework config.mk
 # all products should define product_apps for themselves
 boot-fs-files-y += $(product_apps)
 
