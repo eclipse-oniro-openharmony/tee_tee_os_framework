@@ -6,7 +6,7 @@ TARGET := teesmcmgr.elf
 
 TA_NAME := teesmcmgr
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 
 PWD := $(shell pwd)
 
@@ -27,6 +27,6 @@ LIBS := c_shared$(TARG)
 LDFLAGS += --dynamic-linker=libc_shared$(TARG).so
 ENTRY_POINT := _hm_start
 
-include $(TOPDIR)/mk/svc-common.mk
+include $(BUILD_SERVICE)/svc-common.mk
 
 flags += -fvisibility=default

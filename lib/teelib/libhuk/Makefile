@@ -16,4 +16,4 @@ CPPFLAGS += -I$(TEELIB)/libteeos/src/tee
 CPPFLAGS += -I$(TEELIB)/libcrypto/include
 CPPFLAGS += -I$(TEELIB)/libssa/include
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

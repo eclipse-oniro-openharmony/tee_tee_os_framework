@@ -28,7 +28,6 @@ struct file_stat_entry {
     { "/tarunner.elf", 2, 1001, 07005 },
     { "/gtask.elf", 3, 1000, 07005 },
     { "/ssa.elf", 8, 1001, 00040 },
-    { "/drv_timer.elf", 4, 1001, 07005 },
     { "/keymaster.elf", 6, 1001, 00040 },
     { "/gatekeeper.elf", 7, 1001, 00040 },
     { "/storage.elf", 9, 1001, 00040 },

@@ -2,7 +2,7 @@
 
 DRIVER := crypto_mgr.elf
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 
 crypto_mgr_c_files += $(wildcard src/*.c) \
                       $(wildcard src/crypto_ioctl/*.c)
@@ -10,10 +10,15 @@ crypto_mgr_c_files += $(wildcard src/*.c) \
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(DRVLIB)/common/libdrv_frame/include
-inc-flags += -I$(TOPDIR)/sys_libs/libdrv_shared/src
+inc-flags += -I$(DRVLIB)/libdrv_shared/src
 inc-flags += -I$(DRIVERS_PATH)/crypto_mgr/src/crypto_ioctl/
+inc-flags += -I$(TEELIB)/libcrypto_hal/include
+inc-flags += -I$(TEELIB)/libteeos/include/tee
+inc-flags += -I$(TEELIB)/libteeos/include/legacy
+inc-flags += -I$(TEELIB)/libtimer/include
+inc-flags += -I$(TEELIB)/libteemem/include
 
 # Libraries
 
 SVC_PARTITIAL_LINK = y
-include $(TOPDIR)/mk/svc-common.mk
+include $(BUILD_SERVICE)/svc-common.mk

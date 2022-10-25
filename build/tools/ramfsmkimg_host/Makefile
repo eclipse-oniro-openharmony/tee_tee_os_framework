@@ -2,7 +2,6 @@
 # Description: makeflie for rmfs
 # Create: 2019-08-20
 
-KERNEL = $(PWD)/kernel
 CC = cc
 CPPFLAGS :=
 LDFLAGS :=
@@ -18,7 +17,7 @@ ifeq ($(TARGET_IS_ARM32),y)
 	ARCH = arm
 endif
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 CPPFLAGS += -I$(BUILD_TOOLS)/ramfsmkimg_host/include
 CPPFLAGS += -I$(PREBUILD_HEADER)/host
 CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi
@@ -44,7 +43,7 @@ ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 CFLAGS += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 endif
 
-LDFLAGS += -L$(OUTPUTDIR)/aarch64/obj/aarch64/libhwsecurec_host
+LDFLAGS += -L$(OUTPUTDIR)/$(ARCH)/obj/$(ARCH)/libhwsecurec_host
 LDFLAGS += -L/usr/lib/x86_64-linux-gnu
 LDFLAGS += -lhwsecurec_host
 

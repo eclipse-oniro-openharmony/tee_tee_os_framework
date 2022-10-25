@@ -13,4 +13,4 @@ CPPFLAGS += -I$(TEELIB)/libteemem/include
 # Source files required to build the target
 CFILES := $(wildcard src/*.c)
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

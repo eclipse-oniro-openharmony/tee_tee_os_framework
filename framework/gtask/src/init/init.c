@@ -190,17 +190,6 @@ int init_main(void)
     ret = run_init_task("/teesmcmgr.elf", envp, &info, &smc_uuid, NULL);
     if (ret)
         return ret;
-/*
- * Note: drvmgr may use tloge API which relies on time stamps from drv_timer process
- * thus please keep `drv_timer.elf` before drvmgr
- **/
-#if (!defined CONFIG_OFF_DRV_TIMER)
-    struct tee_uuid timer_uuid = TEE_DRV_TIMER;
-    info.stack_size = 0;
-    ret = run_init_task("/drv_timer.elf", envp, &info, &timer_uuid, &g_timer_pid);
-    if (ret)
-        return ret;
-#endif
 
     ret = run_drv_frame_tasks();
     if (ret)

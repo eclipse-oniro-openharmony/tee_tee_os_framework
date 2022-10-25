@@ -3,7 +3,7 @@ DRIVER := ssa${TARG}.elf
 
 CFILES := $(wildcard src/*/*.c)
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
 CPPFLAGS += -I$(TEELIB)/libteeconfig/include/TEE_ext/
@@ -54,4 +54,4 @@ endif
 
 SVC_PARTITIAL_LINK = y
 
-include $(TOPDIR)/mk/svc-common.mk
+include $(BUILD_SERVICE)/svc-common.mk

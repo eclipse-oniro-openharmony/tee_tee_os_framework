@@ -9,4 +9,4 @@ inc-flags += -I$(TEELIB)/libteeos/include/tee
 # Source files required to build the target
 libspawn_common_c_files += $(wildcard src/*.c)
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

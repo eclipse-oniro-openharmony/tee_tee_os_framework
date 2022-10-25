@@ -51,4 +51,4 @@ CFLAGS +=	-DARM_PAE=1 \
 		-D__ARM_ARCH__=7
 CFLAGS +=	-DTARGET_PRODUCT_VAL=\"$(TARGET_BOARD_PLATFORM)\"
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

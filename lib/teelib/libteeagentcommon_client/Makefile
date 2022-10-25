@@ -13,4 +13,4 @@ flags += -fno-builtin
 
 #c-flags += -Wall -Wno-parentheses -Wno-unused-parameter
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

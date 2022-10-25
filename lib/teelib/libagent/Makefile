@@ -13,4 +13,4 @@ CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy/
 CPPFLAGS += -I$(TEELIB)/libteemem/include
 CPPFLAGS += -Wall
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

@@ -17,4 +17,4 @@ inc-flags += -I$(TEELIB)/libteemem/include
 # Source files required to build the target
 libdynconfmgr_c_files += $(wildcard src/*.c)
 
-include $(TOPDIR)/mk/lib-common.mk
+include $(BUILD_LIB)/lib-common.mk

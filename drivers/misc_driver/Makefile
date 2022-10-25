@@ -4,9 +4,9 @@
 DRIVER := misc_driver.elf
 SCRAMBLE_ME :=
 
-include $(TOPDIR)/mk/feature-macro.mk
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/plat.mk
+include $(BUILD_CONFIG)/feature-macro.mk
+include $(BUILD_CONFIG)/var.mk
+include $(OLD_TOPDIR)/mk/plat.mk
 -include $(PREBUILD_HM_INC)/.config
 
 misc_driver_c_files := $(wildcard src/*.c)
@@ -29,7 +29,7 @@ c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
 SVC_PARTITIAL_LINK = y
-include $(TOPDIR)/mk/svc-common.mk
+include $(BUILD_SERVICE)/svc-common.mk
 
 install: $(SCRAMBLED_SYMS)
 	@echo "misc_driver strip begin"

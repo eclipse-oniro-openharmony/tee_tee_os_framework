@@ -1,6 +1,6 @@
 MODULE := libdrv_frame${TARG}.a
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 
 flags += -fno-builtin
 flags += -I$(DRVLIB)/common/libdrv_frame/include/
@@ -21,4 +21,4 @@ libdrv_frame_c_files := $(wildcard src/*.c)
 # Header files/directories this library provides
 EXPORT_HDRS := $(wildcard $(DRVLIB)/common/libdrv_frame/include/*)
 
-include $(TOPDIR)/mk/drv-common.mk
+include $(BUILD_DRIVER)/drv-common.mk

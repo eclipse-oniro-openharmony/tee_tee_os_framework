@@ -46,10 +46,8 @@ CPPFLAGS += -I$(TEELIB)/libpermission_service/src
 CPPFLAGS += -I$(SERVICES_PATH)/permission_service/src
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee # ta_framework.h
 CPPFLAGS += -I$(TEELIB)/libcrypto/include
-CPPFLAGS += -I$(K_FRAMEWORK)/teesmcmgr/src
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
-CPPFLAGS += -I$(TOPDIR)/sys_libs/libac_policy/include
 CPPFLAGS += -I$(SYSLIB)/libelf_verify_key/include/
 CPPFLAGS += -I$(SYSLIB)/libelf_verify_key/src/
 CPPFLAGS += -I$(TEELIB)/libteemem/include
@@ -95,5 +93,5 @@ else
 $(error "dynamic TA format not supported, please check CONFIG_DYN_TA_FORMAT")
 endif
 
-include $(TOPDIR)/mk/lib-common.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_LIB)/lib-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk

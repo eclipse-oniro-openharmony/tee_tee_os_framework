@@ -19,9 +19,9 @@ ifeq ($(TARGET_IS_ARM32),y)
 	ARCH = arm
 endif
 
-TOPDIR = $(CURDIR)/../../../trustedcore_hm
+TOPDIR = $(CURDIR)/../../..
 ifeq ($(PLATFORM_DIR),)
-	PLATFORM_DIR = $(TOPDIR)/platform
+	PLATFORM_DIR = $(OLD_TOPDIR)/platform
 endif
 
 ifneq ($(O),)
@@ -34,7 +34,7 @@ ifeq ($(HM_SDK_VER),)
 HM_SDK_VER := hm-teeos-release
 endif
 
-include $(TOPDIR)/mk/var.mk
+include $(BUILD_CONFIG)/var.mk
 
 # Source files required to build the target
 CFILES := $(wildcard $(TEE_SECUREC_DIR)/src/*.c)
@@ -48,4 +48,4 @@ flags += -DHAVE_AUTOCONF -include$(PREBUILD_DIR)/headers/autoconf.h
 flags += -nodefaultlibs -fno-omit-frame-pointer
 RUNTIME_LIB_FLAG = -lclang_rt.builtins-$(ARCH)
 
-include $(TOPDIR)/mk/common.mk
+include $(BUILD_OPERATION)/common.mk

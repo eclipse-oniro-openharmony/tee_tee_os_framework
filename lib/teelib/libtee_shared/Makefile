@@ -5,7 +5,6 @@ libtee_shared_c_files := $(wildcard src/*.c)
 
 inc-flags += -I$(DRIVERS_PATH)/include # dynion.h
 inc-flags += -I$(TEELIB)/libtee_shared/include
-inc-flags += -I$(TOPDIR)/libs/syslib/libmmgr/include
 inc-flags += -I$(TEELIB)/libhmdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
@@ -13,8 +12,8 @@ inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr
 inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr_sysmgr
 
-include $(TOPDIR)/mk/lib-common.mk
-include $(TOPDIR)/mk/feature-macro.mk
+include $(BUILD_LIB)/lib-common.mk
+include $(BUILD_CONFIG)/feature-macro.mk
 
 ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), false)
 flags += -DCONFIG_TEE_MISC_DRIVER
@@ -33,13 +32,7 @@ $(INSTALL_FILE): $(MODULE_FILE)
 	@echo "[ INSTALL ] $(MODULE_FILE)"
 	$(VER)cp -rafp $(MODULE_FILE) $(LIB_DIR)
 
-ifeq ($(findstring true, $(CONFIG_GATEKEEPER_32BIT) $(CONFIG_GATEKEEPER_64BIT)), true)
-flags += -DSUPPORT_GATEKEEPER_TA
-inc-flags += -I$(TOPDIR)/sys_apps/gatekeeper/src/task_gatekeeper
-libtee_shared_c_files :=  $(filter-out src/gk_auth_token_stub.c, $(libtee_shared_c_files))
-else
 libtee_shared_c_files :=  $(filter-out src/gk_auth_token.c, $(libtee_shared_c_files))
-endif
 
 ifeq ($(strip $(TARGET_BUILD_VARIANT)), user)
 flags += -DDEF_BUILDUSERMODE
@@ -75,7 +68,7 @@ else
 ld-flags += -lopenssl${TARG}
 endif
 
-ifeq ($(findstring true, $(CONFIG_SEM) $(CONFIG_SE_SERVICE_32BIT) $(CONFIG_SE_SERVICE_64BIT)), true)
+ifeq ($(findstring true, $(CONFIG_SE_SERVICE_32BIT) $(CONFIG_SE_SERVICE_64BIT)), true)
 ld-flags += -lse$(TARG)
 endif
 

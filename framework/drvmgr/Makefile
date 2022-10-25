@@ -5,9 +5,9 @@ DRIVER := drvmgr.elf
 
 override SOURCE_DIR:=$(FRAMEWORK_PATH)/drvmgr
 
-include $(TOPDIR)/mk/feature-macro.mk
-include $(TOPDIR)/mk/var.mk
-include $(TOPDIR)/mk/plat.mk
+include $(BUILD_CONFIG)/feature-macro.mk
+include $(BUILD_CONFIG)/var.mk
+include $(OLD_TOPDIR)/mk/plat.mk
 -include $(PREBUILD_HM_INC)/.config
 
 # it depends on compile order
@@ -70,7 +70,6 @@ inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(SYSLIB)/libelf_verify/include
 
-#inc-flags += -I$(TOPDIR)../../hm-teeos/libs/syslib/libsyscalls/include
 LIBS += c_shared${TARG}
 LIBS += timer${TARG} ac${TARG}
 LIBS += teemem${TARG} teeos${TARG} spawn_common${TARG}
@@ -81,7 +80,7 @@ LIBS += drv_frame${TARG}
 LIBS += ac_policy${TARG}
 LIBS += drv_shared${TARG}
 
-include $(TOPDIR)/mk/drv-common.mk
+include $(BUILD_DRIVER)/drv-common.mk
 
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
