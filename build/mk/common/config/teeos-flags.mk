@@ -78,11 +78,6 @@ CFLAGS += -fno-builtin-aligned_alloc    \
 	-fno-builtin-stpncpy \
 	-fno-builtin-strndup \
 
-
-ifeq ($(strip $(NOCFI)),y)
-    CFLAGS := $(filter-out $(GCC_PLUGINS_CFLAGS),$(CFLAGS))
-endif
-
 ifeq (${CONFIG_WHOLE_PROGRAM_OPTIMIZATIONS_USER},y)
     LDFLAGS += -fwhole-program
 endif
@@ -183,11 +178,6 @@ endif
 ifeq (${TARGET_IS_ARM32},y)
 	CFLAGS += ${A32_CFLAGS}
 	CXXFLAGS += ${A32_CXXFLAGS}
-ifeq ($(strip $(NOCFI)),y) # HM_NOTE: filter-out is abused here
-	CFLAGS := $(filter-out $(GCC_A32_PLUGINS_CFLAGS),$(CFLAGS))
-	CXXFLAGS := $(filter-out $(G++_A32_PLUGINS_CFLAGS),$(CXXFLAGS))
-endif #NOCFI
-
 ifeq ($(USE_NDK_64), y)
 	CFLAGS := $(filter-out -nostdinc,$(CFLAGS))
 endif

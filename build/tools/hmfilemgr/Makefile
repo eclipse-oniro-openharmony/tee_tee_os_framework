@@ -54,7 +54,6 @@ hmfilemgr_c-flags  += -Wall -Wextra -std=gnu11 -Oz -fno-builtin -fPIC -Wformat=2
 hmfilemgr_c-flags  += -Wdate-time -Werror -Wfloat-equal -Wshadow -fno-common -fno-strict-aliasing -pipe
 hmfilemgr_c-flags  += -fstack-protector-strong -mtune=cortex-a53 -march=armv8-a -ffunction-sections -fdata-sections -fno-omit-frame-pointer
 hmfilemgr_c-flags  += -include$(PREBUILD_HEADER)/autoconf.h
-hmfilemgr_c-flags  += $(gcc-plugin-c-flags)
 
 ifeq ($(CONFIG_ARCH_AARCH64),y)
 filemgr_LDFLAGS += -u __vsyscall_ptr  -T $(PREBUILD_TOOLS)/common/boot-app-unxom-$(TEE_ARCH).lds
