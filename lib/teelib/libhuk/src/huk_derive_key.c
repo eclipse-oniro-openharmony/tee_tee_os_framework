@@ -35,16 +35,9 @@ void huk_free_shared_mem(uint8_t *p, uint32_t size)
         tloge("free shared mem failed\n");
 }
 
-TEE_Result derive_takey(uint32_t msg_id, const struct meminfo_t *salt_info, struct meminfo_t *takey_info,
+static TEE_Result derive_takey(uint32_t msg_id, const struct meminfo_t *salt_info, struct meminfo_t *takey_info,
     uint32_t outer_iter_num, uint32_t inner_iter_num)
 {
-    if (salt_info == NULL || takey_info == NULL || salt_info->buffer == 0 || salt_info->size == 0 ||
-        salt_info->size > CMAC_DERV_MAX_DATA_IN_SIZE ||  takey_info->buffer == 0 || takey_info->size == 0 ||
-        takey_info->size > CMAC_DERV_MAX_DATA_IN_SIZE || outer_iter_num == 0 || inner_iter_num == 0) {
-        tloge("derive takey check params failed\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
     struct huk_srv_msg msg;
     struct huk_srv_rsp rsp;
     (void)memset_s(&msg, sizeof(struct huk_srv_msg), 0, sizeof(struct huk_srv_msg));
