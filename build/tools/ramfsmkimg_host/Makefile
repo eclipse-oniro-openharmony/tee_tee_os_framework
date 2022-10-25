@@ -43,7 +43,7 @@ ifeq ($(CONFIG_HW_SECUREC_MIN_MEM),y)
 CFLAGS += -DSECUREC_WARP_OUTPUT=1 -DSECUREC_WITH_PERFORMANCE_ADDONS=0
 endif
 
-LDFLAGS += -L$(OUTPUTDIR)/aarch64/obj/aarch64/libhwsecurec_host
+LDFLAGS += -L$(OUTPUTDIR)/$(TEE_ARCH)/obj/$(TEE_ARCH)/libhwsecurec_host
 LDFLAGS += -L/usr/lib/x86_64-linux-gnu
 LDFLAGS += -lhwsecurec_host
 

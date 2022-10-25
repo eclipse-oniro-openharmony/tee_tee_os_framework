@@ -20,7 +20,11 @@ drvlib := libdrv_frame
 libs: libtee_shared libdrv_shared ramfsmkimg_host $(syslib)
 	@echo "libsok"
 
-ramfsmkimg_host:
+libhwsecurec_host:
+	@echo "building libhwsecurec_host"
+	$(VER) $(MAKE) -C $(THIRDPARTY_LIBS)/$@ -f $(PREBUILD_HEADER)/.config -f Makefile all
+
+ramfsmkimg_host: libhwsecurec_host
 	@echo "building ramfsmkimg_host"
 	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ -f $(PREBUILD_HEADER)/.config -f Makefile all
 
