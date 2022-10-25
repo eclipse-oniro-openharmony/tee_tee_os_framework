@@ -38,7 +38,9 @@ export OUTPUTDIR := $(O)
 else
 export OUTPUTDIR := $(TOPDIR)/output
 endif
-include config.mk
+
+HM_BOOTFS_SIZE ?= "8000K"
+export HM_SDK_VER := hm-teeos-release
 
 PHONY += default
 default: all
