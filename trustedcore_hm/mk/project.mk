@@ -21,7 +21,7 @@ teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libper
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
 
-libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(thirdparty_libs) $(host_tools) libtee_shared
+libs: $(arm_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_pro_libs) $(arm_chip_libs) $(aarch64_libs) $(aarch64_drv_common_libs) $(host_tools) libtee_shared
 	@echo "libsok"
 $(arm_libs): $(arm_pro_libs) $(arm_sys_libs) $(arm_drv_libs) $(arm_chip_libs)
 	@echo "arm_lib_ok"
@@ -91,7 +91,7 @@ libtee_shared: $(teelib)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(TEELIB)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
 # compile ext_libs rules
-ext_libs: $(arm_ext_libs) $(arm_open_source_libs) $(aarch64_ext_libs) $(aarch64_open_source_libs) $(aarch64_inner_ext_libs) $(thirdparty_libs)
+ext_libs: $(arm_ext_libs) $(arm_open_source_libs) $(aarch64_ext_libs) $(aarch64_open_source_libs) $(aarch64_inner_ext_libs)
 	@echo "ext_lib"
 $(arm_ext_libs):
 	@echo "building ARCH=arm arm_ext_libs=$@ target"
@@ -115,11 +115,6 @@ $(aarch64_open_source_libs):
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C sys_libs/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	@echo "aarch64_open_source_lib"
-$(thirdparty_libs):
-	echo "building ARCH=arm_chip_aarch64 libs=$@ target"
-	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(THIRDPARTY_LIBS)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) $(MAKE) -C $(THIRDPARTY_LIBS)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
-	echo "thirdparty_libs"
 
 # compile drivers rules
 
