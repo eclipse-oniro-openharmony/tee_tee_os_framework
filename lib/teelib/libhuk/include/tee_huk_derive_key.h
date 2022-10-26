@@ -3,8 +3,8 @@
  * Description: huk derive key
  * Create: 2022-10-25
  */
-#ifndef HUK_DERIVE_KEY_H
-#define HUK_DERIVE_KEY_H
+#ifndef TEE_HUK_DERIVE_KEY_H
+#define TEE_HUK_DERIVE_KEY_H
 
 #include <tee_defines.h>
 

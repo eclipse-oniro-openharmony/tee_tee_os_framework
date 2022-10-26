@@ -20,7 +20,7 @@ yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
 #include "securec.h"
 #include "string.h"
 #include "permsrv_api.h"
-#include <huk_derive_key.h>
+#include <tee_huk_derive_key.h>
 #include <crypto_hal_derive_key.h>
 
 void reset_meta(meta_data_t *meta)

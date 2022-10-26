@@ -3,7 +3,7 @@
  * Description: huk derive key
  * Create: 2022-10-25
  */
-#include "huk_derive_key.h"
+#include "tee_huk_derive_key.h"
 #include <securec.h>
 #include <errno.h>
 #include <mem_ops_ext.h>

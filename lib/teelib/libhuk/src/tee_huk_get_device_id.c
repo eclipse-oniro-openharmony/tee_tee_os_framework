@@ -3,8 +3,8 @@
  * Description: huk get device id
  * Create: 2022-10-25
  */
-#include "huk_get_device_id.h"
-#include "huk_derive_key.h"
+#include "tee_huk_get_device_id.h"
+#include "tee_huk_derive_key.h"
 #include <securec.h>
 #include <errno.h>
 #include <mem_ops_ext.h>

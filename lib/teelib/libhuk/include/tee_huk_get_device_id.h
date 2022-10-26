@@ -3,8 +3,8 @@
  * Description: huk get device id
  * Create: 2022-10-25
  */
-#ifndef HUK_GET_DEVICE_ID_H
-#define HUK_GET_DEVICE_ID_H
+#ifndef TEE_HUK_GET_DEVICE_ID_H
+#define TEE_HUK_GET_DEVICE_ID_H
 
 #include <tee_defines.h>
 
