@@ -96,7 +96,7 @@ boot-apps := $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
 boot-apps += $(PREBUILD_LIBS)/$(TEE_ARCH)/hmsysmgr
 
 HM_APPS_TOOLS := $(BUILD_TOOLS)/generate_img
-HM_APPS_LIBCPIO := $(TOPDIR)/../tee_os_kernel/libs/syslib/libcpio
+HM_APPS_LIBCPIO := $(TOPDIR)/../tee_os_kernel/libcore_shared/syslib/libcpio
 
 .PHONY : cpio-strip
 cpio-strip :
@@ -132,8 +132,8 @@ $(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
 		$(WITH_TEEOS_ENCRYPT) \
 		$(WITH_LOG_ENCODE)
 ifneq ($(CODE_CHECKER),y)
-	$(VER) $(TOPDIR)/../tee_os_kernel/libs/syslib/libc/clean_libc.sh  $(TOPDIR)/../tee_os_kernel
-	$(VER) $(TOPDIR)/../tee_os_kernel/libs/teelib/libopenssl/clean_openssl.sh $(TOPDIR)/../tee_os_kernel
+	$(VER) $(TOPDIR)/../tee_os_kernel/libcore_shared/syslib/libc/clean_libc.sh  $(TOPDIR)/../tee_os_kernel
+	$(VER) $(TOPDIR)/../tee_os_kernel/libcore_shared/teelib/libopenssl/clean_openssl.sh $(TOPDIR)/../tee_os_kernel
 
 endif
 ifneq ($(VERSION_DDK),y)
