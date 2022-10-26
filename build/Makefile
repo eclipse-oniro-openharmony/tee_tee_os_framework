@@ -21,6 +21,7 @@ export SERVICES_PATH := $(TOPDIR)/services
 export DRIVERS_PATH := $(TOPDIR)/drivers
 export K_THIRDPARTY := $(TOPDIR)/../tee_os_kernel/thirdparty
 export THIRDPARTY_LIBS := $(TOPDIR)/lib/thirdparty
+export CONFIG_PATH := $(TOPDIR)/config
 
 export BUILD_TOOLS := $(TOPDIR)/build/tools
 export BUILD_PACK := $(TOPDIR)/build/mk/pack
@@ -53,7 +54,7 @@ export PLAT_CFG_DIR := $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_N
 export PLAT_COMMON_DIR := $(PLATFORM_DIR)/common
 ifneq ($(strip $(TARGET_BOARD_PLATFORM)), )
 ifeq ($(LIBS_INSTALL_DIR),)
-include $(PLATFORM_DIR)/$(PLATFORM_NAME)/platform.mk
+include $(BUILD_PACK)/plat_config.mk
 endif
 endif
 include $(BUILD_CONFIG)/toolchain.mk
