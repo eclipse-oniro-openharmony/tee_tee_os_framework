@@ -26,8 +26,8 @@ void *huk_alloc_shared_mem(uint32_t size)
 
 void huk_free_shared_mem(uint8_t *p, uint32_t size)
 {
-    if (p == NULL) {
-        tloge("param is null\n");
+    if (p == NULL || size == 0) {
+        tloge("check params failed\n");
         return;
     }
     (void)memset_s(p, size, 0, size);
@@ -40,8 +40,8 @@ static TEE_Result derive_takey(uint32_t msg_id, const struct meminfo_t *salt_inf
 {
     struct huk_srv_msg msg;
     struct huk_srv_rsp rsp;
-    (void)memset_s(&msg, sizeof(struct huk_srv_msg), 0, sizeof(struct huk_srv_msg));
-    (void)memset_s(&rsp, sizeof(struct huk_srv_msg), 0, sizeof(struct huk_srv_msg));
+    (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
+    (void)memset_s(&rsp, sizeof(rsp), 0, sizeof(rsp));
 
     uint8_t *salt_shared = huk_alloc_shared_mem(salt_info->size);
     if (salt_shared == NULL) {

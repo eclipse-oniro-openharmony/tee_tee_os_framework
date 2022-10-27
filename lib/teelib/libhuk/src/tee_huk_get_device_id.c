@@ -21,8 +21,8 @@ TEE_Result get_device_id_prop(uint8_t *dst, uint32_t len)
 
     struct huk_srv_msg msg;
     struct huk_srv_rsp rsp;
-    (void)memset_s(&msg, sizeof(struct huk_srv_msg), 0, sizeof(struct huk_srv_msg));
-    (void)memset_s(&rsp, sizeof(struct huk_srv_msg), 0, sizeof(struct huk_srv_msg));
+    (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
+    (void)memset_s(&rsp, sizeof(rsp), 0, sizeof(rsp));
 
     uint8_t *dev_id_shared = huk_alloc_shared_mem(len);
     if (dev_id_shared == NULL) {
