@@ -49,7 +49,25 @@ default: all
 # top directory use aarch64
 ARCH = aarch64
 include $(BUILD_CONFIG)/var.mk
-include $(OLD_TOPDIR)/mk/plat.mk
+include $(BUILD_CONFIG)/plat_config_file.mk
+
+PHONY += GEN_CONF_FILE
+GEN_CONF_FILE:
+	echo "generated platautoconf.h "
+	rm -rf $(PLAT_AUTOCONF_FILE)
+	test -d $(PREBUILD_DIR)/headers || mkdir -p $(PREBUILD_DIR)/headers
+	touch $(PLAT_AUTOCONF_FILE)
+	grep '.*=.*' < $(CONFIG_FILE) > $(PLAT_AUTOCONF_FILE)
+	sed -i '1i\#define PLAT_AUTO_CONFIG_H' $(PLAT_AUTOCONF_FILE)
+	sed -i '1i\#ifndef PLAT_AUTO_CONFIG_H' $(PLAT_AUTOCONF_FILE)
+	sed -i -r 's/(.*)=y/#define \1\t1/g' $(PLAT_AUTOCONF_FILE)
+	sed -i -r '/(.*)=n/d' $(PLAT_AUTOCONF_FILE)
+	sed -i -r 's/(.*)=(.*)/#define \1\t\2/g' $(PLAT_AUTOCONF_FILE)
+	sed -i '$$a\#endif /* AUTO_CONFIG_H */'  $(PLAT_AUTOCONF_FILE)
+	echo -e >> $(PREBUILD_DIR)/headers/.config
+	cat $(CONFIG_FILE) | tee -a $(PREBUILD_DIR)/headers/.config
+
+-include $(PREBUILD_HM_INC)/.config
 export PLAT_CFG_DIR := $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/plat_cfg
 export PLAT_COMMON_DIR := $(PLATFORM_DIR)/common
 ifneq ($(strip $(TARGET_BOARD_PLATFORM)), )
@@ -58,7 +76,6 @@ include $(BUILD_PACK)/plat_config.mk
 endif
 endif
 include $(BUILD_CONFIG)/toolchain.mk
--include $(PREBUILD_HM_INC)/.config
 include $(BUILD_OPERATION)/project.mk
 
 # for install header

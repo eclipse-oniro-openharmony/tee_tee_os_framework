@@ -5,7 +5,6 @@
 DRIVER := gtask${TARG}.elf
 
 include $(BUILD_CONFIG)/var.mk
-include $(OLD_TOPDIR)/mk/plat.mk
 ifeq ($(CONFIG_DYN_TA_FORMAT),1)
 flags += -DDYN_TA_SUPPORT_V3
 else ifeq ($(CONFIG_DYN_TA_FORMAT),2)
