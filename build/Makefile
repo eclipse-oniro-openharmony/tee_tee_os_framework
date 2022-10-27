@@ -19,7 +19,7 @@ export K_TEELIB := $(TOPDIR)/../tee_os_kernel/libcore_shared/teelib
 export K_SYSLIB := $(TOPDIR)/../tee_os_kernel/libcore_shared/syslib
 export SERVICES_PATH := $(TOPDIR)/services
 export DRIVERS_PATH := $(TOPDIR)/drivers
-export K_THIRDPARTY := $(TOPDIR)/../tee_os_kernel/thirdparty
+export K_THIRDPARTY := $(TOPDIR)/../tee_os_kernel/libcore_shared/thirdparty
 export THIRDPARTY_LIBS := $(TOPDIR)/lib/thirdparty
 
 export BUILD_TOOLS := $(TOPDIR)/build/tools
