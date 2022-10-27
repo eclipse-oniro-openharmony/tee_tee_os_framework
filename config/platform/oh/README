@@ -1,4 +1,0 @@
-oh
-|-- commom # openharmony common configurations and drivers makefile
-|-- oh_32  # openharmony 32-bit platform configurations and drivers makefile
-|-- oh_64  # openharmony 64-bit platform configurations and drivers makefile

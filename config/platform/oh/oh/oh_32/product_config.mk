@@ -12,9 +12,12 @@ export CONFIG_GMLIB_IMPORT := true
 export CONFIG_DRVMGR_64BIT := false
 export CONFIG_DYN_CONF := true
 export CONFIG_NO_VENDOR_LIB_EMBEDDED := true
+export CONFIG_CRYPTO_SUPPORT_EC25519 := true
+export CONFIG_CRYPTO_SUPPORT_X509 := true
+export CONFIG_CRYPTO_ECC_WRAPPER := true
+export CONFIG_CRYPTO_AES_WRAPPER := true
 
 #set drv to BLOCKLIST with no -Werror
 BLOCKLIST += ipc/sec
 export BLOCKLIST
 
-include $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/modules/modules.mk
