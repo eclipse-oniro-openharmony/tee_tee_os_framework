@@ -5,7 +5,6 @@ DRIVER := tee_misc_driver.elf
 
 include $(BUILD_CONFIG)/feature-macro.mk
 include $(BUILD_CONFIG)/var.mk
-include $(OLD_TOPDIR)/mk/plat.mk
 -include $(PREBUILD_HM_INC)/.config
 
 tee_misc_driver_c_files := $(wildcard src/*.c)

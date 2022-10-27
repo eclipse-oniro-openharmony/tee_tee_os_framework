@@ -1,6 +1,3 @@
-include $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/product_config.mk
-include $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/chip.mk
-
 ifeq ($(CONFIG_TA_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/drivers/tarunner.elf
 endif

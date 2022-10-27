@@ -74,7 +74,6 @@ cxx-flags += -funwind-tables -fexceptions -std=gnu++11 -frtti -fno-builtin
 include $(BUILD_CONFIG)/var.mk
 include $(BUILD_OPERATION)/rule.mk
 
-include $(OLD_TOPDIR)/mk/plat.mk
 flags += $(TRUSTEDCORE_PLATFORM_FLAGS)
 CFLAGS   += ${TRUSTEDCORE_PLATFORM_FLAGS}
 CPPFLAGS += ${TRUSTEDCORE_PLATFORM_FLAGS}

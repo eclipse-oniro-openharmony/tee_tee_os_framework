@@ -7,7 +7,6 @@ override SOURCE_DIR:=$(FRAMEWORK_PATH)/drvmgr
 
 include $(BUILD_CONFIG)/feature-macro.mk
 include $(BUILD_CONFIG)/var.mk
-include $(OLD_TOPDIR)/mk/plat.mk
 -include $(PREBUILD_HM_INC)/.config
 
 # it depends on compile order

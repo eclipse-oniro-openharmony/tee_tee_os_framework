@@ -6,7 +6,6 @@ SCRAMBLE_ME :=
 
 include $(BUILD_CONFIG)/feature-macro.mk
 include $(BUILD_CONFIG)/var.mk
-include $(OLD_TOPDIR)/mk/plat.mk
 -include $(PREBUILD_HM_INC)/.config
 
 misc_driver_c_files := $(wildcard src/*.c)
