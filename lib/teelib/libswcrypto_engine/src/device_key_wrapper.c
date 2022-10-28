@@ -9,7 +9,6 @@
 #include <tee_crypto_hal.h>
 #include <crypto_hal_hmac.h>
 #include <crypto_hal_hash.h>
-#include <tee_internal_huk_api.h>
 #include <oemkey.h>
 #include "crypto_inner_interface.h"
 

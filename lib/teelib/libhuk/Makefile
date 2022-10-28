@@ -1,6 +1,7 @@
 MODULE := libhuk${TARG}.a
 
-CFILES += $(wildcard src/tee_internal_huk_api.c)
+CFILES += $(wildcard src/tee_huk_derive_key.c)
+CFILES += $(wildcard src/tee_huk_get_device_id.c)
 CFILES += $(wildcard src/huk_service_msg_call.c)
 
 CPPFLAGS += -I$(TEELIB)/libhuk/include
