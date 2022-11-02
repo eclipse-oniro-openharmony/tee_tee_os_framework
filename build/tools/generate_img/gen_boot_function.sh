@@ -28,7 +28,7 @@ do_others() {
     if [ "${DDK_FLAG}" != "true" ]; then
         CPIO_STRIP="$BUILD_TOOLS"/generate_img/cpio-strip/cpio-strip
     else
-        CPIO_STRIP="$TOPDIR"/prebuild/hm-teeos-release/tools/cpio-strip
+        CPIO_STRIP="$TOPDIR"/prebuild/tee-kernel-release/tools/cpio-strip
     fi
     "$CPIO_STRIP" "${TEMP_DIR}"/archive.cpio
         UNZIP_SIZE=$(ls -l "${TEMP_DIR}"/archive.cpio | awk '{print $5}')
@@ -73,10 +73,10 @@ do_others() {
         if [ "${CONFIG_NO_PLATCFG_EMBEDDED}" != "true" ]; then
             ${CC} ${SDK_CPPFLAGS} -I"${PLAT_CFG_DIR}"/ \
                 -I"${PLAT_COMMON_DIR}"/include/ \
-                -I${TOPDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \
-                -I${TOPDIR}/prebuild/hm-teeos-local-release/headers/kernel/include/arch/arm/uapi/ \
-                -I${OUTPUTDIR}/prebuild/hm-teeos-release/headers/kernel/include/arch/arm/uapi/ \
-                -I${OUTPUTDIR}/prebuild/hm-teeos-local-release/headers/kernel/include/arch/arm/uapi/ \
+                -I${TOPDIR}/prebuild/tee-kernel-release/headers/kernel/include/arch/arm/uapi/ \
+                -I${TOPDIR}/prebuild/tee-kernel-local-release/headers/kernel/include/arch/arm/uapi/ \
+                -I${OUTPUTDIR}/prebuild/tee-kernel-release/headers/kernel/include/arch/arm/uapi/ \
+                -I${OUTPUTDIR}/prebuild/tee-kernel-local-release/headers/kernel/include/arch/arm/uapi/ \
                 -Wall -Wextra -Werror -Wformat=2 -c \
                 -o "${LINKER_DIR}/plat_cfg.o" \
                 ""${PLAT_CFG_DIR}"/plat_cfg.c"

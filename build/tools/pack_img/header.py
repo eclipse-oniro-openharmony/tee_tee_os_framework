@@ -241,9 +241,9 @@ def encryt_image(img_name):
         return
 
     pwd = sys.path[0]
-    path_one = pwd + '/../prebuild/hm-teeos-release/tools/img_encry_tool/'
+    path_one = pwd + '/../prebuild/tee-kernel-release/tools/img_encry_tool/'
     path_two = pwd + \
-               '/../prebuild/hm-teeos-local-release/tools/img_encry_tool/'
+               '/../prebuild/tee-kernel-local-release/tools/img_encry_tool/'
     if os.path.exists(path_one):
         wraptool_path = path_one
     elif os.path.exists(path_two):

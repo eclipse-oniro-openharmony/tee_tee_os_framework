@@ -41,7 +41,7 @@ export OUTPUTDIR := $(TOPDIR)/output
 endif
 
 HM_BOOTFS_SIZE ?= "8000K"
-export HM_SDK_VER := hm-teeos-release
+export HM_SDK_VER := tee-kernel-release
 
 PHONY += default
 default: all

@@ -31,7 +31,7 @@ OUTPUTDIR := $(TOPDIR)/output
 endif
 
 ifeq ($(HM_SDK_VER),)
-HM_SDK_VER := hm-teeos-release
+HM_SDK_VER := tee-kernel-release
 endif
 
 include $(BUILD_CONFIG)/var.mk
