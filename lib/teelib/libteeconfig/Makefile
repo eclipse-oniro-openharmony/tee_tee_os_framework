@@ -43,10 +43,6 @@ ifeq ($(CONFIG_TEST_CA_CHECK), y)
     libteeconfig_c_files += src/tee_test_config/tee_test_calist.c
 endif
 
-ifeq ($(CONFIG_HISI_MSPC_IPC_TEST), true)
-c-flags += -DCONFIG_HISI_MSPC_IPC_TEST
-endif
-
 include $(BUILD_LIB)/lib-common.mk
 include $(BUILD_CONFIG)/feature-macro.mk
 flags += -DTARGET_PRODUCT_VAL=\"$(TARGET_BOARD_PLATFORM)\"

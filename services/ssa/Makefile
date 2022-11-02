@@ -48,9 +48,7 @@ ifeq ($(TARGET_IS_ARM32),y)
 CFLAGS += -mno-thumb
 endif
 
-ifeq ($(CONFIG_DYNLINK),y)
 LDFLAGS += -e tee_task_entry
-endif
 
 SVC_PARTITIAL_LINK = y
 

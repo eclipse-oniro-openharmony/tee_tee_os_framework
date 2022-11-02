@@ -1116,11 +1116,6 @@ void *ssa_handle_msg(void *arg)
     tloge("Must not be here, ssa is close\n");
 }
 
-#ifdef CONFIG_DYNLINK
-__attribute__((visibility("default"))) __attribute__((section(".magic"))) const char g_magic_string[] =
-    "Dynamically linked.";
-#endif
-
 __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
 {
     uint32_t res_code;

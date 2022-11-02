@@ -27,7 +27,3 @@ inc-flags += -I$(FRAMEWORK_PATH)/gtask/src/framework
 # drv makefile will fully link a binary.
 include $(BUILD_SERVICE)/svc-common.mk
 tarunner_LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so -e main
-
-ifneq (, $(filter $(TRUSTEDCORE_CHIP_CHOOSE), WITH_CHIP_TDA4 WITH_CHIP_HI1951 WITH_CHIP_HI1981 WITH_CHIP_HI1911))
-tarunner_LDFLAGS += -E
-endif
