@@ -4,8 +4,6 @@
 libs-y += libhuk libhuk_a32
 
 libhuk: libhwsecurec \
-        libc \
-        hm-app-headers
+        libc
 libhuk_a32: libhwsecurec_a32 \
-            libc_a32 \
-            hm-app-headers
+            libc_a32

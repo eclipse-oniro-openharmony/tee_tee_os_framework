@@ -7,8 +7,6 @@
 libs-y += libssa libssa_a32
 
 libssa: libhwsecurec \
-        libc \
-        hm-app-headers
+        libc
 libssa_a32: libhwsecurec_a32 \
-            libc_a32 \
-            hm-app-headers
+            libc_a32

@@ -7,8 +7,6 @@
 libs-y += libcrypto libcrypto_a32
 
 libcrypto: libhwsecurec \
-    libc \
-    hm-app-headers
+    libc
 libcrypto_a32: libhwsecurec_a32 \
-    libc_a32 \
-    hm-app-headers
+    libc_a32

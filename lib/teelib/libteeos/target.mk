@@ -9,12 +9,10 @@ libteeos : common \
     libhwsecurec \
     libc         \
     libmmgr      \
-    libac        \
-    hm-app-headers \
+    libac
 
 libteeos_a32 : common \
     libhwsecurec_a32 \
     libc_a32         \
     libmmgr_a32      \
-    libac_a32        \
-    hm-app-headers \
+    libac_a32
