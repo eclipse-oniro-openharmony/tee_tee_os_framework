@@ -96,7 +96,11 @@ static TEE_Result huk_derive_takey(uint64_t vmaddr_salt_shared, uint32_t salt_si
     if (rc != EOK)
         goto end_clean;
 
-    (void)memcpy_s(salt_tmp + salt_size, sizeof(TEE_UUID), &(huk_access->uuid), sizeof(TEE_UUID));
+    if (memcpy_s(salt_tmp + salt_size, sizeof(TEE_UUID), &(huk_access->uuid), sizeof(TEE_UUID)) != EOK) {
+            tloge("huk copy uuid failed\n");
+            goto end_clean;
+    }
+
     ret = do_derive_takey(salt_tmp, salt_tmp_size, key_tmp, key_size, 1);
     if (ret == TEE_SUCCESS) {
         if (memcpy_s((uint8_t *)(uintptr_t)vmaddr_key_shared, key_size, key_tmp, key_size) != EOK) {
