@@ -11,12 +11,8 @@ ifeq ($(ARCH),aarch64)
 LDFLAGS += -x -z text -z now -z relro -z max-page-size=4096 -shared -z noexecstack --strip-debug
 flags += -fvisibility=hidden
 else
-ifeq ($(CONFIG_DYNLINK),y)
 LDFLAGS += -x -z text -z now -z relro -shared -z noexecstack
 flags += -fvisibility=hidden
-else
-LDFLAGS += -r -d
-endif
 endif
 
 LINK_LIBS=$(LIBS:%=-l%)

@@ -55,9 +55,7 @@ inc-flags += -I$(K_TEELIB)/libopenssl/openssl/crypto
 inc-flags += -I$(K_TEELIB)/libopenssl/openssl/crypto/include
 endif
 
-ifeq ($(CONFIG_DYNLINK),y)
 LDFLAGS += -e tee_task_entry
-endif
 
 ifeq ($(CONFIG_DYN_IMPORT_CERT),y)
 CPPFLAGS += -DDYN_IMPORT_CERT=1

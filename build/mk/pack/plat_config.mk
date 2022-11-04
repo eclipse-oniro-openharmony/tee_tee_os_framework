@@ -59,19 +59,6 @@ $(OUTPUTDIR)/arm/drivers/gtask.elf:
 	@cp $(OUTPUTDIR)/arm/drivers/gtask_a32.elf $(OUTPUTDIR)/arm/drivers/gtask.elf
 endif
 
-ifneq ($(CONFIG_PLATDRV_64BIT),)
-ifeq ($(CONFIG_SUPPORT_64BIT),)
-product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
-product_apps += $(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so
-else
-ifeq ($(CONFIG_SUPPORT_64BIT), true)
-product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
-endif
-ifeq ($(CONFIG_SUPPORT_64BIT), false)
-product_apps += $(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so
-endif
-endif
-else
 ifneq ($(CONFIG_DRVMGR_64BIT),)
 ifeq ($(CONFIG_SUPPORT_64BIT),)
 product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
@@ -82,7 +69,6 @@ product_apps += $(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so
 endif
 ifeq ($(CONFIG_SUPPORT_64BIT), false)
 product_apps += $(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so
-endif
 endif
 endif
 endif

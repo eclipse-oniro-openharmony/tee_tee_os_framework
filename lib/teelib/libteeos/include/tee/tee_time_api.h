@@ -8,9 +8,6 @@
 #define __TEE_TIME_API_H
 
 #include "tee_defines.h"
-#ifdef CONFIG_RTC_TIMER
-#include "tee_rtc_time_api.h"
-#endif
 
 /*
  * Get current TEE system rtc time

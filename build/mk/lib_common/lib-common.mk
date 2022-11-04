@@ -16,10 +16,6 @@ ifeq ($(CONFIG_TRNG_ENABLE), true)
 flags += -DTRNG_ENABLE
 endif
 
-ifneq ($(findstring $(CONFIG_EPS_FOR_MSP)$(CONFIG_EPS_FOR_990), true),)
-flags += -DEPS_ENABLE
-endif
-
 # cpp flags:
 cxx-flags += -nostdinc++ -static-libstdc++
 cxx-flags += -I$(LLVM_INC)

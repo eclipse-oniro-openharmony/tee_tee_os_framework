@@ -66,26 +66,6 @@ static spawn_uuid_t g_sender_uuid;
 uint32_t WEAK TA_BSS_START = BSS_START_MAGIC;
 uint32_t WEAK TA_BSS_END = BSS_END_MAGIC;
 
-static void clear_ta_bss(void)
-{
-#ifndef CONFIG_DYNLINK
-    uint32_t ta_bss_start = (uint32_t)&TA_BSS_START;
-    uint32_t ta_bss_end = (uint32_t)&TA_BSS_END;
-
-    if (TA_BSS_START == BSS_START_MAGIC && TA_BSS_END == BSS_END_MAGIC) {
-        tlogd("only weak bss define\n");
-        return;
-    }
-
-    if (ta_bss_end > ta_bss_start)
-        (void)memset_s((void *)(uintptr_t)ta_bss_start, ta_bss_end - ta_bss_start, 0, ta_bss_end - ta_bss_start);
-    else if (ta_bss_end == ta_bss_start)
-        tlogd("bss addr end equals to start\n");
-    else
-        tloge("failed\n");
-#endif
-}
-
 static cref_t get_mymsghdl(void)
 {
     struct hmapi_thread_local_storage *tls = NULL;
@@ -334,12 +314,6 @@ clean:
     TEE_Free(msg_buff);
     return ret;
 }
-
-#ifdef CONFIG_DYNLINK
-#define MAGIC_STRING_LEN 20
-__attribute__((section(".magic"), visibility("default")))
-const char g_magic_string[MAGIC_STRING_LEN] = "Dynamically linked.";
-#endif
 
 #define PERMSRV_SAVE_FILE ".rtosck.permsrv_save_file"
 #define PERMSRV_FILE_OPT  ".rtosck.permsrv_file_operation"
@@ -842,14 +816,12 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
     uint32_t sender;
     int32_t ret;
     struct channel_ipc_args ipc_args = { 0 };
+    (void)init_build;
 
     (void)memset_s(&req_msg, sizeof(req_msg), 0, sizeof(req_msg));
     cref_t ch = 0;
     msginfo_t info = { 0 };
     cref_t msghdl;
-
-    if (init_build == 0)
-        clear_ta_bss();
 
     msghdl = get_mymsghdl();
     if (is_ref_err(msghdl)) {

@@ -126,9 +126,9 @@ endif
 $(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
 	@echo "[Installing $@]"
 	$(VER) IMAGE_ROOT=$(STAGE_DIR) $(BUILD_TOOLS)/pack_img/packimg.sh \
-		$(TRUSTEDCORE_PLATFORM_CHOOSE) \
+		oh \
 		$(COMPARE_IMAGE) \
-		$(TRUSTEDCORE_CHIP_CHOOSE) \
+		oh \
 		$(WITH_TEEOS_ENCRYPT) \
 		$(WITH_LOG_ENCODE)
 ifneq ($(CODE_CHECKER),y)
