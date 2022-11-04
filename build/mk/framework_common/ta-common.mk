@@ -26,7 +26,7 @@ flags += $(INCLUDES)
 
 include $(BUILD_CFI)/llvm-apps-cfi.mk
 
-### HM_NOTE: where added this flags  while compiling hm-teeos
+### HM_NOTE: where added this flags  while compiling tee kernel
 ### 	     do it later.
 LDFLAGS:=$(filter-out -pie,$(LDFLAGS))
 LDFLAGS:=$(filter-out --gc-sections,$(LDFLAGS))

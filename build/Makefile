@@ -41,7 +41,7 @@ export OUTPUTDIR := $(TOPDIR)/output
 endif
 
 HM_BOOTFS_SIZE ?= "8000K"
-export HM_SDK_VER := hm-teeos-release
+export HM_SDK_VER := tee-kernel-release
 
 PHONY += default
 default: all
@@ -168,7 +168,7 @@ clean: clean_links
 	@rm -rf $(OUTPUTDIR)
 	@rm -rf sec_trustedcore.img
 	@rm -rf tools/linker.lds_pp
-	@rm -rf prebuild
+	@rm -rf $(TOPDIR)/prebuild
 clober: clean
 	@rm -rf prebuild/toolchains
 

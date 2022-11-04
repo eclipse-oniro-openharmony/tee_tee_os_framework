@@ -772,7 +772,6 @@ static TEE_Result is_session_valid(const smc_cmd_t *cmd, uint32_t cmd_type)
 
 static void check_and_release_ta_elf(void)
 {
-    /* hm-teeos-test need do hm_spawn, so binary need not delete */
     if (!is_build_in_service(&(g_cur_service->property.uuid)) && g_cur_service->elf_state == ELF_EXIST) {
         if (sre_release_dynamic_region(&g_cur_service->property.uuid, TA_REGION_RELEASE) != 0)
             tloge("release elf failed\n");
