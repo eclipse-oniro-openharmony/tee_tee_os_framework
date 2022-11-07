@@ -424,7 +424,7 @@ void task_adapt_init(void)
     /* there is no need to process return value here */
     register_multi_task();
     (void)register_task_ssa();
-#ifdef CONFIG_APP_TEE_PERM
+#if defined(CONFIG_APP_TEE_PERM) || defined(CONFIG_APP_TEE_PERM_A32)
     register_task_perm_serv();
 #endif
     (void)register_task_se_srv();
