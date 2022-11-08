@@ -1,14 +1,13 @@
-/*$$$!!Warning: Huawei key information asset. No spread without permission.$$$*/
-/*CODEMARK:c9SPtfxMWZMlOvcDia+6WHAr59HhILlflASQHv7o128+mg20phJTfOcfFn53MPjpO8GHRgax
-tPhOXI1/WJ/LbjDIJ8+dAdseptkps6hvCJuKGe+mhDqxNCKx7bYzhqwCa9jqkJuZhopbxD/4
-0/1+I7yaQL7ITawf6zZtPiDNYPc=#*/
-/*$$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$*/
-
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- * Description: perm service do elf verify
- * Author: lipeng
- * Create: 2021-08-11
+ * Copyright (C) 2022 Huawei Technologies Co., Ltd.
+ * Licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *     http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 
 #include "handle_elf_verify.h"

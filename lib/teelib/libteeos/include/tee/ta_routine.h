@@ -1,6 +1,13 @@
-/* Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- * Description: add for elf_main_entry decouple
- * Create: 2019-08-26
+/*
+ * Copyright (C) 2022 Huawei Technologies Co., Ltd.
+ * Licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *     http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 #ifndef LIBTEEOS_TA_ROUTINE_H
 #define LIBTEEOS_TA_ROUTINE_H

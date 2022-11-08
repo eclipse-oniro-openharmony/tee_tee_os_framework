@@ -1,20 +1,13 @@
-/*$$$!!Warning: Huawei key information asset. No spread without permission.$$$*/
-/*CODEMARK:mJSkoqPZ5FEeD8fzH9bAQfhyPrkcI5cbzjotjI99J9PTkCMNHMtR+8Ejd3mKEkWbMFYmuIhV
-lw/je6uplRzXM4SMvhun8vRGD9mNqO2kY4/aQFDUiG2CG+z+BR1XavYOLbgQ6mxl4mdMDMUc
-pTTvsgNnGY+uGDhrcSrYT/yiWUcPU+7hHj/1z+1w4sei8NKrE5YtD4ycmPizGfaNhWQY5YvG
-yUQ4I+iaikKhay3gs3gbvr2F/fo9kmuK6WNlljMWqZQckvm//k0TiyJFZq4NZA==#*/
-/*$$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$*/
-/* $$$!!Warning: Huawei key information asset. No spread without permission.$$$ */
-/* CODEMARK:mJSkoqPZ5FEeD8fzH9bAQfhyPrkcI5cbzjotjI99J9PTkCMNHMtR+8Ejd3mKEkWbMFYmuIhV
-lw/je6uplRzXM/7uADPX5kMIDR9EzlrKbowA2kAWPsptA/i1sp5YlH5sJzn7qOz2BwqIQ3tK
-XogmsUvj68dRns2uMNggb+GEHlpiIoSMc0MeM1OucCUunEYhNj6M02xag9s3KxxEf6eyNruG
-mhjleryGNh46uiRGSK0wVp36/VL8juVjE4JjPfzJVdKWEfo+kRQAZEcMJm1VZA==# */
-/* $$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$ */
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2018-2019. All rights reserved.
- * Description: ta permission
- * Author: l00422637
- * Create: 2018-03-10
+ * Copyright (C) 2022 Huawei Technologies Co., Ltd.
+ * Licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *     http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 #include "ta_permission.h"
 #include <stdint.h>
