@@ -9,3 +9,10 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
+#ifndef SOFT_ERR_H
+#define SOFT_ERR_H
+
+#include <stdint.h>
+
+int32_t get_soft_crypto_error(int32_t tee_error);
+#endif
