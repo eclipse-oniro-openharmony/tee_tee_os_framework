@@ -1,13 +1,13 @@
-/* $$$!!Warning: Huawei key information asset. No spread without permission.$$$ */
-/* CODEMARK:G45B5tAhAurX3Fjv5w5YrnvEBsxawGU4sQTa6eXHOFkC1Mfvbai6ssLiuF4skCy23hW+xgyXJaVN
-2jIjipr/cpauHINx1FQyMyereaY2ZKz1AEk16KBYT3zrrVcV/zYZa+SM7KtAIjQaXRQOuxkCVCHR
-djsuW3qvWZbQ3ZjHygm+9Z7Zon2QkYjMt+j1ajp+5u25sy0tND3u8XRRTFLYIcPN3a00GwLwzcWQ
-hFfZjUw=# */
-/* $$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$ */
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- * Description: tee crypto api hash algorithm implementation
- * Create: 2022-04-06
+ * Copyright (C) 2022 Huawei Technologies Co., Ltd.
+ * Licensed under the Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *     http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+ * PURPOSE.
+ * See the Mulan PSL v2 for more details.
  */
 #include "tee_crypto_common_hash.h"
 #include <string.h>
