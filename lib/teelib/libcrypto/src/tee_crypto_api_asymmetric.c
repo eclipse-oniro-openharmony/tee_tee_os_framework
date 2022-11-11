@@ -109,6 +109,10 @@ static void refresh_attribute_value(struct asymmetric_params_t *rsa_params)
 {
     if (rsa_params == NULL)
         return;
+    if (rsa_params->param_count > TEE_PARAM_COUNT_MAX) {
+        tloge("the param_count is too big param_count = %u", rsa_params->param_count);
+        return;
+    }
 
     struct crypto_attribute_t *tmp_attribute = NULL;
     tmp_attribute = (struct crypto_attribute_t *)(uintptr_t)(rsa_params->attribute);
@@ -239,7 +243,7 @@ static TEE_Result asymmetric_process_hal(TEE_OperationHandle operation, const TE
     TEE_Free(tmp_attribute);
     tmp_attribute = NULL;
     if (ret != TEE_SUCCESS) {
-        tloge("asymmetric encrypt failed");
+        tloge("asymmetric failed, ret is 0x%x", ret);
         return ret;
     }
     *(data->dest_len) = (size_t)data_out.size;

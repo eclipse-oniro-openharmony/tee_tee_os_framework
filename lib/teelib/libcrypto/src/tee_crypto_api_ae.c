@@ -655,7 +655,7 @@ static TEE_Result ae_decrypt_hal(TEE_OperationHandle operation, operation_src_de
     int32_t ret = tee_crypto_ae_dec_final(operation->crypto_ctxt, &data_in, &tag_ref, &data_out);
     free_operation_ctx(operation);
     if (ret != TEE_SUCCESS) {
-        tloge("ae encrypt failed");
+        tloge("ae decrypt failed");
         return change_hal_ret_to_gp(ret);
     }
 

@@ -143,7 +143,7 @@ static int32_t get_and_check_cipher_key(uint32_t alg_type, uint8_t *key_buff, ui
     }
     if (!check_cipher_aes_key_size_valid(alg_type, key->key_size) &&
         !check_cipher_key_des_size_valid(alg_type, key->key_size)) {
-        tloge("The key size is not support, alog=0x%x size = 0x%x", alg_type, key->key_size);
+        tloge("The key size is not support, algorithm type = 0x%x size = 0x%x", alg_type, key->key_size);
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -157,7 +157,7 @@ static int32_t get_cipher_iv(uint8_t *iv_buff, uint32_t iv_size, const struct me
         return CRYPTO_SUCCESS;
     }
     if (iv->size > iv_size) {
-        tloge("Invaild iv len, len=0x%x\n", iv->size);
+        tloge("Invalid iv len, len=0x%x\n", iv->size);
         return CRYPTO_BAD_PARAMETERS;
     }
     errno_t rc = memcpy_s(iv_buff, iv_size, (uint8_t *)(uintptr_t)(iv->buffer), iv->size);
@@ -228,7 +228,7 @@ static void *proc_soft_aes_des_cipher_init(uint32_t alg_type, uint32_t direction
         return NULL;
     }
     uint32_t enc_mode = (direction == DEC_MODE) ? AES_MODE_DECRYPT : AES_MODE_ENCRYPT;
-    int32_t rc = EVP_CipherInit_ex(ctx, aes_cipher(), NULL, aes_key, iv, enc_mode);
+    int32_t rc = EVP_CipherInit_ex(ctx, aes_cipher(), NULL, aes_key, iv, (int32_t)enc_mode);
     if (rc != BORINGSSL_OK) {
         tloge("Evp aes cipher init failed\n");
         EVP_CIPHER_CTX_free(ctx);
@@ -343,6 +343,9 @@ static int32_t proc_aes_cmac_cipher_final(struct ctx_handle_t *cipher_ctx, const
 static int32_t proc_aes_cbc_mac_cipher_final(struct ctx_handle_t *cipher_ctx, const struct memref_t *data_in,
     struct memref_t *data_out)
 {
+    if (data_out->buffer == 0 || data_out->size == 0 || data_out->size > INT32_MAX)
+        return CRYPTO_BAD_PARAMETERS;
+
     EVP_CIPHER_CTX *ctx = (EVP_CIPHER_CTX *)(uintptr_t)(cipher_ctx->ctx_buffer);
     if (ctx == NULL) {
         tloge("The aes cmac ctx is null\n");
@@ -376,7 +379,8 @@ static int32_t proc_aes_des_cipher_final(struct ctx_handle_t *cipher_ctx, const 
     struct memref_t *data_out)
 {
     EVP_CIPHER_CTX *ctx = (EVP_CIPHER_CTX *)(uintptr_t)(cipher_ctx->ctx_buffer);
-    if (ctx == NULL || data_out->size > INT32_MAX) {
+    if (ctx == NULL || data_out->buffer == 0 || data_out->size == 0 || data_out->size < data_in->size ||
+        data_out->size > INT32_MAX) {
         tloge("ctx is null or data out size is too long\n");
         return CRYPTO_BAD_PARAMETERS;
     }
@@ -482,7 +486,7 @@ int32_t soft_crypto_cipher_init(struct ctx_handle_t *ctx,
 
     int32_t rc = check_valid_algorithm(ctx->alg_type, g_algorithm_cipher, ARRAY_NUM(g_algorithm_cipher));
     if (rc != CRYPTO_SUCCESS) {
-        tloge("algorithm 0x%x is incorrect", ctx->alg_type);
+        tloge("algorithm 0x%x is incorrect or not supported", ctx->alg_type);
         return rc;
     }
     void *cipher_ctx = NULL;

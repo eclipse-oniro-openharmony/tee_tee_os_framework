@@ -39,7 +39,7 @@ static TEE_Result check_keysize_for_aes(uint32_t max_key_size)
 {
     if (max_key_size != AES_KEY_SIZE_128 * BIT_TO_BYTE && max_key_size != AES_KEY_SIZE_192 * BIT_TO_BYTE &&
         max_key_size != AES_KEY_SIZE_256 * BIT_TO_BYTE)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
@@ -49,14 +49,14 @@ static TEE_Result check_keysize_for_rsa(uint32_t max_key_size)
     if (max_key_size >= RSA_KEY_MIN && max_key_size <= RSA_KEY_MAX &&
         max_key_size % RSA_KEY_BLOCK == 0)
         return TEE_SUCCESS;
-    return TEE_ERROR_NOT_SUPPORTED;
+    return TEE_ERROR_BAD_PARAMETERS;
 }
 
 static TEE_Result check_keysize_for_dh_derive(uint32_t max_key_size)
 {
     if (max_key_size < DH_MIN_KEY_SIZE * BIT_TO_BYTE || max_key_size > DH_MAX_KEY_SIZE * BIT_TO_BYTE ||
         max_key_size % BIT_TO_BYTE != 0)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
@@ -65,7 +65,7 @@ static TEE_Result check_keysize_for_hmac(uint32_t max_key_size)
 {
     if (max_key_size < HMAC_MIN_KEY || max_key_size > HMAC_MAX_KEY ||
         max_key_size % BIT_TO_BYTE != 0)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
@@ -73,7 +73,7 @@ static TEE_Result check_keysize_for_hmac_sm3(uint32_t max_key_size)
 {
     if (max_key_size < HMAC_SM3_MIN_KEY || max_key_size > HMAC_SM3_MAX_KEY ||
         max_key_size % BIT_TO_BYTE != 0)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
@@ -81,7 +81,7 @@ static TEE_Result check_keysize_for_hmac_sm3(uint32_t max_key_size)
 static TEE_Result check_keysize_for_sip_hash(uint32_t max_key_size)
 {
     if (max_key_size != SIPHASH_KEY_SIZE * BIT_TO_BYTE)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
@@ -92,35 +92,35 @@ static TEE_Result check_keysize_for_ecdsa_sha_x(uint32_t max_key_size)
         max_key_size != ECDSA_KEY_224 &&
         max_key_size != ECDSA_KEY_256 && max_key_size != ECDSA_KEY_320 &&
         max_key_size != ECDSA_KEY_384 && max_key_size != ECDSA_KEY_521)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
     return TEE_SUCCESS;
 }
 
 static TEE_Result check_keysize_for_ecdh_p224(uint32_t max_key_size)
 {
     if (max_key_size != ECDSA_KEY_224)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
 static TEE_Result check_keysize_for_ecdh_p256(uint32_t max_key_size)
 {
     if (max_key_size != ECDSA_KEY_256)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
 static TEE_Result check_keysize_for_ecdh_p384(uint32_t max_key_size)
 {
     if (max_key_size != ECDSA_KEY_384)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
 static TEE_Result check_keysize_for_ecdh_p521(uint32_t max_key_size)
 {
     if (max_key_size != ECDSA_KEY_521)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
@@ -128,7 +128,7 @@ static TEE_Result check_keysize_for_ecdh_p521(uint32_t max_key_size)
 static TEE_Result check_keysize_for_25519(uint32_t max_key_size)
 {
     if (max_key_size != ECDSA_KEY_256)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
@@ -136,21 +136,21 @@ static TEE_Result check_keysize_for_25519(uint32_t max_key_size)
 static TEE_Result check_keysize_for_sm2(uint32_t max_key_size)
 {
     if (max_key_size != ECDSA_KEY_256)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
 static TEE_Result check_keysize_for_sm4(uint32_t max_key_size)
 {
     if (max_key_size != SM4_KEY_SIZE)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }
 static TEE_Result check_keysize_for_others(uint32_t max_key_size)
 {
     if (max_key_size % BIT_TO_BYTE != 0)
-        return TEE_ERROR_NOT_SUPPORTED;
+        return TEE_ERROR_BAD_PARAMETERS;
 
     return TEE_SUCCESS;
 }

@@ -42,7 +42,6 @@ CFLAGS += -DOPENSSL_ENABLE
 A32_CFLAGS += -DOPENSSL_ENABLE
 CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/include
 CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/crypto
-CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/crypto/include
 endif
 
 ifeq (${TARG}, _a32)

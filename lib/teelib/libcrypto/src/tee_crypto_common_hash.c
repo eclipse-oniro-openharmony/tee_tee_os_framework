@@ -79,6 +79,11 @@ TEE_Result proc_hal_digest_init(TEE_OperationHandle operation)
         return TEE_ERROR_BAD_PARAMETERS;
 
     crypto_hal_info *crypto_hal_data = operation->hal_info;
+    if (crypto_hal_data == NULL) {
+        tloge("crypto hal data is null");
+        return TEE_ERROR_BAD_PARAMETERS;
+    }
+
     if (crypto_hal_data->digestalloc_flag == DIGEST_ALLOC_CTX)
         return TEE_SUCCESS;
 

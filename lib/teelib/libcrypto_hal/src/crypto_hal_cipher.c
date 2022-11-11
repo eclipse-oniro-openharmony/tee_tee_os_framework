@@ -314,7 +314,7 @@ static int32_t do_padding_dec(struct ctx_handle_t *ctx, const struct memref_t *d
         (data_in->buffer == 0) || (data_out->buffer == 0) ||
         (data_out->size == 0) || (data_out->size > MAX_CRYPTO_DATA_LEN));
     if (check) {
-        tloge("Invalid input params\n");
+        tloge("Input params invalid\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -322,7 +322,7 @@ static int32_t do_padding_dec(struct ctx_handle_t *ctx, const struct memref_t *d
     padding_data_out.size = data_out->size;
     uint8_t *padding_data_out_buffer = TEE_Malloc(data_out->size, 0);
     if (padding_data_out_buffer == NULL) {
-        tloge("Malloc memory failed\n");
+        tloge("Memory malloc failed\n");
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     padding_data_out.buffer = (uint64_t)(uintptr_t)padding_data_out_buffer;

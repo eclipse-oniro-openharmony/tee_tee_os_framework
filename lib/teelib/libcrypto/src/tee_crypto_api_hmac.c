@@ -269,7 +269,7 @@ void TEE_MACUpdate(TEE_OperationHandle operation, const void *chunk, size_t chun
 
     ret = hmac_update_hal(operation, chunk, chunkSize);
     if (ret != TEE_SUCCESS) {
-        tloge("MACUpdate failed\n");
+        tloge("MACUpdate failed, ret is 0x%x\n", ret);
         operation->handleState &= ~TEE_HANDLE_FLAG_INITIALIZED;
         crypto_unlock_operation(operation);
         TEE_Panic(ret);

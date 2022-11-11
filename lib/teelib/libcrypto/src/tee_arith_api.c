@@ -573,7 +573,7 @@ void TEE_BigIntAdd(TEE_BigInt *dest, const TEE_BigInt *op1, const TEE_BigInt *op
 
     bool check = ((dest == NULL) || (op1 == NULL) || (op2 == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for add\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -600,7 +600,7 @@ void TEE_BigIntSub(TEE_BigInt *dest, const TEE_BigInt *op1, const TEE_BigInt *op
 
     bool check = ((dest == NULL) || (op1 == NULL) || (op2 == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for sub\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -657,7 +657,7 @@ void TEE_BigIntMul(TEE_BigInt *dest, const TEE_BigInt *op1, const TEE_BigInt *op
 
     bool check = ((dest == NULL) || (op1 == NULL) || (op2 == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for mul\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -740,7 +740,7 @@ void TEE_BigIntMod(TEE_BigInt *dest, const TEE_BigInt *op, const TEE_BigInt *n)
 
     bool check = ((dest == NULL) || (op == NULL) || (n == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for int mod\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -768,7 +768,7 @@ void TEE_BigIntAddMod(TEE_BigInt *dest, const TEE_BigInt *op1, const TEE_BigInt 
 
     bool check = ((dest == NULL) || (op1 == NULL) || (op2 == NULL) || (n == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for add mod\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -795,7 +795,7 @@ void TEE_BigIntSubMod(TEE_BigInt *dest, const TEE_BigInt *op1, const TEE_BigInt 
 
     bool check = ((dest == NULL) || (op1 == NULL) || (op2 == NULL) || (n == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for sub mod\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -822,7 +822,7 @@ void TEE_BigIntMulMod(TEE_BigInt *dest, const TEE_BigInt *op1, const TEE_BigInt 
     struct bn_mem_pool_t *pool = NULL;
     bool check = ((dest == NULL) || (op1 == NULL) || (op2 == NULL) || (n == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for mul mod\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -850,7 +850,7 @@ void TEE_BigIntSquareMod(TEE_BigInt *dest, const TEE_BigInt *op, const TEE_BigIn
 
     bool check = ((dest == NULL) || (op == NULL) || (n == NULL));
     if (check) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for square mod\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -1036,7 +1036,7 @@ void TEE_BigIntConvertToFMM(TEE_BigIntFMM *dest, const TEE_BigInt *src, const TE
     struct bn_mem_pool_t *pool = NULL;
 
     if ((dest == NULL) || (src == NULL) || (context == NULL) || (n == NULL)) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for convert to fmm\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }
@@ -1065,7 +1065,7 @@ void TEE_BigIntConvertFromFMM(TEE_BigInt *dest, const TEE_BigIntFMM *src, const 
     struct bn_mem_pool_t *pool = NULL;
 
     if ((dest == NULL) || (src == NULL) || (context == NULL) || (n == NULL)) {
-        tloge("parameters is invalid\n");
+        tloge("parameters is invalid for convert from fmm\n");
         TEE_Panic(TEE_ERROR_BAD_PARAMETERS);
         return;
     }

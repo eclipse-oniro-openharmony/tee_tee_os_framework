@@ -28,9 +28,18 @@
 #include "crypto/rand.h"
 #include "openssl/crypto.h"
 
+int32_t check_params(const struct asymmetric_params_t *params)
+{
+    if ((params != NULL) && (params->param_count > TEE_PARAM_MAX)) {
+        tloge("the param_count is too big param_count = %u", params->param_count);
+        return CRYPTO_BAD_PARAMETERS;
+    }
+    return TEE_SUCCESS;
+}
+
 int32_t check_valid_algorithm(uint32_t algorithm, const uint32_t *array, uint32_t array_size)
 {
-    if (array == NULL)
+    if (array == NULL || array_size > MAX_VALID_ALGO_SIZE)
         return CRYPTO_BAD_PARAMETERS;
     uint32_t index;
     for (index = 0; index < array_size; index++) {
@@ -89,12 +98,12 @@ static int32_t soft_copy_aes_des_info(struct ctx_handle_t *dest, const struct ct
 
     EVP_CIPHER_CTX *new_ctx = EVP_CIPHER_CTX_new();
     if (new_ctx == NULL) {
-        tloge("New aes ctx failed");
+        tloge("Aes ctx copy failed");
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     int32_t ret = EVP_CIPHER_CTX_copy(new_ctx, (EVP_CIPHER_CTX *)(uintptr_t)(src->ctx_buffer));
     if (ret != BORINGSSL_OK) {
-        tloge("Copy aes ctx failed");
+        tloge("Aes ctx copy failed");
         EVP_CIPHER_CTX_free(new_ctx);
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
@@ -299,6 +308,8 @@ int32_t get_boring_nid_by_tee_curve(uint32_t tee_domain, uint32_t *nid)
 
 int32_t get_openssl_rand(unsigned char *buf, int num)
 {
+    if (num == 0 || num > INT32_MAX)
+        return CRYPTO_BAD_PARAMETERS;
     int32_t ret = RAND_priv_bytes(buf, num);
     free_openssl_drbg_mem();
     return ret;

@@ -205,7 +205,7 @@ static int32_t soft_ecpubkey_boring_to_tee(const EC_KEY *key, uint32_t key_size,
     }
     check = (BN_num_bytes(x) > ECC_KEY_LEN || BN_num_bytes(y) > ECC_KEY_LEN);
     if (check) {
-        tloge("buffer not enougth");
+        tloge("buffer not enough");
         ret = CRYPTO_BAD_PARAMETERS;
         goto error;
     }
@@ -275,10 +275,10 @@ static int32_t soft_ecc_sign_to_bin(const ECDSA_SIG *sig_data, void *signature, 
     errno_t rc;
     BIGNUM *out_r = NULL;
     BIGNUM *out_s = NULL;
-    uint32_t move_len;
-    uint32_t fix_r_s_len = signature_len / SOFT_NUMBER_TWO;
-    uint32_t r_len;
-    uint32_t s_len;
+    int32_t move_len;
+    int32_t fix_r_s_len = (int32_t)(signature_len / SOFT_NUMBER_TWO);
+    int32_t r_len;
+    int32_t s_len;
 
     rc = memset_s(signature, signature_len, 0, signature_len);
     if (rc != EOK) {
@@ -290,20 +290,20 @@ static int32_t soft_ecc_sign_to_bin(const ECDSA_SIG *sig_data, void *signature, 
         tloge("bad ecc sign result");
         return CRYPTO_BAD_PARAMETERS;
     }
-    r_len = (uint32_t)BN_num_bytes(out_r);
-    s_len = (uint32_t)BN_num_bytes(out_s);
+    r_len = BN_num_bytes(out_r);
+    s_len = BN_num_bytes(out_s);
     if (r_len > fix_r_s_len || s_len > fix_r_s_len) {
-        tloge("bad ecc sign result,it too large %u, %u", r_len, s_len);
+        tloge("bad ecc sign result,it too large %d, %d", r_len, s_len);
         return CRYPTO_BAD_PARAMETERS;
     }
 
     move_len = fix_r_s_len - r_len;
-    r_len = (uint32_t)BN_bn2bin(out_r, signature + move_len);
+    r_len = BN_bn2bin(out_r, signature + move_len);
 
-    move_len = signature_len - s_len;
-    s_len = (uint32_t)BN_bn2bin(out_s, signature + move_len);
-    if (r_len > fix_r_s_len || s_len > fix_r_s_len) {
-        tloge("when fill res, bad ecc sign result,it too large %u, %u", r_len, s_len);
+    move_len = (int32_t)signature_len - s_len;
+    s_len = BN_bn2bin(out_s, signature + move_len);
+    if (r_len <= 0 || s_len <= 0 || r_len > fix_r_s_len || s_len > fix_r_s_len) {
+        tloge("when fill res, bad ecc sign result,the len is %d, %d", r_len, s_len);
         return CRYPTO_BAD_PARAMETERS;
     }
 
