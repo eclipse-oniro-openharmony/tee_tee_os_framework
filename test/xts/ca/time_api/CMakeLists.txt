@@ -13,7 +13,7 @@
 
 set(ca_sources)
 list(APPEND ca_sources
-    tee_test_time_api.cpp
+    src/tee_test_time_api.cpp
 )
 
 ca_compile_pub(

@@ -17,7 +17,7 @@ ta_compile_pub(
     ${TARGET_NAME}
 
     SRC_LIST
-    tee_test_tcf.c
+    src/tee_test_tcf.c
 
     INCLUDE_DIRS
 

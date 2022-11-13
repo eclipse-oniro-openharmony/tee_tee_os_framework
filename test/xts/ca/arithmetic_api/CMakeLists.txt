@@ -13,7 +13,7 @@
 
 set(ca_sources)
 list(APPEND ca_sources
-    tee_test_arithmetic_api.cpp
+    src/tee_test_arithmetic_api.cpp
 )
 
 ca_compile_pub(

@@ -11,8 +11,13 @@
 #
 
 set(ta_sources)
+
 list(APPEND ta_sources
-    drvcaller_test.c
+    src/drvcaller_test.c
+)
+
+list(APPEND header_dir
+    include
 )
 
 ta_compile_pub(
@@ -23,6 +28,7 @@ ta_compile_pub(
     ${ta_sources}
 
     INCLUDE_DIRS
+    ${header_dir}
 
     COMPILE_OPTS
     COMPILE_DEFS

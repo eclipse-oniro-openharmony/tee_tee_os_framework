@@ -12,19 +12,19 @@
 
 set(ca_sources)
 list(APPEND ca_sources
-    initializecontext_test.cpp
-    opensession_test.cpp
-    invokecommand_test.cpp
-    closesession_test.cpp
-    finalizecontext_test.cpp
-    allocatesharedmemory_test.cpp
-    registersharedmemory_test.cpp
-    releasesharedmemory_test.cpp
+    src/initializecontext_test.cpp
+    src/opensession_test.cpp
+    src/invokecommand_test.cpp
+    src/closesession_test.cpp
+    src/finalizecontext_test.cpp
+    src/allocatesharedmemory_test.cpp
+    src/registersharedmemory_test.cpp
+    src/releasesharedmemory_test.cpp
 )
 
 ca_compile_pub(
     TEST_NAME
-    client_api_ca
+    client_api
 
     SRC_LIST
     ${ca_sources}
