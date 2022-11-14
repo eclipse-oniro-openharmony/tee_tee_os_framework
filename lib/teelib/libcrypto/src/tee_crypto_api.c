@@ -204,7 +204,10 @@ static TEE_Result check_allocate_param(TEE_OperationHandle *operation, uint32_t 
 
     TEE_Result ret = check_valid_key_size_for_algorithm(algorithm, max_keysize);
     if (ret != TEE_SUCCESS) {
-        tloge("algorithm 0x%x is not support now\n", algorithm);
+        if (ret == TEE_ERROR_BAD_PARAMETERS)
+            tloge("max_keysize 0x%x is wrong or not supported now\n", max_keysize);
+        else
+            tloge("algorithm 0x%x is incorrect or not supported\n", algorithm);
         return TEE_ERROR_NOT_SUPPORTED;
     }
     uint32_t temp_key_size = max_keysize;
@@ -1568,12 +1571,12 @@ static TEE_Result check_object_key_size_valid(const TEE_OperationHandle operatio
     else
         key_size_in_bits = key->Attribute[index].content.ref.length * BIT_TO_BYTE;
     if (key_size_in_bits > operation->maxKeySize) {
-        tloge("The key size is invalid, oject key size is %zu, operation key size is %u\n",
+        tloge("The key size is invalid, object key size is %zu, operation key size is %u\n",
             key->Attribute[index].content.ref.length, operation->maxKeySize);
         return TEE_ERROR_BAD_PARAMETERS;
     }
     if (crypto_check_keysize(operation->algorithm, key_size_in_bits) != TEE_SUCCESS) {
-        tloge("The object key size is invalid, oject key size is %u\n", key_size_in_bits);
+        tloge("The object key size is invalid, object key size is %u\n", key_size_in_bits);
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1597,7 +1600,7 @@ static TEE_Result check_low_lev_key_size_valid(const TEE_OperationHandle operati
 
     key_size_in_bits = key->Attribute[index].content.ref.length;
     if (check_low_lev_key_size_for_alg(operation->algorithm, key_size_in_bits) != TEE_SUCCESS) {
-        tloge("The object key size is invalid, oject key size is %u\n", key_size_in_bits);
+        tloge("The object key size is invalid, object key size is %u\n", key_size_in_bits);
         return TEE_ERROR_BAD_PARAMETERS;
     }
 

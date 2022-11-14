@@ -40,12 +40,15 @@
 #define SHA256_LEN                   32
 #define SHA384_LEN                   48
 #define SHA512_LEN                   64
+#define MAX_VALID_ALGO_SIZE          32
 #define CRYPTO_TYPE_DIGEST           0x50000000
 #define CRYPTO_TYPE_HMAC             0x30000000
 #define CRYPTO_TYPE_CIPHER           0x10000000
 #define CRYPTO_TYPE_AES_MAC          0x30000010
 #define CRYPTO_TYPE_AES              0x40000000
+#define TEE_PARAM_MAX                9
 
+int32_t check_params(const struct asymmetric_params_t *params);
 int32_t check_valid_algorithm(uint32_t algorithm, const uint32_t *array, uint32_t array_size);
 uint32_t get_hash_context_size(uint32_t algorithm);
 void free_cipher_context(uint64_t *ctx);

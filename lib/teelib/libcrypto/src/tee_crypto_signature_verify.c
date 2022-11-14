@@ -43,9 +43,9 @@ uint32_t get_effective_size(const uint8_t *buff, uint32_t len)
 static void free_rsa_bn_n(BIGNUM *bn_n, BIGNUM *bn_e, BIGNUM *bn_d, BIGNUM *bn_p)
 {
     BN_free(bn_n);
-    BN_free(bn_p);
+    BN_clear_free(bn_p);
     BN_free(bn_e);
-    BN_free(bn_d);
+    BN_clear_free(bn_d);
 }
 
 RSA *rsa_build_public_key(const rsa_pub_key_t *pub_key)
@@ -112,4 +112,3 @@ TEE_Result tee_secure_img_release_verify(const uint8_t *hash, uint32_t hash_size
 
     return TEE_SUCCESS;
 }
-

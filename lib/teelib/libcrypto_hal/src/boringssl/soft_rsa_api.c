@@ -109,7 +109,7 @@ static int32_t convert_big_num_to_buffer(const BIGNUM *big_num, uint8_t *out, ui
 
     uint32_t big_num_len = (uint32_t)BN_num_bytes(big_num);
     if (*out_len < big_num_len) {
-        tloge("The out lenth is less than big num lenth, out_len=%u, big_num_len=%u\n", *out_len, big_num_len);
+        tloge("The out length is less than big num length, out_len=%u, big_num_len=%u\n", *out_len, big_num_len);
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -255,6 +255,8 @@ static const EVP_MD *get_mgf1_algorithm(const struct asymmetric_params_t *params
     if (params == NULL)
         return NULL;
     struct crypto_attribute_t *attribute = (struct crypto_attribute_t *)(uintptr_t)(params->attribute);
+    if (attribute == NULL)
+        return NULL;
     for (uint32_t i = 0; i < params->param_count; i++) {
         if (attribute[i].attribute_id == CRYPTO_ATTR_RSA_MGF1_HASH) {
             switch (attribute[i].content.value.a) {
@@ -328,7 +330,7 @@ static int32_t set_rsa_oaep_padding_hash(const struct asymmetric_params_t *param
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
 
-    ret = EVP_PKEY_CTX_set_rsa_oaep_md(ctx, md);
+    ret = EVP_PKEY_CTX_set_rsa_oaep_md(ctx, (const void *)md);
     if (ret != BORINGSSL_OK) {
         tloge("Evp rsa set oaep md failed\n");
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
@@ -337,9 +339,9 @@ static int32_t set_rsa_oaep_padding_hash(const struct asymmetric_params_t *param
     /* The mgf1 hash is fixed sha1 in dx, so use sha1 for compatible in here */
     const EVP_MD *evp_md = get_mgf1_algorithm(params);
     if (evp_md != NULL)
-        ret = EVP_PKEY_CTX_set_rsa_mgf1_md(ctx, evp_md);
+        ret = EVP_PKEY_CTX_set_rsa_mgf1_md(ctx, (void *)evp_md);
     else
-        ret = EVP_PKEY_CTX_set_rsa_mgf1_md(ctx, EVP_sha1());
+        ret = EVP_PKEY_CTX_set_rsa_mgf1_md(ctx, (const void *)EVP_sha1());
 
     if (ret != BORINGSSL_OK) {
         tloge("Evp rsa set mgf1 md failed\n");
@@ -403,6 +405,9 @@ error:
 
 static RSA *convert_rsa_pub_to_boring(const struct rsa_pub_key_t *public_key)
 {
+    if (public_key->n_len > RSA_MAX_KEY_SIZE || public_key->e_len > RSA_EXPONENT_LEN)
+        return NULL;
+
     BIGNUM *bn_n = BN_bin2bn(public_key->n, public_key->n_len, NULL);
     BIGNUM *bn_e = BN_bin2bn(public_key->e, public_key->e_len, NULL);
     bool check = ((bn_n == NULL) || (bn_e == NULL));
@@ -460,6 +465,10 @@ static EVP_PKEY_CTX *create_rsa_encrypt_ctx(const struct create_rsa_crypt_ctx_t 
 
 static RSA *convert_rsa_non_crt_to_boring(const struct rsa_priv_key_t *private_key)
 {
+    if (private_key->n_len > RSA_MAX_KEY_SIZE || private_key->d_len > RSA_MAX_KEY_SIZE ||
+        private_key->e_len > RSA_EXPONENT_LEN)
+        return NULL;
+
     BIGNUM *bn_n = BN_bin2bn(private_key->n, private_key->n_len, NULL);
     BIGNUM *bn_e = BN_bin2bn(private_key->e, private_key->e_len, NULL);
     BIGNUM *bn_d = BN_bin2bn(private_key->d, private_key->d_len, NULL);
@@ -483,7 +492,7 @@ static RSA *convert_rsa_non_crt_to_boring(const struct rsa_priv_key_t *private_k
 free_bn:
     BN_free(bn_n);
     BN_free(bn_e);
-    BN_free(bn_d);
+    BN_clear_free(bn_d);
     return NULL;
 }
 
@@ -589,8 +598,8 @@ static int32_t compute_rsa_ed_big_num(BIGNUM *bn_p, BIGNUM *bn_q, BN_CTX *ctx, B
 
     ret1 = 1;
 error:
-    BN_free(key_pair_bignum.bn_p);
-    BN_free(key_pair_bignum.bn_q);
+    BN_clear_free(key_pair_bignum.bn_p);
+    BN_clear_free(key_pair_bignum.bn_q);
     BN_free(key_pair_bignum.bn_div);
     BN_free(key_pair_bignum.bn_gcd);
     return ret1;
@@ -606,7 +615,7 @@ static int32_t get_rsa_ned_big_num(BIGNUM *bn_p, BIGNUM *bn_q, BIGNUM **bn_n, BI
 
     int32_t ret = BN_mul(*bn_n, bn_p, bn_q, ctx);
     if (ret != 1) {
-        tloge("Mul big num failed\n");
+        tloge("Big num mul failed\n");
         BN_CTX_free(ctx);
         return 0;
     }
@@ -614,15 +623,33 @@ static int32_t get_rsa_ned_big_num(BIGNUM *bn_p, BIGNUM *bn_q, BIGNUM **bn_n, BI
     ret = compute_rsa_ed_big_num(bn_p, bn_q, ctx, bn_e, bn_d);
     BN_CTX_free(ctx);
     if (ret != 1) {
-        tloge("Compute big num e and d failed\n");
+        tloge("Big num e and d compute failed\n");
         return 0;
     }
 
     return 1;
 }
 
+static bool check_private_key_len(const struct rsa_priv_key_t *private_key)
+{
+    if (private_key->e_len > RSA_EXPONENT_LEN ||
+        private_key->n_len > RSA_MAX_KEY_SIZE ||
+        private_key->d_len > RSA_MAX_KEY_SIZE ||
+        private_key->p_len > RSA_MAX_KEY_SIZE_CRT ||
+        private_key->q_len > RSA_MAX_KEY_SIZE_CRT ||
+        private_key->dp_len > RSA_MAX_KEY_SIZE_CRT ||
+        private_key->dq_len > RSA_MAX_KEY_SIZE_CRT ||
+        private_key->qinv_len > RSA_MAX_KEY_SIZE_CRT)
+        return false;
+    return true;
+}
+
 static RSA *convert_rsa_crt_to_boring(const struct rsa_priv_key_t *private_key)
 {
+    bool check = check_private_key_len(private_key);
+    if (!check)
+        return NULL;
+
     BIGNUM *bn_n = BN_new();
     BIGNUM *bn_e = BN_bin2bn(private_key->e, private_key->e_len, NULL);
     BIGNUM *bn_d = BN_new();
@@ -656,9 +683,9 @@ static RSA *convert_rsa_crt_to_boring(const struct rsa_priv_key_t *private_key)
 error:
     BN_free(bn_n);
     BN_free(bn_e);
-    BN_free(bn_d);
+    BN_clear_free(bn_d);
     for (int32_t i = 0; i < RSA_CRT_KEY_ATTRIBUTE_COUNT; i++)
-        BN_free(bn_array[i]);
+        BN_clear_free(bn_array[i]);
     return NULL;
 }
 
@@ -788,6 +815,8 @@ static uint32_t get_pss_salt_len(const struct asymmetric_params_t *rsa_params, u
 {
     if (rsa_params != NULL) {
         struct crypto_attribute_t *attribute = (struct crypto_attribute_t *)(uintptr_t)(rsa_params->attribute);
+        if (attribute == NULL)
+            return 0;
         int32_t index = get_attr_index_by_id(TEE_ATTR_RSA_PSS_SALT_LENGTH,
             (const TEE_Attribute *)attribute, rsa_params->param_count);
         if (index >= 0)
@@ -845,7 +874,7 @@ static int32_t soft_rsa_pss_sign_digest(uint32_t alg_type, const struct asymmetr
 
     int32_t ret = get_hash_nid_from_algorithm(alg_type, &hash_nid);
     if (ret != CRYPTO_SUCCESS) {
-        tloge("Get hash nid from operation algorithm failed\n");
+        tloge("Get hash nid from algorithm failed\n");
         RSA_free(rsa_key);
         return ret;
     }
@@ -919,7 +948,7 @@ static int32_t soft_rsa_non_pss_verify_digest(uint32_t alg_type, const struct rs
 
     int32_t ret = get_hash_nid_from_algorithm(alg_type, &hash_nid);
     if (ret != CRYPTO_SUCCESS) {
-        tloge("Get hash nid from operation algorithm failed\n");
+        tloge("Get hash nid from algorithm failed\n");
         RSA_free(rsa_key);
         return ret;
     }
@@ -1003,7 +1032,7 @@ int32_t soft_crypto_rsa_generate_keypair(uint32_t key_size, const struct memref_
     struct rsa_priv_key_t *key_pair)
 {
     if (e_value == NULL || key_pair == NULL) {
-        tloge("bad params");
+        tloge("bad parameters");
         return CRYPTO_BAD_PARAMETERS;
     }
     uint32_t exponent = 0;
@@ -1047,7 +1076,7 @@ int32_t soft_crypto_rsa_encrypt(uint32_t alg_type, const struct rsa_pub_key_t *p
     const struct asymmetric_params_t *rsa_params, const struct memref_t *data_in, struct memref_t *data_out)
 {
     bool check = (public_key == NULL || data_in == NULL || data_out == NULL || data_in->buffer == 0 ||
-        data_out->buffer == 0);
+        data_out->buffer == 0 || (check_params(rsa_params) != TEE_SUCCESS));
     if (check) {
         tloge("bad params");
         return CRYPTO_BAD_PARAMETERS;
@@ -1104,7 +1133,7 @@ int32_t soft_crypto_rsa_decrypt(uint32_t alg_type, const struct rsa_priv_key_t *
     const struct asymmetric_params_t *rsa_params, const struct memref_t *data_in, struct memref_t *data_out)
 {
     bool check = (private_key == NULL || data_in == NULL || data_out == NULL || data_in->buffer == 0 ||
-        data_out->buffer == 0);
+        data_out->buffer == 0 || (check_params(rsa_params) != TEE_SUCCESS));
     if (check) {
         tloge("bad params");
         return CRYPTO_BAD_PARAMETERS;
@@ -1137,7 +1166,7 @@ int32_t soft_crypto_rsa_sign_digest(uint32_t alg_type, const struct rsa_priv_key
     struct memref_t *signature)
 {
     bool check = (private_key == NULL || digest == NULL || signature == NULL || digest->buffer == 0 ||
-        signature->buffer == 0);
+        signature->buffer == 0 || (check_params(rsa_params) != TEE_SUCCESS));
     if (check) {
         tloge("bad params");
         return CRYPTO_BAD_PARAMETERS;
@@ -1154,7 +1183,7 @@ int32_t soft_crypto_rsa_verify_digest(uint32_t alg_type, const struct rsa_pub_ke
     const struct memref_t *signature)
 {
     bool check = (public_key == NULL || digest == NULL || signature == NULL || digest->buffer == 0 ||
-        signature->buffer == 0);
+        signature->buffer == 0 || (check_params(rsa_params) != TEE_SUCCESS));
     if (check) {
         tloge("bad params");
         return CRYPTO_BAD_PARAMETERS;

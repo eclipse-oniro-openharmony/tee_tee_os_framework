@@ -87,6 +87,7 @@ static int32_t derive_key_get_boringkey(const struct ecc_pub_key_t *client_key, 
     if (ret != CRYPTO_SUCCESS) {
         tloge("change nid fail");
         EC_KEY_free(*ec_pub_key);
+        *ec_pub_key = NULL;
         return ret;
     }
     ret = (int32_t)ecc_privkey_tee_to_boring(private, (void **)ec_pri_key);
@@ -94,6 +95,7 @@ static int32_t derive_key_get_boringkey(const struct ecc_pub_key_t *client_key, 
     if (ret != CRYPTO_SUCCESS) {
         tloge("Tee Private Key To Boring Key error");
         EC_KEY_free(*ec_pub_key);
+        *ec_pub_key = NULL;
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
 
@@ -146,9 +148,11 @@ int32_t soft_crypto_ecdh_derive_key(uint32_t alg_type, const struct ecc_pub_key_
 
     if (secret->size < out_share_key_len) {
         tloge("key size %u is not enough %u", secret->size, out_share_key_len);
+        (void)memset_s(out_shared_key, sizeof(out_shared_key), 0, sizeof(out_shared_key));
         return CRYPTO_SHORT_BUFFER;
     }
     errno_t rc = memcpy_s((void *)(uintptr_t)(secret->buffer), secret->size, out_shared_key, out_share_key_len);
+    (void)memset_s(out_shared_key, sizeof(out_shared_key), 0, sizeof(out_shared_key));
     if (rc != EOK) {
         tloge("copy secret key failed");
         return CRYPTO_ERROR_SECURITY;

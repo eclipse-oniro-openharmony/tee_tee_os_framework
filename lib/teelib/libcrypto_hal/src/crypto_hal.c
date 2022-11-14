@@ -121,6 +121,10 @@ void tee_crypto_ctx_free(struct ctx_handle_t *ctx)
 {
     if (ctx == NULL)
         return;
+
+    if (ctx->engine == SOFT_CRYPTO)
+        free_ctx_buff(ctx);
+    else
 #ifndef CRYPTO_MGR_SERVER_ENABLE
     free_ctx_buff(ctx);
 #else
@@ -129,12 +133,12 @@ void tee_crypto_ctx_free(struct ctx_handle_t *ctx)
     struct crypto_cache_t *cache = (struct crypto_cache_t *)(uintptr_t)(ctx->cache_buffer);
     free_crypto_cache(cache);
     cache = NULL;
-    TEE_Free(ctx);
     if (ctx->fd > 0) {
         int32_t ret = tee_drv_close(ctx->fd);
         if (ret != 0)
             tloge("close fd fail fd = 0x%x, ret = 0x%x\n", ctx->fd, ret);
     }
+    TEE_Free(ctx);
 }
 
 static void ctx_copy_normal(const struct ctx_handle_t *src_ctx, struct ctx_handle_t *dest_ctx)
@@ -145,6 +149,7 @@ static void ctx_copy_normal(const struct ctx_handle_t *src_ctx, struct ctx_handl
     dest_ctx->engine = src_ctx->engine;
     dest_ctx->is_support_ae_update = src_ctx->is_support_ae_update;
     dest_ctx->tag_len = src_ctx->tag_len;
+    dest_ctx->aad_size = src_ctx->aad_size;
     dest_ctx->driver_ability = src_ctx->driver_ability;
 
     (void)memcpy_s(dest_ctx->cbc_mac_buffer, sizeof(dest_ctx->cbc_mac_buffer),
@@ -323,17 +328,17 @@ int32_t soft_random_get(uint8_t *trng_addr, uint32_t length)
     uint32_t left;
 
     if (trng_addr == NULL) {
-        printf("bad param!\n");
+        tloge("bad param!\n");
         return -1;
     }
 
     left = length % WORD_SIZE;
-    tmp_addr = (uint32_t *)trng_addr;
+    tmp_addr = (uint32_t *)(void *)trng_addr;
 
     for (i = 0; i < length / WORD_SIZE; i++) {
         tmp_addr[i] = random_arch_get();
         if (tmp_addr[i] == 0) {
-            printf("get rng value error!\n");
+            tloge("get rng value error!\n");
             return -1;
         }
     }
@@ -343,7 +348,7 @@ int32_t soft_random_get(uint8_t *trng_addr, uint32_t length)
 
     value = random_arch_get();
     if (memcpy_s(trng_addr + i * WORD_SIZE, length - i * WORD_SIZE, (char *)(&value), left) != EOK) {
-        printf("copy random error!\n");
+        tloge("copy random error!\n");
         return -1;
     }
 

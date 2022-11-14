@@ -24,10 +24,11 @@ static struct crypto_cache_t *alloc_crypto_cache(uint32_t alg_type, const struct
 
     if (alg_type == CRYPTO_TYPE_AES_CCM)
         total_buff_len = ae_init_param->payload_len;
-
-    if (alg_type == CRYPTO_TYPE_AES_GCM || alg_type == CRYPTO_TYPE_SM4_GCM)
+    else if (alg_type == CRYPTO_TYPE_AES_GCM || alg_type == CRYPTO_TYPE_SM4_GCM)
         total_buff_len = ((ae_init_param->payload_len > 0) && (ae_init_param->payload_len < MAX_CRYPTO_DATA_LEN)) ?
             ae_init_param->payload_len : MAX_CRYPTO_DATA_LEN;
+    else
+        return NULL;
 
     if (total_buff_len > MAX_CRYPTO_DATA_LEN) {
         tloge("Payload len is too large, total_buff_len=0x%x\n", total_buff_len);
@@ -53,7 +54,7 @@ static struct crypto_cache_t *alloc_crypto_cache(uint32_t alg_type, const struct
 struct ctx_handle_t *tee_crypto_ae_init(uint32_t alg_type, uint32_t direction, const struct symmerit_key_t *key,
     const struct ae_init_data *ae_init_param, uint32_t engine)
 {
-    bool check = ((key == NULL) || (ae_init_param == NULL));
+    bool check = (key == NULL || ae_init_param == NULL);
     if (check) {
         tloge("Invalid params\n");
         return NULL;
@@ -72,6 +73,8 @@ struct ctx_handle_t *tee_crypto_ae_init(uint32_t alg_type, uint32_t direction, c
         return NULL;
     }
     ctx->direction = direction;
+    if (alg_type == CRYPTO_TYPE_AES_CCM)
+        ctx->aad_size = ae_init_param->aad_len;
 
     int32_t ret;
 
@@ -104,6 +107,11 @@ int32_t tee_crypto_ae_update_aad(struct ctx_handle_t *ctx, const struct memref_t
         tloge("Invalid params\n");
         return CRYPTO_BAD_PARAMETERS;
     }
+    if ((ctx->alg_type == CRYPTO_TYPE_AES_CCM) && (ctx->aad_size < aad_data->size)) {
+        tloge("The AADLen size is bigger than AEInit\n");
+        return CRYPTO_BAD_PARAMETERS;
+    }
+
     if (ctx->engine == SOFT_CRYPTO)
         return soft_crypto_ae_update_aad(ctx, aad_data);
     return crypto_driver_ae_update_aad(ctx, aad_data);
@@ -140,7 +148,7 @@ static int32_t do_crypto_cache(struct ctx_handle_t *ctx, const struct memref_t *
     struct crypto_cache_t *cache = (struct crypto_cache_t *)(uintptr_t)(ctx->cache_buffer);
 
     uint32_t avaliable_cache_len = cache->total_len - cache->effective_len;
-    errno_t rc = memcpy_s(cache->buffer + cache->effective_len, avaliable_cache_len,
+    errno_t rc = memcpy_s((void *)((uintptr_t)cache->buffer + cache->effective_len), avaliable_cache_len,
         (uint8_t *)(uintptr_t)(data_in->buffer), data_in->size);
     if (rc != EOK) {
         tloge("Copy ae data to cache failed");

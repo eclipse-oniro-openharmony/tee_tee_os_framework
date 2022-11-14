@@ -25,9 +25,18 @@
 #include <tee_crypto_api.h>
 #include <tee_property_inner.h>
 #include "crypto_inner_defines.h"
+#include <openssl/ossl_typ.h>
 
 #define LOW_FOUR_BITS       4
 #define LOW_FOUR_BITS_MASK  0xf
+#define DEST_DATA_TEMP      16
+
+struct SM2_Ciphertext_st {
+    BIGNUM *C1x;
+    BIGNUM *C1y;
+    ASN1_OCTET_STRING *C3;
+    ASN1_OCTET_STRING *C2;
+};
 
 void SM2_Ciphertext_free(struct SM2_Ciphertext_st *);
 int i2d_SM2_Ciphertext(struct SM2_Ciphertext_st *a, unsigned char **out);
@@ -51,7 +60,7 @@ static int32_t sm2_sig_to_buff(const ECDSA_SIG *sig, uint8_t *signature, uint32_
     int32_t ret = CRYPTO_ERROR_SECURITY;
 
     bool check = (*signature_len < SIG_COMPONENT_SIZE * SIG_COMPONENT_NUM ||
-        BN_num_bytes(sig->r) > SIG_COMPONENT_SIZE);
+        BN_num_bytes(sig->r) > SIG_COMPONENT_SIZE || BN_num_bytes(sig->s) > SIG_COMPONENT_SIZE);
     if (check) {
         tloge("the out buff is too small\n");
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
@@ -70,14 +79,14 @@ static int32_t sm2_sig_to_buff(const ECDSA_SIG *sig, uint8_t *signature, uint32_
     }
 
     int32_t len_r = BN_bn2bin(sig->r, r + SIG_COMPONENT_SIZE - BN_num_bytes(sig->r));
-    if (len_r == 0) {
+    if (len_r <= 0) {
         tloge("bn to bin failed r length = %d\n", len_r);
         ret = get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
         goto exit;
     }
 
     int32_t len_s = BN_bn2bin(sig->s, s + SIG_COMPONENT_SIZE - BN_num_bytes(sig->s));
-    if (len_s == 0) {
+    if (len_s <= 0) {
         tloge("bn to bin failed s length = %d\n", len_s);
         ret = get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
         goto exit;
@@ -109,21 +118,28 @@ static int32_t sm2_sign_new_level(const uint8_t *digest, uint32_t digest_len,
         tloge("output buffer is not large enough! signature length= %u\n", *signature_len);
         return CRYPTO_NOT_SUPPORTED;
     }
-
     gmssl_generate_random();
 
     ECDSA_SIG *sig = NULL;
+    int32_t ret;
 
-    sig = sm2_do_sign_fix(ec_key, digest, digest_len);
-    if (sig == NULL) {
+    ret = sm2_sign(digest, digest_len, signature, signature_len, (EC_KEY *)ec_key);
+    if (ret != GMSSL_OK) {
         tloge("SM2 sign failed\n");
-        return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
+        goto exit;
     }
-
-    int32_t ret = sm2_sig_to_buff(sig, signature, signature_len);
-    if (ret != CRYPTO_SUCCESS)
+    sig = ECDSA_SIG_new();
+    if (d2i_ECDSA_SIG(&sig, (const unsigned char **)&signature, *signature_len) == NULL) {
+        tloge("SM2 sign failed\n");
+        goto exit;
+    }
+    signature -= *signature_len;
+    ret = sm2_sig_to_buff(sig, signature, signature_len);
+    if (ret != CRYPTO_SUCCESS) {
         tloge("sm2 sign change format failed\n");
-
+        goto exit;
+    }
+exit:
     ECDSA_SIG_free(sig);
     return ret;
 }
@@ -160,7 +176,6 @@ static int32_t tee_sm2_sign(const uint8_t *digest, uint32_t digest_len,
 static int32_t sm2_buff_to_sig(const uint8_t *signature, uint32_t signature_len, ECDSA_SIG **sig)
 {
     /* sig will be free in the caller function */
-    *sig = ECDSA_SIG_new();
     if (*sig == NULL) {
         tloge("get ECDSA SIG failed\n");
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
@@ -191,23 +206,28 @@ static int32_t sm2_buff_to_sig(const uint8_t *signature, uint32_t signature_len,
 static int32_t sm2_verify_new_level(const uint8_t *digest, uint32_t digest_len,
         const uint8_t *signature, uint32_t signature_len, const EC_KEY *ec_key)
 {
-    int32_t rc;
-    ECDSA_SIG *sig = NULL;
-
     if (signature_len != SM2_SIG_LEN) {
-        tloge("output buffer is too large , signature length = %u!\n", signature_len);
+        tloge("output buffer is too large, signature length = %u!\n", signature_len);
         return TEE_ERROR_SHORT_BUFFER;
     }
-
+    int32_t rc;
+    ECDSA_SIG *sig = NULL;
+    size_t temp_len_src = signature_len + DEST_DATA_TEMP;
+    uint8_t *temp_data_src = TEE_Malloc(temp_len_src, 0);
+    if (temp_data_src == NULL)
+        return CRYPTO_ERROR_OUT_OF_MEMORY;
     gmssl_generate_random();
 
+    sig = ECDSA_SIG_new();
     rc = sm2_buff_to_sig(signature, signature_len, &sig);
     if (rc != CRYPTO_SUCCESS) {
         tloge("get sm2 sig failed\n");
         goto exit;
     }
+    temp_len_src = i2d_ECDSA_SIG(sig, &temp_data_src);
+    temp_data_src -= temp_len_src;
 
-    rc = sm2_do_verify_fix(ec_key, sig, digest, digest_len);
+    rc = sm2_verify(digest, digest_len, temp_data_src, temp_len_src, (EC_KEY *)ec_key);
     if (rc != GMSSL_OK) {
         tloge("SM2 verify failed\n");
         rc = CRYPTO_SIGNATURE_INVALID;
@@ -216,6 +236,8 @@ static int32_t sm2_verify_new_level(const uint8_t *digest, uint32_t digest_len,
     rc = CRYPTO_SUCCESS;
 exit:
     ECDSA_SIG_free(sig);
+    (void)memset_s(temp_data_src, temp_len_src, 0, temp_len_src);
+    TEE_Free(temp_data_src);
     return rc;
 }
 
@@ -223,7 +245,6 @@ static int32_t sm2_verify_old_level(const uint8_t *digest, uint32_t digest_len,
     const uint8_t *signature, uint32_t signature_len, const EC_KEY *ec_key)
 {
     int32_t rc;
-    ECDSA_SIG *sig = NULL;
 
     if (signature_len > SM2_SIGN_MAX) {
         tloge("output buffer is too large , signature length = %u!\n", signature_len);
@@ -238,7 +259,6 @@ static int32_t sm2_verify_old_level(const uint8_t *digest, uint32_t digest_len,
     }
     rc = CRYPTO_SUCCESS;
 exit:
-    ECDSA_SIG_free(sig);
     return rc;
 }
 
@@ -347,10 +367,10 @@ err:
     return ec_key_pair_bignum.group;
 }
 
-static int32_t set_sm2_pub_key(EC_KEY *ec_key, BIGNUM *x, BIGNUM *y, const char *x_p, const char *y_p)
+static int32_t set_sm2_pub_key(EC_KEY *ec_key, BIGNUM **x, BIGNUM **y, const char *x_p, const char *y_p)
 {
-    bool check = (BN_hex2bn(&x, x_p) == GMSSL_ERR || BN_hex2bn(&y, y_p) == GMSSL_ERR ||
-        EC_KEY_set_public_key_affine_coordinates(ec_key, x, y) == GMSSL_ERR);
+    bool check = (BN_hex2bn(x, x_p) == GMSSL_ERR || BN_hex2bn(y, y_p) == GMSSL_ERR ||
+        EC_KEY_set_public_key_affine_coordinates(ec_key, *x, *y) == GMSSL_ERR);
     if (check) {
         tloge("set sm2 pub key failed\n");
         return GMSSL_ERR;
@@ -395,7 +415,7 @@ static EC_KEY *sm2_new_ec_key(const EC_GROUP *group, const char *sk, const char 
 
     bool check = (x_p != NULL) && (y_p != NULL);
     if (check) {
-        ret = set_sm2_pub_key(ec_key, x, y, x_p, y_p);
+        ret = set_sm2_pub_key(ec_key, &x, &y, x_p, y_p);
         if (ret == GMSSL_ERR)
             goto end;
     }
@@ -797,7 +817,7 @@ static int32_t copy_key_pair_to_object(struct ecc_pub_key_t *public_key, struct 
 {
     bool check = (public_key->x_len < mod_len || public_key->y_len < mod_len || private_key->r_len < mod_len);
     if (check) {
-        tloge("key size is invlid");
+        tloge("key size is invalid");
         return CRYPTO_SHORT_BUFFER;
     }
     if (memcpy_s(public_key->x, public_key->x_len, key_pair->x, key_len) != EOK) {
@@ -852,7 +872,7 @@ int32_t sm2_sign_verify(const void *sm2_key, uint32_t mode, const struct memref_
 
     EC_KEY *ec_key = creat_sm2_ec_key(sm2_key, mode);
     if (ec_key == NULL) {
-        tloge("creat sm2 ec key failed\n");
+        tloge("create sm2 ec key failed\n");
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
 
@@ -926,14 +946,14 @@ static TEE_Result cv_to_cip(const struct SM2_Ciphertext_st *cv, uint8_t *cipher,
 
     int32_t x_len = BN_bn2bin(cv->C1x,
                               x_buf + COORDINATE_LEN - BN_num_bytes(cv->C1x));
-    if (x_len == 0) {
+    if (x_len <= 0) {
         tloge("get x coordinate failed\n");
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
 
     int32_t y_len = BN_bn2bin(cv->C1y,
                               y_buf + COORDINATE_LEN - BN_num_bytes(cv->C1y));
-    if (y_len == 0) {
+    if (y_len <= 0) {
         tloge("get y coordinate failed\n");
         return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
     }
@@ -945,6 +965,7 @@ static int32_t do_sm2_encrypt(const EC_KEY *ec_key, const uint8_t *src_data, uin
     uint8_t *dest_data, uint32_t *dest_len)
 {
     int32_t ret;
+    size_t temp_len = (size_t)*dest_len;
     struct SM2_Ciphertext_st *cv = NULL;
 
     if (src_len > SM2_MAX_PLAINTEXT_LENGTH) {
@@ -960,8 +981,8 @@ static int32_t do_sm2_encrypt(const EC_KEY *ec_key, const uint8_t *src_data, uin
     gmssl_generate_random();
 
     /* use publicKey to encrypt */
-    cv = sm2_encrypt_fix(ec_key, EVP_sm3(), src_data, src_len);
-    if (cv == NULL) {
+    ret = sm2_encrypt(ec_key, EVP_sm3(), src_data, src_len, dest_data, &temp_len);
+    if (ret != GMSSL_OK) {
         tloge("SM2 do encrypt failed");
         ret = get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
         goto out;
@@ -970,21 +991,20 @@ static int32_t do_sm2_encrypt(const EC_KEY *ec_key, const uint8_t *src_data, uin
     /* pass cv to destData */
     uint32_t api_level = tee_get_ta_api_level();
     if (api_level > API_LEVEL1_0) {
-        ret = cv_to_cip(cv, dest_data, dest_len);
+      cv = d2i_SM2_Ciphertext(NULL, (const unsigned char **)&dest_data, temp_len);
+        dest_data -= temp_len;
+        if (cv == NULL) {
+            tloge("SM2 do encrypt failed");
+            ret = get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
+            goto out;
+        }
+        ret = cv_to_cip(cv, dest_data, (uint32_t *)&temp_len);
         if (ret != CRYPTO_SUCCESS) {
             tloge("get final data failed\n");
             goto out;
         }
-    } else {
-        size_t clen = (size_t)i2d_SM2_Ciphertext(cv, (unsigned char **)&dest_data);
-        if (clen <= GMSSL_ERR || clen > UINT32_MAX) {
-            tloge("get Ciphertext failed");
-            ret = get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
-            goto out;
-        }
-
-        *dest_len = (uint32_t)clen;
     }
+    *dest_len = (uint32_t)temp_len;
     ret = CRYPTO_SUCCESS;
 out:
     SM2_Ciphertext_free(cv);
@@ -1021,23 +1041,10 @@ static TEE_Result cip_to_cv(const uint8_t *cipher, uint32_t len, struct SM2_Ciph
     return CRYPTO_SUCCESS;
 }
 
-static int32_t sm2_decrypt_new(const EC_KEY *ec_key, const void *src_data, uint32_t src_len,
-    void *dest_data, uint32_t *dest_len)
+static int32_t pure_to_asn1(const uint8_t *src_data, const uint32_t src_len,
+    uint8_t *dest_data, size_t *dest_len)
 {
-    TEE_Result ret;
-
-    if (src_len < SM2_CIPHER_INCREASE) {
-        tloge("srcLen is too small\n");
-        return CRYPTO_SHORT_BUFFER;
-    }
-
-    size_t temp_len = src_len - SM2_CIPHER_INCREASE;
-    uint8_t *temp_data = TEE_Malloc(temp_len, 0);
-    if (temp_data == NULL)
-        return CRYPTO_ERROR_OUT_OF_MEMORY;
-
-    gmssl_generate_random();
-
+    int32_t ret;
     struct SM2_Ciphertext_st cv;
     cv.C1x = BN_new();
     cv.C1y = BN_new();
@@ -1048,25 +1055,17 @@ static int32_t sm2_decrypt_new(const EC_KEY *ec_key, const void *src_data, uint3
         ret = CRYPTO_CIPHERTEXT_INVALID;
         goto release;
     }
-
     ret = cip_to_cv(src_data, src_len, &cv);
-    if (ret != CRYPTO_SUCCESS)
-        goto release;
-
-    int32_t rc = sm2_decrypt_fix(ec_key, EVP_sm3(), &cv, temp_data, &temp_len);
-    bool check = (rc != GMSSL_OK || *dest_len < temp_len || temp_len > UINT32_MAX);
-    if (check) {
-        tloge("SM2 decrypt failed\n");
-        ret = get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
+    if (ret != CRYPTO_SUCCESS) {
         goto release;
     }
-
-    if (memcpy_s(dest_data, *dest_len, temp_data, temp_len) != EOK) {
-        ret = CRYPTO_ERROR_SECURITY;
+    /* return length or wrong num */
+    int temp_len = i2d_SM2_Ciphertext(&cv, (unsigned char **)&dest_data);
+    if (temp_len < CRYPTO_SUCCESS) {
+        tloge("i2d_SM2_Ciphertext failed, res = %d", temp_len);
         goto release;
     }
-    *dest_len = (uint32_t)temp_len;
-    ret = CRYPTO_SUCCESS;
+    *dest_len = (size_t)temp_len;
 release:
     BN_free(cv.C1x);
     cv.C1x = NULL;
@@ -1076,8 +1075,40 @@ release:
     cv.C2 = NULL;
     ASN1_OCTET_STRING_free(cv.C3);
     cv.C3 = NULL;
-    (void)memset_s(temp_data, temp_len, 0, temp_len);
-    TEE_Free(temp_data);
+    return ret;
+}
+
+static int32_t sm2_decrypt_new(const EC_KEY *ec_key, const void *src_data, uint32_t src_len,
+    void *dest_data, uint32_t *dest_len)
+{
+    TEE_Result ret;
+
+    if (src_len < SM2_CIPHER_INCREASE || src_len >= UINT32_MAX - DEST_DATA_TEMP) {
+        tloge("srcLen is invalid, src_len = %u\n", src_len);
+        return CRYPTO_SHORT_BUFFER;
+    }
+    size_t temp_len = *dest_len;
+    size_t temp_len_src = src_len + DEST_DATA_TEMP;
+    uint8_t *temp_data_src = TEE_Malloc(temp_len_src, 0);
+    if (temp_data_src == NULL)
+        return CRYPTO_ERROR_OUT_OF_MEMORY;
+    gmssl_generate_random();
+
+    ret = pure_to_asn1((uint8_t *)src_data, src_len, temp_data_src, &temp_len_src);
+    if (ret != CRYPTO_SUCCESS)
+        goto release;
+    int32_t rc = sm2_decrypt(ec_key, EVP_sm3(), temp_data_src, temp_len_src, dest_data, &temp_len);
+    bool check = (rc != GMSSL_OK || *dest_len < temp_len || temp_len > UINT32_MAX);
+    if (check) {
+        tloge("SM2 decrypt failed,rc = %d, temp_len = %u, dest_len = %u\n", rc, temp_len, *dest_len);
+        ret = get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
+        goto release;
+    }
+    *dest_len = (uint32_t)temp_len;
+    ret = CRYPTO_SUCCESS;
+release:
+    (void)memset_s(temp_data_src, temp_len_src, 0, temp_len_src);
+    TEE_Free(temp_data_src);
     return (int32_t)ret;
 }
 
@@ -1096,14 +1127,8 @@ static int32_t sm2_decrypt_old(const EC_KEY *ec_key, const void *src_data, uint3
         return CRYPTO_SHORT_BUFFER;
     }
 
-    struct SM2_Ciphertext_st *cv = d2i_SM2_Ciphertext(NULL, (const unsigned char **)&src_data, src_len);
-    if (cv == NULL) {
-        tloge("d2i SM2 Cipher text Value failed");
-        return get_soft_crypto_error(CRYPTO_BAD_PARAMETERS);
-    }
-
     size_t temp_dest_len = *dest_len;
-    int32_t rc = sm2_decrypt_fix(ec_key, EVP_sm3(), cv, dest_data, &temp_dest_len);
+    int32_t rc = sm2_decrypt(ec_key, EVP_sm3(), src_data, src_len, dest_data, &temp_dest_len);
     bool check = (rc != GMSSL_OK || temp_dest_len > UINT32_MAX);
     if (check) {
         tloge("SM2 decrypt failed\n");
@@ -1114,7 +1139,6 @@ static int32_t sm2_decrypt_old(const EC_KEY *ec_key, const void *src_data, uint3
     *dest_len = (uint32_t)temp_dest_len;
     ret = CRYPTO_SUCCESS;
 release:
-    SM2_Ciphertext_free(cv);
     return ret;
 }
 
@@ -1131,7 +1155,8 @@ static int32_t do_sm2_decrypt(const EC_KEY *ec_key, const void *src_data, uint32
 int32_t sm2_encrypt_decypt(const void *sm2_key, uint32_t mode,
     const struct memref_t *data_in, struct memref_t *data_out)
 {
-    bool check = (sm2_key == NULL || data_in == NULL || data_out == NULL);
+    bool check = (sm2_key == NULL || data_in == NULL || data_in->buffer == 0 ||
+                  data_out == NULL || data_out->buffer == 0);
     if (check) {
         tloge("bad params");
         return CRYPTO_BAD_PARAMETERS;
@@ -1336,7 +1361,7 @@ static int32_t tee_sm4_update(struct ctx_handle_t *ctx, const struct memref_t *d
 
     ret = sm4_update_params_check(ctx->alg_type, data_in->size, data_out->size);
     if (ret != CRYPTO_SUCCESS) {
-        tloge("sm4 update paramter check failed\n");
+        tloge("sm4 update parameter check failed\n");
         return ret;
     }
 

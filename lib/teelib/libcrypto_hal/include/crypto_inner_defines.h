@@ -89,6 +89,7 @@
 #define SM2_GROUP_NOSTANDARD                0x12
 #define SM2_GROUP_NOSTANDARD_USER           2
 #define MAX_EXTRA_PARAM_COUNT               10
+#define MAX_KDF_PARAM_COUNT                 9
 #define UINT32_SHIFT_MAX                    4
 #define MAX_ATTR_LEN                        8
 #define AES_GCM_AAD_LEN                     16

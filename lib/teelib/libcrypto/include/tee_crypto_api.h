@@ -24,6 +24,7 @@
 #define TEE_MAX_KEY_SIZE_IN_BITS      (1024 * 8)
 #define SW_RSA_KEYLEN                 1024
 #define TEE_DH_MAX_SIZE_OF_OTHER_INFO 64 /* bytes */
+#define TEE_PARAM_COUNT_MAX           9
 
 enum __TEE_Operation_Constants {
     TEE_OPERATION_CIPHER               = 0x1,
