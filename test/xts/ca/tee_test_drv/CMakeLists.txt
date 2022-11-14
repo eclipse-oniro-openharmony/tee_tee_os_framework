@@ -12,7 +12,7 @@
 
 set(ca_sources)
 list(APPEND ca_sources
-    tee_test_drv.cpp
+    src/tee_test_drv.cpp
 )
 
 ca_compile_pub(
@@ -23,7 +23,7 @@ ca_compile_pub(
     ${ca_sources}
 
     INCLUDE_DIRS
-    common
+    include
 
     COMPILE_OPTS
     COMPILE_DEFS

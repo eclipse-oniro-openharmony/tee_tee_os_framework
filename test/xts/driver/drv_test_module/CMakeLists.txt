@@ -13,7 +13,11 @@
 
 set(drv_sources)
 list(APPEND drv_sources
-    drv_test_module.c
+    src/drv_test_module.c
+)
+
+list(APPEND header_dir
+    include
 )
 
 drv_compile_pub(
@@ -24,6 +28,7 @@ drv_compile_pub(
     ${drv_sources}
 
     INCLUDE_DIRS
+    ${header_dir}
 
     COMPILE_OPTS
     COMPILE_DEFS

@@ -10,14 +10,14 @@
 # See the Mulan PSL v2 for more details.
 #
 
-set(TARGET_NAME tee_test)
+set(TARGET_NAME tee_test_client_api)
 
 ta_compile_pub(
     ELF_NAME
     ${TARGET_NAME}
 
     SRC_LIST
-    tee_test_task.c
+    src/tee_test_task.c
 
     INCLUDE_DIRS
 
