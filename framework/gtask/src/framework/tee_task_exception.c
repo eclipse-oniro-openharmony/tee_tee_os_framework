@@ -326,7 +326,7 @@ static TEE_Result process_kill_task(struct service_struct *srv, const struct ses
     }
 
     if (!sess->wait_ta_back_msg) {
-        tloge("unexpected status:sess is not runnig\n");
+        tloge("unexpected status:sess is not running\n");
         return TEE_ERROR_BAD_STATE;
     }
 
@@ -353,7 +353,7 @@ int32_t handle_kill_task(const smc_cmd_t *cmd)
     struct service_struct *srv = NULL;
     struct session_struct *sess = NULL;
 
-    tlogi("reveive kill task msg\n");
+    tlogi("receive kill task msg\n");
 
     TEE_UUID *uuid = (TEE_UUID *)cmd->uuid;
     if ((service_index = find_service(uuid, service_index_of_context(cmd->context), &srv)) == -1) {

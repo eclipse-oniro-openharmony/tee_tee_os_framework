@@ -737,7 +737,7 @@ static TEE_Result ta2ta_pseudo_handle_msg(const struct ta2ta_smc_call_params *sm
     }
     ret = ipc_msg_rcv_safe(OS_WAIT_FOREVER, NULL, ret_msg, sizeof(*ret_msg), get_global_handle());
     if (ret != SRE_OK) {
-        tloge("recive msg fail in ta2ta call, ret=0x%x\n", ret);
+        tloge("receive msg fail in ta2ta call, ret=0x%x\n", ret);
         return TEE_ERROR_GENERIC;
     }
 

@@ -73,7 +73,7 @@ static int64_t timer_value_add(const timeval_t *time_val_1, const timeval_t *tim
     timeval_t time_val_sum;
 
     if (time_val_1 == NULL || time_val_2 == NULL) {
-        hm_error("invlid param\n");
+        hm_error("invalid param\n");
         return TIMEVAL_MAX;
     }
 
@@ -250,7 +250,7 @@ static uint32_t classic_thread_create(timer_event *t_event)
 
     ret = pthread_attr_destroy(&thread_attr);
     if (ret != TMR_OK) {
-        hm_error("destory failed: err=%d\n", ret);
+        hm_error("destroy failed: err=%d\n", ret);
         return ret;
     }
 

@@ -1230,13 +1230,13 @@ TEE_Result allocate_enum_handle(TEE_ObjectEnumHandle *obj_enumerator)
 
     *obj_enumerator = (TEE_ObjectEnumHandle)TEE_Malloc(sizeof(struct __TEE_ObjectEnumHandle), 0);
     if (*obj_enumerator == NULL) {
-        tloge("allocte memory for enumerator failed\n");
+        tloge("allocate memory for enumerator failed\n");
         return TEE_ERROR_OUT_OF_MEMORY;
     }
 
     (*obj_enumerator)->enum_handle = (uintptr_t)TEE_Malloc(sizeof(struct obj_enum_handle_t), 0);
     if ((*obj_enumerator)->enum_handle == 0) {
-        tloge("allocte memory for enumerator failed\n");
+        tloge("allocate memory for enumerator failed\n");
         TEE_Free(*obj_enumerator);
         *obj_enumerator = NULL;
         return TEE_ERROR_OUT_OF_MEMORY;

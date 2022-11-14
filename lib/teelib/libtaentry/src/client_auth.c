@@ -71,7 +71,7 @@ static TEE_Result get_candinfo(
          * get uuid through func: tee_ext_get_caller_info.
          */
     } else {
-        tloge("unkown client type\n");
+        tloge("unknown client type\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 

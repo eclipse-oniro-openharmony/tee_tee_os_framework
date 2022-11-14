@@ -299,7 +299,7 @@ static TEE_Result elf_verify(const uint8_t *hash_context, uint32_t context_len,
 
     TEE_Result tee_ret = tee_secure_img_hash_ops(hash_context, context_len, calced_hash, sizeof(calced_hash));
     if (tee_ret != TEE_SUCCESS) {
-        tloge("Failed to caculate hash");
+        tloge("Failed to calculate hash");
         return tee_ret;
     }
 

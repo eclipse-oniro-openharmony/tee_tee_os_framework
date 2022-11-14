@@ -1081,7 +1081,7 @@ static TEE_Result handle_truncation(struct sfd_t *sfd, uint8_t *buffer,
         }
         sfd->last_block_size = 0;
     } else {
-        tloge("invaid file format, version=%u\n", sfd->meta_data->arch_version);
+        tloge("invalid file format, version=%u\n", sfd->meta_data->arch_version);
         return TEE_ERROR_BAD_FORMAT;
     }
 
@@ -1292,7 +1292,7 @@ TEE_Result ssa_rename(struct sfd_t *sfd, const uint8_t *new_obj_id, uint32_t new
     TEE_Result ret             = TEE_SUCCESS;
 
     if (sfd == NULL || new_obj_id == NULL || sfd->meta_data == NULL) {
-        tloge("ssa rename Bad paramters!\n");
+        tloge("ssa rename Bad parameters!\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1370,7 +1370,7 @@ struct sfd_t *ssa_create(meta_data_t *meta, uint32_t flag, TEE_Result *error)
     struct sfd_t *sfd = NULL;
 
     if (error == NULL) {
-        tloge("Bad paramters!\n");
+        tloge("Bad parameters!\n");
         return NULL;
     }
     if (meta == NULL || meta->file_id == NULL) {

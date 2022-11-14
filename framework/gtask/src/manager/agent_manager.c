@@ -143,7 +143,7 @@ static TEE_Result process_unlock_agent(uint32_t agent_id, uint32_t task_id,
     while (!dlist_empty(&agent->waiting_sessions)) {
         tmp_session = dlist_first_entry(&agent->waiting_sessions, struct session_struct, waiting_agent);
         if (tmp_session == session) {
-            tloge("session %x havn't get lock but to unlock agent %x\n", session->task_id, agent->id);
+            tloge("session %x haven't get lock but to unlock agent %x\n", session->task_id, agent->id);
             dlist_delete(&session->waiting_agent);
         }
     }

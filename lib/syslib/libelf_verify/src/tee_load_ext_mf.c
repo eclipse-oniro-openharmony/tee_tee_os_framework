@@ -224,7 +224,7 @@ static bool check_extention_process_params(const char *extension, uint32_t exten
                                     manifest_extension_t *mani_ext)
 {
     if (extension_size > MAX_IMAGE_LEN) {
-        tloge("manifest exten size too large: %u", extension_size);
+        tloge("manifest extension size too large: %u", extension_size);
         return true;
     }
 

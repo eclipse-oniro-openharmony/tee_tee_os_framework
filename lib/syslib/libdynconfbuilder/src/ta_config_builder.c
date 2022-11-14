@@ -294,7 +294,7 @@ static int32_t handle_ta_mani_info_stack_size(uint32_t *stack_size, uint32_t siz
     uint64_t tmp_stack_size;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid parm while handle stack size\n");
+        hm_error("invalid param while handle stack size\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -352,7 +352,7 @@ static int32_t handle_ta_mani_info_heap_size(uint32_t *heap_size, uint32_t size,
     uint64_t tmp_heap_size;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid parm while handle heap size\n");
+        hm_error("invalid param while handle heap size\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -410,7 +410,7 @@ static int32_t handle_ta_mani_info_target_type(uint32_t *target_type, uint32_t s
     uint64_t tmp_target_type;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid parm while handle target type\n");
+        hm_error("invalid param while handle target type\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 

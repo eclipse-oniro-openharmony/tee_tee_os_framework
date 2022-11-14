@@ -183,7 +183,7 @@ int32_t ecies_kem_decrypt(const struct ecc_derive_data_st *ecc_data, uint8_t *ke
     int32_t rc;
 
     if (check_ecc_params_invalid(ecc_data, key) || key_len < SHA256_LEN) {
-        tloge("key len invald\n");
+        tloge("key len invalid\n");
         return -1;
     }
 

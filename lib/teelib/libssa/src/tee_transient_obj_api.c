@@ -648,7 +648,7 @@ static TEE_Result alloc_attr_mem(uint32_t object_type, TEE_ObjectHandle *object,
         }
     }
 
-    tloge("Object type unsuported %u.\n", object_type);
+    tloge("Object type unsupported %u.\n", object_type);
     (void)tee_obj_free(object);
     TEE_Panic(TEE_ERROR_NOT_SUPPORTED);
     return TEE_ERROR_NOT_SUPPORTED;
@@ -1745,7 +1745,7 @@ static TEE_Result generate_ec_keypair_hal(TEE_ObjectHandle object, uint32_t key_
         (ecc_curve == TEE_ECC_CURVE_25519 && object->attributesLen != KEY_25519_FIX_ATTR_LEN) ||
         (ecc_curve != TEE_ECC_CURVE_25519 && object->attributesLen != ECKEY_FIX_ATTRI_LEN));
     if (check) {
-        tloge("intput error\n");
+        tloge("input error\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 

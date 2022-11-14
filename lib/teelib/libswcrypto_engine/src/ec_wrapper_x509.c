@@ -240,7 +240,7 @@ static X509 *build_x509_cert(BIGNUM *serial, const validity_period_t *vd, X509_N
     /* Create v3 extensions */
     int32_t ret = creat_v3_extensions(ca_purpose, x);
     if (ret != 1) {
-        tloge("creat extensions fail");
+        tloge("create extensions fail");
         goto error;
     }
     ret = add_ext(x, NID_subject_key_identifier, "hash");

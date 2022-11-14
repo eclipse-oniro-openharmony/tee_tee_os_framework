@@ -84,17 +84,17 @@ static TEE_Result check_hash_file_params(const struct ca_hash_file_s *hash_file,
     }
 
     if (hash_file->total_len > hash_file_maxsize || hash_file->total_len != size) {
-        tloge("hash file total len is invaild, %u\n", hash_file->total_len);
+        tloge("hash file total len is invalid, %u\n", hash_file->total_len);
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (hash_file->sign_offset > hash_file->total_len) {
-        tloge("hash file sign offset is invaild, %u, %u\n", hash_file->sign_offset, hash_file->total_len);
+        tloge("hash file sign offset is invalid, %u, %u\n", hash_file->sign_offset, hash_file->total_len);
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if ((hash_file->sign_offset + hash_file->sign_length) != hash_file->total_len) {
-        tloge("hash file invaild: total len:0x%x, sign offset:0x%x, sign length:0x%x\n",
+        tloge("hash file invalid: total len:0x%x, sign offset:0x%x, sign length:0x%x\n",
             hash_file->total_len, hash_file->sign_offset, hash_file->sign_length);
         return TEE_ERROR_BAD_PARAMETERS;
     }
@@ -108,7 +108,7 @@ static TEE_Result ca_hashfile_verify_signature(const uint8_t *buf, uint32_t size
 
     TEE_Result ret = check_hash_file_params(hash_file, size);
     if (ret != TEE_SUCCESS) {
-        tloge("hash file is invaild\n");
+        tloge("hash file is invalid\n");
         return ret;
     }
 

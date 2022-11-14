@@ -142,7 +142,7 @@ static void ssa_deal_msg(uint32_t cmd, uint8_t *ret_msg, size_t msg_len, uint32_
     }
 
     if (!is_client_register(sdr)) {
-        tloge("client is not registerd, taskid:0x%x", sdr);
+        tloge("client is not registered, taskid:0x%x", sdr);
         return;
     }
 
