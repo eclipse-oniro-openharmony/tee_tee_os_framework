@@ -118,6 +118,11 @@ static int32_t sm2_sign_new_level(const uint8_t *digest, uint32_t digest_len,
         tloge("output buffer is not large enough! signature length= %u\n", *signature_len);
         return CRYPTO_NOT_SUPPORTED;
     }
+    if (digest_len != SM2_DIGEST_LEN) {
+        tloge("digest len is not 32 bytes! digest_len = %u bytes\n", digest_len);
+        return CRYPTO_BAD_PARAMETERS;
+    }
+
     gmssl_generate_random();
 
     ECDSA_SIG *sig = NULL;
