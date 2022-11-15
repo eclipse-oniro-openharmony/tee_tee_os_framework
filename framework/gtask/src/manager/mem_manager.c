@@ -455,7 +455,7 @@ TEE_Result store_s_cmd(const smc_cmd_t *cmd)
         }
         g_cur_session->cmd = &g_cur_session->cmd_in;
     } else {
-        tloge("ta2ta target ta agent requst error: g_cur_session or cmd is null\n");
+        tloge("ta2ta target ta agent request error: g_cur_session or cmd is null\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -703,7 +703,7 @@ static TEE_Result map_cmd_to_operation(bool ta2ta, uint32_t *operation_size, con
         ret = task_add_mem_region(cmd->event_nr, 0, (uint64_t)(uintptr_t)(*operation), *operation_size, ta2ta);
         if (ret != TEE_SUCCESS) {
             if (munmap(*operation, *operation_size) != 0)
-                tloge("unmap opeartion failed\n");
+                tloge("unmap operation failed\n");
             return ret;
         }
     }
@@ -1191,7 +1191,7 @@ TEE_Result dump_statmeminfo(const smc_cmd_t *cmd)
         struct stat_mem_info *meminfo = (struct stat_mem_info *)tee_param[0].memref.buffer;
         dump_stat                     = dump_mem_info(meminfo, print_history);
         if (meminfo != NULL && dump_stat == 0) {
-            tlogd("totol=%u,pmem=%u,free=%u,lowest=%u\n", meminfo->total_mem, meminfo->mem, meminfo->free_mem,
+            tlogd("total=%u,pmem=%u,free=%u,lowest=%u\n", meminfo->total_mem, meminfo->mem, meminfo->free_mem,
                   meminfo->free_mem_min);
             for (uint32_t i = 0; i < meminfo->proc_num; i++)
                 tlogd("i=%u,name=%s,mem=%u,memmax=%u,memlimit=%u\n", i, meminfo->proc_mem[i].name,

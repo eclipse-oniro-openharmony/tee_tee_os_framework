@@ -48,20 +48,20 @@ static int32_t ipc_init(const char *name, cref_t *ch)
 
     ret = hm_create_multi_ipc_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
-        printf("%s: failed to create SRE channel with pid %d: %d\n", name, hm_getpid(), ret);
+        hm_error("%s: failed to create SRE channel with pid %d: %d\n", name, hm_getpid(), ret);
         return -1;
     }
 
     ret = hm_create_ipc_native(name, ch);
     if (ret != 0) {
-        printf("%s: failed to create channel :%d\n", name, ret);
+        hm_error("%s: failed to create channel :%d\n", name, ret);
         return -1;
     }
 
 #ifndef CONFIG_TIMER_DISABLE
     ret = hm_timer_init();
     if (ret != 0) {
-        printf("%s :failed to init hm timer: %d\n", name, ret);
+        hm_error("%s :failed to init hm timer: %d\n", name, ret);
         return -1;
     }
 #endif
@@ -87,13 +87,13 @@ static int32_t system_init(const char *name)
 
     ret = ac_init(hmapi_cnode_cref(), __sysmgrch, name);
     if (ret != 0) {
-        printf("%s: libac initialization failed\n", name);
+        hm_error("%s: libac initialization failed\n", name);
         return -1;
     }
 
     ret = hm_tamgr_register(name);
     if (ret != 0) {
-        printf("%s: tamgr registration for platdrv failed\n", name);
+        hm_error("%s: tamgr registration for platdrv failed\n", name);
         return -1;
     }
 
@@ -111,7 +111,7 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
     int32_t ret;
 
     if (drv_frame == NULL || drv_frame->name == NULL || ch == NULL) {
-        printf("invalid params\n");
+        hm_error("invalid params\n");
         return -1;
     }
 
@@ -134,7 +134,7 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
 
     ret = hmapi_extend_utable();
     if (ret < 0) {
-        printf("%s: failed to extend utable: %s\n", drv_frame->name, hmapi_strerror(ret));
+        hm_error("%s: failed to extend utable: %s\n", drv_frame->name, hmapi_strerror(ret));
         return ret;
     }
 

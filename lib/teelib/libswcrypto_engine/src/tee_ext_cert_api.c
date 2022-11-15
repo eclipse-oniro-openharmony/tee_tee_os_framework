@@ -571,7 +571,7 @@ static TEE_Result tee_ext_root_uuid_derive_key(const uint8_t *salt, uint32_t siz
     (void)size;
     (void)key;
     (void)key_size;
-    tloge("derive key not suport\n");
+    tloge("derive key not support\n");
     return TEE_ERROR_GENERIC;
 }
 

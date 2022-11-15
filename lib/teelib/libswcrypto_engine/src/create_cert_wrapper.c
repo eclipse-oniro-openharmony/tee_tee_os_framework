@@ -592,7 +592,7 @@ int32_t create_attestation_cert(uint8_t *cert, uint32_t cert_len, const validity
 
     int32_t tmp_len = i2d_X509(x, NULL);
     if (tmp_len <= 0 || tmp_len > (int32_t)cert_len) {
-        tloge("conver x509 error");
+        tloge("convert x509 error");
         X509_free(x);
         return -1;
     }

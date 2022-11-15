@@ -473,7 +473,7 @@ TEE_Result add_objinfo_into_enum_file(const struct create_obj_msg_t *create_obj,
     uint32_t new_file_len = sfd->size + sizeof(struct object_enum_info);
     file_buf              = TEE_Malloc(new_file_len, 0);
     if (file_buf == NULL) {
-        tloge("malloc memomry failed size=0x%x\n", new_file_len);
+        tloge("malloc memory failed size=0x%x\n", new_file_len);
         ret = TEE_ERROR_OUT_OF_MEMORY;
         goto close_or_delete;
     }
@@ -528,7 +528,7 @@ TEE_Result update_objinfo_in_enum_file(const uint8_t *object_id, uint32_t object
     file_len = sfd->size;
     file_buf = TEE_Malloc(file_len, 0);
     if (file_buf == NULL) {
-        tloge("malloc memomry failed size=0x%x\n", file_len);
+        tloge("malloc memory failed size=0x%x\n", file_len);
         ssa_internal_fclose(sfd);
         return TEE_ERROR_OUT_OF_MEMORY;
     }
@@ -660,7 +660,7 @@ TEE_Result delete_obj_in_enum_file(const uint8_t *object_id, uint32_t object_id_
     uint32_t origin_file_len = sfd->size;
     uint8_t *file_buf        = TEE_Malloc(origin_file_len, 0);
     if (file_buf == NULL) {
-        tloge("malloc memomry failed size=0x%x\n", origin_file_len);
+        tloge("malloc memory failed size=0x%x\n", origin_file_len);
         ssa_internal_fclose(sfd);
         return TEE_ERROR_OUT_OF_MEMORY;
     }

@@ -438,7 +438,7 @@ bool is_service_agent_request(uint32_t agent_task_id, uint32_t *caller_task_id, 
     struct task_adaptor_info *task = NULL;
 
     if (caller_task_id == NULL || agent_status == NULL) {
-        tloge("in param is null, agent request check faild\n");
+        tloge("in param is null, agent request check failed\n");
         return false;
     }
 
@@ -461,7 +461,7 @@ bool is_agent_response(uint32_t agent_id, uint32_t *agent_task_id, uint32_t *cal
     struct task_adaptor_info *task_entry = NULL;
 
     if (agent_task_id == NULL || caller_task_id == NULL || agent_status == NULL) {
-        tloge("in param is null, agent response check faild\n");
+        tloge("in param is null, agent response check failed\n");
         return false;
     }
 

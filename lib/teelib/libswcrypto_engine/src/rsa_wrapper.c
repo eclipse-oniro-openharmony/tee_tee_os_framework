@@ -79,10 +79,10 @@ static TEE_Result convert_big_num_to_buffer(const BIGNUM *big_num, uint8_t *out,
     }
     uint32_t big_num_len = (uint32_t)BN_num_bytes(big_num);
     if (*out_len < big_num_len) {
-        tloge("The out lenth is less than big num lenth, out_len=%u, big_num_len=%u\n", *out_len, big_num_len);
+        tloge("The out length is less than big num length, out_len=%u, big_num_len=%u\n", *out_len, big_num_len);
         return TEE_ERROR_BAD_PARAMETERS;
     }
-    tlogd("Get big num lenth, big_num_len=%u\n", big_num_len);
+    tlogd("Get big num length, big_num_len=%u\n", big_num_len);
     uint32_t write_len = (uint32_t)BN_bn2bin(big_num, out);
     if (write_len != big_num_len) {
         tloge("Convert big num to buffer failed, big_num_len=%u, write_len=%u\n", big_num_len, write_len);

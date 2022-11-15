@@ -848,7 +848,7 @@ static TEE_Result write_object_data_proc(TEE_ObjectHandle object, const void *bu
     union ssa_agent_msg msg;
     struct ssa_agent_rsp rsp;
     uint8_t *buf      = NULL;
-    uint32_t splitted = 1;
+    uint32_t split    = 1;
     const uint8_t *p  = NULL;
     uint32_t written  = 0;
 
@@ -858,15 +858,15 @@ static TEE_Result write_object_data_proc(TEE_ObjectHandle object, const void *bu
     uint32_t buf_size       = size;
     buf                     = tee_alloc_sharemem_aux(&g_uuid, buf_size);
     /* If there is no enough memory for buffer, try to spit writing to smaller parts */
-    while ((buf == NULL) && (splitted < MAX_SPLIT_NUM)) {
-        splitted = DOUBLE(splitted);
-        buf_size = size / splitted + FILL_NUM;
+    while ((buf == NULL) && (split < MAX_SPLIT_NUM)) {
+        split = DOUBLE(split);
+        buf_size = size / split + FILL_NUM;
         buf      = tee_alloc_sharemem_aux(&g_uuid, buf_size);
     }
 
     if (buf == NULL) {
         ss_agent_proc_cmd(SS_AGENT_FILE_ABORT, &msg, SS_AGENT_FILE_ABORT, &rsp);
-        tloge("malloc shared_buff failed, size=%u, splitted=%u\n", size, splitted);
+        tloge("malloc shared_buff failed, size=%u, split=%u\n", size, split);
         return TEE_ERROR_OUT_OF_MEMORY;
     }
 
@@ -923,20 +923,20 @@ static TEE_Result read_object_data_proc(TEE_ObjectHandle object, void *buffer, u
 {
     union ssa_agent_msg msg;
     struct ssa_agent_rsp rsp;
-    uint32_t splitted = 1;
+    uint32_t split = 1;
     uint32_t read_count = 0;
     uint8_t *p = buffer;
     uint32_t buf_size = size;
     uint8_t *buf = tee_alloc_sharemem_aux(&g_uuid, size);
 
     /* If there is no enough memory for buffer, try to spit data to smaller parts */
-    while ((buf == NULL) && (splitted < MAX_SPLIT_NUM)) {
-        splitted = DOUBLE(splitted);
-        buf_size = size / splitted + FILL_NUM;
+    while ((buf == NULL) && (split < MAX_SPLIT_NUM)) {
+        split = DOUBLE(split);
+        buf_size = size / split + FILL_NUM;
         buf      = tee_alloc_sharemem_aux(&g_uuid, buf_size);
     }
     if (buf == NULL) {
-        tloge("malloc shared_buff failed, size=%u, splitted=%u\n", size, splitted);
+        tloge("malloc shared_buff failed, size=%u, split=%u\n", size, split);
         return TEE_ERROR_OUT_OF_MEMORY;
     }
 
@@ -1230,13 +1230,13 @@ TEE_Result allocate_enum_handle(TEE_ObjectEnumHandle *obj_enumerator)
 
     *obj_enumerator = (TEE_ObjectEnumHandle)TEE_Malloc(sizeof(struct __TEE_ObjectEnumHandle), 0);
     if (*obj_enumerator == NULL) {
-        tloge("allocte memory for enumerator failed\n");
+        tloge("allocate memory for enumerator failed\n");
         return TEE_ERROR_OUT_OF_MEMORY;
     }
 
     (*obj_enumerator)->enum_handle = (uintptr_t)TEE_Malloc(sizeof(struct obj_enum_handle_t), 0);
     if ((*obj_enumerator)->enum_handle == 0) {
-        tloge("allocte memory for enumerator failed\n");
+        tloge("allocate memory for enumerator failed\n");
         TEE_Free(*obj_enumerator);
         *obj_enumerator = NULL;
         return TEE_ERROR_OUT_OF_MEMORY;

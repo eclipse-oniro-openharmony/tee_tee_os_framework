@@ -358,7 +358,7 @@ int64_t tee_drv_open(const char *drv_name, const void *param, uint32_t param_len
     (void)drv_name;
     (void)param;
     (void)param_len;
-    tloge("drv open not support in this platfrom\n");
+    tloge("drv open not support in this platform\n");
     return -1;
 }
 
@@ -368,14 +368,14 @@ int64_t tee_drv_ioctl(int64_t fd, uint32_t cmd_id, const void *param, uint32_t p
     (void)cmd_id;
     (void)param;
     (void)param_len;
-    tloge("drv ioctl not support in this platfrom\n");
+    tloge("drv ioctl not support in this platform\n");
     return -1;
 }
 
 int64_t tee_drv_close(int64_t fd)
 {
     (void)fd;
-    tloge("drv close not support in this platfrom\n");
+    tloge("drv close not support in this platform\n");
     return -1;
 }
 

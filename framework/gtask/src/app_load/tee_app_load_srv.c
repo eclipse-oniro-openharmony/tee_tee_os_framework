@@ -199,11 +199,11 @@ static TEE_Result tee_secure_img_get_version(const uint8_t *share_buf, uint32_t 
     bool temp_check = (img_identity.magic_num1 == TA_HEAD_MAGIC1) && (img_identity.magic_num2 == TA_HEAD_MAGIC2) &&
                  (img_identity.version_num > 1);
     if (temp_check) {
-        tlogd("new verison ta, version num 0x%x\n", img_identity.version_num);
+        tlogd("new version ta, version num 0x%x\n", img_identity.version_num);
         *img_version = img_identity.version_num;
     } else {
         /* Fisrt version of TA doesn't include magic number and version number */
-        tlogd("old verison ta\n");
+        tlogd("old version ta\n");
         *img_version = TA_SIGN_VERSION;
     }
 
@@ -343,7 +343,7 @@ static TEE_Result recv_img_info_from_tzdriver(const smc_cmd_t *cmd, TEE_Param **
     /* Receive secure image, it may be sent several times for length limit reason */
     ret = tee_secure_image_recieve(share_buf, buf_len);
     if (ret != TEE_SUCCESS) {
-        tloge("Failed to recieve or parse ta image header: 0x%x\n", ret);
+        tloge("Failed to receive or parse ta image header: 0x%x\n", ret);
         return ret;
     }
 

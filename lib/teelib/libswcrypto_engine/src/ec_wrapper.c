@@ -406,7 +406,7 @@ TEE_Result ecc_ecpubkey_boring_to_tee(const EC_KEY *key, ecc_pub_key_t *pub)
     uint32_t public_key_x_len = (uint32_t)BN_num_bytes(x);
     uint32_t public_key_y_len = (uint32_t)BN_num_bytes(y);
     if (public_key_x_len > EC_KEY_FIX_BUFFER_LEN || public_key_y_len > EC_KEY_FIX_BUFFER_LEN) {
-        tloge("buffer not enougth");
+        tloge("buffer not enough");
         ret = TEE_ERROR_BAD_PARAMETERS;
         goto error;
     }

@@ -304,7 +304,7 @@ static int32_t handle_drv_basic_info_thread_limit(uint32_t *thread_limit, uint32
     uint64_t tmp_limit;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid parm\n");
+        hm_error("invalid param\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -339,7 +339,7 @@ static int32_t handle_drv_basic_info_thread_limit(uint32_t *thread_limit, uint32
 static int32_t handle_drv_basic_info_exception_mode(uint8_t *exception_mode, uint32_t size, const char *value)
 {
     if (value == NULL || size >= MAX_IMAGE_LEN) {
-        hm_error("invalid parm\n");
+        hm_error("invalid param\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -816,7 +816,7 @@ static int32_t handle_drv_map_secure_item_uuid(struct drv_conf_t *drv_conf, uint
             }
         }
     } else {
-        hm_error("uuid pos cannot larger than region pos, someting wrong happeds\n");
+        hm_error("uuid pos cannot larger than region pos, something wrong happeds\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -866,7 +866,7 @@ static int32_t handle_drv_map_secure_item_region(struct drv_conf_t *drv_conf, ui
             }
         }
     } else {
-        hm_error("region pos cannot larger than uuid pos, someting wrong happeds\n");
+        hm_error("region pos cannot larger than uuid pos, something wrong happeds\n");
         goto out;
     }
 

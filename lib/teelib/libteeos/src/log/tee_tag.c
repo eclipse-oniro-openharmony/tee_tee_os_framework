@@ -40,7 +40,7 @@ static int32_t lock_tag_list(void)
         ret = pthread_mutex_consistent(&g_driver_tag_lock);
 
     if (ret != 0)
-        printf("lock driver tag error\n");
+        printf("lock driver tag ret 0x%x\n", ret);
 
     return ret;
 }
@@ -51,7 +51,7 @@ static void unlock_tag_list(void)
 
     ret = pthread_mutex_unlock(&g_driver_tag_lock);
     if (ret != 0)
-        printf("mutex unlock failed 0x%x", ret);
+        printf("mutex unlock ret 0x%x\n", ret);
 
     return;
 }
@@ -144,7 +144,7 @@ char *get_log_tag(const char *driver_tag, const char *debug_prefix)
 
     char *tag = TEE_Malloc(len1 + len2 + OTHER_CHAR_LEN, 0);
     if (tag == NULL) {
-        printf("malloc tag buffer failed\n");
+        printf("malloc tag buffer is null\n");
         return NULL;
     }
 

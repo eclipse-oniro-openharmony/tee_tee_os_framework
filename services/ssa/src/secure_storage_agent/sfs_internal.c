@@ -250,7 +250,7 @@ static TEE_Result derive_ta_key(uint8_t *ta_key, uint32_t ta_key_len, TEE_UUID *
     errno_t rc;
 
     if (ta_key == NULL || uuid == NULL) {
-        tloge("Bad parmeter!\n");
+        tloge("Bad parameter!\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -292,7 +292,7 @@ static TEE_Result derive_key(meta_data_t *meta, uint32_t flags)
     uint32_t out_len = CRYPT_KEY_SIZE;
 
     if (meta == NULL) {
-        tloge("Bad parmeter!\n");
+        tloge("Bad parameter!\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -408,7 +408,7 @@ TEE_Result derive_file_id(const uint8_t *obj_id, uint32_t obj_id_len, const uint
     TEE_Result ret;
 
     if (obj_id == NULL || meta == NULL || joint_file_id == NULL || (obj_id_len + 1) < obj_id_len) {
-        tloge("Bad parmeter!\n");
+        tloge("Bad parameter!\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -464,7 +464,7 @@ meta_data_t *create_meta_data(const uint8_t *obj_id, uint32_t obj_id_len, uint32
     char file_name_new[FILE_NAME_MAX_BUF] = { 0 };
 
     if (obj_id == NULL || uuid == NULL || error == NULL) {
-        tloge("Bad parmeter!\n");
+        tloge("Bad parameter!\n");
         return NULL;
     }
 

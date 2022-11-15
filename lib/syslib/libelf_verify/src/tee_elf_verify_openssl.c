@@ -413,7 +413,7 @@ int32_t ecies_kem_decrypt(const struct ecc_derive_data_st *ecc_data, uint8_t *ke
     bool check = (ecc_data == NULL || key == NULL || ecc_data->ec1_len != ECIES_PRIV_LEN
         || ecc_data->ec2_len != ECIES_PUB_LEN);
     if (check) {
-        tloge("key len invald, %u/%u\n", ecc_data->ec1_len, ecc_data->ec2_len);
+        tloge("key len invalid, %u/%u\n", ecc_data->ec1_len, ecc_data->ec2_len);
         return -1;
     }
 

@@ -319,7 +319,7 @@ static TEE_Result check_ta2ta_context(uint32_t task_id)
     /* We don't allow TA2TA session calls from TAs that did not initiate the session */
     if (g_cur_session != NULL) {
         if (g_cur_session->ta2ta_from_taskid != task_id) {
-            tloge("reveive invalid ta2ta call from task 0x%x\n", task_id);
+            tloge("receive invalid ta2ta call from task 0x%x\n", task_id);
             return TEE_ERROR_SESSION_NOT_EXIST;
         }
     }

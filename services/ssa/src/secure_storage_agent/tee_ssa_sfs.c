@@ -727,7 +727,7 @@ uint32_t ssa_read(uint8_t *out_buf, uint32_t count, struct sfd_t *sfd, TEE_Resul
 
     ret = read_data_out(&read_info, out_buf, count, sfd, &total_read_count);
     if (ret != TEE_SUCCESS) {
-        tloge("read datas fail!\n");
+        tloge("read data fail!\n");
         *error = ret;
     }
 

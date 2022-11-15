@@ -220,7 +220,7 @@ static int32_t handle_ta_back_msg(smc_cmd_t *cmd, uint32_t back_cmd, struct sess
         break;
     default:
         /* in this scene, wait_ta_back_msg status should not be changed */
-        tloge("Unknow cmd from S world!%x\n", back_cmd);
+        tloge("Unknown cmd from S world!%x\n", back_cmd);
         session->wait_ta_back_msg = true;
         return GT_ERR_END_CMD;
     }
