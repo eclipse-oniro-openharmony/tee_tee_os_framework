@@ -892,7 +892,7 @@ static TEE_Result ssa_open_handle_retry(struct sfd_t *sfd, const meta_data_t *me
     uint32_t flag, struct ssa_open_info *back)
 {
     TEE_Result ret;
-    tlogi("open file failed, we will try to reopen the file when open file without write\n");
+    tlogi("we will try to reopen the file when open file without write\n");
     if (back->ret == TEE_SUCCESS)
         ret = ssa_open_check(sfd, (char *)meta->cur_backup_file_id, flag, &(back->file_fd));
     else
@@ -999,7 +999,7 @@ struct sfd_t *ssa_open(meta_data_t *meta, uint32_t flag, TEE_Result *error)
 
     *error = ssa_open_handle(sfd, meta, flag);
     if (*error != TEE_SUCCESS) {
-        tlogi("ssa open handle ret = 0x%x\n", *error);
+        tloge("ssa open handle failed, ret = 0x%x\n", *error);
         goto out_final;
     }
 

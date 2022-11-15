@@ -87,8 +87,6 @@ int64_t crypto_mgr_ioctl(struct drv_data *drv, uint32_t cmd, unsigned long args,
         }
     }
     ret = crypto_ioctl_func(drv, cmd, args, args_len);
-    if (ret != 0)
-        hm_info("crypto mgr ioctl fail cmd 0x%x, ret0x%x\n", cmd, ret);
 
     hm_info("mgr ioctl load 0x%x ret 0x%x\n", cmd, ret);
 

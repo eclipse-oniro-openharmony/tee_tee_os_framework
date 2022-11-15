@@ -111,7 +111,7 @@ static void fill_uuid(log_item_t *m_logitem, bool *is_ta)
     }
 
     if (memmove_s((void *)m_logitem->uuid, sizeof(m_logitem->uuid), current_uuid, sizeof(TEE_UUID)) != EOK) {
-        printf("memmove_s uuid failed\n");
+        printf("memmove_s uuid ret is not EOK\n");
         current_uuid = &uuid;
         return;
     }
@@ -179,7 +179,7 @@ static void fill_logitem(log_item_t *m_logitem, size_t m_logmaxlen, int count, i
     /* append in the rdr memory */
     if (debug_call(0, KCALL_DEBUG_APPEND_RDR_LOGITEM, ptr_to_uint64(m_logitem),
                    sizeof(log_item_t) + m_logitem->log_buffer_len) != 0)
-        printf("append rdr logitem debug_call failed\n");
+        printf("append rdr logitem debug_call ret is not successful\n");
 }
 #define LOG_RESERVED_SIZE 1
 /*
