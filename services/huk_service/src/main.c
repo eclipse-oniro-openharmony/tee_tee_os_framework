@@ -32,6 +32,7 @@
 #include "huk_derive_takey.h"
 #include "huk_get_deviceid.h"
 #include "huk_service_msg.h"
+#include "msg_ops.h"
 
 #define MAGIC_STR_LEN               20
 
@@ -47,26 +48,6 @@ struct cmd_operate_config_s {
     uint32_t cmd_id;
     cmd_func operate_func;
 };
-
-static cref_t huk_get_mymsghdl(void)
-{
-    struct hmapi_thread_local_storage *tls = NULL;
-
-    tls = hmapi_tls_get();
-    if (tls == NULL)
-        return CREF_NULL;
-
-    if (tls->msghdl == 0) {
-        cref_t msghdl;
-        msghdl = hm_msg_create_hdl();
-        if (is_ref_err(msghdl))
-            return CREF_NULL;
-
-        tls->msghdl = msghdl;
-    }
-
-    return tls->msghdl;
-}
 
 static const struct cmd_operate_config_s g_cmd_operate_config[] = {
     { CMD_HUK_DERIVE_TAKEY,         huk_task_derive_takey },
@@ -123,7 +104,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     struct channel_ipc_args ipc_args = {0};
 
     (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
-    cref_t msghdl = huk_get_mymsghdl();
+    cref_t msghdl = get_mymsghdl();
     if (is_ref_err(msghdl) != 0) {
         tloge("Cannot create msg hdl, %s\n", hmapi_strerror((int)msghdl));
         hm_exit((int)msghdl);

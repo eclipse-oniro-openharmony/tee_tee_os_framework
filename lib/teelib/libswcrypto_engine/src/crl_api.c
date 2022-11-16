@@ -183,7 +183,7 @@ static int32_t crl_get_entry(const uint8_t *seq, uint32_t seq_len, cert_list_ent
     return 0;
 }
 
-int32_t get_revocation_list_from_crl(uint8_t *crl, uint32_t crl_len, cert_list_entry_t *entry)
+int32_t get_revocation_list_from_crl(const uint8_t *crl, uint32_t crl_len, cert_list_entry_t *entry)
 {
     const uint8_t *crl_ptr = NULL;
 

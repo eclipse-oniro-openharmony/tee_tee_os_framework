@@ -9,24 +9,10 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include "perm_srv_set_config.h"
-#include "tee_log.h"
-#include "permission_service.h"
-#include "tee_perm_img.h"
+#include "perm_srv_ta_cert.h"
 
-TEE_Result get_config_cert_param(cert_param_t *cert_param, struct sign_config_t *config)
+TEE_Result perm_srv_cert_expiration_date_check(const validity_period_t *valid_date)
 {
-    (void)cert_param;
-    (void)config;
+    (void)valid_date;
     return TEE_SUCCESS;
 }
-
-TEE_Result oh_get_verify_key(void **key, const struct sign_config_t *config, cert_param_t *cert_param)
-{
-    (void)key;
-    (void)config;
-    (void)cert_param;
-    tloge("should support permission service\n");
-    return TEE_ERROR_GENERIC;
-}
-

@@ -80,9 +80,9 @@ void permsrv_registerta(const TEE_UUID *uuid, uint32_t task_id, uint32_t user_id
     }
 
     if (opt_type == REGISTER_TA) {
-        req_msg.header.send.msg_id = TEE_TASK_REGISTER_TA;
+        req_msg.header.send.msg_id = TEE_TASK_OPEN_TA_SESSION;
     } else if (opt_type == UNREGISTER_TA) {
-        req_msg.header.send.msg_id = TEE_TASK_UNREGISTER_TA;
+        req_msg.header.send.msg_id = TEE_TASK_CLOSE_TA_SESSION;
     } else {
         tloge("perm srv not support operation type!\n");
         return;
@@ -106,53 +106,11 @@ void permsrv_notify_unload_ta(const TEE_UUID *uuid)
         return;
     }
 
-    req_msg.header.send.msg_id     = TEE_TASK_TA_RELEASE;
+    req_msg.header.send.msg_id     = TEE_TASK_RELEASE_TA_SERVICE;
     req_msg.req_msg.ta_unload.uuid = *uuid;
 
     if (perm_srv_msg_call(PERM_PATH, &req_msg, NULL) < 0)
         tloge("ta unload msg send failed!\n");
-}
-
-TEE_Result get_permission_by_type(const TEE_UUID *uuid, uint32_t taskid, uint32_t checkby, uint32_t type,
-                                  perm_srv_permsrsp_t *result)
-{
-    perm_srv_req_msg_t req_msg;
-    perm_srv_reply_msg_t reply_msg;
-
-    TEE_Result ret;
-
-    tee_perm_init_msg(&req_msg, &reply_msg);
-    if (result == NULL) {
-        tloge("query bad parameter for points\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-
-    req_msg.header.send.msg_id = QUERY_PERMS_CMD;
-    if (checkby == CHECK_BY_UUID) {
-        if (uuid == NULL)
-            return TEE_ERROR_BAD_PARAMETERS;
-        req_msg.req_msg.query_perms.uuid    = *uuid;
-        req_msg.req_msg.query_perms.checkby = CHECK_BY_UUID;
-    } else if (checkby == CHECK_BY_TASKID) {
-        req_msg.req_msg.query_perms.taskid  = taskid;
-        req_msg.req_msg.query_perms.checkby = CHECK_BY_TASKID;
-    } else {
-        tloge("get permission bad checkby parameter!\n");
-        return TEE_ERROR_BAD_PARAMETERS;
-    }
-    req_msg.req_msg.query_perms.perm_type = type;
-    reply_msg.reply.ret                   = TEE_ERROR_GENERIC;
-
-    if (perm_srv_msg_call(PERM_PATH, &req_msg, &reply_msg) < 0) {
-        tloge("query msg send failed!\n");
-        return TEE_ERROR_GENERIC;
-    }
-
-    ret = reply_msg.reply.ret;
-    if (ret == TEE_SUCCESS)
-        *result = reply_msg.reply.permsrsp;
-
-    return ret;
 }
 
 TEE_Result rslot_file_msg_call(perm_srv_req_msg_t *req_msg, perm_srv_reply_msg_t *reply_msg)
@@ -171,50 +129,50 @@ TEE_Result rslot_file_msg_call(perm_srv_req_msg_t *req_msg, perm_srv_reply_msg_t
     return reply_msg->reply.ret;
 }
 
-TEE_Result tee_ta_ctrl_list_process(const uint8_t *ctrl_list, uint32_t ctrl_list_size)
+TEE_Result tee_crl_cert_process(const char *crl_cert, uint32_t crl_cert_size)
 {
     perm_srv_req_msg_t req_msg;
     perm_srv_reply_msg_t reply_msg;
 
-    uint8_t *ctrl_shared = NULL;
-    uint32_t ctrl_size;
+    uint8_t *crl_shared = NULL;
+    uint32_t crl_size;
 
     tee_perm_init_msg(&req_msg, &reply_msg);
     errno_t rc;
     TEE_Result ret = TEE_ERROR_GENERIC;
 
-    if (ctrl_list == NULL) {
+    if (crl_cert == NULL) {
         tloge("bad parameter for points\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
-    if (ctrl_list_size == 0 || ctrl_list_size > MAX_PERM_SRV_BUFF_SIZE) {
+    if (crl_cert_size == 0 || crl_cert_size > MAX_PERM_SRV_BUFF_SIZE) {
         tloge("bad parameter for size!\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    ctrl_size   = ctrl_list_size;
-    ctrl_shared = tee_alloc_sharemem_aux(&g_permsrv_uuid, ctrl_size);
-    if (ctrl_shared == NULL) {
-        tloge("malloc sharedBuff failed, size=0x%x\n", ctrl_size);
+    crl_size   = crl_cert_size;
+    crl_shared = tee_alloc_sharemem_aux(&g_permsrv_uuid, crl_size);
+    if (crl_shared == NULL) {
+        tloge("malloc sharedBuff failed, size=0x%x\n", crl_size);
         return TEE_ERROR_OUT_OF_MEMORY;
     }
-    rc = memmove_s(ctrl_shared, ctrl_size, ctrl_list, ctrl_list_size);
+    rc = memmove_s(crl_shared, crl_size, crl_cert, crl_cert_size);
     if (rc != EOK) {
         tloge("copy the conf error, rc = 0x%x", rc);
         ret = TEE_ERROR_SECURITY;
         goto clean;
     }
 
-    req_msg.header.send.msg_id               = SET_TA_CTRL_LIST_CMD;
-    req_msg.req_msg.ctrl_list.ctrl_list_buff = (uintptr_t)ctrl_shared;
-    req_msg.req_msg.ctrl_list.ctrl_list_size = ctrl_size;
-    reply_msg.reply.ret                      = TEE_ERROR_GENERIC;
+    req_msg.header.send.msg_id             = PERMSRV_SET_CRL_CERT;
+    req_msg.req_msg.crl_cert.crl_cert_buff = (uintptr_t)crl_shared;
+    req_msg.req_msg.crl_cert.crl_cert_size = crl_size;
+    reply_msg.reply.ret                    = TEE_ERROR_GENERIC;
 
     ret = rslot_file_msg_call(&req_msg, &reply_msg);
 
 clean:
-    if (ctrl_shared != NULL)
-        (void)tee_free_sharemem(ctrl_shared, ctrl_size);
+    if (crl_shared != NULL)
+        (void)tee_free_sharemem(crl_shared, crl_size);
     return ret;
 }
 
@@ -223,7 +181,7 @@ void permsrv_load_file()
     perm_srv_req_msg_t req_msg;
 
     tee_perm_init_msg(&req_msg, NULL);
-    req_msg.header.send.msg_id = PERMSRV_LOAD_FILE_CMD;
+    req_msg.header.send.msg_id = TEE_TASK_LOAD_CRL_AND_CTRL_LIST;
 
     if (g_init_state == INIT_STATE_READY)
         return;
@@ -252,7 +210,7 @@ TEE_Result permsrv_elf_verify(const void *verify_req, uint32_t len)
     }
 
     tee_perm_init_msg(&req_msg, NULL);
-    req_msg.header.send.msg_id = ELF_VERIFY_CMD;
+    req_msg.header.send.msg_id = TEE_TASK_ELF_VERIFY;
     req_msg.header.send.msg_size = len;
 
     rc = memcpy_s(&(req_msg.req_msg.verify_req), sizeof(req_msg.req_msg.verify_req), verify_req, len);
@@ -261,7 +219,7 @@ TEE_Result permsrv_elf_verify(const void *verify_req, uint32_t len)
         return TEE_ERROR_GENERIC;
     }
 
-    if (perm_srv_msg_call(PERMSRV_FILE_OPT, &req_msg, NULL) < 0) {
+    if (perm_srv_msg_call(PERMSRV_ASYNC_OPT, &req_msg, NULL) < 0) {
         tloge("elf verify msg failed!\n");
         return TEE_ERROR_GENERIC;
     }

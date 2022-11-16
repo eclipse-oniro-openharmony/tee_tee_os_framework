@@ -112,7 +112,6 @@ struct ta_control_info {
     struct callee_ta_info *callee_info;
     struct ta_debug_info debug_info;
 };
-
 struct config_info {
     struct dlist_node head;
     TEE_UUID uuid;
@@ -121,6 +120,7 @@ struct config_info {
     uint32_t version;
     struct ta_manifest_info manifest_info;
     struct ta_control_info control_info;
+    struct dlist_node task_config_list;
 };
 
 int32_t install_ta_config(void *obj, uint32_t obj_size, const struct conf_queue_t *conf_queue);

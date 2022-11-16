@@ -16,6 +16,9 @@
 #include "tee_defines.h"
 #include "ta_framework.h"
 
+#define SN_MAX_SIZE 64
+#define ISSUER_MAX_SIZE   256
+
 typedef struct {
     uint32_t version;
     uint32_t img_size;
@@ -41,6 +44,13 @@ typedef struct {
     uint32_t hash_size;
 } elf_hash_data;
 #define MAX_IMAGE_HASH_SIZE 64
+
+struct cert_subjects {
+    uint8_t cn[SN_MAX_SIZE];
+    uint32_t cn_size;
+    uint8_t ou[SN_MAX_SIZE];
+    uint32_t ou_size;
+};
 
 TEE_Result secure_elf_verify(const elf_verify_req *req, elf_verify_reply *rep);
 

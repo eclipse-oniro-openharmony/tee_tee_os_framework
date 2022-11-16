@@ -35,7 +35,7 @@ typedef struct cert_list_entry_st {
     struct cert_list_entry_st *next;
 } cert_list_entry_t;
 
-int32_t get_revocation_list_from_crl(uint8_t *crl, uint32_t crl_len, cert_list_entry_t *entry);
+int32_t get_revocation_list_from_crl(const uint8_t *crl, uint32_t crl_len, cert_list_entry_t *entry);
 
 int32_t get_issuer_from_crl(uint8_t *issuer, uint32_t issuer_size, const uint8_t *crl, uint32_t crl_len);
 

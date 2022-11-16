@@ -232,7 +232,7 @@ void send_register_ta_to_task(const struct reg_ta_info *reg_msg, uint32_t dest_t
         return;
     }
 
-    uint32_t ret = ipc_msg_snd(TEE_TASK_REGISTER_TA, dest_task_id, reg_msg, sizeof(*reg_msg));
+    uint32_t ret = ipc_msg_snd(TEE_TASK_OPEN_TA_SESSION, dest_task_id, reg_msg, sizeof(*reg_msg));
     if (ret != SRE_OK)
         tloge("send reg ta msg to task 0x%x failed\n", dest_task_id);
 }
@@ -275,21 +275,27 @@ void send_unregister_ta_to_task(const char *cur_task_name, const struct reg_ta_i
         return;
     }
 
-    uint32_t ret = ipc_msg_snd(TEE_TASK_UNREGISTER_TA, dest_task_id, reg_msg, sizeof(*reg_msg));
+    uint32_t ret = ipc_msg_snd(TEE_TASK_CLOSE_TA_SESSION, dest_task_id, reg_msg, sizeof(*reg_msg));
     if (ret != SRE_OK)
         tloge("send unreg ta msg to task 0x%x failed\n", dest_task_id);
 }
 
-void task_adapt_unregister_ta(uint32_t ta_task_id)
+void task_adapt_unregister_ta(const TEE_UUID *ta_uuid, uint32_t ta_task_id)
 {
     struct reg_ta_info reg_msg;
     struct dlist_node *pos               = NULL;
     struct task_adaptor_info *task_entry = NULL;
 
+    if (ta_uuid == NULL) {
+        tloge("uuid is null, unreg ta failed\n");
+        return;
+    }
+
     errno_t ret = memset_s(&reg_msg, sizeof(reg_msg), 0, sizeof(reg_msg));
     if (ret != EOK)
         tloge("memset reg msg failed\n");
 
+    (void)memcpy_s(&reg_msg.uuid, sizeof(TEE_UUID), ta_uuid, sizeof(TEE_UUID));
     reg_msg.taskid = ta_task_id;
     dlist_for_each(pos, &g_task_list_head) {
         task_entry = dlist_entry(pos, struct task_adaptor_info, task_node);
@@ -306,7 +312,7 @@ void task_adapt_send_ta_create_msg(const struct reg_ta_info *msg, uint32_t dest_
         return;
     }
 
-    uint32_t ret = ipc_msg_snd(TEE_TASK_TA_CREATE, dest_task_id, msg, sizeof(*msg));
+    uint32_t ret = ipc_msg_snd(TEE_TASK_CREATE_TA_SERVICE, dest_task_id, msg, sizeof(*msg));
     if (ret != SRE_OK)
         tloge("send ta create msg to task 0x%x failed\n", dest_task_id);
 }
@@ -351,7 +357,7 @@ void task_adapt_send_ta_release_msg(const struct reg_ta_info *msg, uint32_t dest
         return;
     }
 
-    uint32_t ret = ipc_msg_snd(TEE_TASK_TA_RELEASE, dest_task_id, msg, sizeof(*msg));
+    uint32_t ret = ipc_msg_snd(TEE_TASK_RELEASE_TA_SERVICE, dest_task_id, msg, sizeof(*msg));
     if (ret != SRE_OK)
         tloge("send ta release msg to task 0x%x failed\n", dest_task_id);
 }

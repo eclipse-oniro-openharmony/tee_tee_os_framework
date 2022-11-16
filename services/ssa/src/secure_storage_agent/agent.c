@@ -114,7 +114,7 @@ static void ssa_deal_msg(uint32_t cmd, uint8_t *ret_msg, size_t msg_len, uint32_
     errno_t rc;
 
     (void)memset_s(&tmp_msg, sizeof(tmp_msg), 0, sizeof(tmp_msg));
-    if (cmd == TEE_TASK_REGISTER_TA) {
+    if (cmd == TEE_TASK_OPEN_TA_SESSION) {
         rc = memcpy_s(&tmp_msg, sizeof(tmp_msg), ret_msg, msg_len);
         if (rc != EOK) {
             tloge("memcpy_s ssa msg failed, ret 0x%x\n", rc);
@@ -125,7 +125,7 @@ static void ssa_deal_msg(uint32_t cmd, uint8_t *ret_msg, size_t msg_len, uint32_
         ssa_register_uuid(&tmp_msg, sdr, NULL);
 
         return;
-    } else if (cmd == TEE_TASK_UNREGISTER_TA) {
+    } else if (cmd == TEE_TASK_CLOSE_TA_SESSION) {
         rc = memcpy_s(&tmp_msg, sizeof(tmp_msg), ret_msg, msg_len);
         if (rc != EOK) {
             tloge("memcpy_s ssa msg failed, ret 0x%x\n", rc);
