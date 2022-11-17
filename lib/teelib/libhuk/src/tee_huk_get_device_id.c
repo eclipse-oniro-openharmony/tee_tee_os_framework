@@ -37,9 +37,11 @@ TEE_Result get_device_id_prop(uint8_t *dst, uint32_t len)
     if (huk_srv_msg_call(&msg, &rsp) < 0)
         goto clean;
 
-    if (memcpy_s(dst, len, dev_id_shared, len) != EOK) {
-        tloge("copy device id shared failed\n");
-        rsp.data.ret = TEE_ERROR_GENERIC;
+    if (rsp.data.ret == TEE_SUCCESS) {
+        if (memcpy_s(dst, len, dev_id_shared, len) != EOK) {
+            tloge("copy device id shared failed\n");
+            rsp.data.ret = TEE_ERROR_GENERIC;
+        }
     }
 clean:
     huk_free_shared_mem(dev_id_shared, len);
