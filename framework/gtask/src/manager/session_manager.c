@@ -861,7 +861,7 @@ int32_t release_session(struct service_struct *service, struct session_struct *s
     if (service == NULL || session == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    task_adapt_unregister_ta(session->task_id);
+    task_adapt_unregister_ta(&service->property.uuid, session->task_id);
     service->session_count--;
 
     /*
@@ -1087,7 +1087,7 @@ void process_open_session_error(void)
     int sre_ret;
     uint32_t session_id;
 
-    task_adapt_unregister_ta(g_cur_session->task_id);
+    task_adapt_unregister_ta(&g_cur_service->property.uuid, g_cur_session->task_id);
     release_pam_node(g_cur_session->pam_node);
     task_del_mem_region(&(g_cur_session->map_mem), false);
 

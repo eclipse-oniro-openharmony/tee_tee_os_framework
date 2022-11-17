@@ -61,21 +61,21 @@ static void task_send_ta_unregister_msg(const char *cur_task_name,
     const struct reg_ta_info *reg_msg, uint32_t dest_task_id)
 {
     (void)dest_task_id;
-    send_msg_to_srv(cur_task_name, reg_msg, TEE_TASK_UNREGISTER_TA);
+    send_msg_to_srv(cur_task_name, reg_msg, TEE_TASK_CLOSE_TA_SESSION);
 }
 
 static void task_send_ta_create_msg(const char *cur_task_name,
     const struct reg_ta_info *reg_msg, uint32_t dest_task_id)
 {
     (void)dest_task_id;
-    send_msg_to_srv(cur_task_name, reg_msg, TEE_TASK_TA_CREATE);
+    send_msg_to_srv(cur_task_name, reg_msg, TEE_TASK_CREATE_TA_SERVICE);
 }
 
 static void task_send_ta_release_msg(const char *cur_task_name,
     const struct reg_ta_info *reg_msg, uint32_t dest_task_id)
 {
     (void)dest_task_id;
-    send_msg_to_srv(cur_task_name, reg_msg, TEE_TASK_TA_RELEASE);
+    send_msg_to_srv(cur_task_name, reg_msg, TEE_TASK_RELEASE_TA_SERVICE);
 }
 
 static void task_init_priv_info(struct task_adaptor_info *task)

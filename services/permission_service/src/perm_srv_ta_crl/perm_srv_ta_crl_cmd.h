@@ -9,24 +9,12 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include "perm_srv_set_config.h"
-#include "tee_log.h"
+#ifndef PERM_SRV_TA_CRL_CMD_H
+#define PERM_SRV_TA_CRL_CMD_H
+
 #include "permission_service.h"
-#include "tee_perm_img.h"
 
-TEE_Result get_config_cert_param(cert_param_t *cert_param, struct sign_config_t *config)
-{
-    (void)cert_param;
-    (void)config;
-    return TEE_SUCCESS;
-}
+TEE_Result perm_srv_set_crl_cert(const perm_srv_req_msg_t *msg, uint32_t sndr_taskid,
+                                 const TEE_UUID *sndr_uuid, perm_srv_reply_msg_t *rsp);
 
-TEE_Result oh_get_verify_key(void **key, const struct sign_config_t *config, cert_param_t *cert_param)
-{
-    (void)key;
-    (void)config;
-    (void)cert_param;
-    tloge("should support permission service\n");
-    return TEE_ERROR_GENERIC;
-}
-
+#endif

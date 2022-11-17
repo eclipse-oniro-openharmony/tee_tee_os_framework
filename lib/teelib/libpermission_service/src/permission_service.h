@@ -31,18 +31,23 @@
 #define MAX_PUB_KEY_SIZE 2056
 #define MAX_PERM_SRV_BUFF_SIZE (70 * 1024)
 
+#define PERMSRV_FILE_OPT    ".rtosck.permsrv_file_operation"
+#define PERMSRV_SAVE_FILE   ".rtosck.permsrv_save_file"
+#define PERMSRV_ASYNC_OPT        ".rtosck.permsrv_async_operation"
+#define PERMSRV_ASYNC_OPT_FILE   ".rtosck.permsrv_async_operation_file"
+
 enum PERM_COMMANDS_ID {
-    QUERY_PERMS_CMD       = 0x102,
-    SET_CRL_CERT_CMD      = 0x103,
-    SET_TA_CTRL_LIST_CMD  = 0x104,
-    PERMSRV_LOAD_FILE_CMD = 0x105,
-    QUER_TA2TA_PERM_CMD   = 0x106,
-    ELF_VERIFY_CMD        = 0x107,
-    PERMSRV_CRL_UPDATE    = 0x108,
-    CERT_VERIFY_CMD       = 0x109,
-    PERMSRV_CRT_EXPORT    = 0x110,
-    PERMSRV_CRT_REMOVE    = 0x111,
-    CA_HASHFILE_VERIFY_CMD = 0x112,
+    PERMSRV_QUERY_TA_PERMS          = 0x102,
+    PERMSRV_SET_CRL_CERT            = 0x103,
+    PERMSRV_SET_TA_CTRL_LIST        = 0x104,
+    TEE_TASK_LOAD_CRL_AND_CTRL_LIST = 0x105,
+    PERMSRV_QUERY_TA2TA_PERM        = 0x106,
+    TEE_TASK_ELF_VERIFY             = 0x107,
+    TEE_TASK_CMS_CRL_UPDATE         = 0x108,
+    PERMSRV_CERT_VERIFY             = 0x109,
+    PERMSRV_CERT_EXPORT             = 0x110,
+    PERMSRV_CERT_REMOVE             = 0x111,
+    TEE_TASK_CA_HASHFILE_VERIFY     = 0x112,
 };
 
 enum PERM_TYPE {
@@ -158,9 +163,9 @@ typedef union perm_srv_msgbody_st {
     } crt;
 } perm_srv_msgbody_t;
 
-typedef struct perm_srv_queryrsp_st {
-    uint32_t query_run_ret;
-} perm_srv_queryrsp_t;
+typedef struct perm_srv_sharememrsp_st {
+    uint32_t sharemem_index;
+} perm_srv_sharememrsp_t;
 
 typedef union perm_srv_permsrsp_st {
     uint32_t rpmb_size;
@@ -178,7 +183,7 @@ typedef union perm_srv_permsrsp_st {
 typedef struct perm_srv_rspbody_st {
     TEE_Result ret;
     union {
-        perm_srv_queryrsp_t queryrsp;
+        perm_srv_sharememrsp_t sharememrsp;
         perm_srv_permsrsp_t permsrsp;
     };
 } perm_srv_rspbody_t;

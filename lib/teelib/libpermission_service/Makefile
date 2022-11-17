@@ -24,14 +24,7 @@ CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
 CPPFLAGS += -I$(TEELIB)/libteemem/include
 CPPFLAGS += -I$(SYSLIB)/libelf_verify/include
 
-CFILES   := $(wildcard src/permsrv_api_imp.c)
-
-ifneq ($(findstring y, $(CONFIG_APP_TEE_PERM) $(CONFIG_APP_TEE_PERM_A32)),)
-    CFILES += $(wildcard src/permsrv_api.c)
-    ifeq ($(CONFIG_DYN_IMPORT_CERT),y)
-        CPPFLAGS += -DDYN_IMPORT_CERT=1
-        CFILES += $(wildcard src/permsrv_api_cert.c)
-    endif
-endif
+CFILES := $(wildcard src/permsrv_api_imp.c)
+CFILES += $(wildcard src/permsrv_api.c)
 
 include $(BUILD_LIB)/lib-common.mk

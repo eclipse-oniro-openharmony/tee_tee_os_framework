@@ -22,7 +22,7 @@ bool is_internal_task_by_task_id(uint32_t task_id);
 bool is_internal_task_by_uuid(const TEE_UUID *uuid);
 void task_adapt_crash_callback(uint32_t task_id);
 void task_adapt_register_ta(uint32_t ta_task_id, uint32_t userid, bool ssa_enum_enable, const TEE_UUID *uuid);
-void task_adapt_unregister_ta(uint32_t ta_task_id);
+void task_adapt_unregister_ta(const TEE_UUID *ta_uuid, uint32_t ta_task_id);
 bool is_service_agent_request(uint32_t agent_task_id, uint32_t *caller_task_id, uint32_t **agent_status);
 bool is_agent_response(uint32_t agent_id, uint32_t *agent_task_id, uint32_t *caller_task_id,
                        uint32_t **agent_status);

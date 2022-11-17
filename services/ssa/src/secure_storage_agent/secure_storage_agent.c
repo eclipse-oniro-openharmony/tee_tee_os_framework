@@ -628,7 +628,7 @@ static TEE_Result set_ssa_caller_info(uint32_t sndr, uint32_t cmd)
     }
 
     /* only unreg msg from globaltask need process. */
-    if (sndr == g_global_handle && cmd != TEE_TASK_UNREGISTER_TA && cmd != SS_AGENT_LOAD_MANAGE_INFO)
+    if (sndr == g_global_handle && cmd != TEE_TASK_CLOSE_TA_SESSION && cmd != SS_AGENT_LOAD_MANAGE_INFO)
         return TEE_SUCCESS;
 
     ret = set_caller_info_proc(sndr, cmd);
@@ -959,8 +959,8 @@ static void ssa_unregister_uuid(union ssa_agent_msg *msg, uint32_t sndr, struct 
 ssa_cmd_t g_ssa_cmd_tbl[] = {
     /* ssa register msg */
     {TEE_TASK_REGISTER_AGENT,           0,     NOT_FILE_OPERATION, NOT_FILE_MODIFY,  ssa_register_agent},
-    {TEE_TASK_REGISTER_TA,              0,     NOT_FILE_OPERATION, NOT_FILE_MODIFY,  ssa_register_uuid},
-    {TEE_TASK_UNREGISTER_TA,            0,     NOT_FILE_OPERATION, NOT_FILE_MODIFY,  ssa_unregister_uuid},
+    {TEE_TASK_OPEN_TA_SESSION,              0,     NOT_FILE_OPERATION, NOT_FILE_MODIFY,  ssa_register_uuid},
+    {TEE_TASK_CLOSE_TA_SESSION,            0,     NOT_FILE_OPERATION, NOT_FILE_MODIFY,  ssa_unregister_uuid},
 
     /* file opertion , need ssa register done. */
     {SS_AGENT_CREATE_OBJECT,            1,     FILE_OPERATION,     NOT_FILE_MODIFY,  ssa_create_object},

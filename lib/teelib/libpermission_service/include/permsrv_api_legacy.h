@@ -16,5 +16,4 @@
 #include "tee_defines.h"
 
 TEE_Result TEE_EXT_crl_cert_process(const char *crl_cert, uint32_t crl_cert_size);
-TEE_Result TEE_EXT_ta_ctrl_list_process(const char *ctrl_list, uint32_t ctrl_list_size);
 #endif

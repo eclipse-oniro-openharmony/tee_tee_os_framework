@@ -10,7 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "tee_perm_img.h"
-#include "handle_config.h"
+#include "perm_srv_set_config.h"
 #include "tee_log.h"
 #include "securec.h"
 #include "ta_lib_img_unpack.h"

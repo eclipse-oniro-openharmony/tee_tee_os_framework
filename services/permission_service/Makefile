@@ -13,7 +13,31 @@ TARGET := permission_service${TARG}.elf
 
 include $(BUILD_CONFIG)/var.mk
 CFILES := $(wildcard src/*.c)
-CFILES += $(wildcard src/auth/tee_auth_sign_rsa.c)
+
+CFILES += $(wildcard src/perm_srv_ta_crl/perm_srv_ta_crl.c)
+CFILES += $(wildcard src/perm_srv_ta_crl/perm_srv_ta_crl_cmd.c)
+CFILES += $(wildcard src/perm_srv_ta_ctrl/perm_srv_ta_ctrl_stub.c)
+CFILES += $(wildcard src/perm_srv_ta_config/perm_srv_ta_config.c)
+CFILES += $(wildcard src/perm_srv_elf_verify/perm_srv_elf_verify_cmd.c)
+CFILES += $(wildcard src/perm_srv_cms_crl/perm_srv_cms_crl_storage_stub.c)
+CFILES += $(wildcard src/perm_srv_ta_cert/perm_srv_ta_cert_nodyn_import.c)
+CFILES += $(wildcard src/perm_srv_ta_cert/perm_srv_ta_cert.c)
+ifeq ($(CONFIG_OH_LOAD_KEY),y)
+CFILES += $(wildcard src/perm_srv_ta_cert/perm_srv_ta_cert_nodate_check.c)
+else
+CFILES += $(wildcard src/perm_srv_ta_cert/perm_srv_ta_cert_date_check.c)
+endif
+CFILES += $(wildcard src/permission_config/permission_config.c)
+CFILES += $(wildcard src/pub_key/pub_key_nonsharemem.c)
+CFILES += $(wildcard src/pub_key/pub_key_stub.c)
+
+ifneq ($(CONFIG_DISABLE_PERM_STORAGE),y)
+CFILES += $(wildcard src/file_op/perm_srv_file_op.c)
+CFILES += $(wildcard src/file_op/handle_file_op.c)
+CFILES += $(wildcard src/file_op/handle_rpmb_sfs_file_op.c)
+else
+CFILES += $(wildcard src/file_op/perm_srv_no_file_op.c)
+endif
 
 # these libs are for elf verify
 LIBS += elf_verify${TARG} \
@@ -48,12 +72,21 @@ inc-flags += -I$(K_SYSLIB)/libmmgr/include
 inc-flags += -I$(K_SYSLIB)/libac/include
 inc-flags += -I$(K_SYSLIB)/libipc/include
 inc-flags += -I$(SYSLIB)/libelf_verify/include
+inc-flags += -I$(SYSLIB)/libelf_verify/src
 inc-flags += -I$(TEELIB)/libpermission_service/src
 inc-flags += -I$(SYSLIB)/libelf_verify_key/src/
 inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 inc-flags += -I$(SYSLIB)/libdynconfmgr/include/
 inc-flags += -I$(SYSLIB)/libdynconfbuilder/include/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/permission_config/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_ta_ctrl/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_ta_crl/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_ta_config/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_ta_cert/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_elf_verify/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_cms_crl/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/file_op/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/auth/tee_auth_sign_rsa.h
 inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
