@@ -12,9 +12,6 @@
 #ifndef __TEST_TCF_CMDID_H__
 #define __TEST_TCF_CMDID_H__
 
-#include <base_cmdid.h>
-#include <test_defines.h>
-
 typedef enum {
     CMD_TEE_GetPropertyAsString = 0,
     CMD_TEE_GetPropertyAsBool,
@@ -43,8 +40,6 @@ typedef enum {
     CMD_TEE_CloseTASession,
     CMD_TEE_Panic,
 } TCFCmdId;
-
-#define GET_TCF_CMDID(inner) GET_CMD_ID(BASEID_TCF, inner)
 
 #define INPUT_ISNULL 1
 #define OUTPUT_ISNULL 2

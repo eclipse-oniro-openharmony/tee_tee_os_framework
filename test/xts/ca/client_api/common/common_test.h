@@ -13,7 +13,6 @@
 #ifndef __COMMON_TEST_H__
 #define __COMMON_TEST_H__
 
-#include <base_cmdid.h>
 #include <stdint.h>
 #include <tee_client_type.h>
 
@@ -24,9 +23,9 @@ using namespace std;
 
 #define TEST_STR_LEN 256
 #define TEST_SIZE512 512
-#define SIZE16k 16 * 1024
-// now not support 4,so 4 is invalid
-#define TEEC_MEM_INVALID 4
+#define SIZE16k (16) * (1024)
+// now not support 9999,so 9999 is invalid
+#define TEEC_MEM_INVALID 9999
 #define OFFSET100 100
 #define OFFSET200 200
 #define OFFSET300 300

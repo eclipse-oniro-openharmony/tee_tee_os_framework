@@ -9,9 +9,8 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
-#include <base_cmdid.h>
-#include <test_defines.h>
+#ifndef __TEST_DRV_CMDID_H__
+#define __TEST_DRV_CMDID_H__
 
 typedef enum {
     DRVTEST_COMMAND_DRVVIRTTOPHYS = 1,
@@ -19,4 +18,4 @@ typedef enum {
     DRVTEST_COMMAND_COPYTOCLIENT,
 } DrvCmdId;
 
-#define GET_DRV_CMDID(inner) GET_CMD_ID(BASEID_DRVTEST, inner)
+#endif

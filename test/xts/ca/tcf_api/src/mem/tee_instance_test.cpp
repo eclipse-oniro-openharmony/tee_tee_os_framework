@@ -33,11 +33,11 @@ TEE_TEST(TCF2Test, TEE_Set_And_GetInstanceData_With_Success, Function | MediumTe
     uint32_t caseId = 0;
     uint32_t outLen = sizeof(outBuf);
 
-    ret = Invoke_SetInstanceData(GetSession(), GET_TCF_CMDID(CMD_TEE_SetInstanceData), inBuf, caseId, &origin);
+    ret = Invoke_SetInstanceData(GetSession(), CMD_TEE_SetInstanceData, inBuf, caseId, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    ret = Invoke_GetInstanceData(GetSession(), GET_TCF_CMDID(CMD_TEE_GetInstanceData), outBuf, &outLen, &origin);
+    ret = Invoke_GetInstanceData(GetSession(), CMD_TEE_GetInstanceData, outBuf, &outLen, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_STREQ(inBuf, outBuf);
@@ -58,11 +58,11 @@ TEE_TEST(TCF2Test, TEE_Set_And_GetInstanceData_With_InstanceDataIsNull, Function
     uint32_t caseId = INPUT_ISNULL;
     uint32_t outLen = sizeof(outBuf);
 
-    ret = Invoke_SetInstanceData(GetSession(), GET_TCF_CMDID(CMD_TEE_SetInstanceData), inBuf, caseId, &origin);
+    ret = Invoke_SetInstanceData(GetSession(), CMD_TEE_SetInstanceData, inBuf, caseId, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    ret = Invoke_GetInstanceData(GetSession(), GET_TCF_CMDID(CMD_TEE_GetInstanceData), outBuf, &outLen, &origin);
+    ret = Invoke_GetInstanceData(GetSession(), CMD_TEE_GetInstanceData, outBuf, &outLen, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_GENERIC);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -82,11 +82,11 @@ TEE_TEST(TCF2Test, TEE_Set_And_GetInstanceData_With_GetSizeTooShort, Function | 
     uint32_t caseId = 0;
     uint32_t outLen = strlen(inBuf) - 1;
 
-    ret = Invoke_SetInstanceData(GetSession(), GET_TCF_CMDID(CMD_TEE_SetInstanceData), inBuf, caseId, &origin);
+    ret = Invoke_SetInstanceData(GetSession(), CMD_TEE_SetInstanceData, inBuf, caseId, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    ret = Invoke_GetInstanceData(GetSession(), GET_TCF_CMDID(CMD_TEE_GetInstanceData), outBuf, &outLen, &origin);
+    ret = Invoke_GetInstanceData(GetSession(), CMD_TEE_GetInstanceData, outBuf, &outLen, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_SHORT_BUFFER);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(outLen, strlen(inBuf) + 1);

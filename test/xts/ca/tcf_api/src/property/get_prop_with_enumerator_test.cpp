@@ -36,94 +36,92 @@ struct intMapping {
 
 struct unIntMapping unIntMap[] = {
     // bool
-    { (char*)GPD_TA_INSTANCEKEEPALIVE, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_CURRENT_TA,
+    { (char*)GPD_TA_INSTANCEKEEPALIVE, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_CURRENT_TA,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
-    { (char*)GPD_TA_MULTISESSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_CURRENT_TA,
+    { (char*)GPD_TA_MULTISESSION, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_CURRENT_TA,
       (char*)VALUE_PREDEFINED_BOOLEAN, sizeof(VALUE_PREDEFINED_BOOLEAN) },
-    { (char*)GPD_TA_SINGLEINSTANCE, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_CURRENT_TA,
+    { (char*)GPD_TA_SINGLEINSTANCE, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_CURRENT_TA,
       (char*)VALUE_PREDEFINED_BOOLEAN, sizeof(VALUE_PREDEFINED_BOOLEAN) },
-    { (char*)GPD_TEE_CRYPTOGRAPHY_ECC, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_IMPLEMENTATION,
+    { (char*)GPD_TEE_CRYPTOGRAPHY_ECC, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_IMPLEMENTATION,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
-    { (char*)GPD_TEE_CRYPTOGRAPHY_NIST, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_IMPLEMENTATION,
+    { (char*)GPD_TEE_CRYPTOGRAPHY_NIST, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_IMPLEMENTATION,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
-    { (char*)GPD_TEE_CRYPTOGRAPHY_BSI_R, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_IMPLEMENTATION,
+    { (char*)GPD_TEE_CRYPTOGRAPHY_BSI_R, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_IMPLEMENTATION,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
-    { (char*)GPD_TEE_CRYPTOGRAPHY_BSI_T, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_IMPLEMENTATION,
+    { (char*)GPD_TEE_CRYPTOGRAPHY_BSI_T, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_IMPLEMENTATION,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
-    { (char*)GPD_TEE_CRYPTOGRAPHY_IETF, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_IMPLEMENTATION,
+    { (char*)GPD_TEE_CRYPTOGRAPHY_IETF, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_IMPLEMENTATION,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
-    { (char*)GPD_TEE_CRYPTOGRAPHY_OCTA, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), TEE_PROPSET_IMPLEMENTATION,
+    { (char*)GPD_TEE_CRYPTOGRAPHY_OCTA, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_IMPLEMENTATION,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
 
     // binaryblock
-    { (char*)SMC_TA_TESTBINARYBLOCK, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock), TEE_PROPSET_CURRENT_TA,
-      (char*)VALUE_PREDEFINED_BINARY_BLOCK, sizeof(VALUE_PREDEFINED_BINARY_BLOCK) },
-    { (char*)SMC_TA_TESTBINARYBLOCK, GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock), TEE_PROPSET_CURRENT_TA,
+    { (char*)SMC_TA_TESTBINARYBLOCK, CMD_TEE_GetPropertyAsBinaryBlock, TEE_PROPSET_CURRENT_TA,
       (char*)VALUE_PREDEFINED_BINARY_BLOCK, sizeof(VALUE_PREDEFINED_BINARY_BLOCK) },
 
     // uuid
-    { (char*)GPD_TA_APPID, GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID), TEE_PROPSET_CURRENT_TA, NULL, 0 },
+    { (char*)GPD_TA_APPID, CMD_TEE_GetPropertyAsUUID, TEE_PROPSET_CURRENT_TA, NULL, 0 },
     // do not test GPD_TEE_DEVICEID
-    { (char*)GPD_TEE_DEVICEID, GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID), TEE_PROPSET_IMPLEMENTATION, NULL, 0 },
+    { (char*)GPD_TEE_DEVICEID, CMD_TEE_GetPropertyAsUUID, TEE_PROPSET_IMPLEMENTATION, NULL, 0 },
 
     // string
     // this only test get uuid as string
-    { (char*)GPD_TA_APPID, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TA_APPID, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_CURRENT_TA, (char*)VALUE_PREDEFINED_UUID, BIG_SIZE },
-    { (char*)GPD_CLIENT_IDENTITY, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_CLIENT_IDENTITY, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_CURRENT_CLIENT, (char*)VALUE_PREDEFINED_CLIENT_IDENTITY, BIG_SIZE },
-    { (char*)GPD_TA_VERSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TA_VERSION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_CURRENT_TA, (char*)VALUE_PREDEFINED_TA_VERSION, BIG_SIZE },
-    { (char*)GPD_TA_DESCRIPTION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TA_DESCRIPTION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_CURRENT_TA, (char*)VALUE_PREDEFINED_TA_DESCRIPTION, BIG_SIZE },
-    { (char*)GPD_TEE_APIVERSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_APIVERSION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_API_VERSION, BIG_SIZE },
-    { (char*)GPD_TEE_DESCRIPTION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_DESCRIPTION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_BUILD_VER, BIG_SIZE },
-    { (char*)GPD_TEE_TRUSTEDOS_IMP_VERSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_TRUSTEDOS_IMP_VERSION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_IMP_VERSION, BIG_SIZE },
-    { (char*)GPD_TEE_TRUSTEDOS_IMP_BINARYVERSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_TRUSTEDOS_IMP_BINARYVERSION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_IMP_VERSION, BIG_SIZE },
-    { (char*)GPD_TEE_FIRMWARE_IMP_VERSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_FIRMWARE_IMP_VERSION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_FIRMWARE_IMP_VERSION, BIG_SIZE },
-    { (char*)GPD_TEE_FIRMWARE_IMP_BINARYVERSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_FIRMWARE_IMP_BINARYVERSION, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_FIRMWARE_IMP_VERSION, BIG_SIZE },
-    { (char*)GPD_TEE_TRUSTEDOS_MANUFACTURER, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_TRUSTEDOS_MANUFACTURER, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_MANUFACTURER, BIG_SIZE },
-    { (char*)GPD_TEE_FIRMWARE_MANUFACTURER, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_FIRMWARE_MANUFACTURER, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_FIRMWARE_MANUFACTURER, BIG_SIZE },
-    { (char*)GPD_TEE_DEVICEID, GET_TCF_CMDID(CMD_TEE_GetPropertyAsString),
+    { (char*)GPD_TEE_DEVICEID, CMD_TEE_GetPropertyAsString,
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_FIRMWARE_MANUFACTURER, BIG_SIZE },
 };
 
 struct intMapping intMap[] = {
     // int32
-    { (char*)GPD_TA_DATASIZE, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TA_DATASIZE, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_CURRENT_TA, VALUE_PREDEFINED_DATASIZE },
-    { (char*)GPD_TA_STACKSIZE, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TA_STACKSIZE, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_CURRENT_TA, VALUE_PREDEFINED_STACKSIZE },
-    { (char*)GPD_TA_ENDIAN, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TA_ENDIAN, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_CURRENT_TA, 0 },
-    { (char*)GPD_CLIENT_ENDIAN, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_CLIENT_ENDIAN, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_CURRENT_CLIENT, VALUE_PREDEFINED_CLIENT_ENDIAN },
-    { (char*)GPD_TEE_INTERNALCORE_VERSION, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_INTERNALCORE_VERSION, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, TEE_INTERNAL_CORE_VERSION },
-    { (char*)GPD_TEE_SYSTEM_TIME_PROTECTIONLEVEL, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_SYSTEM_TIME_PROTECTIONLEVEL, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, TEE_TIME_PROTECT_LEVEL },
-    { (char*)GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, TA_TIME_PROTECT_LEVEL },
-    { (char*)GPD_TEE_ARITH_MAXBIGINTSIZE, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_ARITH_MAXBIGINTSIZE, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, MAX_BIG_INT_SIZE },
-    { (char*)GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, 0 },
-    { (char*)GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, 0 },
-    { (char*)GPD_TEE_EVENT_MAXSOURCES, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_EVENT_MAXSOURCES, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, 0 },
-    { (char*)GPD_TEE_API_LEVEL, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32),
+    { (char*)GPD_TEE_API_LEVEL, CMD_TEE_GetPropertyAsU32,
     TEE_PROPSET_IMPLEMENTATION, TEE_MAX_API_LEVEL_CONFIG },
     // int64
-    { (char*)SMC_TA_TESTU64, GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64),
+    { (char*)SMC_TA_TESTU64, CMD_TEE_GetPropertyAsU64,
       TEE_PROPSET_CURRENT_TA, VALUE_PREDEFINED_U64 },
 };
 
@@ -141,7 +139,7 @@ TEEC_Result GetPropertyFromUnIntMap(TEEC_Context *context, TEEC_Session *session
                 TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! result = 0x%x\n", val->inBuffer, result);
                 return result;
             }
-            if (val->cmd != GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID)) {
+            if (val->cmd != CMD_TEE_GetPropertyAsUUID) {
                 if (val->outBufferLen != unIntMap[i].expectLen ||
                     (strncmp(val->outBuffer, unIntMap[i].expectResult, unIntMap[i].expectLen) != 0)) {
                     TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! outlen=0x%x, expect outlen=0x%x\n",
@@ -170,7 +168,7 @@ TEEC_Result GetPropertyFromIntMap(TEEC_Context *context, TEEC_Session *session, 
                 TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! result = 0x%x\n", val->inBuffer, result);
                 return result;
             }
-            if (val->cmd == GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32)) {
+            if (val->cmd == CMD_TEE_GetPropertyAsU32) {
                 if (atoi(val->outBuffer) != (uint32_t)intMap[i].expectResult) {
                     TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! out=0x%x, expect out=0x%x\n",
                         val->inBuffer, atoi(val->outBuffer), (uint32_t)intMap[i].expectResult);
@@ -178,7 +176,7 @@ TEEC_Result GetPropertyFromIntMap(TEEC_Context *context, TEEC_Session *session, 
                 }
             } else {
                 if (atoll(val->outBuffer) != intMap[i].expectResult) {
-                    TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! out=0x%llx, expect out=0x%llx\n",
+                    TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! out=0x%llx, expect out=0x%lu\n",
                         val->inBuffer, atoll(val->outBuffer), intMap[i].expectResult);
                     return TEEC_ERROR_GENERIC;
                 }
@@ -202,12 +200,12 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_TEE_PROPSET_CURRENT_TA, Functio
     int rc, count = 0, findFlag = 0;
 
     // start PropertyEnumerator this api has no return value
-    value.cmd = GET_TCF_CMDID(CMD_TEE_StartPropertyEnumerator);
+    value.cmd = CMD_TEE_StartPropertyEnumerator;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 
     do {
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+        value.cmd = CMD_TEE_GetPropertyNameEnumerator;
         value.outBufferLen = BIG_SIZE;
         result = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         if ((count != 0) && (result == TEEC_ERROR_ITEM_NOT_FOUND))
@@ -232,7 +230,7 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_TEE_PROPSET_CURRENT_TA, Functio
             ASSERT_FALSE(1);
         }
 
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator);
+        value.cmd = CMD_TEE_GetNextPropertyEnumerator;
         Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         findFlag = 0;
     } while (result != TEEC_ERROR_ITEM_NOT_FOUND);
@@ -251,12 +249,12 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_TEE_PROPSET_CURRENT_CLIENT, Fun
     int rc, count = 0, findFlag = 0;
 
     // start PropertyEnumerator this api has no return value
-    value.cmd = GET_TCF_CMDID(CMD_TEE_StartPropertyEnumerator);
+    value.cmd = CMD_TEE_StartPropertyEnumerator;
     value.propSet = TEE_PROPSET_CURRENT_CLIENT;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 
     do {
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+        value.cmd = CMD_TEE_GetPropertyNameEnumerator;
         value.outBufferLen = BIG_SIZE;
         result = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         if ((count != 0) && (result == TEEC_ERROR_ITEM_NOT_FOUND))
@@ -281,7 +279,7 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_TEE_PROPSET_CURRENT_CLIENT, Fun
             ASSERT_FALSE(1);
         }
 
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator);
+        value.cmd = CMD_TEE_GetNextPropertyEnumerator;
         Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         findFlag = 0;
     } while (result != TEEC_ERROR_ITEM_NOT_FOUND);
@@ -300,12 +298,12 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_TEE_PROPSET_IMPLEMENTATION, Fun
     int rc, count = 0, findFlag = 0;
 
     // start PropertyEnumerator this api has no return value
-    value.cmd = GET_TCF_CMDID(CMD_TEE_StartPropertyEnumerator);
+    value.cmd = CMD_TEE_StartPropertyEnumerator;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 
     do {
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+        value.cmd = CMD_TEE_GetPropertyNameEnumerator;
         value.outBufferLen = BIG_SIZE;
         result = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         if ((count != 0) && (result == TEEC_ERROR_ITEM_NOT_FOUND))
@@ -330,7 +328,7 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_TEE_PROPSET_IMPLEMENTATION, Fun
             ASSERT_FALSE(1);
         }
 
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator);
+        value.cmd = CMD_TEE_GetNextPropertyEnumerator;
         Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         findFlag = 0;
     } while (result != TEEC_ERROR_ITEM_NOT_FOUND);
@@ -349,12 +347,12 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_WithResetEnum, Function | Mediu
     int rc, count = 0, findFlag = 0;
 
     // start PropertyEnumerator this api has no return value
-    value.cmd = GET_TCF_CMDID(CMD_TEE_StartPropertyEnumerator);
+    value.cmd = CMD_TEE_StartPropertyEnumerator;
     value.propSet = TEE_PROPSET_CURRENT_CLIENT;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 
     do {
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+        value.cmd = CMD_TEE_GetPropertyNameEnumerator;
         value.outBufferLen = BIG_SIZE;
         result = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         if ((count != 0) && (result == TEEC_ERROR_ITEM_NOT_FOUND))
@@ -379,18 +377,18 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetProperty_WithEnum_WithResetEnum, Function | Mediu
             ASSERT_FALSE(1);
         }
 
-        value.cmd = GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator);
+        value.cmd = CMD_TEE_GetNextPropertyEnumerator;
         Invoke_Operate_PropertyEnumerator(GetSession(), &value);
         findFlag = 0;
     } while (result != TEEC_ERROR_ITEM_NOT_FOUND);
 
     // reset PropertyEnumerator this api has no return value
-    value.cmd = GET_TCF_CMDID(CMD_TEE_ResetPropertyEnumerator);
+    value.cmd = CMD_TEE_ResetPropertyEnumerator;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 
     // get PropertyEnumerator after reset
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+    value.cmd = CMD_TEE_GetPropertyNameEnumerator;
     value.outBufferLen = BIG_SIZE;
     result = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
     ASSERT_EQ(result, TEEC_ERROR_ITEM_NOT_FOUND);
@@ -406,7 +404,7 @@ TEE_TEST(TCF1Test, TEE_AllocatePropertyEnumerator_EnumIsNull, Function | MediumT
 {
     TEEC_Result ret;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_AllocatePropertyEnumerator);
+    value.cmd = CMD_TEE_AllocatePropertyEnumerator;
     value.caseId = OUTPUT_ISNULL;
     ret = Invoke_AllocatePropertyEnumerator(GetSession(), &value);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
@@ -423,7 +421,7 @@ TEE_TEST(TCF1Test, TEE_AllocatePropertyEnumerator_MaxEnum, Function | MediumTest
 {
     TEEC_Result ret;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_AllocatePropertyEnumerator);
+    value.cmd = CMD_TEE_AllocatePropertyEnumerator;
 
     for (int i = 1; i <= MAX_ENUMERATOR; i++) {
         ret = Invoke_AllocatePropertyEnumerator(GetSession(), &value);
@@ -439,10 +437,10 @@ TEE_TEST(TCF1Test, TEE_AllocatePropertyEnumerator_MaxEnum, Function | MediumTest
 
     // intend to free enumerator which NO is MAX_ENUMERATOR
     value.enumerator = MAX_ENUMERATOR;
-    value.cmd = GET_TCF_CMDID(CMD_TEE_FreePropertyEnumerator);
+    value.cmd = CMD_TEE_FreePropertyEnumerator;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 
-    value.cmd = GET_TCF_CMDID(CMD_TEE_AllocatePropertyEnumerator);
+    value.cmd = CMD_TEE_AllocatePropertyEnumerator;
     ret = Invoke_AllocatePropertyEnumerator(GetSession(), &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
@@ -459,7 +457,7 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetPropertyName_BufferIsNull, Function | MediumTest 
     TEEC_Result ret;
 
     // get Property from Enumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+    value.cmd = CMD_TEE_GetPropertyNameEnumerator;
     value.caseId = OUTPUT_ISNULL;
     value.outBufferLen = BIG_SIZE;
     ret = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
@@ -477,7 +475,7 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetPropertyName_BufferSizeIsNull, Function | MediumT
     TEEC_Result ret;
 
     // get Property from Enumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+    value.cmd = CMD_TEE_GetPropertyNameEnumerator;
     value.caseId = OUTPUTBUFFERSIZE_ISNULL;
     value.outBufferLen = BIG_SIZE;
     ret = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
@@ -495,12 +493,12 @@ TEE_TEST(TCF1ENUM_Test, TEE_GetPropertyName_BufferSizeTooShort, Function | Mediu
     TEEC_Result ret;
 
     // start PropertyEnumerator this api has no return value
-    value.cmd = GET_TCF_CMDID(CMD_TEE_StartPropertyEnumerator);
+    value.cmd = CMD_TEE_StartPropertyEnumerator;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 
     // get Property from Enumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+    value.cmd = CMD_TEE_GetPropertyNameEnumerator;
     value.caseId = OUTPUTBUFFERSIZE_TOOSHORT;
     value.outBufferLen = BIG_SIZE;
     ret = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
@@ -519,7 +517,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyName_EnumeratorNotAlloc, Function | MediumTest
     TestData value = { 0 };
 
     // get Property from Enumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+    value.cmd = CMD_TEE_GetPropertyNameEnumerator;
     value.enumerator = ENUMERATOR1;
     value.outBufferLen = BIG_SIZE;
     ret = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
@@ -538,20 +536,20 @@ TEE_TEST(TCF1Test, TEE_GetPropertyName_EnumeratorNotStart, Function | MediumTest
     TestData value = { 0 };
 
     // alloc PropertyEnumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_AllocatePropertyEnumerator);
+    value.cmd = CMD_TEE_AllocatePropertyEnumerator;
     ret = Invoke_AllocatePropertyEnumerator(GetSession(), &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_EQ(value.enumerator, ENUMERATOR1);
 
     // get Property from Enumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator);
+    value.cmd = CMD_TEE_GetPropertyNameEnumerator;
     value.outBufferLen = BIG_SIZE;
     ret = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
     EXPECT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
     EXPECT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    value.cmd = GET_TCF_CMDID(CMD_TEE_FreePropertyEnumerator);
+    value.cmd = CMD_TEE_FreePropertyEnumerator;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 }
 
@@ -566,7 +564,7 @@ TEE_TEST(TCF1Test, TEE_GetNextProperty_EnumeratorNotAlloc, Function | MediumTest
     TestData value = { 0 };
 
     // get next Property from Enumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator);
+    value.cmd = CMD_TEE_GetNextPropertyEnumerator;
     value.enumerator = ENUMERATOR1;
     value.outBufferLen = BIG_SIZE;
     ret = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
@@ -585,19 +583,19 @@ TEE_TEST(TCF1Test, TEE_GetNextProperty_EnumeratorNotStart, Function | MediumTest
     TestData value = { 0 };
 
     // alloc PropertyEnumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_AllocatePropertyEnumerator);
+    value.cmd = CMD_TEE_AllocatePropertyEnumerator;
     ret = Invoke_AllocatePropertyEnumerator(GetSession(), &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_EQ(value.enumerator, ENUMERATOR1);
 
     // get next Property from Enumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator);
+    value.cmd = CMD_TEE_GetNextPropertyEnumerator;
     value.outBufferLen = BIG_SIZE;
     ret = Invoke_Operate_PropertyEnumerator(GetSession(), &value);
     EXPECT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
     EXPECT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    value.cmd = GET_TCF_CMDID(CMD_TEE_FreePropertyEnumerator);
+    value.cmd = CMD_TEE_FreePropertyEnumerator;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 }

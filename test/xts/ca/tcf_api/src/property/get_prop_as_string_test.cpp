@@ -29,7 +29,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TA_APPID, Function | 
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));
     ASSERT_EQ(rc, 0);
@@ -52,7 +52,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TA_SERVICENAME, Funct
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_SERVICENAME, sizeof(GPD_TA_SERVICENAME));
     ASSERT_EQ(rc, 0);
@@ -73,7 +73,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_CLIENT_IDENTITY, Func
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_CLIENT;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_CLIENT_IDENTITY, sizeof(GPD_CLIENT_IDENTITY));
     ASSERT_EQ(rc, 0);
@@ -96,7 +96,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_CLIENT_IDENTITY_Props
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_CLIENT_IDENTITY, sizeof(GPD_CLIENT_IDENTITY));
     ASSERT_EQ(rc, 0);
@@ -117,7 +117,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TA_VERSION, Function 
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_VERSION, sizeof(GPD_TA_VERSION));
     ASSERT_EQ(rc, 0);
@@ -140,7 +140,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TA_DESCRIPTION, Funct
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DESCRIPTION, sizeof(GPD_TA_DESCRIPTION));
     ASSERT_EQ(rc, 0);
@@ -163,7 +163,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_APIVERSION, Funct
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_APIVERSION, sizeof(GPD_TEE_APIVERSION));
     ASSERT_EQ(rc, 0);
@@ -186,7 +186,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_DESCRIPTION, Func
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_DESCRIPTION, sizeof(GPD_TEE_DESCRIPTION));
     ASSERT_EQ(rc, 0);
@@ -209,7 +209,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_TRUSTEDOS_IMP_VER
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_TRUSTEDOS_IMP_VERSION, sizeof(GPD_TEE_TRUSTEDOS_IMP_VERSION));
     ASSERT_EQ(rc, 0);
@@ -233,7 +233,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_TRUSTEDOS_IMP_BIN
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_TRUSTEDOS_IMP_BINARYVERSION,
         sizeof(GPD_TEE_TRUSTEDOS_IMP_BINARYVERSION));
@@ -245,7 +245,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_TRUSTEDOS_IMP_BIN
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_STREQ(value.outBuffer, TEE_IMP_VERSION);
 }
-
+#if 0
 /**
  * @testcase.name      : TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_VERSION
  * @testcase.desc      : test TA call TEE_GetPropertyAsString to get value of GPD_TEE_FIRMWARE_IMP_VERSION
@@ -257,7 +257,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_VERS
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_FIRMWARE_IMP_VERSION, sizeof(GPD_TEE_FIRMWARE_IMP_VERSION));
     ASSERT_EQ(rc, 0);
@@ -280,7 +280,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_BINA
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_FIRMWARE_IMP_BINARYVERSION, sizeof(GPD_TEE_FIRMWARE_IMP_BINARYVERSION));
     ASSERT_EQ(rc, 0);
@@ -291,7 +291,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_BINA
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_STREQ(value.outBuffer, TEE_FIRMWARE_IMP_VERSION);
 }
-
+#endif
 /**
  * @testcase.name      : TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_TRUSTEDOS_MANUFACTURER
  * @testcase.desc      : test TA call TEE_GetPropertyAsString to get value of GPD_TEE_TRUSTEDOS_MANUFACTURER
@@ -303,7 +303,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_TRUSTEDOS_MANUFAC
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_TRUSTEDOS_MANUFACTURER, sizeof(GPD_TEE_TRUSTEDOS_MANUFACTURER));
     ASSERT_EQ(rc, 0);
@@ -326,7 +326,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_MANUFACT
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_FIRMWARE_MANUFACTURER, sizeof(GPD_TEE_FIRMWARE_MANUFACTURER));
     ASSERT_EQ(rc, 0);
@@ -349,7 +349,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_PropsetIsZero, Function |
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_ZERO;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));
     ASSERT_EQ(rc, 0);
@@ -369,7 +369,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_NameIsNULL, Function | Me
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.caseId = INPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
@@ -387,7 +387,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_NameIsZero, Function | Me
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
     ASSERT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
@@ -405,7 +405,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_ValueBufferIsNULL, Functi
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.caseId = OUTPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));
@@ -427,7 +427,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_ValueBufferSizeIsNULL, Fu
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.caseId = OUTPUTBUFFERSIZE_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));
@@ -449,7 +449,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_ValueBufferSizeIsZero, Fu
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.caseId = OUTPUTBUFFERSIZE_ISZERO;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));
@@ -472,7 +472,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_NameNotFound, Function | 
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, PROPERTY_NAME_UNKNOWN, sizeof(PROPERTY_NAME_UNKNOWN));
     ASSERT_EQ(rc, 0);
@@ -494,7 +494,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_BufferTooShort, Function 
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsString);
+    value.cmd = CMD_TEE_GetPropertyAsString;
     value.caseId = OUTPUTBUFFERSIZE_TOOSHORT;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_APPID, sizeof(GPD_TA_APPID));

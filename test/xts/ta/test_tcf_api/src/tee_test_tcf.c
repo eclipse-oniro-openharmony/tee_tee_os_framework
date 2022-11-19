@@ -61,7 +61,7 @@ char *g_teeInout = "the param is TEEMEM_INOUT";
 uint32_t g_teeOutputLen;
 uint32_t g_teeInoutLen;
 
-TEE_Result CmdTEEGetPropertyAsString(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEGetPropertyAsString(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
@@ -111,7 +111,7 @@ TEE_Result CmdTEEGetPropertyAsString(uint32_t nParamTypes, TEE_Param pParams[4])
     return cmdResult;
 }
 
-TEE_Result CmdTEEGetPropertyAsBool(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEGetPropertyAsBool(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
@@ -156,7 +156,7 @@ TEE_Result CmdTEEGetPropertyAsBool(uint32_t nParamTypes, TEE_Param pParams[4])
     return cmdResult;
 }
 
-TEE_Result CmdTEEGetPropertyAsU32(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEGetPropertyAsU32(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
@@ -191,14 +191,14 @@ TEE_Result CmdTEEGetPropertyAsU32(uint32_t nParamTypes, TEE_Param pParams[4])
             break;
     }
 
-    sprintf(outStr, "%d", nIntResult);
+    (void)snprintf_s(outStr, MAXLEN_U32, MAXLEN_U32 - 1, "%lu", nIntResult);
     TEE_MemMove(pParams[2].memref.buffer, outStr, strlen(outStr) + 1);
     pParams[2].memref.size = strlen(outStr) + 1;
 
     return cmdResult;
 }
 
-TEE_Result CmdTEEGetPropertyAsU64(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEGetPropertyAsU64(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
@@ -233,14 +233,14 @@ TEE_Result CmdTEEGetPropertyAsU64(uint32_t nParamTypes, TEE_Param pParams[4])
             break;
     }
 
-    sprintf(outStr, "%lld", nIntResult);
+    (void)snprintf_s(outStr, MAXLEN_U64, MAXLEN_U64 - 1, "%lu", nIntResult);
     TEE_MemMove(pParams[2].memref.buffer, outStr, strlen(outStr) + 1);
     pParams[2].memref.size = strlen(outStr) + 1;
 
     return cmdResult;
 }
 
-TEE_Result CmdTEEGetPropertyAsBinaryBlock(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEGetPropertyAsBinaryBlock(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
@@ -286,7 +286,7 @@ TEE_Result CmdTEEGetPropertyAsBinaryBlock(uint32_t nParamTypes, TEE_Param pParam
     return cmdResult;
 }
 
-TEE_Result CmdTEEGetPropertyAsUUID(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEGetPropertyAsUUID(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_PropSetHandle nPropSet;
     char *pPropName = NULL;
@@ -337,7 +337,7 @@ TEE_Result CmdTEEGetPropertyAsUUID(uint32_t nParamTypes, TEE_Param pParams[4])
     return cmdResult;
 }
 
-TEE_Result CmdTEEAllocatePropertyEnumerator(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEAllocatePropertyEnumerator(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_Result cmdResult;
     TEE_PropSetHandle nPropSet;
@@ -361,7 +361,7 @@ TEE_Result CmdTEEAllocatePropertyEnumerator(uint32_t nParamTypes, TEE_Param pPar
     return cmdResult;
 }
 
-TEE_Result CmdTEEStartPropertyEnumerator(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEStartPropertyEnumerator(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     if ((TEE_PARAM_TYPE_GET(nParamTypes, 0) != TEE_PARAM_TYPE_VALUE_INPUT) ||
         (TEE_PARAM_TYPE_GET(nParamTypes, 1) != TEE_PARAM_TYPE_VALUE_INPUT)) {
@@ -374,7 +374,7 @@ TEE_Result CmdTEEStartPropertyEnumerator(uint32_t nParamTypes, TEE_Param pParams
     return TEE_SUCCESS;
 }
 
-TEE_Result CmdTEEEnumeratorOperate(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEEnumeratorOperate(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_Result cmdResult;
     TEE_PropSetHandle nPropSet;
@@ -389,15 +389,15 @@ TEE_Result CmdTEEEnumeratorOperate(uint32_t nParamTypes, TEE_Param pParams[4])
     cmd = pParams[0].value.b;
 
     switch (cmd) {
-        case GET_TCF_CMDID(CMD_TEE_FreePropertyEnumerator):
+        case CMD_TEE_FreePropertyEnumerator:
             TEE_FreePropertyEnumerator(nPropSet);
             tlogi("test TEE_FreePropertyEnumerator is finish!\n");
             return TEE_SUCCESS;
-        case GET_TCF_CMDID(CMD_TEE_ResetPropertyEnumerator):
+        case CMD_TEE_ResetPropertyEnumerator:
             TEE_ResetPropertyEnumerator(nPropSet);
             tlogi("test TEE_ResetPropertyEnumerator is finish!\n");
             return TEE_SUCCESS;
-        case GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator):
+        case CMD_TEE_GetNextPropertyEnumerator:
             cmdResult = TEE_GetNextProperty(nPropSet);
             break;
         default:
@@ -409,7 +409,7 @@ TEE_Result CmdTEEEnumeratorOperate(uint32_t nParamTypes, TEE_Param pParams[4])
     return cmdResult;
 }
 
-TEE_Result CmdTEEGetPropertyName(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEGetPropertyName(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_Result cmdResult;
     TEE_PropSetHandle nPropSet;
@@ -444,23 +444,23 @@ TEE_Result CmdTEEGetPropertyName(uint32_t nParamTypes, TEE_Param pParams[4])
     return cmdResult;
 }
 
-void getUUIDFromBuffer(TEE_UUID *pTargetUUID, char uuidvalue[16])
+static void getUUIDFromBuffer(TEE_UUID *pTargetUUID, char uuidvalue[16])
 {
-    (*pTargetUUID).timeLow = (uint32_t)(uuidvalue[0] << 24) + (uint32_t)(uuidvalue[1] << 16) +
+    pTargetUUID->timeLow = (uint32_t)(uuidvalue[0] << 24) + (uint32_t)(uuidvalue[1] << 16) +
         (uint32_t)(uuidvalue[2] << 8) + (uint32_t)(uuidvalue[3]);
-    (*pTargetUUID).timeMid = (uint32_t)(uuidvalue[4] << 8) + (uint32_t)(uuidvalue[5]);
-    (*pTargetUUID).timeHiAndVersion = (uint32_t)(uuidvalue[6] << 8) + (uint32_t)(uuidvalue[7]);
-    (*pTargetUUID).clockSeqAndNode[0] = (uint8_t)(uuidvalue[8]);
-    (*pTargetUUID).clockSeqAndNode[1] = (uint8_t)(uuidvalue[9]);
-    (*pTargetUUID).clockSeqAndNode[2] = (uint8_t)(uuidvalue[10]);
-    (*pTargetUUID).clockSeqAndNode[3] = (uint8_t)(uuidvalue[11]);
-    (*pTargetUUID).clockSeqAndNode[4] = (uint8_t)(uuidvalue[12]);
-    (*pTargetUUID).clockSeqAndNode[5] = (uint8_t)(uuidvalue[13]);
-    (*pTargetUUID).clockSeqAndNode[6] = (uint8_t)(uuidvalue[14]);
-    (*pTargetUUID).clockSeqAndNode[7] = (uint8_t)(uuidvalue[15]);
+    pTargetUUID->timeMid = (uint32_t)(uuidvalue[4] << 8) + (uint32_t)(uuidvalue[5]);
+    pTargetUUID->timeHiAndVersion = (uint32_t)(uuidvalue[6] << 8) + (uint32_t)(uuidvalue[7]);
+    pTargetUUID->clockSeqAndNode[0] = (uint8_t)(uuidvalue[8]);
+    pTargetUUID->clockSeqAndNode[1] = (uint8_t)(uuidvalue[9]);
+    pTargetUUID->clockSeqAndNode[2] = (uint8_t)(uuidvalue[10]);
+    pTargetUUID->clockSeqAndNode[3] = (uint8_t)(uuidvalue[11]);
+    pTargetUUID->clockSeqAndNode[4] = (uint8_t)(uuidvalue[12]);
+    pTargetUUID->clockSeqAndNode[5] = (uint8_t)(uuidvalue[13]);
+    pTargetUUID->clockSeqAndNode[6] = (uint8_t)(uuidvalue[14]);
+    pTargetUUID->clockSeqAndNode[7] = (uint8_t)(uuidvalue[15]);
 }
 
-TEE_Result CmdTEEOpenTASession(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEOpenTASession(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_UUID pTargetUUID;
     TEE_Param pTargetParams[4];
@@ -473,12 +473,12 @@ TEE_Result CmdTEEOpenTASession(uint32_t nParamTypes, TEE_Param pParams[4])
     if ((TEE_PARAM_TYPE_GET(nParamTypes, 0) != TEE_PARAM_TYPE_VALUE_INPUT) ||  /* Command to pass to the TA */
         (TEE_PARAM_TYPE_GET(nParamTypes, 1) != TEE_PARAM_TYPE_MEMREF_INPUT) || /* UUID in a buffer */
         (TEE_PARAM_TYPE_GET(nParamTypes, 2) != TEE_PARAM_TYPE_VALUE_OUTPUT)) { /* return origin of the OpenTASession */
-        tloge("%s: Bad expected parameter types", __func__);
+        tloge("%s: Bad expected parameter types\n", __func__);
         return TEE_ERROR_COMMUNICATION;
     }
 
     if (pParams[1].memref.size != 16) {
-        tloge("CmdProcessInvokeTAInvoke_simple: UUID size not correct");
+        tloge("CmdTEEOpenTASession: UUID size not correct\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -538,8 +538,8 @@ static TEE_Result TestTypeBuffer(uint32_t paramTypes, TEE_Param params[4])
                 tlogi("after modify,param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
                 break;
             case TEE_PARAM_TYPE_VALUE_INPUT:
-            case TEE_PARAM_TYPE_VALUE_OUTPUT:
             case TEE_PARAM_TYPE_VALUE_INOUT:
+            case TEE_PARAM_TYPE_VALUE_OUTPUT:
             case TEE_PARAM_TYPE_NONE:
                 break;
             default:
@@ -550,7 +550,7 @@ static TEE_Result TestTypeBuffer(uint32_t paramTypes, TEE_Param params[4])
     return ret;
 }
 
-TEE_Result CmdTEEMalloc(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEMalloc(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     size_t nSize;
     uint32_t nHint;
@@ -567,7 +567,6 @@ TEE_Result CmdTEEMalloc(uint32_t nParamTypes, TEE_Param pParams[4])
 
     tlogi("before TEE_Malloc nSize=%d, nHint=%d\n", nSize, nHint);
     pBuffer = (char *)TEE_Malloc(nSize, nHint);
-
     if (pBuffer == NULL) {
         return TEE_ERROR_OUT_OF_MEMORY;
     } else {
@@ -579,20 +578,11 @@ TEE_Result CmdTEEMalloc(uint32_t nParamTypes, TEE_Param pParams[4])
     }
 }
 
-TEE_Result CmdTEERealloc(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEERealloc(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     char *pBufferMalloc = NULL;
     char *pBufferRealloc = NULL;
-    uint32_t i;
     char buf[DEFAULT_BUFFER_SIZE] = { 0 };
-
-    if ((TEE_PARAM_TYPE_GET(nParamTypes, 0) != TEE_PARAM_TYPE_VALUE_INPUT) ||
-        (TEE_PARAM_TYPE_GET(nParamTypes, 1) != TEE_PARAM_TYPE_MEMREF_OUTPUT) ||
-        (TEE_PARAM_TYPE_GET(nParamTypes, 2) != TEE_PARAM_TYPE_VALUE_OUTPUT) ||
-        (TEE_PARAM_TYPE_GET(nParamTypes, 3) != TEE_PARAM_TYPE_VALUE_INPUT)) {
-        tloge("%s: Bad expected parameter types", __func__);
-        return TEE_ERROR_COMMUNICATION;
-    }
 
     size_t nOldSize = pParams[0].value.a;
     size_t nNewSize = pParams[0].value.b;
@@ -607,7 +597,7 @@ TEE_Result CmdTEERealloc(uint32_t nParamTypes, TEE_Param pParams[4])
     pBufferRealloc = (char *)TEE_Realloc(buf, 10000);
 
     if (caseId == BUFFER_IS_FREE)
-        TEE_Free((void *)pBufferMalloc); // free the allocated buffer
+        TEE_Free((void *)pBufferMalloc); // free the allocated  buffer
 
     if (caseId == INPUT_ISNULL)
         pBufferRealloc = (char *)TEE_Realloc(NULL, nNewSize);
@@ -616,34 +606,38 @@ TEE_Result CmdTEERealloc(uint32_t nParamTypes, TEE_Param pParams[4])
     else
         pBufferRealloc = (char *)TEE_Realloc((void *)pBufferMalloc, nNewSize);
 
-    if (pBufferRealloc == NULL) {
-        if (pBufferMalloc != NULL) {
-            for (i = 0; i < nOldSize; i++) {
-                if (pBufferMalloc[i] != (char)'A') { // checks that the data has not been changed after realloc
-                    tloge("%d th bytes of pBufferMalloc is not correct, it is %c\n", i + 1, pBufferMalloc[i]);
-                    TEE_Free((void *)pBufferMalloc); // free the allocated buffer
-                    return TEE_ERROR_GENERIC;
-                }
-            }
-            TEE_Free((void *)pBufferMalloc); // free the allocated buffer
-        }
+    if ((pBufferRealloc == NULL) && (pBufferMalloc == NULL)) {
         return TEE_ERROR_OUT_OF_MEMORY;
-    } else {
-        pParams[2].value.a = (uint32_t)pBufferMalloc;
+    }
+    if ((pBufferMalloc != NULL) && (pBufferRealloc == NULL)) {
+        for (uint32_t i = 0; i < nOldSize; i++) {
+            if (pBufferMalloc[i] != (char)'A') { // checks that the data has not been changed after realloc
+                tloge("%d th bytes of pBufferMalloc is not correct, it is %c\n", i + 1, pBufferMalloc[i]);
+                TEE_Free((void *)pBufferMalloc); // free the allocated buffer
+                return TEE_ERROR_GENERIC;
+            }
+        }
+        TEE_Free((void *)pBufferMalloc); // free the allocated buffer
+        return TEE_ERROR_OUT_OF_MEMORY;
+    }
+
+    if (pBufferRealloc != NULL) {
         pParams[2].value.b = (uint32_t)pBufferRealloc;
+        pParams[2].value.a = (uint32_t)pBufferMalloc;
         if (caseId == INPUT_ISNULL)
             TEE_MemMove(pParams[1].memref.buffer, pBufferMalloc, nOldSize);
         else
             TEE_MemMove(pParams[1].memref.buffer, pBufferRealloc, (nOldSize < nNewSize ? nOldSize : nNewSize));
 
         TEE_Free((void *)pBufferRealloc); // free the reallocated buffer
-        if (pBufferMalloc != NULL)
-            TEE_Free((void *)pBufferMalloc); // free the allocated buffer
-        return TEE_SUCCESS;
+        if (pBufferMalloc != NULL) {
+            TEE_Free((void *)pBufferMalloc);
+        }
     }
+    return TEE_SUCCESS;
 }
 
-TEE_Result CmdTEEPanic(uint32_t nParamTypes, TEE_Param pParams[4])
+static TEE_Result CmdTEEPanic(uint32_t nParamTypes, TEE_Param pParams[4])
 {
     TEE_Result panicCode;
 
@@ -673,6 +667,10 @@ TEE_Result TA_CreateEntryPoint(void)
         return ret;
     }
 
+    ret = AddCaller_TA_all();
+    if (ret != TEE_SUCCESS)
+        return ret;
+
     return TEE_SUCCESS;
 }
 
@@ -700,57 +698,57 @@ struct testFunc {
 };
 
 struct testFunc g_testTable[] = {
-    { GET_TCF_CMDID(CMD_TEE_GetPropertyAsString), CmdTEEGetPropertyAsString },
-    { GET_TCF_CMDID(CMD_TEE_GetPropertyAsBool), CmdTEEGetPropertyAsBool },
-    { GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32), CmdTEEGetPropertyAsU32 },
-    { GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64), CmdTEEGetPropertyAsU64 },
-    { GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock), CmdTEEGetPropertyAsBinaryBlock },
-    { GET_TCF_CMDID(CMD_TEE_GetPropertyAsUUID), CmdTEEGetPropertyAsUUID },
-    { GET_TCF_CMDID(CMD_TEE_AllocatePropertyEnumerator), CmdTEEAllocatePropertyEnumerator },
-    { GET_TCF_CMDID(CMD_TEE_StartPropertyEnumerator), CmdTEEStartPropertyEnumerator },
-    { GET_TCF_CMDID(CMD_TEE_FreePropertyEnumerator), CmdTEEEnumeratorOperate },
-    { GET_TCF_CMDID(CMD_TEE_ResetPropertyEnumerator), CmdTEEEnumeratorOperate },
-    { GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator), CmdTEEEnumeratorOperate },
-    { GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator), CmdTEEGetPropertyName },
-    { GET_TCF_CMDID(CMD_TEE_OpenTASession), CmdTEEOpenTASession },
-    { GET_COMM_CMDID(TEE_TEST_BUFFER), TestTypeBuffer },
-    { GET_TCF_CMDID(CMD_TEE_Malloc), CmdTEEMalloc },
-    { GET_TCF_CMDID(CMD_TEE_Realloc), CmdTEERealloc },
-    { GET_TCF_CMDID(CMD_TEE_Panic), CmdTEEPanic },
+    { CMD_TEE_GetPropertyAsString, CmdTEEGetPropertyAsString },
+    { CMD_TEE_GetPropertyAsBool, CmdTEEGetPropertyAsBool },
+    { CMD_TEE_GetPropertyAsU32, CmdTEEGetPropertyAsU32 },
+    { CMD_TEE_GetPropertyAsU64, CmdTEEGetPropertyAsU64 },
+    { CMD_TEE_GetPropertyAsBinaryBlock, CmdTEEGetPropertyAsBinaryBlock },
+    { CMD_TEE_GetPropertyAsUUID, CmdTEEGetPropertyAsUUID },
+    { CMD_TEE_AllocatePropertyEnumerator, CmdTEEAllocatePropertyEnumerator },
+    { CMD_TEE_StartPropertyEnumerator, CmdTEEStartPropertyEnumerator },
+    { CMD_TEE_FreePropertyEnumerator, CmdTEEEnumeratorOperate },
+    { CMD_TEE_ResetPropertyEnumerator, CmdTEEEnumeratorOperate },
+    { CMD_TEE_GetNextPropertyEnumerator, CmdTEEEnumeratorOperate },
+    { CMD_TEE_GetPropertyNameEnumerator, CmdTEEGetPropertyName },
+    { CMD_TEE_OpenTASession, CmdTEEOpenTASession },
+    { TEE_TEST_BUFFER, TestTypeBuffer },
+    { CMD_TEE_Malloc, CmdTEEMalloc },
+    { CMD_TEE_Realloc, CmdTEERealloc },
+    { CMD_TEE_Panic, CmdTEEPanic },
 };
 
 uint32_t g_testTableSize = sizeof(g_testTable) / sizeof(g_testTable[0]);
 
 TEE_Result TA_InvokeCommandEntryPoint(void *sessionContext, uint32_t cmd, uint32_t parmType, TEE_Param params[4])
 {
-    TEE_Result ret = TEE_SUCCESS;
     (void)sessionContext;
+    TEE_Result ret = TEE_SUCCESS;
     uint32_t i;
-    tlogi("---- TA invoke command ----------- command id: 0x%x", cmd);
+    tlogi("----- TA invoke command ---------- command id: 0x%x", cmd);
 
     for (i = 0; i < g_testTableSize; i++) {
         if (cmd == g_testTable[i].cmdId) {
             ret = g_testTable[i].funcName(parmType, params);
             if (ret != TEE_SUCCESS) {
-                tloge("invoke command with cmdId: 0x%x failed! ret: 0x%x", cmd, ret);
+                tloge("invoke command with cmdId: 0x%x failed! ret: 0x%x\n", cmd, ret);
             } else {
-                tlogi("invoke command with cmdId: 0x%x success! ret: 0x%x", cmd, ret);
+                tlogi("invoke command with cmdId: 0x%x success! ret: 0x%x\n", cmd, ret);
             }
             return ret;
         }
     }
 
-    tloge("not support this invoke command! cmdId: 0x%x", cmd);
+    tloge(" not support this invoke command! cmdId: 0x%x", cmd);
     return TEE_ERROR_GENERIC;
 }
 
 void TA_CloseSessionEntryPoint(void *sessionContext)
 {
     (void)sessionContext;
-    tlogi("---- TA_CloseSessionEntryPoint -----");
+    tlogi("----- TA_CloseSessionEntryPoint  -----");
 }
 
 void TA_DestroyEntryPoint(void)
 {
-    tlogi("---- TA_DestroyEntryPoint ----");
+    tlogi("----- TA_DestroyEntryPoint  ----");
 }

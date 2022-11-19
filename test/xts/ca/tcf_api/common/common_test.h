@@ -13,15 +13,11 @@
 #ifndef __TCF_COMMON_TEST_H__
 #define __TCF_COMMON_TEST_H__
 
-#include <base_cmdid.h>
 #include <gtest/gtest.h>
 #include <stdint.h>
 #include <tee_client_type.h>
 
 using namespace testing::ext;
-
-typedef uint32_t TEE_PropSetHandle;
-typedef uint32_t TEE_TASessionHandle;
 
 #define TESTSIZE 16
 #define BIG_SIZE 1024
@@ -78,7 +74,6 @@ typedef uint32_t TEE_TASessionHandle;
 #define SMC_TA_TESTU64 "smc.ta.testu64"
 
 // ALL_PROPERTY_VALUES
-// #define VALUE_NONE ""
 #define VALUE_PREDEFINED_BINARY_BLOCK "VGhpcy"
 #define VALUE_PREDEFINED_SERVICENAME "TCF_test"
 #define VALUE_PREDEFINED_BOOLEAN "true"
@@ -87,7 +82,7 @@ typedef uint32_t TEE_TASessionHandle;
 #define VALUE_PREDEFINED_STACKSIZE 81920
 #define VALUE_PREDEFINED_TA_VERSION "0"
 #define VALUE_PREDEFINED_TA_DESCRIPTION "test ta"
-#define VALUE_PREDEFINED_CLIENT_IDENTITY "identity:0:00000000-0000-0000-4100-000041000000"
+#define VALUE_PREDEFINED_CLIENT_IDENTITY "identity:0:00000000-0000-0000-6100-000000000000"
 #define VALUE_PREDEFINED_CLIENT_ENDIAN 0
 #define VALUE_PREDEFINED_STRING "test string"
 #define VALUE_PREDEFINED_U64 5147483647
@@ -154,12 +149,13 @@ struct TestData {
     uint32_t cmd;
     uint32_t caseId;
     ALL_PROP_SETS propSet;
-    TEE_PropSetHandle enumerator;
+    uint32_t enumerator;
     uint32_t origin;
     char inBuffer[BIG_SIZE];
     uint32_t inBufferLen;
     char outBuffer[BIG_SIZE];
     uint32_t outBufferLen;
+    TEEC_UUID uuid;
 };
 typedef struct TestData TestData;
 
@@ -171,6 +167,9 @@ struct TestMemData {
     uint32_t caseId;
     uint32_t origin;
     uint32_t accessFlags;
+    size_t inMemSize;
+    uint32_t inHint;
+    char *testBuffer;
 };
 typedef struct TestMemData TestMemData;
 
@@ -279,8 +278,7 @@ public:
 TEEC_Result Invoke_GetPropertyAsX(TEEC_Context *context, TEEC_Session *session, TestData *testDate);
 TEEC_Result Invoke_AllocatePropertyEnumerator(TEEC_Session *session, TestData *testData);
 TEEC_Result Invoke_Operate_PropertyEnumerator(TEEC_Session *session, TestData *testData);
-TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, size_t inMemSize, uint32_t inHint,
-    char *testBuffer, uint32_t *origin);
+TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, TestMemData *testData, uint32_t *origin);
 TEEC_Result Invoke_Realloc(TEEC_Session *session, uint32_t commandID, TestMemData *testData, char *output);
 TEEC_Result Invoke_MemMove_Or_Fill(TEEC_Session *session, uint32_t commandID, TestMemData *testData, char *output);
 TEEC_Result Invoke_Free(TEEC_Session *session, uint32_t commandID, uint32_t caseNum, uint32_t *origin);
@@ -291,11 +289,11 @@ TEEC_Result Invoke_SetInstanceData(TEEC_Session *session, uint32_t commandID, ch
     uint32_t *origin);
 TEEC_Result Invoke_GetInstanceData(TEEC_Session *session, uint32_t commandID, char *buffer, uint32_t *bufSize,
     uint32_t *origin);
-TEEC_Result Invoke_OpenTASession(TEEC_Session *session, uint32_t commandID, TEEC_UUID uuid,
-    TEE_TASessionHandle *ta2taSession, TestData *testData, uint32_t *origin);
-TEEC_Result Invoke_CloseTASession(TEEC_Session *session, uint32_t commandID, TEE_TASessionHandle ta2taSession,
+TEEC_Result Invoke_OpenTASession(TEEC_Session *session, uint32_t commandID, uint32_t *ta2taSession,
+    TestData *testData, uint32_t *origin);
+TEEC_Result Invoke_CloseTASession(TEEC_Session *session, uint32_t commandID, uint32_t ta2taSession,
     uint32_t *origin);
-TEEC_Result Invoke_InvokeTACommand(TEEC_Session *session, uint32_t commandID, TEE_TASessionHandle ta2taSession,
+TEEC_Result Invoke_InvokeTACommand(TEEC_Session *session, uint32_t commandID, uint32_t ta2taSession,
     TestData *testData, uint32_t *origin);
 TEEC_Result Invoke_Panic(TEEC_Session *session, uint32_t commandID, TEEC_Result panicCode, uint32_t *origin);
 uint32_t get_ta_data_size(TEEC_Context *context, TEEC_Session *session);

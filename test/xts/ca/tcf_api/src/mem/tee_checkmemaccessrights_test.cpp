@@ -31,7 +31,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_Access_Read_Flag, Function |
 
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -48,7 +48,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_Access_Write_Flag, Function 
 
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_WRITE;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -65,7 +65,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_Access_AnyOwner_Flag, Functi
 
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_ANY_OWNER;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_ERROR_ACCESS_DENIED);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -82,7 +82,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_FlagIsZero, Function | Mediu
 
     value.oldSize = TESTSIZE;
     value.accessFlags = 0;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_ERROR_ACCESS_DENIED);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -100,7 +100,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_BufferIsNull, Function | Med
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ;
     value.caseId = INPUT_ISNULL;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_ERROR_ACCESS_DENIED);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -118,7 +118,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_BufferIsFree, Function | Med
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ;
     value.caseId = BUFFER_IS_FREE;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -136,7 +136,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_BufferIsParam, Function | Me
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ;
     value.caseId = BUFFER_IS_PARAM;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_ERROR_ACCESS_DENIED);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -154,7 +154,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_BufferIsNotMalloc, Function 
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ | TEE_MEMORY_ACCESS_WRITE;
     value.caseId = BUFFER_ISNOT_MALLOC;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -172,7 +172,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_SizeIsZero, Function | Mediu
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ | TEE_MEMORY_ACCESS_WRITE;
     value.caseId = OUTPUTBUFFERSIZE_ISZERO;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -190,7 +190,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_SizeIsTooBig, Function | Med
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ | TEE_MEMORY_ACCESS_WRITE;
     value.caseId = BUFFERSIZE_ISTOOBIG;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_ERROR_ACCESS_DENIED);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -208,7 +208,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_GlobalVar, Function | Medium
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ | TEE_MEMORY_ACCESS_WRITE;
     value.caseId = BUFFER_IS_GLOBALVAR;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -226,7 +226,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_ReadRight_GlobalConstVar, Fu
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_READ;
     value.caseId = BUFFER_IS_GLOBALCONSTVAR;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -244,7 +244,7 @@ TEE_TEST(TCF2Test, TEE_CheckMemoryAccessRights_With_WriteRight_GlobalConstVar, F
     value.oldSize = TESTSIZE;
     value.accessFlags = TEE_MEMORY_ACCESS_WRITE;
     value.caseId = BUFFER_IS_GLOBALCONSTVAR;
-    ret = Invoke_CheckMemoryAccessRights(GetSession(), GET_TCF_CMDID(CMD_TEE_CheckMemoryAccessRights), &value);
+    ret = Invoke_CheckMemoryAccessRights(GetSession(), CMD_TEE_CheckMemoryAccessRights, &value);
     ASSERT_EQ(ret, TEEC_ERROR_ACCESS_DENIED);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }

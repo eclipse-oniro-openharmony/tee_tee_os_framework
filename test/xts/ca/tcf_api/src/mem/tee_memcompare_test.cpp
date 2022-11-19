@@ -37,7 +37,7 @@ TEE_TEST(TCF2Test, TEE_MemCompare_With_Same, Function | MediumTest | Level0)
         buf1[i] = (char)'A';
         buf2[i] = (char)'A';
     }
-    ret = Invoke_MemCompare(GetSession(), GET_TCF_CMDID(CMD_TEE_MemCompare), &value, buf1, buf2);
+    ret = Invoke_MemCompare(GetSession(), CMD_TEE_MemCompare, &value, buf1, buf2);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -63,7 +63,7 @@ TEE_TEST(TCF2Test, TEE_MemCompare_With_Buffer1LessBuffer2, Function | MediumTest
     buf1[TESTSIZE - 1] = (char)'A';
     buf2[TESTSIZE - 1] = (char)'B';
 
-    ret = Invoke_MemCompare(GetSession(), GET_TCF_CMDID(CMD_TEE_MemCompare), &value, buf1, buf2);
+    ret = Invoke_MemCompare(GetSession(), CMD_TEE_MemCompare, &value, buf1, buf2);
     ASSERT_EQ(ret, -1);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -89,7 +89,7 @@ TEE_TEST(TCF2Test, TEE_MemCompare_With_Buffer1GreaterBuffer2, Function | MediumT
     buf1[TESTSIZE - 1] = (char)'B';
     buf2[TESTSIZE - 1] = (char)'A';
 
-    ret = Invoke_MemCompare(GetSession(), GET_TCF_CMDID(CMD_TEE_MemCompare), &value, buf1, buf2);
+    ret = Invoke_MemCompare(GetSession(), CMD_TEE_MemCompare, &value, buf1, buf2);
     ASSERT_EQ(ret, 1);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -113,7 +113,7 @@ TEE_TEST(TCF2Test, TEE_MemCompare_With_Buffer1IsNull, Function | MediumTest | Le
         buf2[i] = (char)'A';
     }
     value.caseId = INPUT_ISNULL;
-    ret = Invoke_MemCompare(GetSession(), GET_TCF_CMDID(CMD_TEE_MemCompare), &value, buf1, buf2);
+    ret = Invoke_MemCompare(GetSession(), CMD_TEE_MemCompare, &value, buf1, buf2);
     ASSERT_EQ(ret, -1);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -137,7 +137,7 @@ TEE_TEST(TCF2Test, TEE_MemCompare_With_Buffer2IsNull, Function | MediumTest | Le
         buf2[i] = (char)'A';
     }
     value.caseId = OUTPUT_ISNULL;
-    ret = Invoke_MemCompare(GetSession(), GET_TCF_CMDID(CMD_TEE_MemCompare), &value, buf1, buf2);
+    ret = Invoke_MemCompare(GetSession(), CMD_TEE_MemCompare, &value, buf1, buf2);
     ASSERT_EQ(ret, 1);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -161,7 +161,7 @@ TEE_TEST(TCF2Test, TEE_MemCompare_With_SizeIsZero, Function | MediumTest | Level
         buf2[i] = (char)'B';
     }
 
-    ret = Invoke_MemCompare(GetSession(), GET_TCF_CMDID(CMD_TEE_MemCompare), &value, buf1, buf2);
+    ret = Invoke_MemCompare(GetSession(), CMD_TEE_MemCompare, &value, buf1, buf2);
     ASSERT_EQ(ret, 0);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }

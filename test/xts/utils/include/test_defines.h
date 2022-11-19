@@ -9,9 +9,13 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
+#ifndef __TEST_DEFINES_H__
+#define __TEST_DEFINES_H__
 
 #define PARAM_COUNT 4
 
 #define ABORT_UNLESS(expr)
 
 #define TEE_TEST HWTEST_F
+
+#endif

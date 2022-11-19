@@ -9,15 +9,14 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
-#include <base_cmdid.h>
-#include <test_defines.h>
+#ifndef __TEST_COMM_CMDID_H__
+#define __TEST_COMM_CMDID_H__
 
 typedef enum {
-    TEE_TEST_VALUE = 0,
+    TEE_TEST_VALUE = 0x1000,
     TEE_TEST_BUFFER,
     TEE_TEST_ALLTYPE,
     TEE_TEST_WRITE_OVERFOLW,
 } CommCmdId;
 
-#define GET_COMM_CMDID(inner) GET_CMD_ID(BASEID_COMMUNICATION, inner)
+#endif

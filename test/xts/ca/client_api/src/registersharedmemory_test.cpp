@@ -93,6 +93,11 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithNotInitContext, Function | MediumTe
     sharedMem.buffer = testData0;
     sharedMem.size = TEST_STR_LEN;
     sharedMem.flags = TEEC_MEM_INOUT;
+
+    const char *name = "testname";
+    ret = TEEC_InitializeContext(name, &context);
+    EXPECT_EQ(ret, TEEC_SUCCESS);
+    TEEC_FinalizeContext(&context);
     ret = TEEC_RegisterSharedMemory(&context, &sharedMem);
     free(testData0);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
@@ -216,7 +221,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagInput_UseParamTypesOutput, Func
     operation.params[0].memref.parent = &testMem.sharedMem;
     operation.params[0].memref.offset = 0;
     operation.params[0].memref.size = testMem.sharedMem.size;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
@@ -253,7 +258,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagInput_UseParamTypesInout, Funct
     operation.params[0].memref.parent = &testMem.sharedMem;
     operation.params[0].memref.offset = 0;
     operation.params[0].memref.size = testMem.sharedMem.size;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
@@ -293,7 +298,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagInput_UseParamTypesWhole, Funct
     operation.params[1].memref.parent = &testMem.sharedMem;
     operation.params[1].memref.offset = 0;
     operation.params[1].memref.size = 0;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
@@ -330,7 +335,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagOutput_UseParamTypesInput, Func
     operation.params[0].memref.parent = &testMem.sharedMem;
     operation.params[0].memref.offset = 0;
     operation.params[0].memref.size = testMem.sharedMem.size;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
@@ -367,7 +372,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagOutput_UseParamTypesInout, Func
     operation.params[0].memref.parent = &testMem.sharedMem;
     operation.params[0].memref.offset = 0;
     operation.params[0].memref.size = testMem.sharedMem.size;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
@@ -409,7 +414,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagOutput_UseParamTypesWhole, Func
     operation.params[0].memref.parent = &testMem.sharedMem;
     operation.params[0].memref.offset = 0;
     operation.params[0].memref.size = 0;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
@@ -481,7 +486,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_ReturnLenUseTypesOutput, Function | Med
         TEEC_MEMREF_PARTIAL_INOUT, TEEC_MEMREF_PARTIAL_INOUT);
     SetOperationParams(&operation, &testMem);
 
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_ERROR_SHORT_BUFFER);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
@@ -539,7 +544,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_OffsetExceedTest1, Function | MediumTes
     operation.params[3].memref.parent = &testMem.sharedMem;
     operation.params[3].memref.offset = TEST_SIZE512 - SIZE10 + 1;
     operation.params[3].memref.size = SIZE10;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
@@ -589,7 +594,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_OffsetExceedTest2, Function | MediumTes
     operation.params[3].memref.parent = &testMem.sharedMem;
     operation.params[3].memref.offset = TEST_SIZE512 + 1;
     operation.params[3].memref.size = SIZE10;
-    ret = TEEC_InvokeCommand(&sess.session, GET_COMM_CMDID(TEE_TEST_ALLTYPE), &operation, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     operation.params[3].memref.size = SIZE10;
     ASSERT_EQ(origin, TEEC_ORIGIN_API);

@@ -13,7 +13,6 @@
 #ifndef __COMMON_TEST_H__
 #define __COMMON_TEST_H__
 
-#include <base_cmdid.h>
 #include <stdint.h>
 #include <tee_client_type.h>
 

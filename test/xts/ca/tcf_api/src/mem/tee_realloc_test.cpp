@@ -32,7 +32,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_SameSize, Function | MediumTest | Level0)
 
     value.oldSize = TESTSIZE;
     value.newSize = TESTSIZE;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.oldAddr, value.newAddr);
@@ -52,7 +52,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_LessSize, Function | MediumTest | Level0)
 
     value.oldSize = TESTSIZE;
     value.newSize = TESTSIZE - 1;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.oldAddr, value.newAddr);
@@ -73,7 +73,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_GreaterSize, Function | MediumTest | Level0)
 
     value.oldSize = TESTSIZE;
     value.newSize = BIG_SIZE;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_STREQ(outBuf, EXPECTBUFFER_A);
@@ -96,7 +96,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_NewSizeIsZero, Function | MediumTest | Level
 
     value.oldSize = TESTSIZE;
     value.newSize = 0;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_ERROR_OUT_OF_MEMORY);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -120,7 +120,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_SizeExceedHeapLimit, Function | MediumTest |
 
     value.oldSize = TESTSIZE;
     value.newSize = dateSize + stackSize;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_ERROR_OUT_OF_MEMORY);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -139,7 +139,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_BufferIsNull, Function | MediumTest | Level0
     value.oldSize = TESTSIZE;
     value.newSize = TESTSIZE;
     value.caseId = INPUT_ISNULL;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_NE(value.oldAddr, value.newAddr);
@@ -160,7 +160,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_BufferIsNotMalloc, Function | MediumTest | L
     value.oldSize = TESTSIZE;
     value.newSize = TESTSIZE;
     value.caseId = BUFFER_ISNOT_MALLOC;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -179,7 +179,7 @@ TEE_TEST(TCF2Test, TEE_Realloc_With_BufferIsFree, Function | MediumTest | Level0
     value.oldSize = TESTSIZE;
     value.newSize = TESTSIZE;
     value.caseId = BUFFER_IS_FREE;
-    ret = Invoke_Realloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Realloc), &value, outBuf);
+    ret = Invoke_Realloc(GetSession(), CMD_TEE_Realloc, &value, outBuf);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }

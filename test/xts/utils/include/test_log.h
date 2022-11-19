@@ -13,16 +13,16 @@
 #ifndef __TEST_LOG_H__
 #define __TEST_LOG_H__
 
-#define __FILENAME__ (strrchr(__FILE__, '/') ? (strrchr(__FILE__, '/') + 1):__FILE__)
+#define FILENAME (strrchr(__FILE__, '/') ? (strrchr(__FILE__, '/') + 1):__FILE__)
 
 #define TEST_PRINT_INFO(fmt, ...)                                                   \
 do {                                                                                \
-        fprintf(stdout, "[Info] [%s, %d] " fmt "\n", __FILENAME__, __LINE__, ##__VA_ARGS__);   \
+        fprintf(stdout, "[Info] [%s, %d] " fmt "\n", FILENAME, __LINE__, ##__VA_ARGS__);   \
 } while (0)
 
 #define TEST_PRINT_ERROR(fmt, ...)                                                  \
 do {                                                                                \
-        fprintf(stderr, "[Err] [%s, %d] " fmt "\n", __FILENAME__, __LINE__, ##__VA_ARGS__);   \
+        fprintf(stderr, "[Err] [%s, %d] " fmt "\n", FILENAME, __LINE__, ##__VA_ARGS__);   \
 } while (0)
 
 #endif

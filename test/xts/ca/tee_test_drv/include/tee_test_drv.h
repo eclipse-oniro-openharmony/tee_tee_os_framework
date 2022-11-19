@@ -13,10 +13,6 @@
 #ifndef __TEE_TEST_DRV_H__
 #define __TEE_TEST_DRV_H__
 
-#include <base_cmdid.h>
-#include <stdint.h>
-#include <tee_client_type.h>
-
 #ifdef __cplusplus
 #include <string>
 using namespace std;

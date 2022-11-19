@@ -128,33 +128,33 @@ static TEE_Result TestAllType(uint32_t paramTypes, TEE_Param params[4])
         switch (param_type) {
             case TEE_PARAM_TYPE_MEMREF_INPUT:
             case TEE_PARAM_TYPE_MEMREF_OUTPUT:
-                tlogd("param %d is TEE_PARAM_TYPE_MEMREF_INPUT or TEE_PARAM_TYPE_MEMREF_OUTPUT\n", i);
-                tlogd("before modify,param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
+                tloge("param %d is TEE_PARAM_TYPE_MEMREF_INPUT or TEE_PARAM_TYPE_MEMREF_OUTPUT\n", i);
+                tloge("before modify, param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
                 TEE_MemMove(params[i].memref.buffer, g_teeOutput, g_teeOutputLen);
                 params[i].memref.size = g_teeOutputLen;
-                tlogd("after modify,param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
+                tloge("after modify, param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
                 break;
             case TEE_PARAM_TYPE_MEMREF_INOUT:
-                tlogd("param %d is TEE_PARAM_TYPE_MEMREF_INOUT\n", i);
-                tlogd("before modify,param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
+                tloge("param %d is TEE_PARAM_TYPE_MEMREF_INOUT\n", i);
+                tloge("before modify, param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
                 TEE_MemMove(params[i].memref.buffer, g_teeInout, g_teeInoutLen);
                 params[i].memref.size = g_teeInoutLen;
-                tlogd("after modify,param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
+                tloge("after modify,param %d size=%d, val=%s\n", i, params[i].memref.size, params[i].memref.buffer);
                 break;
             case TEE_PARAM_TYPE_VALUE_INPUT:
             case TEE_PARAM_TYPE_VALUE_OUTPUT:
-                tlogd("param %d is TEE_PARAM_TYPE_VALUE_INPUT or TEE_PARAM_TYPE_VALUE_OUTPUT\n", i);
-                tlogd("before modify,param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
+                tloge("param %d is TEE_PARAM_TYPE_VALUE_INPUT or TEE_PARAM_TYPE_VALUE_OUTPUT\n", i);
+                tloge("before modify, param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
                 params[i].value.a = params[i].value.a + 1;
                 params[i].value.b = params[i].value.b + 1;
-                tlogd("after modify,param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
+                tloge("after modify, param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
                 break;
             case TEE_PARAM_TYPE_VALUE_INOUT:
-                tlogd("param %d is TEE_PARAM_TYPE_VALUE_INOUT\n", i);
-                tlogd("before modify,param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
+                tloge("param %d is TEE_PARAM_TYPE_VALUE_INOUT\n", i);
+                tloge("before modify, param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
                 params[i].value.a = params[i].value.a - 1;
                 params[i].value.b = params[i].value.b - 1;
-                tlogd("after modify,param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
+                tloge("after modify, param %d: value.a=0x%x, value.b=0x%x\n", i, params[i].value.a, params[i].value.b);
                 break;
             case TEE_PARAM_TYPE_NONE:
                 break;
@@ -170,6 +170,7 @@ static TEE_Result TestAllType(uint32_t paramTypes, TEE_Param params[4])
 TEE_Result TA_CreateEntryPoint(void)
 {
     tlogd("---- TA_CreateEntryPoint --------- \n");
+    TEE_Result ret;
 
     ret = AddCaller_CA_exec(CA_PKGN_VENDOR, CA_UID);
     if (ret != TEE_SUCCESS) {
@@ -190,7 +191,7 @@ TEE_Result TA_OpenSessionEntryPoint(uint32_t parmType, TEE_Param params[4], void
 {
     (void)parmType;
     (void)sessionContext;
-    tlogd("---- TA_OpenSessionEntryPoint -------- \n");
+    tlogi("---- TA_OpenSessionEntryPoint -------- \n");
     if (params[0].value.b == 0xFFFFFFFE)
         return TEE_ERROR_GENERIC;
     else
@@ -202,23 +203,23 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sessionContext, uint32_t cmd, uint32
     TEE_Result ret = TEE_SUCCESS;
     (void)sessionContext;
 
-    tlogd("---- TA invoke command ----------- command id: %u\n", cmd);
+    tlogi("---- TA invoke command ----------- command id: %u\n", cmd);
 
     switch (cmd) {
         case 0:
-            tlogd("this special invoke command is only for communication test! cmdId: 0x%x\n", cmd);
+            tlogi("this special invoke command is only for communication test! cmdId: 0x%x\n", cmd);
             break;
-        case GET_COMM_CMDID(TEE_TEST_VALUE):
+        case TEE_TEST_VALUE:
             ret = TestTypeValue(parmType, params);
             if (ret != TEE_SUCCESS)
                 tloge("invoke command for value failed! cmdId: 0x%x, ret: 0x%x\n", cmd, ret);
             break;
-        case GET_COMM_CMDID(TEE_TEST_BUFFER):
+        case TEE_TEST_BUFFER:
             ret = TestTypeBuffer(parmType, params);
             if (ret != TEE_SUCCESS)
                 tloge("invoke command for buffer failed! cmdId: 0x%x, ret: 0x%x\n", cmd, ret);
             break;
-        case GET_COMM_CMDID(TEE_TEST_ALLTYPE):
+        case TEE_TEST_ALLTYPE:
             ret = TestAllType(parmType, params);
             if (ret != TEE_SUCCESS)
                 tloge("invoke command for all type failed! cmdId: 0x%x, ret: 0x%x\n", cmd, ret);

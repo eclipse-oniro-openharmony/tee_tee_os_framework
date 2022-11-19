@@ -202,7 +202,7 @@ TEE_TEST(EmptyTest, Opensession_ContextIsNotInit, Function | MediumTest | Level0
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
 
     ret = TEEC_OpenSession(&context, &session, &testId, TEEC_LOGIN_IDENTIFY, NULL, NULL, &origin);
-    ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
+    ASSERT_EQ(ret, TEEC_FAIL);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
 
     TEEC_FinalizeContext(&context);
@@ -220,7 +220,7 @@ TEE_TEST(OnlyInit, Opensession_ParamTypesIsInvalid, Function | MediumTest | Leve
     TEEC_UUID testId = CLIENTAPI_UUID_1;
     TEEC_Operation operation = { 0 };
     operation.started = 1;
-    operation.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_TEMP_INOUT, TEEC_VALUE_INPUT, TEEC_NONE, TEEC_NONE);
+    operation.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_PARTIAL_INOUT, TEEC_VALUE_INPUT, TEEC_NONE, TEEC_NONE);
     operation.params[0].value.a = 0;
     operation.params[0].value.b = 0;
     operation.params[1].value.a = 0xFFFFFFFF;

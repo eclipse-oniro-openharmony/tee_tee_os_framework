@@ -29,7 +29,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU64_WithoutEnum_TESTU64, Function | MediumTe
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64);
+    value.cmd = CMD_TEE_GetPropertyAsU64;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTU64, sizeof(SMC_TA_TESTU64));
     ASSERT_EQ(rc, 0);
@@ -52,7 +52,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU64_WithoutEnum_NameIsNull, Function | Mediu
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64);
+    value.cmd = CMD_TEE_GetPropertyAsU64;
     value.caseId = INPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
@@ -71,7 +71,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU64_WithoutEnum_NameIsZero, Function | Mediu
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64);
+    value.cmd = CMD_TEE_GetPropertyAsU64;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
@@ -90,7 +90,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU64_WithoutEnum_ValueIsNull, Function | Medi
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64);
+    value.cmd = CMD_TEE_GetPropertyAsU64;
     value.caseId = OUTPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DATASIZE, sizeof(GPD_TA_DATASIZE));
@@ -113,7 +113,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU64_WithoutEnum_NameNotFound, Function | Med
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64);
+    value.cmd = CMD_TEE_GetPropertyAsU64;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, PROPERTY_NAME_UNKNOWN, sizeof(PROPERTY_NAME_UNKNOWN));
     ASSERT_EQ(rc, 0);
@@ -135,7 +135,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU64_WithoutEnum_NameNotU64, Function | Mediu
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU64);
+    value.cmd = CMD_TEE_GetPropertyAsU64;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DESCRIPTION, sizeof(GPD_TA_DESCRIPTION));
     ASSERT_EQ(rc, 0);

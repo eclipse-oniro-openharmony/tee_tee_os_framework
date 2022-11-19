@@ -126,14 +126,14 @@ void TCF1ENUM_Test::SetUp()
     TEEC_Result ret;
 
     // alloc PropertyEnumerator
-    value.cmd = GET_TCF_CMDID(CMD_TEE_AllocatePropertyEnumerator);
+    value.cmd = CMD_TEE_AllocatePropertyEnumerator;
     ret = Invoke_AllocatePropertyEnumerator(GetSession(), &value);
     ABORT_UNLESS(ret != TEEC_SUCCESS);
 }
 
 void TCF1ENUM_Test::TearDown()
 {
-    value.cmd = GET_TCF_CMDID(CMD_TEE_FreePropertyEnumerator);
+    value.cmd = CMD_TEE_FreePropertyEnumerator;
     Invoke_Operate_PropertyEnumerator(GetSession(), &value);
 }
 
@@ -222,19 +222,19 @@ TEEC_Result Invoke_Operate_PropertyEnumerator(TEEC_Session *session, TestData *t
     // Invoke command
     operation.started = 1;
     switch (testData->cmd) {
-        case GET_TCF_CMDID(CMD_TEE_FreePropertyEnumerator):
-        case GET_TCF_CMDID(CMD_TEE_ResetPropertyEnumerator):
-        case GET_TCF_CMDID(CMD_TEE_GetNextPropertyEnumerator):
+        case CMD_TEE_FreePropertyEnumerator:
+        case CMD_TEE_ResetPropertyEnumerator:
+        case CMD_TEE_GetNextPropertyEnumerator:
             operation.paramTypes = TEEC_PARAM_TYPES(TEEC_VALUE_INPUT, TEEC_NONE, TEEC_NONE, TEEC_NONE);
             operation.params[0].value.a = testData->enumerator;
             operation.params[0].value.b = testData->cmd;
             break;
-        case GET_TCF_CMDID(CMD_TEE_StartPropertyEnumerator):
+        case CMD_TEE_StartPropertyEnumerator:
             operation.paramTypes = TEEC_PARAM_TYPES(TEEC_VALUE_INPUT, TEEC_VALUE_INPUT, TEEC_NONE, TEEC_NONE);
             operation.params[0].value.a = testData->enumerator;
             operation.params[1].value.a = testData->propSet;
             break;
-        case GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator):
+        case CMD_TEE_GetPropertyNameEnumerator:
             operation.paramTypes = TEEC_PARAM_TYPES(TEEC_VALUE_INPUT, TEEC_MEMREF_TEMP_OUTPUT, TEEC_NONE, TEEC_NONE);
             operation.params[0].value.a = testData->enumerator;
             operation.params[0].value.b = testData->caseId;
@@ -247,14 +247,13 @@ TEEC_Result Invoke_Operate_PropertyEnumerator(TEEC_Session *session, TestData *t
     }
 
     result = TEEC_InvokeCommand(session, testData->cmd, &operation, &testData->origin);
-    if (testData->cmd == GET_TCF_CMDID(CMD_TEE_GetPropertyNameEnumerator))
+    if (testData->cmd == CMD_TEE_GetPropertyNameEnumerator)
         testData->outBufferLen = operation.params[1].tmpref.size;
 
     return result;
 }
 
-TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, size_t inMemSize, uint32_t inHint,
-    char *testBuffer, uint32_t *origin)
+TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, TestMemData *testData, uint32_t *origin)
 {
     TEEC_Result result;
     TEEC_Operation operation = { 0 };
@@ -262,9 +261,9 @@ TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, size_t inMe
     // Invoke command
     operation.started = 1;
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_VALUE_INPUT, TEEC_MEMREF_TEMP_OUTPUT, TEEC_NONE, TEEC_NONE);
-    operation.params[0].value.a = inMemSize;
-    operation.params[0].value.b = inHint;
-    operation.params[1].tmpref.buffer = testBuffer;
+    operation.params[0].value.a = testData->inMemSize;
+    operation.params[0].value.b = testData->inHint;
+    operation.params[1].tmpref.buffer = testData->testBuffer;
     operation.params[1].tmpref.size = MAX_SHARE_SIZE;
 
     result = TEEC_InvokeCommand(session, commandID, &operation, origin);
@@ -448,18 +447,18 @@ static void retrieveUint16toBuffer(uint8_t *buffer, uint16_t i)
     buffer[0] = i >> 8 & 0xff;
 }
 
-TEEC_Result Invoke_OpenTASession(TEEC_Session *session, uint32_t commandID, TEEC_UUID uuid,
-    TEE_TASessionHandle *ta2taSession, TestData *testData, uint32_t *origin)
+TEEC_Result Invoke_OpenTASession(TEEC_Session *session, uint32_t commandID, uint32_t *ta2taSession, TestData *testData,
+    uint32_t *origin)
 {
     TEEC_Result result = TEEC_SUCCESS;
     TEEC_Operation operation = { 0 };
     uint8_t tempBuffer[16];
     int rc;
 
-    retrieveUint32toBuffer(tempBuffer, uuid.timeLow);
-    retrieveUint16toBuffer(tempBuffer + 4, uuid.timeMid);
-    retrieveUint16toBuffer(tempBuffer + 6, uuid.timeHiAndVersion);
-    rc = memcpy_s(tempBuffer + 8, 8, &uuid.clockSeqAndNode, 8);
+    retrieveUint32toBuffer(tempBuffer, testData->uuid.timeLow);
+    retrieveUint16toBuffer(tempBuffer + 4, testData->uuid.timeMid);
+    retrieveUint16toBuffer(tempBuffer + 6, testData->uuid.timeHiAndVersion);
+    rc = memcpy_s(tempBuffer + 8, 8, &(testData->uuid.clockSeqAndNode), 8);
     if (rc != 0) {
         TEST_PRINT_ERROR("memcpy_s uuid to tee failed, rc=0x%x\n", rc);
         return TEEC_ERROR_GENERIC;
@@ -483,8 +482,7 @@ TEEC_Result Invoke_OpenTASession(TEEC_Session *session, uint32_t commandID, TEEC
     return result;
 }
 
-TEEC_Result Invoke_CloseTASession(TEEC_Session *session, uint32_t commandID, TEE_TASessionHandle ta2taSession,
-    uint32_t *origin)
+TEEC_Result Invoke_CloseTASession(TEEC_Session *session, uint32_t commandID, uint32_t ta2taSession, uint32_t *origin)
 {
     TEEC_Result result = TEEC_SUCCESS;
     TEEC_Operation operation = { 0 };
@@ -498,8 +496,8 @@ TEEC_Result Invoke_CloseTASession(TEEC_Session *session, uint32_t commandID, TEE
     return result;
 }
 
-TEEC_Result Invoke_InvokeTACommand(TEEC_Session *session, uint32_t commandID, TEE_TASessionHandle ta2taSession,
-    TestData *testData, uint32_t *origin)
+TEEC_Result Invoke_InvokeTACommand(TEEC_Session *session, uint32_t commandID, uint32_t ta2taSession, TestData *testData,
+    uint32_t *origin)
 {
     TEEC_Result result = TEEC_SUCCESS;
     TEEC_Operation operation = { 0 };
@@ -525,7 +523,7 @@ uint32_t get_ta_data_size(TEEC_Context *context, TEEC_Session *session)
 {
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DATASIZE, sizeof(GPD_TA_DATASIZE));
     if (rc != 0) {
@@ -542,7 +540,7 @@ uint32_t get_ta_stack_size(TEEC_Context *context, TEEC_Session *session)
 {
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_STACKSIZE, sizeof(GPD_TA_STACKSIZE));
     if (rc != 0) {

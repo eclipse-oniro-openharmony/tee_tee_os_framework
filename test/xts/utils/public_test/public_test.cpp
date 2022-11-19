@@ -11,7 +11,7 @@
  */
 
 #include "public_test.h"
-#include <test_defines.h>
+#include "test_defines.h"
 
 using namespace std;
 

@@ -23,13 +23,13 @@
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_GPD_TA_DATASIZE
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 to get value of  GPD_TA_DATASIZE
  * @testcase.expect    : return TEEC_SUCCESS
-*/
+ */
 TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TA_DATASIZE, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DATASIZE, sizeof(GPD_TA_DATASIZE));
     ASSERT_EQ(rc, 0);
@@ -53,7 +53,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TA_STACKSIZE, Function |
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_STACKSIZE, sizeof(GPD_TA_STACKSIZE));
     ASSERT_EQ(rc, 0);
@@ -77,7 +77,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_CLIENT_ENDIAN, Function 
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_CLIENT;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_CLIENT_ENDIAN, sizeof(GPD_CLIENT_ENDIAN));
     ASSERT_EQ(rc, 0);
@@ -94,13 +94,13 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_CLIENT_ENDIAN, Function 
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_INTERNALCORE_VERSION
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 to get value of GPD_TEE_INTERNALCORE_VERSION
  * @testcase.expect    : return TEEC_SUCCESS
-*/
+ */
 TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_INTERNALCORE_VERSION, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_INTERNALCORE_VERSION, sizeof(GPD_TEE_INTERNALCORE_VERSION));
     ASSERT_EQ(rc, 0);
@@ -124,9 +124,10 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_SYSTEM_TIME_PROTECTI
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_SYSTEM_TIME_PROTECTIONLEVEL, sizeof(GPD_TEE_SYSTEM_TIME_PROTECTIONLEVEL));
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_SYSTEM_TIME_PROTECTIONLEVEL,
+        sizeof(GPD_TEE_SYSTEM_TIME_PROTECTIONLEVEL));
     ASSERT_EQ(rc, 0);
     value.inBufferLen = sizeof(GPD_TEE_SYSTEM_TIME_PROTECTIONLEVEL);
 
@@ -142,15 +143,17 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_SYSTEM_TIME_PROTECTI
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 to get value of GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL
  * @testcase.expect    : return TEEC_SUCCESS, get value is correct
  */
-TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL, Function | MediumTest | Level0)
+TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL,
+    Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL, sizeof(GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL));
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL,
+        sizeof(GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL));
     ASSERT_EQ(rc, 0);
     value.inBufferLen = sizeof(GPD_TEE_TA_PERSISTENT_TIME_PROTECTIONLEVEL);
 
@@ -158,7 +161,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_TA_PERSISTENT_TIME_P
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(atoi(value.outBuffer), TA_TIME_PROTECT_LEVEL);
-        ASSERT_EQ(value.outBufferLen, strlen(value.outBuffer) + 1);
+    ASSERT_EQ(value.outBufferLen, strlen(value.outBuffer) + 1);
 }
 
 /**
@@ -172,7 +175,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ARITH_MAXBIGINTSIZE,
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_ARITH_MAXBIGINTSIZE, sizeof(GPD_TEE_ARITH_MAXBIGINTSIZE));
     ASSERT_EQ(rc, 0);
@@ -182,7 +185,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ARITH_MAXBIGINTSIZE,
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(atoi(value.outBuffer), MAX_BIG_INT_SIZE);
-        ASSERT_EQ(value.outBufferLen, strlen(value.outBuffer) + 1);
+    ASSERT_EQ(value.outBufferLen, strlen(value.outBuffer) + 1);
 }
 
 /**
@@ -190,15 +193,17 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ARITH_MAXBIGINTSIZE,
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 to get value of GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL
  * @testcase.expect    : return TEEC_SUCCESS, get value is correct
  */
-TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL, Function | MediumTest | Level0)
+TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL,
+    Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL, sizeof(GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL));
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL,
+        sizeof(GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL));
     ASSERT_EQ(rc, 0);
     value.inBufferLen = sizeof(GPD_TEE_ANTIROLLBACK_PROTECTIONLEVEL);
 
@@ -214,15 +219,17 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ANTIROLLBACK_PROTECT
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 to get value of GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL
  * @testcase.expect    : return TEEC_SUCCESS, get value is correct
  */
-TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL, Function | MediumTest | Level0)
+TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL,
+    Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL, sizeof(GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL));
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL,
+        sizeof(GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL));
     ASSERT_EQ(rc, 0);
     value.inBufferLen = sizeof(GPD_TEE_ROLLBACKDETECT_PROTECTIONLEVEL);
 
@@ -230,7 +237,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_ROLLBACKDETECT_PROTE
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(atoi(value.outBuffer), 0);
-        ASSERT_EQ(value.outBufferLen, strlen(value.outBuffer) + 1);
+    ASSERT_EQ(value.outBufferLen, strlen(value.outBuffer) + 1);
 }
 
 /**
@@ -244,7 +251,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_EVENT_MAXSOURCES, Fu
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_EVENT_MAXSOURCES, sizeof(GPD_TEE_EVENT_MAXSOURCES));
     ASSERT_EQ(rc, 0);
@@ -268,7 +275,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_API_LEVEL, Function 
     int rc;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_API_LEVEL, sizeof(GPD_TEE_API_LEVEL));
     ASSERT_EQ(rc, 0);
@@ -285,13 +292,13 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_GPD_TEE_API_LEVEL, Function 
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_NameIsNull
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 for name is null
  * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
-*/
+ */
 TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_NameIsNull, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.caseId = INPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
@@ -304,13 +311,13 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_NameIsNull, Function | Mediu
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_NameIsZero
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 for name value is zero
  * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
-*/
+ */
 TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_NameIsZero, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
@@ -322,14 +329,14 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_NameIsZero, Function | Mediu
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_ValueIsNull
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 for value is null
  * @testcase.expect    : return TEEC_ERROR_BAD_PARAMETERS
-*/
+ */
 TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_ValueIsNull, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.caseId = OUTPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DATASIZE, sizeof(GPD_TA_DATASIZE));
@@ -345,14 +352,14 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_ValueIsNull, Function | Medi
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_NameNotFound
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 while Name Not Found
  * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
-*/
+ */
 TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_NameNotFound, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, PROPERTY_NAME_UNKNOWN, sizeof(PROPERTY_NAME_UNKNOWN));
     ASSERT_EQ(rc, 0);
@@ -367,14 +374,14 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_NameNotFound, Function | Med
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_NameNotU32
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 while Name type is not U32
  * @testcase.expect    : return TEEC_ERROR_BAD_FORMAT
-*/
+ */
 TEE_TEST(TCF1Test, TEE_GetPropertyAsU32_WithoutEnum_NameNotU32, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsU32);
+    value.cmd = CMD_TEE_GetPropertyAsU32;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_DESCRIPTION, sizeof(GPD_TA_DESCRIPTION));
     ASSERT_EQ(rc, 0);

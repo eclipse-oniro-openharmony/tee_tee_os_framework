@@ -33,16 +33,15 @@ static uint32_t g_teeInoutLen;
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_Success, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = 0;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     g_teeInoutLen = strlen(g_teeInout) + 1;
 
     value.inBufferLen = BIG_SIZE;
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -51,7 +50,7 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_Success, Function | MediumTest | 
     ASSERT_STREQ(value.inBuffer, g_teeInout);
     ASSERT_EQ(value.inBufferLen, g_teeInoutLen);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -64,15 +63,14 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_Success, Function | MediumTest | 
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_UUIDIsNULL, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = INPUT_ISNULL;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
 
     value.inBufferLen = BIG_SIZE;
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -85,20 +83,19 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_UUIDIsNULL, Function | MediumTest
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_OriginIsNULL, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = RETURNORIGIN_ISNULL;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
 
     value.inBufferLen = BIG_SIZE;
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_NE(ta2taSession, 0);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -111,15 +108,14 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_OriginIsNULL, Function | MediumTe
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_SessionIsNULL, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = OUTPUT_ISNULL;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
 
     value.inBufferLen = BIG_SIZE;
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -132,19 +128,18 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_SessionIsNULL, Function | MediumT
 TEE_TEST(TCF1Test, TEE_OpenTASession_With_NoAvailableSession, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = 0;
 
-    TEEC_UUID uuid = TCF_API_UUID_2; // this uuid is for ta2, this is a single session ta
+    value.uuid = TCF_API_UUID_2; // this uuid is for ta2, this is a single session ta
     ClientSessionMgr sess;
-    ret = sess.Start(&uuid);
+    ret = sess.Start(&value.uuid);
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     value.inBufferLen = BIG_SIZE;
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     sess.Destroy();
     ASSERT_EQ(ret, TEEC_ERROR_BUSY);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
@@ -158,17 +153,16 @@ TEE_TEST(TCF1Test, TEE_OpenTASession_With_NoAvailableSession, Function | MediumT
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_MaxSession, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession[8] = { 0 };
+    uint32_t ta2taSession[8] = { 0 };
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = 0;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     int i;
     value.inBufferLen = BIG_SIZE;
 
     for (i = 0; i <= 6; i++) {
-        ret = Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession[i], &value,
-            &origin);
+        ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession[i], &value, &origin);
         ASSERT_EQ(ret, TEEC_SUCCESS);
         ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
         ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -179,8 +173,7 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_MaxSession, Function | MediumTest
 
     // ta2 has reach max session,so this time will open session fail
     value.inBufferLen = BIG_SIZE;
-    ret = Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession[i], &value,
-        &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession[i], &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_SESSION_MAXIMUM);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(ta2taSession[i], 0);
@@ -194,15 +187,14 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_MaxSession, Function | MediumTest
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_UUIDIsNotExist, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = 0;
-    TEEC_UUID uuid = UUID_TA_NOT_EXIST; // this uuid is for ta2
+    value.uuid = UUID_TA_NOT_EXIST; // this uuid is for ta2
 
     value.inBufferLen = BIG_SIZE;
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -215,15 +207,14 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_UUIDIsNotExist, Function | Medium
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_TA2Crash, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
     value.caseId = TA_CRASH_FLAG;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
 
     value.inBufferLen = BIG_SIZE;
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -237,17 +228,16 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_TA2Crash, Function | MediumTest |
 TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_BufferNoFillNoShare, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
     TestData value = { 0 };
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     g_teeInoutLen = strlen(g_teeInout) + 1;
 
     value.caseId = BUFFER_NOFILLNOSHARE;
     value.inBufferLen = BIG_SIZE;
 
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -256,7 +246,7 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_BufferNoFillNoShare, Function | M
     ASSERT_STREQ(value.inBuffer, g_teeInout);
     ASSERT_EQ(value.inBufferLen, g_teeInoutLen);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -269,16 +259,15 @@ TEE_TEST(TCF2TA2TATest, TEE_OpenTASession_With_BufferNoFillNoShare, Function | M
 TEE_TEST(TCF2TA2TATest, TEE_CloseTASession_With_MaxSession, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession[8] = { 0 };
+    uint32_t ta2taSession[8] = { 0 };
     uint32_t origin = 0;
     TestData value = { 0 };
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     int i;
     value.inBufferLen = BIG_SIZE;
 
     for (i = 0; i <= 6; i++) {
-        ret = Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession[i], &value,
-            &origin);
+        ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession[i], &value, &origin);
         ASSERT_EQ(ret, TEEC_SUCCESS);
         ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
         ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -289,20 +278,18 @@ TEE_TEST(TCF2TA2TATest, TEE_CloseTASession_With_MaxSession, Function | MediumTes
 
     // ta2 has reach max session,so this time will open session fail
     value.inBufferLen = BIG_SIZE;
-    ret = Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession[7], &value,
-        &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession[7], &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_SESSION_MAXIMUM);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(ta2taSession[7], 0);
 
     // close one session of ta2
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession[6], &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession[6], &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
     // ta2 has close one session, so this time will open session success
-    ret = Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession[6], &value,
-        &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession[6], &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -317,17 +304,16 @@ TEE_TEST(TCF2TA2TATest, TEE_CloseTASession_With_MaxSession, Function | MediumTes
 TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_PARAM_TYPE_MEMREF, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     g_teeOutputLen = strlen(g_teeOutput) + 1;
     g_teeInoutLen = strlen(g_teeInout) + 1;
     value.inBufferLen = BIG_SIZE;
     value.outBufferLen = BIG_SIZE;
 
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -335,7 +321,7 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_PARAM_TYPE_MEMREF, Function | M
 
     (void)memset_s(value.inBuffer, BIG_SIZE, 0x41, BIG_SIZE);
 
-    ret = Invoke_InvokeTACommand(GetSession(), GET_TCF_CMDID(CMD_TEE_InvokeTACommand), ta2taSession, &value, &origin);
+    ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -345,7 +331,7 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_PARAM_TYPE_MEMREF, Function | M
     ASSERT_STREQ(value.outBuffer, g_teeOutput);
     ASSERT_EQ(value.outBufferLen, g_teeOutputLen);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -358,26 +344,25 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_PARAM_TYPE_MEMREF, Function | M
 TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_SessionIsNull, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     value.inBufferLen = BIG_SIZE;
     value.outBufferLen = BIG_SIZE;
 
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
     ASSERT_NE(ta2taSession, 0);
 
     value.caseId = INPUT_ISNULL;
-    ret = Invoke_InvokeTACommand(GetSession(), GET_TCF_CMDID(CMD_TEE_InvokeTACommand), ta2taSession, &value, &origin);
+    ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -390,17 +375,16 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_SessionIsNull, Function | Mediu
 TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_OriginIsNull, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     g_teeOutputLen = strlen(g_teeOutput) + 1;
     g_teeInoutLen = strlen(g_teeInout) + 1;
     value.inBufferLen = BIG_SIZE;
     value.outBufferLen = BIG_SIZE;
 
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -408,7 +392,7 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_OriginIsNull, Function | Medium
 
     value.caseId = OUTPUT_ISNULL;
     (void)memset_s(value.inBuffer, BIG_SIZE, 0x41, BIG_SIZE);
-    ret = Invoke_InvokeTACommand(GetSession(), GET_TCF_CMDID(CMD_TEE_InvokeTACommand), ta2taSession, &value, &origin);
+    ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
@@ -417,7 +401,7 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_OriginIsNull, Function | Medium
     ASSERT_STREQ(value.outBuffer, g_teeOutput);
     ASSERT_EQ(value.outBufferLen, g_teeOutputLen);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -430,26 +414,25 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_OriginIsNull, Function | Medium
 TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_TA2Crash, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     value.inBufferLen = BIG_SIZE;
     value.outBufferLen = BIG_SIZE;
 
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
     ASSERT_NE(ta2taSession, 0);
 
     value.caseId = TA_CRASH_FLAG;
-    ret = Invoke_InvokeTACommand(GetSession(), GET_TCF_CMDID(CMD_TEE_InvokeTACommand), ta2taSession, &value, &origin);
+    ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -462,14 +445,13 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_TA2Crash, Function | MediumTest
 TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_MaxShareBufferSize, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     value.inBufferLen = BIG_SIZE;
 
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -477,11 +459,11 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_MaxShareBufferSize, Function | 
 
     value.caseId = BUFFERSIZE_ISTOOBIG;
     value.outBufferLen = BIG_SIZE;
-    ret = Invoke_InvokeTACommand(GetSession(), GET_TCF_CMDID(CMD_TEE_InvokeTACommand), ta2taSession, &value, &origin);
+    ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_GENERIC);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -495,23 +477,22 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_MaxShareBufferSize, Function | 
 TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_BufferNoFillNoShare, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession;
+    uint32_t ta2taSession;
     uint32_t origin = 0;
     TestData value = { 0 };
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     value.inBufferLen = BIG_SIZE;
     value.outBufferLen = BIG_SIZE;
     g_teeInoutLen = strlen(g_teeInout) + 1;
 
-    ret =
-        Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession, &value, &origin);
+    ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
     ASSERT_NE(ta2taSession, 0);
 
     value.caseId = BUFFER_NOFILLNOSHARE;
-    ret = Invoke_InvokeTACommand(GetSession(), GET_TCF_CMDID(CMD_TEE_InvokeTACommand), ta2taSession, &value, &origin);
+    ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession, &value, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -519,7 +500,7 @@ TEE_TEST(TCF2TA2TATest, TEE_InvokeTACommand_With_BufferNoFillNoShare, Function |
     ASSERT_STREQ(value.inBuffer, g_teeInout);
     ASSERT_EQ(value.inBufferLen, g_teeInoutLen);
 
-    ret = Invoke_CloseTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_CloseTASession), ta2taSession, &origin);
+    ret = Invoke_CloseTASession(GetSession(), CMD_TEE_CloseTASession, ta2taSession, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }

@@ -31,7 +31,7 @@ TEE_TEST(TCF2Test, TEE_MemFill_With_Success, Function | MediumTest | Level0)
     char outBuf[TESTSIZE + 1] = { 0 };
 
     value.oldSize = TESTSIZE;
-    ret = Invoke_MemMove_Or_Fill(GetSession(), GET_TCF_CMDID(CMD_TEE_MemFill), &value, outBuf);
+    ret = Invoke_MemMove_Or_Fill(GetSession(), CMD_TEE_MemFill, &value, outBuf);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_STREQ(outBuf, EXPECTBUFFER_A);
@@ -51,7 +51,7 @@ TEE_TEST(TCF2Test, TEE_MemFill_With_BufferIsNull, Function | MediumTest | Level0
 
     value.oldSize = TESTSIZE;
     value.caseId = INPUT_ISNULL;
-    ret = Invoke_MemMove_Or_Fill(GetSession(), GET_TCF_CMDID(CMD_TEE_MemFill), &value, outBuf);
+    ret = Invoke_MemMove_Or_Fill(GetSession(), CMD_TEE_MemFill, &value, outBuf);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     for (i = 0; i < TESTSIZE; i++) {
@@ -73,7 +73,7 @@ TEE_TEST(TCF2Test, TEE_MemFill_With_SizeIsZero, Function | MediumTest | Level0)
 
     value.oldSize = TESTSIZE;
     value.caseId = OUTPUTBUFFERSIZE_ISZERO;
-    ret = Invoke_MemMove_Or_Fill(GetSession(), GET_TCF_CMDID(CMD_TEE_MemFill), &value, outBuf);
+    ret = Invoke_MemMove_Or_Fill(GetSession(), CMD_TEE_MemFill, &value, outBuf);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     for (i = 0; i < TESTSIZE; i++) {

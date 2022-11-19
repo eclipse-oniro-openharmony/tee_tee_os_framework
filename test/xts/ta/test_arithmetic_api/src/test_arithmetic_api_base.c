@@ -32,12 +32,12 @@ TEE_BigInt* AllocateAndInitialize(uint32_t bitSize)
 
 TEE_BigInt *CreateBigInt(uint32_t size, uint8_t *buffer)
 {
-    TEE_BigInt *bigInt = (TEE_BigInt *)TEE_Malloc(TEE_BigIntSizeInU32(size * CHAR_BIT) * sizeof(uint32_t), 0);
+    TEE_BigInt *bigInt = (TEE_BigInt *)TEE_Malloc(TEE_BigIntSizeInU32(size * BIT_OF_CHAR) * sizeof(uint32_t), 0);
     if (bigInt == NULL) {
         return 0;
     }
 
-    TEE_BigIntInit(bigInt, TEE_BigIntSizeInU32(size * CHAR_BIT));
+    TEE_BigIntInit(bigInt, TEE_BigIntSizeInU32(size * BIT_OF_CHAR));
     if (buffer != NULL) {
         TEE_BigIntConvertFromOctetString(bigInt, buffer, size, 0);
     }

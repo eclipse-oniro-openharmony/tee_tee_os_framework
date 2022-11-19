@@ -29,7 +29,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_TestBinaryBlock, Fun
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTBINARYBLOCK, sizeof(SMC_TA_TESTBINARYBLOCK));
     ASSERT_EQ(rc, 0);
@@ -52,7 +52,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_NameIsNull, Function
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.caseId = INPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
@@ -71,7 +71,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_NameIsZero, Function
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
@@ -90,7 +90,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_ValueBufferIsNULL, F
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.caseId = OUTPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTBINARYBLOCK, sizeof(SMC_TA_TESTBINARYBLOCK));
@@ -113,7 +113,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_ValueBufferSizeIsNUL
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.caseId = OUTPUTBUFFERSIZE_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTBINARYBLOCK, sizeof(SMC_TA_TESTBINARYBLOCK));
@@ -136,7 +136,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_ValueBufferSizeIsZer
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.caseId = OUTPUTBUFFERSIZE_ISZERO;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTBINARYBLOCK, sizeof(SMC_TA_TESTBINARYBLOCK));
@@ -145,29 +145,6 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_ValueBufferSizeIsZer
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
     ASSERT_EQ(ret, TEEC_ERROR_SHORT_BUFFER);
-    ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
-}
-
-
-/**
- * @testcase.name      : TEE_GetPropertyAsBinaryBlock_WithoutEnum_NameNotFound
- * @testcase.desc      : test TA call TEE_GetPropertyAsBinaryBlock while Name Not Found
- * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
-*/
-TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_NameNotFound, Function | MediumTest | Level0)
-{
-    TEEC_Result ret;
-
-    int rc;
-    TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
-    value.propSet = TEE_PROPSET_CURRENT_TA;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, PROPERTY_NAME_UNKNOWN, sizeof(PROPERTY_NAME_UNKNOWN));
-    ASSERT_EQ(rc, 0);
-    value.inBufferLen = sizeof(PROPERTY_NAME_UNKNOWN);
-
-    ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
-    ASSERT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
 
@@ -182,7 +159,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_BufferTooShort, Func
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.caseId = OUTPUTBUFFERSIZE_TOOSHORT;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTBINARYBLOCK, sizeof(SMC_TA_TESTBINARYBLOCK));
@@ -193,6 +170,29 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_BufferTooShort, Func
     ASSERT_EQ(ret, TEEC_ERROR_SHORT_BUFFER);
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_EQ(value.outBufferLen, sizeof(VALUE_PREDEFINED_BINARY_BLOCK));
+}
+
+
+/**
+ * @testcase.name      : TEE_GetPropertyAsBinaryBlock_WithoutEnum_NameNotFound
+ * @testcase.desc      : test TA call TEE_GetPropertyAsBinaryBlock while Name Not Found
+ * @testcase.expect    : return TEEC_ERROR_ITEM_NOT_FOUND
+*/
+TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_NameNotFound, Function | MediumTest | Level0)
+{
+    TEEC_Result ret;
+
+    int rc;
+    TestData value = { 0 };
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
+    value.propSet = TEE_PROPSET_CURRENT_TA;
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, PROPERTY_NAME_UNKNOWN, sizeof(PROPERTY_NAME_UNKNOWN));
+    ASSERT_EQ(rc, 0);
+    value.inBufferLen = sizeof(PROPERTY_NAME_UNKNOWN);
+
+    ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
+    ASSERT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
+    ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
 }
 
 /**
@@ -206,7 +206,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsBinaryBlock_WithoutEnum_NameNotBinaryBlock, 
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsBinaryBlock);
+    value.cmd = CMD_TEE_GetPropertyAsBinaryBlock;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_SINGLEINSTANCE, sizeof(GPD_TA_SINGLEINSTANCE));
     ASSERT_EQ(rc, 0);

@@ -30,7 +30,7 @@ TEE_TEST(TCF2Test, TEE_Free_With_BufferIsNull, Function | MediumTest | Level0)
     uint32_t origin;
     uint32_t caseId = INPUT_ISNULL;
 
-    ret = Invoke_Free(GetSession(), GET_TCF_CMDID(CMD_TEE_Free), caseId, &origin);
+    ret = Invoke_Free(GetSession(), CMD_TEE_Free, caseId, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -46,7 +46,7 @@ TEE_TEST(TCF2Test, TEE_Free_With_BufferIsNotMalloc, Function | MediumTest | Leve
     uint32_t origin;
     uint32_t caseId = BUFFER_ISNOT_MALLOC;
 
-    ret = Invoke_Free(GetSession(), GET_TCF_CMDID(CMD_TEE_Free), caseId, &origin);
+    ret = Invoke_Free(GetSession(), CMD_TEE_Free, caseId, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
