@@ -81,13 +81,13 @@ TEE_Result TA_CreateEntryPoint(void)
     tlogi("---- TA_CreateEntryPoint ---------");
     TEE_Result ret = AddCaller_CA_exec(CA_VENDOR, CA_UID);
     if (ret != TEE_SUCCESS) {
-        tloge("Add caller failed, ret = 0x%x", ret);
+        tloge("Arithmetic TA Add caller failed, ret = 0x%x", ret);
         return ret;
     }
 
     ret = AddCaller_CA_exec(CA_SYSTEM, CA_UID);
     if (ret != TEE_SUCCESS) {
-        tloge("Add caller failed, ret = 0x%x", ret);
+        tloge("Arithmetic TA Add caller failed, ret = 0x%x", ret);
         return ret;
     }
     return TEE_SUCCESS;
@@ -112,7 +112,7 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sessionContext, uint32_t cmdId, uint
 
     ret = TestArithmeticApi(cmdId);
     if (ret != TEE_SUCCESS)
-        tloge("invoke command for value failed! cmdId: %u, ret: 0x%x", cmdId, ret);
+        tloge("Arithmetic TA invoke command for value failed! cmdId: %u, ret: 0x%x", cmdId, ret);
 
     return ret;
 }
@@ -120,10 +120,10 @@ TEE_Result TA_InvokeCommandEntryPoint(void *sessionContext, uint32_t cmdId, uint
 void TA_CloseSessionEntryPoint(void *sessionContext)
 {
     (void)sessionContext;
-    tlogi("---- TA_CloseSessionEntryPoint -----");
+    tlogi("------ TA_CloseSessionEntryPoint -----");
 }
 
 void TA_DestroyEntryPoint(void)
 {
-    tlogi("---- TA_DestroyEntryPoint ----");
+    tlogi("------ TA_DestroyEntryPoint ----");
 }

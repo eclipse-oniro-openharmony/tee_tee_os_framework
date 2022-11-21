@@ -36,7 +36,7 @@ TEE_TEST(EmptyTest, DrvAPITest_Drv_Virt_To_Phys, Function | MediumTest | Level0)
     ret = sess.Start(&testId);
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
-    ret = TEEC_InvokeCommand(&sess.session, GET_DRV_CMDID(DRVTEST_COMMAND_DRVVIRTTOPHYS), NULL, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, DRVTEST_COMMAND_DRVVIRTTOPHYS, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -55,7 +55,7 @@ TEE_TEST(EmptyTest, DrvAPITest_Copy_From_Client, Function | MediumTest | Level0)
     ret = sess.Start(&testId);
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
-    ret = TEEC_InvokeCommand(&sess.session, GET_DRV_CMDID(DRVTEST_COMMAND_COPYFROMCLIENT), NULL, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, DRVTEST_COMMAND_COPYFROMCLIENT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }
@@ -74,7 +74,7 @@ TEE_TEST(EmptyTest, DrvAPITest_Copy_To_Client, Function | MediumTest | Level0)
     ret = sess.Start(&testId);
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
-    ret = TEEC_InvokeCommand(&sess.session, GET_DRV_CMDID(DRVTEST_COMMAND_COPYTOCLIENT), NULL, &origin);
+    ret = TEEC_InvokeCommand(&sess.session, DRVTEST_COMMAND_COPYTOCLIENT, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
 }

@@ -86,24 +86,6 @@ TEE_TEST(EmptyTest, GetPersistentTime, Function | MediumTest | Level0)
 }
 
 /**
- * @testcase.name      : OnlyGetPersistentTime
- * @testcase.desc      : test only get persistent time
- * @testcase.expect    : return TEEC_SUCCESS
- */
-TEE_TEST(EmptyTest, OnlyGetPersistentTime, Function | MediumTest | Level0)
-{
-    ClientSessionMgr sess;
-    uint32_t origin;
-    TEEC_UUID testId = ARITHMETIC_API_UUID;
-    TEEC_Result ret = sess.Start(&testId);
-    ASSERT_EQ(ret, TEEC_SUCCESS);
-
-    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_ONLY_GET_PERSISTENT_TIME, NULL, &origin);
-    ASSERT_EQ(ret, TEEC_SUCCESS);
-    sess.Destroy();
-}
-
-/**
  * @testcase.name      : SetPersistentTime
  * @testcase.desc      : test set persistent time
  * @testcase.expect    : return TEEC_SUCCESS
@@ -135,6 +117,23 @@ TEE_TEST(EmptyTest, TestPersistentTimeWithException, Function | MediumTest | Lev
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
     ret = TEEC_InvokeCommand(&sess.session, CMD_ID_TEST_PERSISTENT_TIME_WITH_EXCEPTION, NULL, &origin);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+    sess.Destroy();
+}
+/**
+ * @testcase.name      : OnlyGetPersistentTime
+ * @testcase.desc      : test only get persistent time
+ * @testcase.expect    : return TEEC_SUCCESS
+ */
+TEE_TEST(EmptyTest, OnlyGetPersistentTime, Function | MediumTest | Level0)
+{
+    ClientSessionMgr sess;
+    uint32_t origin;
+    TEEC_UUID testId = ARITHMETIC_API_UUID;
+    TEEC_Result ret = sess.Start(&testId);
+    ASSERT_EQ(ret, TEEC_SUCCESS);
+
+    ret = TEEC_InvokeCommand(&sess.session, CMD_ID_ONLY_GET_PERSISTENT_TIME, NULL, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     sess.Destroy();
 }

@@ -10,7 +10,7 @@
 # See the Mulan PSL v2 for more details.
 #
 
-set(TARGET_NAME tee_test_client_api)
+set(TARGET_NAME test_client_api.elf)
 
 ta_compile_pub(
     ELF_NAME

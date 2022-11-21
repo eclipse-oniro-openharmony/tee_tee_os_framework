@@ -18,7 +18,7 @@
 #define NUM_TWO 2
 #define NUM_THREE 3
 #define NUM_FIVE 5
-#define CHAR_BIT 8
+#define BIT_OF_CHAR 8
 #define SIZE_256 256
 #define MAX_BITS_PER_VARIABLE 2048
 #define RESULT_SIZE (MAX_BITS_PER_VARIABLE / 8)

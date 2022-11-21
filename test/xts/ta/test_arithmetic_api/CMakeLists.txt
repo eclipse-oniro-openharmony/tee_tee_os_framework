@@ -10,7 +10,7 @@
 # See the Mulan PSL v2 for more details.
 #
 
-set(TARGET_NAME test_arithmetic_api)
+set(TARGET_NAME test_arithmetic_api.elf)
 
 list(APPEND ta_src
     src/test_arithmetic_api_base.c

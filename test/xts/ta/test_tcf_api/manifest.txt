@@ -5,3 +5,7 @@ gpd.ta.multiSession: 		true
 gpd.ta.instanceKeepAlive:	false
 gpd.ta.dataSize:		819200
 gpd.ta.stackSize:		81920
+gpd.ta.version: 0
+gpd.ta.description: test ta
+smc.ta.testbinaryblock:VGhpcy
+smc.ta.testu64: 5147483647

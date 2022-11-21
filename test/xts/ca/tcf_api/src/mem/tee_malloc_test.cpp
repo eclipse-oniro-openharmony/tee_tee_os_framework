@@ -33,7 +33,11 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_FILL_ZERO, Function | MediumTest |
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_FILL_ZERO, buffer, &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = TESTSIZE;
+    value.inHint = TEE_MALLOC_FILL_ZERO;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_STREQ(buffer, EXPECTBUFFER_ZERO);
@@ -53,7 +57,11 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL, Function | MediumTest | L
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_NO_FILL, buffer, &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = TESTSIZE;
+    value.inHint = TEE_MALLOC_NO_FILL;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_STRNE(buffer, EXPECTBUFFER_A);
@@ -73,7 +81,11 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_SHARE, Function | MediumTest | 
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_NO_SHARE, buffer, &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = TESTSIZE;
+    value.inHint = TEE_MALLOC_NO_SHARE;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_STRNE(buffer, EXPECTBUFFER_A);
@@ -93,8 +105,11 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL_And_NO_SHARE, Function | M
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, TEE_MALLOC_NO_FILL | TEE_MALLOC_NO_SHARE,
-        buffer, &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = TESTSIZE;
+    value.inHint = TEE_MALLOC_NO_FILL | TEE_MALLOC_NO_SHARE;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_STRNE(buffer, EXPECTBUFFER_A);
@@ -114,7 +129,11 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_HINT_RESERVE, Function | MediumTest | Level0)
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), TESTSIZE, HINT_RESERVE, buffer, &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = TESTSIZE;
+    value.inHint = HINT_RESERVE;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_STRNE(buffer, EXPECTBUFFER_A);
@@ -134,7 +153,11 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_SizeIsZero, Function | MediumTest | Level0)
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x0, TESTSIZE);
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), 0, TEE_MALLOC_FILL_ZERO, buffer, &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = 0;
+    value.inHint = TEE_MALLOC_FILL_ZERO;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_ERROR_OUT_OF_MEMORY);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     free(buffer);
@@ -159,8 +182,11 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_SizeExceedHeapLimit, Function | MediumTest | 
     uint32_t stackSize = get_ta_stack_size(GetContext(), GetSession());
     EXPECT_GT(stackSize, 0);
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), dateSize + stackSize, TEE_MALLOC_FILL_ZERO, buffer,
-        &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = dateSize + stackSize;
+    value.inHint = TEE_MALLOC_FILL_ZERO;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_ERROR_OUT_OF_MEMORY);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     free(buffer);
@@ -182,7 +208,11 @@ TEE_TEST(TCF1Test, TEE_Malloc_With_MAXDataSize, Function | MediumTest | Level0)
     uint32_t dateSize = get_ta_data_size(GetContext(), GetSession());
     EXPECT_GT(dateSize, 0);
 
-    ret = Invoke_Malloc(GetSession(), GET_TCF_CMDID(CMD_TEE_Malloc), dateSize, TEE_MALLOC_FILL_ZERO, buffer, &origin);
+    TestMemData value = { 0 };
+    value.inMemSize = dateSize;
+    value.inHint = TEE_MALLOC_FILL_ZERO;
+    value.testBuffer = buffer;
+    ret = Invoke_Malloc(GetSession(), CMD_TEE_Malloc, &value, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
     EXPECT_STREQ(buffer, EXPECTBUFFER_ZERO);

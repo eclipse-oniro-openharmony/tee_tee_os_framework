@@ -29,7 +29,7 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_SMC_TA_TESTIDENTITY, Fu
     TEEC_Result ret;
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = CMD_TEE_GetPropertyAsIdentity;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTIDENTITY, sizeof(SMC_TA_TESTIDENTITY));
     ASSERT_EQ(rc, 0);
@@ -50,7 +50,7 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameIsNull, Function | 
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = CMD_TEE_GetPropertyAsIdentity;
     value.caseId = INPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
@@ -69,7 +69,7 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameIsZero, Function | 
     TEEC_Result ret;
 
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = CMD_TEE_GetPropertyAsIdentity;
     value.propSet = TEE_PROPSET_CURRENT_TA;
 
     ret = Invoke_GetPropertyAsX(GetContext(), GetSession(), &value);
@@ -88,7 +88,7 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_ValueBufferIsNULL, Func
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = CMD_TEE_GetPropertyAsIdentity;
     value.caseId = OUTPUT_ISNULL;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, SMC_TA_TESTIDENTITY, sizeof(SMC_TA_TESTIDENTITY));
@@ -111,7 +111,7 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotFound, Function 
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = CMD_TEE_GetPropertyAsIdentity;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, PROPERTY_NAME_UNKNOWN, sizeof(PROPERTY_NAME_UNKNOWN));
     ASSERT_EQ(rc, 0);
@@ -133,7 +133,7 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotIdentity, Functi
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = CMD_TEE_GetPropertyAsIdentity;
     value.propSet = TEE_PROPSET_CURRENT_TA;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TA_SINGLEINSTANCE, sizeof(GPD_TA_SINGLEINSTANCE));
     ASSERT_EQ(rc, 0);
@@ -155,7 +155,7 @@ TEE_TEST(TCF2Test, TEE_GetPropertyAsIdentity_WithoutEnum_NameNotUUID2, Function 
 
     int rc;
     TestData value = { 0 };
-    value.cmd = GET_TCF_CMDID(CMD_TEE_GetPropertyAsIdentity);
+    value.cmd = CMD_TEE_GetPropertyAsIdentity;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
     rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_DESCRIPTION, sizeof(GPD_TEE_DESCRIPTION));
     ASSERT_EQ(rc, 0);

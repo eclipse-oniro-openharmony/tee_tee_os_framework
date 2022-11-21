@@ -25,14 +25,14 @@ using namespace std;
  * @testcase.name      : TEE_Panic_With_Normal
  * @testcase.desc      : test TA call TEE_Panic to make ta panic
  * @testcase.expect    : return TEEC_ERROR_TARGET_DEAD
-*/
+ */
 TEE_TEST(TCF1Test, TEE_Panic_With_Normal, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     uint32_t origin;
     TEEC_Result panicCode = TEEC_ERROR_GENERIC;
 
-    ret = Invoke_Panic(GetSession(), GET_TCF_CMDID(CMD_TEE_Panic), panicCode, &origin);
+    ret = Invoke_Panic(GetSession(), CMD_TEE_Panic, panicCode, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
     ASSERT_EQ(origin, TEEC_ORIGIN_TEE);
 }
@@ -45,18 +45,17 @@ TEE_TEST(TCF1Test, TEE_Panic_With_Normal, Function | MediumTest | Level0)
 TEE_TEST(TCF2TA2TATest, TEE_Panic_With_MultiSession, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    TEE_TASessionHandle ta2taSession[8] = { 0 };
+    uint32_t ta2taSession[8] = { 0 };
     uint32_t origin = 0;
+    int i;
     TestData value = { 0 };
     value.caseId = 0;
-    TEEC_UUID uuid = TCF_API_UUID_1; // this uuid is for ta2
-    int i;
+    value.uuid = TCF_API_UUID_1; // this uuid is for ta2
     value.inBufferLen = BIG_SIZE;
     value.outBufferLen = BIG_SIZE;
 
     for (i = 0; i <= 6; i++) {
-        ret = Invoke_OpenTASession(GetSession(), GET_TCF_CMDID(CMD_TEE_OpenTASession), uuid, &ta2taSession[i], &value,
-            &origin);
+        ret = Invoke_OpenTASession(GetSession(), CMD_TEE_OpenTASession, &ta2taSession[i], &value, &origin);
         ASSERT_EQ(ret, TEEC_SUCCESS);
         ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
         ASSERT_EQ(value.origin, TEEC_ORIGIN_TEE);
@@ -67,12 +66,12 @@ TEE_TEST(TCF2TA2TATest, TEE_Panic_With_MultiSession, Function | MediumTest | Lev
 
     // make ta2 one session panic
     TEEC_Result panicCode = TEEC_ERROR_GENERIC;
-    ret = Invoke_Panic(GetSession2(), GET_TCF_CMDID(CMD_TEE_Panic), panicCode, &origin);
+    ret = Invoke_Panic(GetSession2(), CMD_TEE_Panic, panicCode, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
-    //ASSERT_EQ(origin, TEEC_ORIGIN_TEE);
+    // ASSERT_EQ(origin, TEEC_ORIGIN_TEE);
 
     for (i = 0; i <= 6; i++) {
-        ret = Invoke_InvokeTACommand(GetSession(), GET_TCF_CMDID(CMD_TEE_InvokeTACommand), ta2taSession[i], &value, &origin);
+        ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession[i], &value, &origin);
         ASSERT_EQ(ret, TEEC_ERROR_ITEM_NOT_FOUND);
         ASSERT_EQ(origin, TEEC_ORIGIN_TEE);
     }

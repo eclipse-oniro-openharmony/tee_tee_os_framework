@@ -182,9 +182,10 @@ static TEE_Result TestOnlyGetPersistentTime()
 {
     tlogi("[%s] begin:", __FUNCTION__);
     TEE_Time time;
-    TEE_Result ret = TEE_GetTAPersistentTime(&time);
-    tlogi("only get persistent time, not check. ret = 0x%x, seconds = %u, millis = %u",
-        ret, time.seconds, time.millis);
+    TEE_Result ret;
+    ret = TEE_GetTAPersistentTime(&time);
+    tlogi("only get persistent time, not check. ret = 0x%x, seconds = %u, millis = %u\n", ret, time.seconds,
+        time.millis);
 
     return TEE_SUCCESS;
 }

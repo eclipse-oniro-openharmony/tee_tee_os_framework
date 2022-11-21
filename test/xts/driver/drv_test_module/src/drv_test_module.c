@@ -3,22 +3,23 @@
  * Licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
- *     http://license.coscl.org.cn/MulanPSL2
+ * http://license.coscl.org.cn/MulanPSL2
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
-#include "tee_driver_module.h"
-#include <drv_addr_share.h>
-#include <drv_param_ops.h>
 #include <malloc.h>
-#include <string.h>
 #include <securec.h>
+#include <string.h>
 #include <sys/mman.h>
-#include <tee_log.h>
-#include <test_drv_cmdid.h>
+
+#include "drv_addr_share.h"
+#include "drv_param_ops.h"
+#include "drv_test_module.h"
+#include "tee_log.h"
+#include "test_drv_cmdid.h"
 
 #define TOKEN_BUF_SIZE 0x1000
 #define BUFFER_SIZE 1024
@@ -55,7 +56,7 @@ static int32_t copy_from_client_exception_test(struct share_buffer_arg *input_ar
     return 0;
 }
 
-static int32_t copy_from_client_test(struct share_buffer_arg* input_arg, char* temp_buffer, uint32_t size)
+static int32_t copy_from_client_test(struct share_buffer_arg *input_arg, char *temp_buffer, uint32_t size)
 {
     driver_log("copy from client test begin\n");
     int32_t ret;
@@ -94,7 +95,7 @@ static int32_t copy_to_client_exception_test(struct share_buffer_arg *input_arg,
     return 0;
 }
 
-static int32_t copy_to_client_test(struct share_buffer_arg* input_arg, char* temp_buffer, uint32_t size)
+static int32_t copy_to_client_test(struct share_buffer_arg *input_arg, char *temp_buffer, uint32_t size)
 {
     driver_log("copy to client test begin\n");
     int32_t ret;
@@ -145,13 +146,13 @@ int64_t ioctl_test(struct drv_data *drv, uint32_t cmd, unsigned long args, uint3
     (void)memset_s(temp_buffer, size, 0x0, size);
 
     switch (cmd) {
-        case GET_DRV_CMDID(DRVTEST_COMMAND_DRVVIRTTOPHYS):
+        case DRVTEST_COMMAND_DRVVIRTTOPHYS:
             ret = virt2phys_test();
             break;
-        case GET_DRV_CMDID(DRVTEST_COMMAND_COPYFROMCLIENT):
+        case DRVTEST_COMMAND_COPYFROMCLIENT:
             ret = copy_from_client_test(input_arg, temp_buffer, size);
             break;
-        case GET_DRV_CMDID(DRVTEST_COMMAND_COPYTOCLIENT):
+        case DRVTEST_COMMAND_COPYTOCLIENT:
             ret = copy_to_client_test(input_arg, temp_buffer, size);
             break;
         default:
