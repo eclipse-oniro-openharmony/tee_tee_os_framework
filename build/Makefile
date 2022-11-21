@@ -15,6 +15,7 @@ endif
 
 ## hm-sdk directories:
 export TOPDIR := $(CURDIR)/../
+export OPENSSL_DIR := $(CURDIR)/../../../../third_party/openssl_1.1.1n
 export OLD_TOPDIR := $(TOPDIR)/config
 export TOOLS      := $(TOPDIR)/build/tools
 export TOOLS_ROOT := $(TOPDIR)/prebuild/$(HM_SDK_VER)/tools
