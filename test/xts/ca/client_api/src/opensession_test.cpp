@@ -128,8 +128,8 @@ TEE_TEST(OnlyInit, Opensession_WithNotSupportConnectionMethod, Function | Medium
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
 
-    ret =
-        TEEC_OpenSession(GetContext(), GetSession(), &testId, TEEC_LOGIN_GROUP, (void *)testData, &operation, &origin);
+    ret = TEEC_OpenSession(GetContext(), GetSession(), &testId, TEEC_LOGIN_GROUP, reinterpret_cast<void *>(testData),
+        &operation, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
 
@@ -146,8 +146,8 @@ TEE_TEST(OnlyInit, Opensession_WithNotSupportConnectionMethod, Function | Medium
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
 
-    ret = TEEC_OpenSession(GetContext(), GetSession(), &testId, TEEC_LOGIN_GROUP_APPLICATION, (void *)testData,
-        &operation, &origin);
+    ret = TEEC_OpenSession(GetContext(), GetSession(), &testId, TEEC_LOGIN_GROUP_APPLICATION,
+        reinterpret_cast<void *>(testData), &operation, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
 }
@@ -320,13 +320,13 @@ TEE_TEST(OnlyInit, Opensession_WithOperationIsTempMem, Function | MediumTest | L
     ret = TEEC_OpenSession(GetContext(), GetSession(), &testId, TEEC_LOGIN_IDENTIFY, NULL, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    ASSERT_STREQ((char *)operation.params[0].tmpref.buffer, testData0);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[0].tmpref.buffer), testData0);
     ASSERT_EQ(operation.params[0].tmpref.size, len0);
-    ASSERT_STREQ((char *)operation.params[1].tmpref.buffer, testData1);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[1].tmpref.buffer), testData1);
     ASSERT_EQ(operation.params[1].tmpref.size, len1);
-    ASSERT_STREQ((char *)operation.params[2].tmpref.buffer, testData2);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[2].tmpref.buffer), testData2);
     ASSERT_EQ(operation.params[2].tmpref.size, len2);
-    ASSERT_STREQ((char *)operation.params[3].tmpref.buffer, testData3);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[3].tmpref.buffer), testData3);
     ASSERT_EQ(operation.params[3].tmpref.size, len3);
 }
 
@@ -373,7 +373,7 @@ TEE_TEST(OnlyInit, Opensession_WithOperationIsPartialMem, Function | MediumTest 
     ret = TEEC_OpenSession(GetContext(), GetSession(), &testId, TEEC_LOGIN_IDENTIFY, NULL, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    ASSERT_STREQ((char *)sharedMem.buffer, testData0);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.buffer), testData0);
     ASSERT_EQ(operation.params[0].memref.size, sharedMem.size);
     ASSERT_EQ(operation.params[1].memref.size, sharedMem.size);
     ASSERT_EQ(operation.params[2].memref.size, sharedMem.size);

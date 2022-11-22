@@ -231,13 +231,13 @@ TEE_TEST(EmptyTest, InvokeCommand_WithOperationIsTempMem, Function | MediumTest 
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_BUFFER, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    ASSERT_STREQ((char *)operation.params[0].tmpref.buffer, g_testData0);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[0].tmpref.buffer), g_testData0);
     ASSERT_EQ(operation.params[0].tmpref.size, TEST_STR_LEN);
-    ASSERT_STREQ((char *)operation.params[1].tmpref.buffer, g_teeOutput);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[1].tmpref.buffer), g_teeOutput);
     ASSERT_EQ(operation.params[1].tmpref.size, g_teeOutputLen);
-    ASSERT_STREQ((char *)operation.params[2].tmpref.buffer, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[2].tmpref.buffer), g_teeInout);
     ASSERT_EQ(operation.params[2].tmpref.size, g_teeInoutLen);
-    ASSERT_STREQ((char *)operation.params[3].tmpref.buffer, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[3].tmpref.buffer), g_teeInout);
     ASSERT_EQ(operation.params[3].tmpref.size, g_teeInoutLen);
 }
 
@@ -329,13 +329,13 @@ TEE_TEST(EmptyTest, InvokeCommand_WithOperationIsPartialMem, Function | MediumTe
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_BUFFER, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    ASSERT_STREQ((char *)sharedMem[0].buffer, g_testData0);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem[0].buffer), g_testData0);
     ASSERT_EQ(operation.params[0].memref.size, TEST_STR_LEN);
-    ASSERT_STREQ((char *)sharedMem[1].buffer, g_teeOutput);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem[1].buffer), g_teeOutput);
     ASSERT_EQ(operation.params[1].memref.size, g_teeOutputLen);
-    ASSERT_STREQ((char *)sharedMem[2].buffer, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem[2].buffer), g_teeInout);
     ASSERT_EQ(operation.params[2].memref.size, g_teeInoutLen);
-    ASSERT_STREQ((char *)sharedMem[3].buffer, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem[3].buffer), g_teeInout);
     ASSERT_EQ(operation.params[3].memref.size, g_teeInoutLen);
 }
 
@@ -553,7 +553,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefPartialBufferIsWrong, Function | Med
     ret = sess.Start(&testId);
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
 
@@ -629,7 +629,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithOperationAllType, Function | MediumTest | 
     ret = TEEC_AllocateSharedMemory(&sess.context, &testMem.sharedMem);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     (void)memset_s(testMem.sharedMem.buffer, TEST_STR_LEN, 0x0, TEST_STR_LEN);
-    rc = strcpy_s((char *)testMem.sharedMem.buffer, testMem.sharedMem.size, g_testData2);
+    rc = strcpy_s(reinterpret_cast<char *>(testMem.sharedMem.buffer), testMem.sharedMem.size, g_testData2);
     ASSERT_EQ(rc, 0);
 
     /* *register shared memory* */
@@ -656,11 +656,11 @@ TEE_TEST(EmptyTest, InvokeCommand_WithOperationAllType, Function | MediumTest | 
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    ASSERT_STREQ((char *)nonZeroCopysharedMem.sharedMem.buffer, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(nonZeroCopysharedMem.sharedMem.buffer), g_teeInout);
     ASSERT_EQ(operation.params[0].memref.size, g_teeInoutLen);
-    ASSERT_STREQ((char *)testMem.sharedMem.buffer, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_teeInout);
     ASSERT_EQ(operation.params[1].memref.size, 0);
-    ASSERT_STREQ((char *)operation.params[2].tmpref.buffer, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(operation.params[2].tmpref.buffer), g_teeInout);
     ASSERT_EQ(operation.params[2].tmpref.size, g_teeInoutLen);
     ASSERT_EQ(operation.params[3].value.a, 0x123 - 1);
     ASSERT_EQ(operation.params[3].value.b, 0x987 - 1);
@@ -683,7 +683,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefTempInput1024k, Function | MediumTes
     ret = sess.Start(&testId);
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
-    char *testData0 = (char *)malloc(SIZE_1024K);
+    char *testData0 = reinterpret_cast<char *>(malloc(SIZE_1024K));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, SIZE_1024K, 0x0, SIZE_1024K);
     rc = memcpy_s(testData0, SIZE_1024K, g_testString.c_str(), g_testString.length());
@@ -697,7 +697,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefTempInput1024k, Function | MediumTes
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    EXPECT_STREQ((char *)operation.params[1].tmpref.buffer, testData0);
+    EXPECT_STREQ(reinterpret_cast<char *>(operation.params[1].tmpref.buffer), testData0);
     EXPECT_EQ(operation.params[1].tmpref.size, SIZE_1024K);
     free(testData0);
 }
@@ -718,7 +718,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefTempOutput1024k, Function | MediumTe
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
     g_teeOutputLen = strlen(g_teeOutput) + 1;
-    char *testData0 = (char *)malloc(SIZE_1024K);
+    char *testData0 = reinterpret_cast<char *>(malloc(SIZE_1024K));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, SIZE_1024K, 0x0, SIZE_1024K);
     rc = memcpy_s(testData0, SIZE_1024K, g_testString.c_str(), g_testString.length());
@@ -733,7 +733,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefTempOutput1024k, Function | MediumTe
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    EXPECT_STREQ((char *)operation.params[1].tmpref.buffer, g_teeOutput);
+    EXPECT_STREQ(reinterpret_cast<char *>(operation.params[1].tmpref.buffer), g_teeOutput);
     EXPECT_EQ(operation.params[1].tmpref.size, g_teeOutputLen);
     free(testData0);
 }
@@ -754,7 +754,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefTempInout1024k, Function | MediumTes
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
     g_teeInoutLen = strlen(g_teeInout) + 1;
-    char *testData0 = (char *)malloc(SIZE_1024K);
+    char *testData0 = reinterpret_cast<char *>(malloc(SIZE_1024K));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, SIZE_1024K, 0x0, SIZE_1024K);
     rc = memcpy_s(testData0, SIZE_1024K, g_testString.c_str(), g_testString.length());
@@ -769,7 +769,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefTempInout1024k, Function | MediumTes
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    EXPECT_STREQ((char *)operation.params[1].tmpref.buffer, g_teeInout);
+    EXPECT_STREQ(reinterpret_cast<char *>(operation.params[1].tmpref.buffer), g_teeInout);
     EXPECT_EQ(operation.params[1].tmpref.size, g_teeInoutLen);
     free(testData0);
 }
@@ -789,7 +789,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefTempInoutExceed1024k, Function | Med
     ret = sess.Start(&testId);
     ASSERT_EQ(ret, TEEC_SUCCESS);
 
-    char *testData0 = (char *)malloc(SIZE_1024K + 1);
+    char *testData0 = reinterpret_cast<char *>(malloc(SIZE_1024K + 1));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, SIZE_1024K + 1, 0x0, SIZE_1024K + 1);
     rc = memcpy_s(testData0, SIZE_1024K + 1, g_testString.c_str(), g_testString.length());
@@ -912,7 +912,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefPartialInput2048k, Function | Medium
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    EXPECT_STREQ((char *)testMem.sharedMem.buffer, g_testString.c_str());
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_testString.c_str());
     EXPECT_EQ(operation.params[1].memref.size, SIZE_2048K);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
 }
@@ -953,7 +953,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefPartialOutput2048k, Function | Mediu
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer, g_teeOutput);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_teeOutput);
     EXPECT_EQ(operation.params[1].memref.size, g_teeOutputLen);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
 }
@@ -994,7 +994,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefPartialInout2048k, Function | Medium
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer, g_teeInout);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_teeInout);
     EXPECT_EQ(operation.params[1].memref.size, g_teeInoutLen);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
 }
@@ -1035,7 +1035,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefPartialInoutExceed2048k, Function | 
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_ERROR_OUT_OF_MEMORY);
     EXPECT_EQ(origin, TEEC_ORIGIN_COMMS);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer, g_testString.c_str());
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_testString.c_str());
     EXPECT_EQ(operation.params[1].memref.size, testMem.sharedMem.size);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
 }
@@ -1058,7 +1058,7 @@ TEE_TEST(EmptyTest, InvokeCommand_ReturnLenWithMemrefTempOutput, Function | Medi
 
     g_teeOutputLen = strlen(g_teeOutput) + 1;
 
-    char *testData0 = (char *)malloc(TEST_SIZE512);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_SIZE512));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_SIZE512, 0x0, TEST_SIZE512);
     rc = strcpy_s(testData0, TEST_SIZE512, g_offset0);
@@ -1115,7 +1115,7 @@ TEE_TEST(EmptyTest, InvokeCommand_ReturnLenWithMemrefTempInout, Function | Mediu
     g_teeInoutLen = strlen(g_teeInout) + 1;
     g_teeOutputLen = strlen(g_teeOutput) + 1;
 
-    char *testData0 = (char *)malloc(TEST_SIZE512);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_SIZE512));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_SIZE512, 0x0, TEST_SIZE512);
     rc = strcpy_s(testData0, TEST_SIZE512, g_offset0);
@@ -1219,7 +1219,7 @@ static void *ThreadTestOpenInvokeAllocmem(void *inParams)
         ((DatePacket *)inParams)->ret = TEEC_ERROR_GENERIC;
     }
     if ((operation.params[1].memref.size != g_teeInoutLen) ||
-        (strncmp(g_teeInout, (char *)sharedMem.buffer, g_teeInoutLen) != 0)) {
+        (strncmp(g_teeInout, reinterpret_cast<char *>(sharedMem.buffer), g_teeInoutLen) != 0)) {
         TEST_PRINT_ERROR("thread %d:Invoke buffer failed,memref.size=%d,sharedMem.buffer=%s\n", id,
             operation.params[1].memref.size, sharedMem.buffer);
         ((DatePacket *)inParams)->ret = TEEC_ERROR_GENERIC;
@@ -1250,7 +1250,7 @@ TEE_TEST(OnlyInit, InvokeCommand_5Thread_SameContext_DiffSessionAndAllocSharemem
     for (i = 0; i < 5; i++) {
         iInvokeParams[i].context = GetContext();
         iInvokeParams[i].id = i + 1;
-        pthread_create(&id[i], NULL, ThreadTestOpenInvokeAllocmem, (void *)&iInvokeParams[i]);
+        pthread_create(&id[i], NULL, ThreadTestOpenInvokeAllocmem, reinterpret_cast<void *>(&iInvokeParams[i]));
     }
     for (i = 0; i < 5; i++) {
         pthread_join(id[i], NULL);

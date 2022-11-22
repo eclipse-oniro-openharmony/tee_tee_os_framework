@@ -41,7 +41,7 @@ TEE_TEST(EmptyTest, Closesession_WithCreatedSession, Function | MediumTest | Lev
 
     TEEC_CloseSession(&sess.session);
     ASSERT_EQ(sess.session.session_id, 0);
-    ASSERT_STREQ((char *)sess.session.context, NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sess.session.context), NULL);
 }
 
 /**
@@ -60,7 +60,7 @@ TEE_TEST(EmptyTest, Closesession_WithoutSession, Function | MediumTest | Level0)
     TEEC_CloseSession(NULL);
     ASSERT_NE(sess.session.session_id, 0);
     ASSERT_NE(sess.session.ops_cnt, 0);
-    ASSERT_STRNE((char *)sess.session.context, NULL);
+    ASSERT_STRNE(reinterpret_cast<char *>(sess.session.context), NULL);
 }
 
 /**
@@ -78,5 +78,5 @@ TEE_TEST(EmptyTest, Closesession_WithNotOpenedSession, Function | MediumTest | L
     TEEC_CloseSession(&sess.session);
     ASSERT_EQ(sess.session.session_id, 0);
     ASSERT_EQ(sess.session.ops_cnt, 0);
-    ASSERT_STREQ((char *)sess.session.context, NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sess.session.context), NULL);
 }

@@ -3,7 +3,7 @@
  * Licensed under the Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
- *     http://license.coscl.org.cn/MulanPSL2
+ * http://license.coscl.org.cn/MulanPSL2
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
  * PURPOSE.
@@ -47,7 +47,7 @@ using namespace std;
 TEE_TEST(OnlyInit, RegisterSharedMemory_WithRegisterMem, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     GetSharedMem()->buffer = testData0;
@@ -66,7 +66,7 @@ TEE_TEST(OnlyInit, RegisterSharedMemory_WithRegisterMem, Function | MediumTest |
 TEE_TEST(OnlyInit, RegisterSharedMemory_WithoutContext, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     GetSharedMem()->buffer = testData0;
@@ -87,7 +87,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithNotInitContext, Function | MediumTe
     TEEC_Result ret;
     TEEC_Context context = { 0 };
     TEEC_SharedMemory sharedMem;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     sharedMem.buffer = testData0;
@@ -123,7 +123,7 @@ TEE_TEST(OnlyInit, RegisterSharedMemory_WithoutSharedMem, Function | MediumTest 
 TEE_TEST(OnlyInit, RegisterSharedMemory_WithSharedMemSizeIsZero, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     GetSharedMem()->buffer = testData0;
@@ -142,7 +142,7 @@ TEE_TEST(OnlyInit, RegisterSharedMemory_WithSharedMemSizeIsZero, Function | Medi
 TEE_TEST(OnlyInit, RegisterSharedMemory_WithSharedMemFlagIsZero, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     GetSharedMem()->buffer = testData0;
@@ -161,7 +161,7 @@ TEE_TEST(OnlyInit, RegisterSharedMemory_WithSharedMemFlagIsZero, Function | Medi
 TEE_TEST(OnlyInit, RegisterSharedMemory_WithSharedMemFlagIsInvalid, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     GetSharedMem()->buffer = testData0;
@@ -180,7 +180,7 @@ TEE_TEST(OnlyInit, RegisterSharedMemory_WithSharedMemFlagIsInvalid, Function | M
 TEE_TEST(OnlyInit, RegisterSharedMemory_WithSharedMemBufferIsNull, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     GetSharedMem()->size = TEST_STR_LEN;
@@ -205,7 +205,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagInput_UseParamTypesOutput, Func
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     /* *allocate shared memory* */
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     ClientShareMemMgr testMem;
@@ -242,7 +242,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagInput_UseParamTypesInout, Funct
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     /* *allocate shared memory* */
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     ClientShareMemMgr testMem;
@@ -280,7 +280,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagInput_UseParamTypesWhole, Funct
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     /* *allocate shared memory* */
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     ClientShareMemMgr testMem;
@@ -319,7 +319,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagOutput_UseParamTypesInput, Func
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     /* *allocate shared memory* */
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     ClientShareMemMgr testMem;
@@ -356,7 +356,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagOutput_UseParamTypesInout, Func
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     /* *allocate shared memory* */
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     ClientShareMemMgr testMem;
@@ -395,7 +395,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagOutput_UseParamTypesWhole, Func
     g_teeOutputLen = strlen(g_teeOutput) + 1;
 
     /* *allocate shared memory* */
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
     ClientShareMemMgr testMem;
@@ -418,9 +418,9 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_WithFlagOutput_UseParamTypesWhole, Func
     free(testData0);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     ASSERT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    ASSERT_STREQ((char *)testMem.sharedMem.buffer + OFFSET100, g_teeOutput);
+    ASSERT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET100, g_teeOutput);
     ASSERT_EQ(operation.params[1].memref.size, g_teeOutputLen);
-    ASSERT_STREQ((char *)testMem.sharedMem.buffer, g_teeOutput);
+    ASSERT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_teeOutput);
     ASSERT_EQ(operation.params[0].memref.size, 0);
 }
 
@@ -458,7 +458,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_ReturnLenUseTypesOutput, Function | Med
 
     g_teeOutputLen = strlen(g_teeOutput) + 1;
     g_teeInoutLen = strlen(g_teeInout) + 1;
-    char *testData0 = (char *)malloc(TEST_SIZE512);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_SIZE512));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_SIZE512, 0x0, TEST_SIZE512);
 
@@ -471,13 +471,16 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_ReturnLenUseTypesOutput, Function | Med
     EXPECT_EQ(ret, TEEC_SUCCESS);
     (void)memset_s(testMem.sharedMem.buffer, testMem.sharedMem.size, 0x0, testMem.sharedMem.size);
     /* for test , [0] size < tee size, [1] size > tee size, [2] size > tee size, [3] size < tee size */
-    rc = strcpy_s((char*)testMem.sharedMem.buffer, testMem.sharedMem.size, g_offset0);
+    rc = strcpy_s(reinterpret_cast<char *>(testMem.sharedMem.buffer), testMem.sharedMem.size, g_offset0);
     EXPECT_EQ(rc, 0);
-    rc = strcpy_s((char*)testMem.sharedMem.buffer + OFFSET100, testMem.sharedMem.size - OFFSET100, g_offset100);
+    rc = strcpy_s(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET100, testMem.sharedMem.size - OFFSET100,
+        g_offset100);
     EXPECT_EQ(rc, 0);
-    rc = strcpy_s((char*)testMem.sharedMem.buffer + OFFSET200, testMem.sharedMem.size - OFFSET200, g_offset200);
+    rc = strcpy_s(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET200, testMem.sharedMem.size - OFFSET200,
+        g_offset200);
     EXPECT_EQ(rc, 0);
-    rc = strcpy_s((char*)testMem.sharedMem.buffer + OFFSET300, testMem.sharedMem.size - OFFSET300, g_offset300);
+    rc = strcpy_s(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET300, testMem.sharedMem.size - OFFSET300,
+        g_offset300);
     EXPECT_EQ(rc, 0);
 
     TEEC_Operation operation = { 0 };
@@ -494,10 +497,10 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_ReturnLenUseTypesOutput, Function | Med
     ASSERT_EQ(operation.params[1].memref.size, g_teeOutputLen);
     ASSERT_EQ(operation.params[2].memref.size, g_teeInoutLen);
     ASSERT_EQ(operation.params[3].memref.size, g_teeInoutLen);
-    ASSERT_STREQ((char *)testMem.sharedMem.buffer, g_offset0);
-    ASSERT_STREQ((char *)testMem.sharedMem.buffer + OFFSET100, g_teeOutput);
-    ASSERT_STREQ((char *)testMem.sharedMem.buffer + OFFSET200, g_teeInout);
-    ASSERT_STREQ((char *)testMem.sharedMem.buffer + OFFSET300, g_offset300);
+    ASSERT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_offset0);
+    ASSERT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET100, g_teeOutput);
+    ASSERT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET200, g_teeInout);
+    ASSERT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET300, g_offset300);
 }
 
 /**
@@ -515,7 +518,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_OffsetExceedTest1, Function | MediumTes
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     g_teeOutputLen = strlen(g_teeOutput) + 1;
-    char *testData0 = (char *)malloc(TEST_SIZE512);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_SIZE512));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_SIZE512, 0x0, TEST_SIZE512);
 
@@ -565,7 +568,7 @@ TEE_TEST(EmptyTest, RegisterSharedMemory_OffsetExceedTest2, Function | MediumTes
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     g_teeOutputLen = strlen(g_teeOutput) + 1;
-    char *testData0 = (char *)malloc(TEST_SIZE512);
+    char *testData0 = reinterpret_cast<char *>(malloc(TEST_SIZE512));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_SIZE512, 0x0, TEST_SIZE512);
 

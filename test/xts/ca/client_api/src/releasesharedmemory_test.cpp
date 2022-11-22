@@ -42,8 +42,8 @@ TEE_TEST(OnlyInit, ReleaseSharedMemory_WithAllocatedMem, Function | MediumTest |
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     TEEC_ReleaseSharedMemory(&sharedMem);
-    ASSERT_STREQ((char *)sharedMem.buffer, NULL);
-    ASSERT_STREQ((char *)sharedMem.context, NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.buffer), NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.context), NULL);
 }
 
 /**
@@ -55,7 +55,7 @@ TEE_TEST(OnlyInit, ReleaseSharedMemory_WithRegisterMem, Function | MediumTest | 
 {
     TEEC_Result ret;
     TEEC_SharedMemory sharedMem;
-    char *testData0 = (char *)malloc(TEST_STR_LEN);
+    char* testData0 = reinterpret_cast<char*>(malloc(TEST_STR_LEN));
     ASSERT_STRNE(testData0, NULL);
     (void)memset_s(testData0, TEST_STR_LEN, 0x0, TEST_STR_LEN);
 
@@ -66,8 +66,8 @@ TEE_TEST(OnlyInit, ReleaseSharedMemory_WithRegisterMem, Function | MediumTest | 
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     TEEC_ReleaseSharedMemory(&sharedMem);
-    EXPECT_STREQ((char *)sharedMem.buffer, NULL);
-    EXPECT_STREQ((char *)sharedMem.context, NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.buffer), NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.context), NULL);
     free(testData0);
 }
 
@@ -86,8 +86,8 @@ TEE_TEST(OnlyInit, ReleaseSharedMemory_WithoutSharedMem, Function | MediumTest |
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     TEEC_ReleaseSharedMemory(NULL);
-    ASSERT_STRNE((char *)sharedMem.buffer, NULL);
-    ASSERT_STRNE((char *)sharedMem.context, NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.buffer), NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.context), NULL);
 }
 
 /**
@@ -102,6 +102,6 @@ TEE_TEST(OnlyInit, ReleaseSharedMemory_WithNotAllocatedSharedMem, Function | Med
     sharedMem.flags = TEEC_MEM_INOUT;
 
     TEEC_ReleaseSharedMemory(&sharedMem);
-    ASSERT_STREQ((char *)sharedMem.buffer, NULL);
-    ASSERT_STREQ((char *)sharedMem.context, NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.buffer), NULL);
+    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.context), NULL);
 }

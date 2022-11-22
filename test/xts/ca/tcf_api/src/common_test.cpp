@@ -27,14 +27,14 @@ void TCF1Test::SetUp()
     TEEC_Operation operation = { 0 };
     TEEC_Result ret = TEEC_InitializeContext(NULL, &context);
     ABORT_UNLESS(ret != TEEC_SUCCESS);
-    ASSERT_EQ(ret, TEEC_SUCCESS);
+    // ASSERT_EQ(ret, TEEC_SUCCESS);
     operation.started = 1;
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
     TEEC_UUID uuid = TCF_API_UUID_1;
 
     ret = TEEC_OpenSession(&context, &session, &uuid, TEEC_LOGIN_IDENTIFY, NULL, &operation, NULL);
     ABORT_UNLESS(ret != TEEC_SUCCESS);
-    ASSERT_EQ(ret, TEEC_SUCCESS);
+    // ASSERT_EQ(ret, TEEC_SUCCESS);
 }
 
 void TCF1Test::TearDown()
@@ -280,7 +280,7 @@ TEEC_Result Invoke_Realloc(TEEC_Session *session, uint32_t commandID, TestMemDat
     if (bufSize > MAX_SHARE_SIZE)
         bufSize = TESTSIZE;
 
-    buffer = (char *)malloc(bufSize);
+    buffer = reinterpret_cast<char *>(malloc(bufSize));
     if (buffer == NULL) {
         TEST_PRINT_ERROR("malloc buffer fail!\n");
         return TEEC_FAIL;
@@ -315,7 +315,7 @@ TEEC_Result Invoke_MemMove_Or_Fill(TEEC_Session *session, uint32_t commandID, Te
     TEEC_Operation operation = { 0 };
     char *buffer = NULL;
     uint32_t bufSize = testData->oldSize;
-    buffer = (char *)malloc(bufSize);
+    buffer = reinterpret_cast<char*>(malloc(bufSize));
     if (buffer == NULL) {
         TEST_PRINT_ERROR("malloc buffer fail!\n");
         return TEEC_FAIL;
@@ -380,7 +380,7 @@ TEEC_Result Invoke_CheckMemoryAccessRights(TEEC_Session *session, uint32_t comma
     TEEC_Operation operation = { 0 };
     char *buffer = NULL;
     uint32_t bufSize = testData->oldSize;
-    buffer = (char *)malloc(bufSize);
+    buffer = reinterpret_cast<char*>(malloc(bufSize));
     if (buffer == NULL) {
         TEST_PRINT_ERROR("malloc buffer fail!\n");
         return TEEC_FAIL;
