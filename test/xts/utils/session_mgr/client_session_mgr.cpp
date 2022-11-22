@@ -15,8 +15,6 @@
 
 ClientSessionMgr::ClientSessionMgr()
 {
-    context = { 0 };
-    session = { 0 };
     initTag = false;
 }
 
@@ -64,7 +62,6 @@ ClientSessionMgr::~ClientSessionMgr()
 
 ClientShareMemMgr::ClientShareMemMgr()
 {
-    sharedMem = { 0 };
 }
 
 void ClientShareMemMgr::Destroy()

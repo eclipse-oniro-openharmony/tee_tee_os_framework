@@ -20,7 +20,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_FILL_ZERO
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is TEE_MALLOC_FILL_ZERO
  * @testcase.expect    : return TEEC_SUCCESS
@@ -29,7 +29,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_FILL_ZERO, Function | MediumTest |
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
@@ -44,7 +44,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_FILL_ZERO, Function | MediumTest |
     free(buffer);
 }
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_NO_FILL
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is TEE_MALLOC_NO_FILL
  * @testcase.expect    : return TEEC_SUCCESS
@@ -53,7 +53,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL, Function | MediumTest | L
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
@@ -68,7 +68,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL, Function | MediumTest | L
     free(buffer);
 }
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_NO_SHARE
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is TEE_MALLOC_NO_SHARE
  * @testcase.expect    : return TEEC_SUCCESS
@@ -77,7 +77,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_SHARE, Function | MediumTest | 
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
@@ -92,7 +92,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_SHARE, Function | MediumTest | 
     free(buffer);
 }
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_NO_FILL_And_NO_SHARE
  * @testcase.desc      : test TA call TEE_Malloc to alloc 10 bytes with hint is TEE_MALLOC_NO_FILL|TEE_MALLOC_NO_SHARE
  * @testcase.expect    : return TEEC_SUCCESS
@@ -101,7 +101,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL_And_NO_SHARE, Function | M
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
@@ -116,7 +116,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_TEE_MALLOC_NO_FILL_And_NO_SHARE, Function | M
     free(buffer);
 }
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_HINT_RESERVE
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is HINT_RESERVE
  * @testcase.expect    : return TEEC_SUCCESS
@@ -125,7 +125,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_HINT_RESERVE, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 
@@ -140,7 +140,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_HINT_RESERVE, Function | MediumTest | Level0)
     free(buffer);
 }
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_SIZEIsZero
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer with size is zero
  * @testcase.expect    : return TEEC_ERROR_OUT_OF_MEMORY
@@ -149,7 +149,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_SizeIsZero, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x0, TESTSIZE);
 
@@ -163,7 +163,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_SizeIsZero, Function | MediumTest | Level0)
     free(buffer);
 }
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_SizeExceedHeapLimit
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer with size exceed heaplimit
  * @testcase.expect    : return TEEC_ERROR_OUT_OF_MEMORY
@@ -172,7 +172,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_SizeExceedHeapLimit, Function | MediumTest | 
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x0, TESTSIZE);
 
@@ -192,7 +192,7 @@ TEE_TEST(TCF2Test, TEE_Malloc_With_SizeExceedHeapLimit, Function | MediumTest | 
     free(buffer);
 }
 
-/* *
+/**
  * @testcase.name      : TEE_Malloc_With_MAXDataSize
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer with size is max data size
  * @testcase.expect    : return TEEC_SUCCESS
@@ -201,7 +201,7 @@ TEE_TEST(TCF1Test, TEE_Malloc_With_MAXDataSize, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     uint32_t origin;
-    char *buffer = (char *)malloc(MAX_SHARE_SIZE);
+    char *buffer = reinterpret_cast<char *>(malloc(MAX_SHARE_SIZE));
     ASSERT_STRNE(buffer, NULL);
     (void)memset_s(buffer, TESTSIZE, 0x41, TESTSIZE); // 0x41 = 'A'
 

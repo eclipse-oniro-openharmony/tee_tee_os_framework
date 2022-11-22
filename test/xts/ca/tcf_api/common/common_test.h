@@ -275,7 +275,7 @@ public:
     void TearDown();
 };
 
-TEEC_Result Invoke_GetPropertyAsX(TEEC_Context *context, TEEC_Session *session, TestData *testDate);
+TEEC_Result Invoke_GetPropertyAsX(TEEC_Context *context, TEEC_Session *session, TestData *testData);
 TEEC_Result Invoke_AllocatePropertyEnumerator(TEEC_Session *session, TestData *testData);
 TEEC_Result Invoke_Operate_PropertyEnumerator(TEEC_Session *session, TestData *testData);
 TEEC_Result Invoke_Malloc(TEEC_Session *session, uint32_t commandID, TestMemData *testData, uint32_t *origin);
@@ -285,7 +285,7 @@ TEEC_Result Invoke_Free(TEEC_Session *session, uint32_t commandID, uint32_t case
 TEEC_Result Invoke_MemCompare(TEEC_Session *session, uint32_t commandID, TestMemData *testData, char *buffer1,
     char *buffer2);
 TEEC_Result Invoke_CheckMemoryAccessRights(TEEC_Session *session, uint32_t commandID, TestMemData *testData);
-TEEC_Result Invoke_SetInstanceData(TEEC_Session *session, uint32_t commandID, char *buffer, uint32_t bufSize,
+TEEC_Result Invoke_SetInstanceData(TEEC_Session *session, uint32_t commandID, char *buffer, uint32_t caseNum,
     uint32_t *origin);
 TEEC_Result Invoke_GetInstanceData(TEEC_Session *session, uint32_t commandID, char *buffer, uint32_t *bufSize,
     uint32_t *origin);

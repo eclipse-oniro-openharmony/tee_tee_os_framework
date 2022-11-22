@@ -377,9 +377,9 @@ TEE_TEST(EmptyTest, AllocateSharedMemory_WithFlagOutput_UseParamTypesWhole, Func
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     EXPECT_EQ(ret, TEEC_SUCCESS);
     EXPECT_EQ(origin, TEEC_ORIGIN_TRUSTED_APP);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer + OFFSET100, g_teeOutput);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET100, g_teeOutput);
     EXPECT_EQ(operation.params[0].memref.size, g_teeOutputLen);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer, g_teeOutput);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_teeOutput);
     EXPECT_EQ(operation.params[1].memref.size, 0);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
 }
@@ -422,7 +422,7 @@ TEE_TEST(EmptyTest, AllocateSharedMemory_ReturnLenUseTypesOutput, Function | Med
     ret = TEEC_AllocateSharedMemory(&sess.context, &testMem.sharedMem);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     (void)memset_s(testMem.sharedMem.buffer, testMem.sharedMem.size, 0x0, testMem.sharedMem.size);
-    rc = CopyToBuffer((char*)testMem.sharedMem.buffer, testMem.sharedMem.size);
+    rc = CopyToBuffer(reinterpret_cast<char *>(testMem.sharedMem.buffer), testMem.sharedMem.size);
     EXPECT_EQ(rc, 0);
 
     TEEC_Operation operation = { 0 };
@@ -450,10 +450,10 @@ TEE_TEST(EmptyTest, AllocateSharedMemory_ReturnLenUseTypesOutput, Function | Med
     EXPECT_EQ(operation.params[1].memref.size, g_teeOutputLen);
     EXPECT_EQ(operation.params[2].memref.size, g_teeOutputLen);
     EXPECT_EQ(operation.params[3].memref.size, g_teeOutputLen);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer, g_offset0);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer + OFFSET100, g_offset100);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer + OFFSET200, g_teeOutput);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer + OFFSET300, g_teeOutput);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_offset0);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET100, g_offset100);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET200, g_teeOutput);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET300, g_teeOutput);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
 }
 
@@ -481,7 +481,7 @@ TEE_TEST(EmptyTest, AllocateSharedMemory_ReturnLenUseTypesInout, Function | Medi
     ret = TEEC_AllocateSharedMemory(&sess.context, &testMem.sharedMem);
     ASSERT_EQ(ret, TEEC_SUCCESS);
     (void)memset_s(testMem.sharedMem.buffer, testMem.sharedMem.size, 0x0, testMem.sharedMem.size);
-    rc = CopyToBuffer((char*)testMem.sharedMem.buffer, testMem.sharedMem.size);
+    rc = CopyToBuffer(reinterpret_cast<char *>(testMem.sharedMem.buffer), testMem.sharedMem.size);
     EXPECT_EQ(rc, 0);
 
     TEEC_Operation operation = { 0 };
@@ -509,10 +509,10 @@ TEE_TEST(EmptyTest, AllocateSharedMemory_ReturnLenUseTypesInout, Function | Medi
     EXPECT_EQ(operation.params[1].memref.size, g_teeInoutLen);
     EXPECT_EQ(operation.params[2].memref.size, g_teeOutputLen);
     EXPECT_EQ(operation.params[3].memref.size, g_teeOutputLen);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer, g_teeInout);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer + OFFSET100, g_offset100);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer + OFFSET200, g_offset200);
-    EXPECT_STREQ((char*)testMem.sharedMem.buffer + OFFSET300, g_offset300);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer), g_teeInout);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET100, g_offset100);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET200, g_offset200);
+    EXPECT_STREQ(reinterpret_cast<char *>(testMem.sharedMem.buffer) + OFFSET300, g_offset300);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
 }
 
