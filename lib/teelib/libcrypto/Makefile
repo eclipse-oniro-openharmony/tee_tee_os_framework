@@ -40,8 +40,8 @@ A32_CFLAGS += -DMAX_SRC_SIZE=512000
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 CFLAGS += -DOPENSSL_ENABLE
 A32_CFLAGS += -DOPENSSL_ENABLE
-CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/include
-CPPFLAGS += -I$(TOPDIR)/open_source/OpenSSL/crypto
+CPPFLAGS += -I$(OPENSSL_DIR)/include
+CPPFLAGS += -I$(OPENSSL_DIR)/crypto
 endif
 
 ifeq (${TARG}, _a32)

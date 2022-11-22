@@ -37,14 +37,9 @@ export CC CXX AS LD CPP AR NM OBJCOPY READELF STRIP
 export TARGET_ARCH_32 := arm-linux-gnueabi
 export TARGET_ARCH_64 := aarch64-linux-gnu
 
-compiler-rt = $(shell if [ -d $(TOPDIR)/open_source ]; then echo "exist"; else echo "noexist"; fi)
 ifeq ($(ARCH), arm)
 	TARGET_ARCH := $(TARGET_ARCH_32)
-ifeq ("$(compiler-rt)", "exist")
 	LIBCOMPILER_RT_BUILTINS := $(TEE_COMPILER_DIR)/lib/arm-linux-ohosmusl/libclang_rt.builtins.a
-else
-	LIBCOMPILER_RT_BUILTINS := $(PREBUILD_DIR)/libs/arm/libclang_rt.builtins-arm.a
-endif
 ifeq (${CONFIG_THUMB_SUPPORT},y)
     flags += -mthumb
 endif
@@ -56,11 +51,7 @@ ifeq ($(CONFIG_ARM_CORTEX_A53),y)
 endif
 else
 	TARGET_ARCH := $(TARGET_ARCH_64)
-ifeq ("$(compiler-rt)", "exist")
 	LIBCOMPILER_RT_BUILTINS := $(TEE_COMPILER_DIR)/lib/aarch64-linux-ohosmusl/libclang_rt.builtins.a
-else
-	LIBCOMPILER_RT_BUILTINS := $(PREBUILD_DIR)/libs/aarch64/libclang_rt.builtins-aarch64.a
-endif
     flags += -march=armv8-a
 ifeq ($(CONFIG_ARM_CORTEX_A53),y)
     ASFLAGS += -march=armv8-a
