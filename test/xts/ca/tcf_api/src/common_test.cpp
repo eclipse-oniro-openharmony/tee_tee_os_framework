@@ -27,14 +27,12 @@ void TCF1Test::SetUp()
     TEEC_Operation operation = { 0 };
     TEEC_Result ret = TEEC_InitializeContext(NULL, &context);
     ABORT_UNLESS(ret != TEEC_SUCCESS);
-    // ASSERT_EQ(ret, TEEC_SUCCESS);
     operation.started = 1;
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
     TEEC_UUID uuid = TCF_API_UUID_1;
 
     ret = TEEC_OpenSession(&context, &session, &uuid, TEEC_LOGIN_IDENTIFY, NULL, &operation, NULL);
     ABORT_UNLESS(ret != TEEC_SUCCESS);
-    // ASSERT_EQ(ret, TEEC_SUCCESS);
 }
 
 void TCF1Test::TearDown()
