@@ -34,7 +34,7 @@ struct intMapping {
     uint64_t expectResult;
 };
 
-struct unIntMapping unIntMap[] = {
+struct unIntMapping g_unIntMap[] = {
     // bool
     { (char*)GPD_TA_INSTANCEKEEPALIVE, CMD_TEE_GetPropertyAsBool, TEE_PROPSET_CURRENT_TA,
       (char*)VALUE_PREDEFINED_FALSE, sizeof(VALUE_PREDEFINED_FALSE) },
@@ -94,7 +94,7 @@ struct unIntMapping unIntMap[] = {
       TEE_PROPSET_IMPLEMENTATION, (char*)TEE_FIRMWARE_MANUFACTURER, BIG_SIZE },
 };
 
-struct intMapping intMap[] = {
+struct intMapping g_intMap[] = {
     // int32
     { (char*)GPD_TA_DATASIZE, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_CURRENT_TA, VALUE_PREDEFINED_DATASIZE },
@@ -119,7 +119,7 @@ struct intMapping intMap[] = {
     { (char*)GPD_TEE_EVENT_MAXSOURCES, CMD_TEE_GetPropertyAsU32,
       TEE_PROPSET_IMPLEMENTATION, 0 },
     { (char*)GPD_TEE_API_LEVEL, CMD_TEE_GetPropertyAsU32,
-    TEE_PROPSET_IMPLEMENTATION, TEE_MAX_API_LEVEL_CONFIG },
+      TEE_PROPSET_IMPLEMENTATION, TEE_MAX_API_LEVEL_CONFIG },
     // int64
     { (char*)SMC_TA_TESTU64, CMD_TEE_GetPropertyAsU64,
       TEE_PROPSET_CURRENT_TA, VALUE_PREDEFINED_U64 },
@@ -130,21 +130,21 @@ TEEC_Result GetPropertyFromUnIntMap(TEEC_Context *context, TEEC_Session *session
     TEEC_Result result;
     int i;
 
-    for (i = 0; i < (sizeof(unIntMap) / sizeof(unIntMap[0])); i++) {
-        if (strncmp(val->inBuffer, unIntMap[i].name, val->inBufferLen) == 0) {
+    for (i = 0; i < (sizeof(g_unIntMap) / sizeof(g_unIntMap[0])); i++) {
+        if (strncmp(val->inBuffer, g_unIntMap[i].name, val->inBufferLen) == 0) {
             *flag = 1;
-            val->cmd = unIntMap[i].cmd;
+            val->cmd = g_unIntMap[i].cmd;
             result = Invoke_GetPropertyAsX(context, session, val);
             if (result != TEEC_SUCCESS || val->origin != TEEC_ORIGIN_TRUSTED_APP) {
                 TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! result = 0x%x\n", val->inBuffer, result);
                 return result;
             }
             if (val->cmd != CMD_TEE_GetPropertyAsUUID) {
-                if (val->outBufferLen != unIntMap[i].expectLen ||
-                    (strncmp(val->outBuffer, unIntMap[i].expectResult, unIntMap[i].expectLen) != 0)) {
+                if (val->outBufferLen != g_unIntMap[i].expectLen ||
+                    (strncmp(val->outBuffer, g_unIntMap[i].expectResult, g_unIntMap[i].expectLen) != 0)) {
                     TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! outlen=0x%x, expect outlen=0x%x\n",
-                        val->inBuffer, val->outBufferLen, unIntMap[i].expectLen);
-                    TEST_PRINT_ERROR("outbuffer=%s, expect outbuffer=%s\n", val->outBuffer, unIntMap[i].expectResult);
+                        val->inBuffer, val->outBufferLen, g_unIntMap[i].expectLen);
+                    TEST_PRINT_ERROR("outbuffer=%s, expect outbuffer=%s\n", val->outBuffer, g_unIntMap[i].expectResult);
                     return TEEC_ERROR_GENERIC;
                 }
             }
@@ -159,25 +159,25 @@ TEEC_Result GetPropertyFromIntMap(TEEC_Context *context, TEEC_Session *session, 
     TEEC_Result result;
     int i;
 
-    for (i = 0; i < (sizeof(intMap) / sizeof(intMap[0])); i++) {
-        if (strncmp(val->inBuffer, intMap[i].name, val->inBufferLen) == 0) {
+    for (i = 0; i < (sizeof(g_intMap) / sizeof(g_intMap[0])); i++) {
+        if (strncmp(val->inBuffer, g_intMap[i].name, val->inBufferLen) == 0) {
             *flag = 1;
-            val->cmd = intMap[i].cmd;
+            val->cmd = g_intMap[i].cmd;
             result = Invoke_GetPropertyAsX(context, session, val);
             if (result != TEEC_SUCCESS || val->origin != TEEC_ORIGIN_TRUSTED_APP) {
                 TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! result = 0x%x\n", val->inBuffer, result);
                 return result;
             }
             if (val->cmd == CMD_TEE_GetPropertyAsU32) {
-                if (atoi(val->outBuffer) != (uint32_t)intMap[i].expectResult) {
+                if (atoi(val->outBuffer) != (uint32_t)g_intMap[i].expectResult) {
                     TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! out=0x%x, expect out=0x%x\n",
-                        val->inBuffer, atoi(val->outBuffer), (uint32_t)intMap[i].expectResult);
+                        val->inBuffer, atoi(val->outBuffer), (uint32_t)g_intMap[i].expectResult);
                     return TEEC_ERROR_GENERIC;
                 }
             } else {
-                if (atoll(val->outBuffer) != intMap[i].expectResult) {
+                if (atoll(val->outBuffer) != g_intMap[i].expectResult) {
                     TEST_PRINT_ERROR("getProperty from Enumerator with %s is fail! out=0x%llx, expect out=0x%lu\n",
-                        val->inBuffer, atoll(val->outBuffer), intMap[i].expectResult);
+                        val->inBuffer, atoll(val->outBuffer), g_intMap[i].expectResult);
                     return TEEC_ERROR_GENERIC;
                 }
             }

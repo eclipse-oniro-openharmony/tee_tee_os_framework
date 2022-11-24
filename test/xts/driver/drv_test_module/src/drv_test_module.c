@@ -72,9 +72,9 @@ static int32_t copy_from_client_test(struct share_buffer_arg *input_arg, char *t
         return -1;
     }
 
-    if (copy_from_client_exception_test(input_arg, temp_buffer) != 0)
+    if (copy_from_client_exception_test(input_arg, temp_buffer) != 0) {
         return -1;
-
+    }
     return ret;
 }
 
@@ -114,9 +114,9 @@ static int32_t copy_to_client_test(struct share_buffer_arg *input_arg, char *tem
         return -1;
     }
 
-    if (copy_to_client_exception_test(input_arg, temp_buffer) != 0)
+    if (copy_to_client_exception_test(input_arg, temp_buffer) != 0) {
         return -1;
-
+    }
     return ret;
 }
 
@@ -208,9 +208,9 @@ int64_t open_test(struct drv_data *drv, unsigned long args, uint32_t args_len)
     }
 
     uint32_t *buf = buf_init(*input);
-    if (buf == NULL)
+    if (buf == NULL) {
         return -1;
-
+    }
     drv->private_data = buf;
     driver_log("driver open test begin: fd=%d args=0x%x", drv->fd, *input);
 

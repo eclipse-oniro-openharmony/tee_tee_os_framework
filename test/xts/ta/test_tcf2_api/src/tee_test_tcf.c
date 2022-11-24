@@ -178,17 +178,16 @@ static TEE_Result CmdTEERealloc(uint32_t nParamTypes, TEE_Param pParams[4])
 
     (void)memset_s(pBufferMalloc, nOldSize, 0x41, nOldSize); // 'A' is 0x41
 
-    if (caseId == BUFFER_IS_FREE)
+    if (caseId == BUFFER_IS_FREE) {
         TEE_Free((void *)pBufferMalloc); // free the allocated buffer
-
-    if (caseId == INPUT_ISNULL)
+    }
+    if (caseId == INPUT_ISNULL) {
         pBufferRealloc = (char *)TEE_Realloc(NULL, nNewSize);
-    else if (caseId == BUFFER_ISNOT_MALLOC)
+    } else if (caseId == BUFFER_ISNOT_MALLOC) {
         pBufferRealloc = (char *)TEE_Realloc(buf, nNewSize);
-    else
+    } else {
         pBufferRealloc = (char *)TEE_Realloc((void *)pBufferMalloc, nNewSize);
-
-
+    }
     if ((pBufferRealloc == NULL) && (pBufferMalloc == NULL)) {
         return TEE_ERROR_OUT_OF_MEMORY;
     }
@@ -318,15 +317,16 @@ static TEE_Result CmdTEEMemFill(uint32_t nParamTypes, TEE_Param pParams[4])
     caseId = pParams[0].value.b;
 
     pBuffer = (char *)TEE_Malloc(nMemoryFillSize, 0); // buffer is filled with 0
-    if (pBuffer == NULL)
+    if (pBuffer == NULL) {
         return TEE_ERROR_OUT_OF_MEMORY;
-    if (caseId == INPUT_ISNULL)
+    }
+    if (caseId == INPUT_ISNULL) {
         TEE_MemFill(NULL, nCharFill, nMemoryFillSize);
-    else if (caseId == OUTPUTBUFFERSIZE_ISZERO)
+    } else if (caseId == OUTPUTBUFFERSIZE_ISZERO) {
         TEE_MemFill(pBuffer, nCharFill, 0);
-    else
+    } else {
         TEE_MemFill(pBuffer, nCharFill, nMemoryFillSize);
-
+    }
     TEE_MemMove(pParams[1].memref.buffer, pBuffer, nMemoryFillSize);
     TEE_Free((void *)pBuffer);
     return TEE_SUCCESS;
@@ -380,12 +380,12 @@ static TEE_Result CmdTEECheckMemoryAccessRights(uint32_t nParamTypes, TEE_Param 
     caseId = pParams[2].value.a;
 
     pBuffer = (char *)TEE_Malloc(nSize, 0);
-    if (pBuffer == NULL)
+    if (pBuffer == NULL) {
         return TEE_ERROR_OUT_OF_MEMORY;
-
-    if (caseId == BUFFER_IS_FREE)
+    }
+    if (caseId == BUFFER_IS_FREE) {
         TEE_Free((void *)pBuffer); // free the allocated buffer
-
+    }
     if (caseId == INPUT_ISNULL)
         ret = TEE_CheckMemoryAccessRights(accessFlags, NULL, nSize);
     else if (caseId == BUFFER_ISNOT_MALLOC)
@@ -403,9 +403,9 @@ static TEE_Result CmdTEECheckMemoryAccessRights(uint32_t nParamTypes, TEE_Param 
     else
         ret = TEE_CheckMemoryAccessRights(accessFlags, pBuffer, nSize);
 
-    if (caseId != BUFFER_IS_FREE)
+    if (caseId != BUFFER_IS_FREE) {
         TEE_Free((void *)pBuffer);
-
+    }
     return ret;
 }
 
@@ -430,11 +430,11 @@ static TEE_Result CmdTEESetInstanceData(uint32_t nParamTypes, TEE_Param pParams[
     // recopies the input string into the instance data
     TEE_MemMove((void *)pDataBuffer, (void *)pParams[1].memref.buffer, nStringSize);
 
-    if (caseId == INPUT_ISNULL)
+    if (caseId == INPUT_ISNULL) {
         TEE_SetInstanceData(NULL);
-    else
+    } else {
         TEE_SetInstanceData((void *)pDataBuffer); // calls the SetInstanceData function to store the string address
-
+    }
     return TEE_SUCCESS;
 }
 

@@ -245,7 +245,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_TRUSTEDOS_IMP_BIN
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_STREQ(value.outBuffer, TEE_IMP_VERSION);
 }
-#if 0
+
 /**
  * @testcase.name      : TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_VERSION
  * @testcase.desc      : test TA call TEE_GetPropertyAsString to get value of GPD_TEE_FIRMWARE_IMP_VERSION
@@ -274,7 +274,8 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_VERS
  * @testcase.desc      : test TA call TEE_GetPropertyAsString to get value of GPD_TEE_FIRMWARE_IMP_BINARYVERSION
  * @testcase.expect    : return TEEC_SUCCESS, get value is correct
  */
-TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_BINARYVERSION, Function | MediumTest | Level0)
+TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_BINARYVERSION,
+    Function | MediumTest | Level0)
 {
     TEEC_Result ret;
     int rc;
@@ -282,7 +283,8 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_BINA
     TestData value = { 0 };
     value.cmd = CMD_TEE_GetPropertyAsString;
     value.propSet = TEE_PROPSET_IMPLEMENTATION;
-    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_FIRMWARE_IMP_BINARYVERSION, sizeof(GPD_TEE_FIRMWARE_IMP_BINARYVERSION));
+    rc = memcpy_s(value.inBuffer, BIG_SIZE, GPD_TEE_FIRMWARE_IMP_BINARYVERSION,
+        sizeof(GPD_TEE_FIRMWARE_IMP_BINARYVERSION));
     ASSERT_EQ(rc, 0);
     value.inBufferLen = sizeof(GPD_TEE_FIRMWARE_IMP_BINARYVERSION);
 
@@ -291,7 +293,7 @@ TEE_TEST(TCF1Test, TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_FIRMWARE_IMP_BINA
     ASSERT_EQ(value.origin, TEEC_ORIGIN_TRUSTED_APP);
     ASSERT_STREQ(value.outBuffer, TEE_FIRMWARE_IMP_VERSION);
 }
-#endif
+
 /**
  * @testcase.name      : TEE_GetPropertyAsString_WithoutEnum_GPD_TEE_TRUSTEDOS_MANUFACTURER
  * @testcase.desc      : test TA call TEE_GetPropertyAsString to get value of GPD_TEE_TRUSTEDOS_MANUFACTURER

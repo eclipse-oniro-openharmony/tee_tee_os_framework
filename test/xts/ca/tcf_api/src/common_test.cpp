@@ -434,15 +434,15 @@ TEEC_Result Invoke_GetInstanceData(TEEC_Session *session, uint32_t commandID, ch
 static void retrieveUint32toBuffer(uint8_t *buffer, uint32_t i)
 {
     buffer[3] = i & 0xff;
-    buffer[2] = i >> 8 & 0xff;
-    buffer[1] = i >> 16 & 0xff;
-    buffer[0] = i >> 24 & 0xff;
+    buffer[2] = (i >> 8) & 0xff;
+    buffer[1] = (i >> 16) & 0xff;
+    buffer[0] = (i >> 24) & 0xff;
 }
 
 static void retrieveUint16toBuffer(uint8_t *buffer, uint16_t i)
 {
     buffer[1] = i & 0xff;
-    buffer[0] = i >> 8 & 0xff;
+    buffer[0] = (i >> 8) & 0xff;
 }
 
 TEEC_Result Invoke_OpenTASession(TEEC_Session *session, uint32_t commandID, uint32_t *ta2taSession, TestData *testData,
