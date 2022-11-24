@@ -68,7 +68,7 @@ TEE_TEST(TCF2TA2TATest, TEE_Panic_With_MultiSession, Function | MediumTest | Lev
     TEEC_Result panicCode = TEEC_ERROR_GENERIC;
     ret = Invoke_Panic(GetSession2(), CMD_TEE_Panic, panicCode, &origin);
     ASSERT_EQ(ret, TEEC_ERROR_TARGET_DEAD);
-    // ASSERT_EQ(origin, TEEC_ORIGIN_TEE);
+    ASSERT_EQ(origin, TEEC_ORIGIN_TEE);
 
     for (i = 0; i <= 6; i++) {
         ret = Invoke_InvokeTACommand(GetSession(), CMD_TEE_InvokeTACommand, ta2taSession[i], &value, &origin);

@@ -38,7 +38,7 @@ static char g_offset200[] = "offset is 200";
 static char g_offset300[] = "offset is 300";
 
 
-#define MAILBOXPOOL_MAX_SIZE 1024 * 1024 * 4
+#define MAILBOXPOOL_MAX_SIZE (1024 * 1024 * 4)
 
 using namespace std;
 
@@ -386,8 +386,7 @@ TEE_TEST(EmptyTest, AllocateSharedMemory_WithFlagOutput_UseParamTypesWhole, Func
 
 static int CopyToBuffer(char *buffer, uint32_t buffer_size)
 {
-    int rc;
-    rc = strcpy_s(buffer, buffer_size, g_offset0);
+    int rc = strcpy_s(buffer, buffer_size, g_offset0);
     EXPECT_EQ(rc, 0);
     rc = strcpy_s(buffer + OFFSET100, buffer_size - OFFSET100, g_offset100);
     EXPECT_EQ(rc, 0);

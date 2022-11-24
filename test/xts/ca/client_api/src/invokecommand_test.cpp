@@ -45,9 +45,9 @@ static char g_offset100[] = "offset is 100";
 static char g_offset200[] = "offset is 200";
 static char g_offset300[] = "offset is 300";
 
-#define SIZE_4K 4 * 1024
-#define SIZE_1024K 1024 * 1024
-#define SIZE_2048K 2048 * 1024
+#define SIZE_4K (4 * 1024)
+#define SIZE_1024K (1024 * 1024)
+#define SIZE_2048K (2048 * 1024)
 
 /**
  * @testcase.name      : InvokeCommand_WithSessionNotOpen

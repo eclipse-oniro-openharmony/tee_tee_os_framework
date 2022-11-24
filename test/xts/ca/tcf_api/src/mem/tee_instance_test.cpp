@@ -28,7 +28,7 @@ TEE_TEST(TCF2Test, TEE_Set_And_GetInstanceData_With_Success, Function | MediumTe
 {
     TEEC_Result ret;
     uint32_t origin;
-    char inBuf[] = {'T', 'E', 'E', 'A', '\0',};
+    char inBuf[] = { 'T', 'E', 'E', 'A', '\0', };
     char outBuf[BIG_SIZE] = { 0 };
     uint32_t caseId = 0;
     uint32_t outLen = sizeof(outBuf);
@@ -53,7 +53,7 @@ TEE_TEST(TCF2Test, TEE_Set_And_GetInstanceData_With_InstanceDataIsNull, Function
 {
     TEEC_Result ret;
     uint32_t origin;
-    char inBuf[] = {'T', 'E', 'E', 'A', '\0',};
+    char inBuf[] = { 'T', 'E', 'E', 'A', '\0', };
     char outBuf[BIG_SIZE] = { 0 };
     uint32_t caseId = INPUT_ISNULL;
     uint32_t outLen = sizeof(outBuf);
@@ -77,7 +77,7 @@ TEE_TEST(TCF2Test, TEE_Set_And_GetInstanceData_With_GetSizeTooShort, Function | 
 {
     TEEC_Result ret;
     uint32_t origin;
-    char inBuf[] = {'T', 'E', 'E', 'A', '\0',};
+    char inBuf[] = { 'T', 'E', 'E', 'A', '\0', };
     char outBuf[BIG_SIZE] = { 0 };
     uint32_t caseId = 0;
     uint32_t outLen = strlen(inBuf) - 1;

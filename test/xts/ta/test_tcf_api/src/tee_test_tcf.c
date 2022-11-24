@@ -33,6 +33,7 @@
 #define PROPERTY_NAME_MAX_SIZE 100
 #define PROPERTY_OUTPUT_STRING_MAX_SIZE 200
 #define DEFAULT_BUFFER_SIZE 1024
+#define DEFAULT_REALLOC_SIZE 10000
 #define PROPERTY_OUTPUT_BINARY_BLOCK_MAX_SIZE 200
 #define MAXLEN_U32 11
 #define MAXLEN_U64 21
@@ -589,23 +590,23 @@ static TEE_Result CmdTEERealloc(uint32_t nParamTypes, TEE_Param pParams[4])
     uint32_t caseId = pParams[3].value.a;
 
     pBufferMalloc = (char *)TEE_Malloc(nOldSize, 0);
-    if (pBufferMalloc == NULL)
+    if (pBufferMalloc == NULL) {
         return TEE_ERROR_OUT_OF_MEMORY;
-
+    }
     (void)memset_s(pBufferMalloc, nOldSize, 0x41, nOldSize); // 'A' is 0x41
 
-    pBufferRealloc = (char *)TEE_Realloc(buf, 10000);
+    pBufferRealloc = (char *)TEE_Realloc(buf, DEFAULT_REALLOC_SIZE);
 
-    if (caseId == BUFFER_IS_FREE)
+    if (caseId == BUFFER_IS_FREE) {
         TEE_Free((void *)pBufferMalloc); // free the allocated  buffer
-
-    if (caseId == INPUT_ISNULL)
+    }
+    if (caseId == INPUT_ISNULL) {
         pBufferRealloc = (char *)TEE_Realloc(NULL, nNewSize);
-    else if (caseId == BUFFER_ISNOT_MALLOC)
+    } else if (caseId == BUFFER_ISNOT_MALLOC) {
         pBufferRealloc = (char *)TEE_Realloc(buf, nNewSize);
-    else
+    } else {
         pBufferRealloc = (char *)TEE_Realloc((void *)pBufferMalloc, nNewSize);
-
+    }
     if ((pBufferRealloc == NULL) && (pBufferMalloc == NULL)) {
         return TEE_ERROR_OUT_OF_MEMORY;
     }
