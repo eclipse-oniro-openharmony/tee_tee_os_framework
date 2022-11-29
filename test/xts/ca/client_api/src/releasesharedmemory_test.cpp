@@ -86,8 +86,8 @@ TEE_TEST(OnlyInit, ReleaseSharedMemory_WithoutSharedMem, Function | MediumTest |
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
     TEEC_ReleaseSharedMemory(NULL);
-    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.buffer), NULL);
-    ASSERT_STREQ(reinterpret_cast<char *>(sharedMem.context), NULL);
+    ASSERT_STRNE(reinterpret_cast<char*>(sharedMem.buffer), NULL);
+    ASSERT_STRNE(reinterpret_cast<char*>(sharedMem.context), NULL);
 }
 
 /**

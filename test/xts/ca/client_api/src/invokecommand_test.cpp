@@ -541,7 +541,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithOperationTypePartialSizeIsZero, Function |
  * @testcase.name      : InvokeCommand_WithMemrefPartialBufferIsWrong
  * @testcase.desc      : call TEEC_InvokeCommand With ParamType is partial while sharedMem.buffer is not use
  * TEEC_AllocateSharedMemory allocated
- * @testcase.expect    : return TEEC_FAIL
+ * @testcase.expect    : return TEEC_ERROR_BAD_PARAMETERS
  */
 TEE_TEST(EmptyTest, InvokeCommand_WithMemrefPartialBufferIsWrong, Function | MediumTest | Level0)
 {
@@ -574,7 +574,7 @@ TEE_TEST(EmptyTest, InvokeCommand_WithMemrefPartialBufferIsWrong, Function | Med
     ret = TEEC_InvokeCommand(&sess.session, TEE_TEST_ALLTYPE, &operation, &origin);
     free(testData0);
     TEEC_ReleaseSharedMemory(&testMem.sharedMem);
-    ASSERT_EQ(ret, TEEC_FAIL);
+    ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
 }
 
