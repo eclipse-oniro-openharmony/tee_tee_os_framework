@@ -57,8 +57,13 @@ static char g_offset300[] = "offset is 300";
 TEE_TEST(EmptyTest, InvokeCommand_WithSessionNotOpen, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
-    ClientSessionMgr sess;
     uint32_t origin;
+    TEEC_UUID testId = CLIENTAPI_UUID_1;
+    ClientSessionMgr sess;
+    ret = sess.Start(&testId);
+    EXPECT_EQ(ret, TEEC_SUCCESS);
+    TEEC_CloseSession(&sess.session);
+
     TEEC_Operation operation = { 0 };
     operation.started = 1;
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_VALUE_INOUT, TEEC_NONE, TEEC_NONE, TEEC_NONE);
