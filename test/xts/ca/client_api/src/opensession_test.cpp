@@ -194,18 +194,20 @@ TEE_TEST(EmptyTest, Opensession_ContextIsNotInit, Function | MediumTest | Level0
 {
     TEEC_Result ret;
     uint32_t origin;
+    const char *name = "testname";
     TEEC_Context context = { 0 };
     TEEC_Session session = { 0 };
+    ret = TEEC_InitializeContext(name, &context);
+    EXPECT_EQ(ret, TEEC_SUCCESS);
+    TEEC_FinalizeContext(&context);
     TEEC_UUID testId = CLIENTAPI_UUID_1;
     TEEC_Operation operation = { 0 };
     operation.started = 1;
     operation.paramTypes = TEEC_PARAM_TYPES(TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
 
     ret = TEEC_OpenSession(&context, &session, &testId, TEEC_LOGIN_IDENTIFY, NULL, NULL, &origin);
-    ASSERT_EQ(ret, TEEC_FAIL);
+    ASSERT_EQ(ret, TEEC_ERROR_BAD_PARAMETERS);
     ASSERT_EQ(origin, TEEC_ORIGIN_API);
-
-    TEEC_FinalizeContext(&context);
 }
 
 /**
@@ -458,5 +460,6 @@ TEE_TEST(EmptyTest, RequestCancellationTest, Function | MediumTest | Level0)
     ret = TEEC_InvokeCommand(&sess.session, 0, &operation, NULL);
     TEEC_RequestCancellation(&operation);
 
+    sess.Destroy();
     ASSERT_EQ(ret, TEEC_SUCCESS);
 }

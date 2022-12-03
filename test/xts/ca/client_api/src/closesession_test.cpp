@@ -71,7 +71,11 @@ TEE_TEST(EmptyTest, Closesession_WithoutSession, Function | MediumTest | Level0)
 TEE_TEST(EmptyTest, Closesession_WithNotOpenedSession, Function | MediumTest | Level0)
 {
     TEEC_Result ret;
+    TEEC_UUID testId = CLIENTAPI_UUID_1;
     ClientSessionMgr sess;
+    ret = sess.Start(&testId);
+    EXPECT_EQ(ret, TEEC_SUCCESS);
+    sess.Destroy();
     ret = TEEC_InitializeContext(NULL, &sess.context);
     EXPECT_EQ(ret, TEEC_SUCCESS);
 
