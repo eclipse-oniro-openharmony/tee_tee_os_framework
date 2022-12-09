@@ -61,7 +61,7 @@ ARCH = aarch64
 include $(BUILD_CONFIG)/var.mk
 include $(BUILD_CONFIG)/plat_config_file.mk
 
-PHONY += GEN_CONF_FILE
+PHONY += GEN_CONF_FILE PATCH_OPENSSL
 GEN_CONF_FILE:
 	echo "generated platautoconf.h "
 	rm -rf $(PLAT_AUTOCONF_FILE)
@@ -76,6 +76,8 @@ GEN_CONF_FILE:
 	sed -i '$$a\#endif /* AUTO_CONFIG_H */'  $(PLAT_AUTOCONF_FILE)
 	echo -e >> $(PREBUILD_DIR)/headers/.config
 	cat $(CONFIG_FILE) | tee -a $(PREBUILD_DIR)/headers/.config
+
+PATCH_OPENSSL:=$(shell $(TOPDIR)/lib/teelib/libopenssl/build_openssl.sh $(TOPDIR))
 
 -include $(PREBUILD_HM_INC)/.config
 export PLAT_CFG_DIR := $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/plat_cfg
@@ -175,6 +177,7 @@ release:
 
 PHONY += clean
 clean: clean_links
+	sh $(TOPDIR)/lib/teelib/libopenssl/clean_openssl.sh  $(TOPDIR)
 	@rm -rf $(OUTPUTDIR)
 	@rm -rf sec_trustedcore.img
 	@rm -rf tools/linker.lds_pp

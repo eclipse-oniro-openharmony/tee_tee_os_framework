@@ -90,9 +90,9 @@ inc-flags += -I$(SERVICES_PATH)/permission_service/src/auth/tee_auth_sign_rsa.h
 inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
-inc-flags += -I$(K_TEELIB)/libopenssl/openssl/include
-inc-flags += -I$(K_TEELIB)/libopenssl/openssl/crypto
-inc-flags += -I$(K_TEELIB)/libopenssl/openssl/crypto/include
+inc-flags += -I$(TEELIB)/libopenssl/openssl/include
+inc-flags += -I$(TEELIB)/libopenssl/openssl/crypto
+inc-flags += -I$(TEELIB)/libopenssl/openssl/crypto/include
 endif
 
 LDFLAGS += -e tee_task_entry

@@ -38,7 +38,7 @@ else #32bit
 cfi-no-icall := libswcrypto_engine_a32.a tarunner_a32.elf libtimer_a32.a libcrypto_hal_a32.a libdrv_frame_a32.a libteeos_a32.a \
 	libpermission_service_a32.a libtaentry_a32.a libcrypto_a32.a libssa_a32.a
 
-no-cfi:=
+no-cfi:= libopenssl${TARG}.a
 
 ifneq ($(filter $(cfi-no-icall),$(MODULE)), )
 apps-sanitize-cfi += -fno-sanitize=cfi-icall

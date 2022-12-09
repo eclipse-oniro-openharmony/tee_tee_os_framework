@@ -29,7 +29,8 @@ inc-flags += -I$(PREBUILD_HEADER)/mbedtls
 endif
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
-inc-flags += -I$(PREBUILD_HEADER)/openssl
+inc-flags += -I$(TEELIB)/libopenssl/openssl/include
+inc-flags += -I$(TEELIB)/libopenssl/openssl/crypto
 endif
 
 libswcrypto_engine_c_files += $(wildcard src/*.c)
