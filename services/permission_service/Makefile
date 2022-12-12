@@ -42,7 +42,6 @@ endif
 # these libs are for elf verify
 LIBS += elf_verify${TARG} \
     elf_verify_key${TARG} \
-    whitebox${TARG}       \
     dynconfmgr${TARG}     \
     dynconfbuilder${TARG}
 
