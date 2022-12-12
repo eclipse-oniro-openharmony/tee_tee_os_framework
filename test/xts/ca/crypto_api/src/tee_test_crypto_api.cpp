@@ -12,6 +12,7 @@
 
 #include <common_test.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : CaseDigestSha256OnceOnce
  * @testcase.desc      : run case CaseDigestSha256OnceOnce

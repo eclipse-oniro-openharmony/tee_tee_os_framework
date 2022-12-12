@@ -19,6 +19,7 @@
 #include <tee_client_type.h>
 #include <session_mgr/client_session_mgr.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : BigInt_ComputeFMM
  * @testcase.desc      : test TEE_BigIntComputeFMM api

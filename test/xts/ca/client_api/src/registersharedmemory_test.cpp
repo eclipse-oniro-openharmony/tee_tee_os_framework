@@ -38,6 +38,7 @@ static char g_offset200[] = "offset is 200";
 static char g_offset300[] = "offset is 300";
 
 using namespace std;
+using namespace testing::ext;
 
 /**
  * @testcase.name      : RegisterSharedMemory_WithRegisterMem

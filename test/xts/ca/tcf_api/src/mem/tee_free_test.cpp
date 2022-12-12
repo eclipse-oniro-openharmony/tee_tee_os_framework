@@ -19,6 +19,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : TEE_Free_With_BufferIsNull
  * @testcase.desc      : test TA call TEE_Free to while buff is null

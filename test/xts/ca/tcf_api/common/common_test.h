@@ -17,8 +17,6 @@
 #include <stdint.h>
 #include <tee_client_type.h>
 
-using namespace testing::ext;
-
 #define TESTSIZE 16
 #define BIG_SIZE 1024
 #define MAX_SHARE_SIZE 0x100000

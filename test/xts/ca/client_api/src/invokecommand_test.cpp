@@ -28,6 +28,7 @@
 #include <test_log.h>
 
 using namespace std;
+using namespace testing::ext;
 
 // The test case uses the same string to pass the input and output test of buffer during REE and tee communication
 static char g_teeOutput[] = "TEEMEM_OUTPUT";
@@ -1226,7 +1227,7 @@ static void *ThreadTestOpenInvokeAllocmem(void *inParams)
     if ((operation.params[1].memref.size != g_teeInoutLen) ||
         (strncmp(g_teeInout, reinterpret_cast<char *>(sharedMem.buffer), g_teeInoutLen) != 0)) {
         TEST_PRINT_ERROR("thread %d:Invoke buffer failed,memref.size=%d,sharedMem.buffer=%s\n", id,
-            operation.params[1].memref.size, sharedMem.buffer);
+            operation.params[1].memref.size, reinterpret_cast<char *>(sharedMem.buffer));
         ((DatePacket *)inParams)->ret = TEEC_ERROR_GENERIC;
     }
 

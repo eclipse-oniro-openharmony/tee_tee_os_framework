@@ -26,6 +26,7 @@
 #include <tee_client_type.h>
 
 using namespace std;
+using namespace testing::ext;
 
 /**
  * @testcase.name      : ReleaseSharedMemory_WithAllocatedMem

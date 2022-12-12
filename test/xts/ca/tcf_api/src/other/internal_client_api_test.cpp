@@ -20,6 +20,8 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
+
 static char g_teeOutput[] = "TEEMEM_OUTPUT";
 static char g_teeInout[] = "the param is TEEMEM_INOUT";
 static uint32_t g_teeOutputLen;

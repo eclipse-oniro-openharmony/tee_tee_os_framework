@@ -19,6 +19,8 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
+
 /**
  * @testcase.name      : TEE_Realloc_With_SameSize
  * @testcase.desc      : test TA call TEE_Realloc to alloc buffer with newsize is same as oldsize

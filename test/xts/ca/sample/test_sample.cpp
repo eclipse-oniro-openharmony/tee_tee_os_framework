@@ -19,6 +19,7 @@
 #include <session_mgr/client_session_mgr.h>
 
 using namespace std;
+using namespace testing::ext;
 
 TEE_TEST(PublicTest, MyTest_001, Function | MediumTest | Level0)
 {

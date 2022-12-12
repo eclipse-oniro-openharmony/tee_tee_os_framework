@@ -19,6 +19,8 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
+
 /**
  * @testcase.name      : TEE_GetPropertyAsBinaryBlock_WithoutEnum_TestBinaryBlock
  * @testcase.desc      : test TA call TEE_GetPropertyAsBinaryBlock to get value of  SMC_TA_TESTBINARYBLOCK

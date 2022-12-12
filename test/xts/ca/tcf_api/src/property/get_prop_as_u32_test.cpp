@@ -19,6 +19,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : TEE_GetPropertyAsU32_WithoutEnum_GPD_TA_DATASIZE
  * @testcase.desc      : test TA call TEE_GetPropertyAsU32 to get value of  GPD_TA_DATASIZE

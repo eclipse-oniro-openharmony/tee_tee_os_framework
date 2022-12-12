@@ -19,6 +19,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : TEE_GetPropertyAsUUID_WithoutEnum_GPD_TA_APPID
  * @testcase.desc      : test TA call TEE_GetPropertyAsUUID to get value of  GPD_TA_APPID

@@ -15,7 +15,6 @@
 
 #ifdef __cplusplus
 #include <string>
-using namespace std;
 #endif
 
 #define DRVCALLER_UUID                                     \

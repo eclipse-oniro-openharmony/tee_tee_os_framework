@@ -19,6 +19,8 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
+
 TEEC_Context TCF1Test::context = { 0 };
 TEEC_Session TCF1Test::session = { 0 };
 

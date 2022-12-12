@@ -12,6 +12,7 @@
 
 #include <common_test.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name   : CaseCreatePersistentObjectAndDelete
  * @testcase.desc   : test GP interfaces

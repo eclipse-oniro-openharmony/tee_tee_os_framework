@@ -20,6 +20,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : TEE_Malloc_With_TEE_MALLOC_FILL_ZERO
  * @testcase.desc      : test TA call TEE_Malloc to alloc buffer 10 bytes with hint is TEE_MALLOC_FILL_ZERO

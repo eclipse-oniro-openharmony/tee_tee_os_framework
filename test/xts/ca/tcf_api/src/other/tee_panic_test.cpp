@@ -20,6 +20,7 @@
 #include <test_tcf_cmdid.h>
 
 using namespace std;
+using namespace testing::ext;
 
 /**
  * @testcase.name      : TEE_Panic_With_Normal
