@@ -19,6 +19,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : TEE_CheckMemoryAccessRights_With_Access_Read_Flag
  * @testcase.desc      : test TA call TEE_CheckMemoryAccessRights to check buffer whether has Access_Read right

@@ -21,7 +21,7 @@
 #include <test_drv_cmdid.h>
 
 using namespace std;
-
+using namespace testing::ext;
 /**
  * @testcase.name      : DrvAPITest_Drv_Virt_To_Phys
  * @testcase.desc      : test drv call drv_virt_to_phys api

@@ -19,6 +19,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : TEE_GetPropertyAsU64_WithoutEnum_TESTU64
  * @testcase.desc      : test TA call TEE_GetPropertyAsU64 to get value of  SMC_TA_TESTU64

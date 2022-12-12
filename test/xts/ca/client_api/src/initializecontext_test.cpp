@@ -23,6 +23,7 @@
 #include <public_test.h>
 
 using namespace std;
+using namespace testing::ext;
 
 /**
  * @testcase.name      : InitContext_NameIsNotNULL

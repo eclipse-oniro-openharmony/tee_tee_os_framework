@@ -25,6 +25,7 @@
 #include <tee_client_type.h>
 
 using namespace std;
+using namespace testing::ext;
 
 /**
  * @testcase.name      : Opensession_WithoutContext

@@ -19,6 +19,8 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
+
 struct unIntMapping {
     char *name;
     uint32_t cmd;

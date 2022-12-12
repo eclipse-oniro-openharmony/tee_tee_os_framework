@@ -41,6 +41,7 @@ static char g_offset300[] = "offset is 300";
 #define MAILBOXPOOL_MAX_SIZE (1024 * 1024 * 4)
 
 using namespace std;
+using namespace testing::ext;
 
 /**
  * @testcase.name      : AllocateSharedMemory_WithAllocatedMem

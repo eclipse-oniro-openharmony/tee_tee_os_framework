@@ -20,6 +20,7 @@
 #include <tee_client_type.h>
 #include <session_mgr/client_session_mgr.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : GetSystemTime
  * @testcase.desc      : test TEE_GetSystemTime api
@@ -48,7 +49,7 @@ TEE_TEST(EmptyTest, TEE_GetSystemTime, Function | MediumTest | Level0)
     ASSERT_LT(time1, time2);
     sess.Destroy();
 }
-
+#if 0
 /**
  * @testcase.name      : TeeWait
  * @testcase.desc      : test TEE_Wait api
@@ -120,6 +121,7 @@ TEE_TEST(EmptyTest, TestPersistentTimeWithException, Function | MediumTest | Lev
     ASSERT_EQ(ret, TEEC_SUCCESS);
     sess.Destroy();
 }
+#endif
 /**
  * @testcase.name      : OnlyGetPersistentTime
  * @testcase.desc      : test only get persistent time

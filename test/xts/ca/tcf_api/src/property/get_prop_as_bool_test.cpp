@@ -19,6 +19,8 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
+
 /**
  * @testcase.name      : TEE_GetPropertyAsBool_WithoutEnum_GPD_TA_SINGLEINSTANCE
  * @testcase.desc      : test TA call TEE_GetPropertyAsBool to get value of GPD_TA_SINGLEINSTANCE

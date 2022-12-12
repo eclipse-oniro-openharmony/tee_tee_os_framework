@@ -16,12 +16,10 @@
 #include <gtest/gtest.h>
 #include <test_defines.h>
 
-using namespace testing::ext;
-
 class EmptyTest : public ::testing::Test {
 public:
-    static void SetUpTestCase() {};
-    static void TearDownTestCase() {};
+    static void SetUpTestCase() {}
+    static void TearDownTestCase() {}
 
     void SetUp() {}
     void TearDown() {}

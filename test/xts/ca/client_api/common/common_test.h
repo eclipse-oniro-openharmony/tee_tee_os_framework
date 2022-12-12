@@ -18,7 +18,6 @@
 
 #ifdef __cplusplus
 #include <string>
-using namespace std;
 #endif
 
 #define TEST_STR_LEN 256

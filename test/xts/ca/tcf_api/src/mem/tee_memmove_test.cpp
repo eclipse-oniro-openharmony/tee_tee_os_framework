@@ -19,6 +19,7 @@
 #include <test_log.h>
 #include <test_tcf_cmdid.h>
 
+using namespace testing::ext;
 /**
  * @testcase.name      : TEE_MemMove_With_Success
  * @testcase.desc      : test TA call TEE_MemMove to move buffer from src to dest
