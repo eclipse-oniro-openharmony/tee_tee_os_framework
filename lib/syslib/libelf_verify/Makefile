@@ -46,7 +46,6 @@ CPPFLAGS += -I$(SYSLIB)/libelf_verify/include
 CPPFLAGS += -I$(K_SYSLIB)/libc/include/hm
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libteeos/include
-CPPFLAGS += -I$(K_THIRDPARTY)/huawei/libwhitebox/
 CPPFLAGS += -I$(K_SYSLIB)/libelf/include
 CPPFLAGS += -I$(K_SYSLIB)/libirqmgr/include
 CPPFLAGS += -I$(TEELIB)/libpermission_service/src
