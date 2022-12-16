@@ -79,8 +79,8 @@ CPPFLAGS += -I$(K_TEELIB)/libmbedtls/mbedtls/include
 endif
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
-CPPFLAGS += -I$(K_TEELIB)/libopenssl/openssl/include
-CPPFLAGS += -I$(K_TEELIB)/libopenssl/openssl/crypto
+CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/include
+CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/crypto
 endif
 
 # Source files required to build the target

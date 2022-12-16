@@ -23,7 +23,8 @@ libdrv_shared_a32: libteeconfig_a32
 libdrv_shared: libteeconfig
 
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
-	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem libssa libhuk libteedynsrv
+	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem \
+	libssa libhuk libteedynsrv libopenssl libse
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
 drvlib := libdrv_frame
 
@@ -143,9 +144,9 @@ $(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
 		$(WITH_LOG_ENCODE)
 ifneq ($(CODE_CHECKER),y)
 	$(VER) $(TOPDIR)/../tee_os_kernel/libcore_shared/syslib/libc/clean_libc.sh  $(TOPDIR)/../tee_os_kernel
-	$(VER) $(TOPDIR)/../tee_os_kernel/libcore_shared/teelib/libopenssl/clean_openssl.sh $(TOPDIR)/../tee_os_kernel
-
+	$(VER) $(TEELIB)/libopenssl/clean_openssl.sh $(TOPDIR)
 endif
+
 ifneq ($(VERSION_DDK),y)
 	$(VER) rm -rf $(BUILD_TOOLS)/generate_img/cpio-strip/cpio-strip
 endif

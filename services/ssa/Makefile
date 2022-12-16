@@ -40,8 +40,8 @@ CPPFLAGS += -I$(TOPDIR)/libs/libcrypto_common
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
-CPPFLAGS += -I$(K_TEELIB)/libopenssl/openssl/include
-CPPFLAGS += -I$(K_TEELIB)/libopenssl/openssl/crypto
+CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/include
+CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/crypto
 endif
 
 CFLAGS += -fvisibility=hidden
