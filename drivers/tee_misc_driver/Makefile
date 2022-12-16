@@ -31,6 +31,8 @@ inc-flags += -I$(TEELIB)/libteeconfig/include/
 inc-flags += -I$(SYSLIB)/libdynconfmgr/include/
 inc-flags += -I$(SYSLIB)/libspawn_common/include/
 inc-flags += -I$(TEELIB)/libteeos/include/tee
+inc-flags += -I$(TEELIB)/libteeos/include/legacy
+inc-flags += -I$(TEELIB)/libteemem/include
 c-flags += -DCONFIG_MISC_DRIVER
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
