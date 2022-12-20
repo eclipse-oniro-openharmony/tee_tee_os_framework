@@ -119,6 +119,7 @@ TEE_Result TestBigIntGetBitCount()
     return TEE_SUCCESS;
 }
 
+#if defined(API_LEVEL) && (API_LEVEL >= API_LEVEL1_2)
 TEE_Result TestBigIntSetBit()
 {
     tlogi("[%s] begin:", __FUNCTION__);
@@ -194,3 +195,22 @@ TEE_Result TestBigIntAbs()
     tlogi("[%s] end.", __FUNCTION__);
     return TEE_SUCCESS;
 }
+#else
+TEE_Result TestBigIntSetBit()
+{
+    tlogi("API_LEVEL is %d, [%s] is not supported. Return success.", API_LEVEL, __FUNCTION__);
+    return TEE_SUCCESS;
+}
+
+TEE_Result TestBigIntAssign()
+{
+    tlogi("API_LEVEL is %d, [%s] is not supported. Return success.", API_LEVEL, __FUNCTION__);
+    return TEE_SUCCESS;
+}
+
+TEE_Result TestBigIntAbs()
+{
+    tlogi("API_LEVEL is %d, [%s] is not supported. Return success.", API_LEVEL, __FUNCTION__);
+    return TEE_SUCCESS;
+}
+#endif
