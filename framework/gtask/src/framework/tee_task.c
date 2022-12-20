@@ -440,7 +440,7 @@ static int32_t get_mem_total_size(uint64_t *size)
  * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
  */
 static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[], char *env[],
-                              const spawn_uuid_t *uuid, int32_t memid, int32_t ptid)
+                              const spawn_uuid_t *uuid)
 {
     pid_t pid;
     cref_t thread_cref;
@@ -468,9 +468,6 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
     if (hm_spawnattr_setheap(&spawnattr, heap_size) != 0)
         return -1;
 
-    (void)memid;
-
-    spawnattr.ptid = ptid;
     if (ta_vsroot_flush(&((get_cur_service()->property).uuid)) == true)
         spawnattr.flags |= (VSROOT_FLAGS_FLUSH_CACHE | VSROOT_FLAGS_FIXED_ASID);
 
@@ -536,12 +533,10 @@ static int32_t create_service_thread(const char *elf_path, char **argv, char **e
 {
     msg_pid_t service_thread = 0;
     uint32_t task_id         = 0;
-    int32_t memid            = 0;
-    int32_t ptid             = 0;
     struct msg_recv_param msg_recv_p;
     int32_t ret;
 
-    ret = hm_spawn_with_attr((int *)&service_thread, elf_path, argv, env, uuid, memid, ptid);
+    ret = hm_spawn_with_attr((int *)&service_thread, elf_path, argv, env, uuid);
     if (ret != 0)
         return -1;
 
