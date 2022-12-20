@@ -447,9 +447,8 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
     posix_spawnattr_t spawnattr;
     uint64_t heap_size;
 
-    int sre_ret = hm_spawnattr_init(&spawnattr);
-    if (sre_ret != 0)
-        return sre_ret;
+    if (hm_spawnattr_init(&spawnattr) != 0)
+        return -1;
 
     if (get_cur_service() == NULL)
         return -1;
@@ -461,9 +460,8 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
 
     hm_spawnattr_setuuid(&spawnattr, uuid);
 
-    sre_ret = get_mem_total_size(&heap_size);
-    if (sre_ret != 0)
-        return sre_ret;
+    if (get_mem_total_size(&heap_size) != 0)
+        return -1;
 
     if (hm_spawnattr_setheap(&spawnattr, heap_size) != 0)
         return -1;
@@ -471,9 +469,8 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
     if (ta_vsroot_flush(&((get_cur_service()->property).uuid)) == true)
         spawnattr.flags |= (VSROOT_FLAGS_FLUSH_CACHE | VSROOT_FLAGS_FIXED_ASID);
 
-    sre_ret = hm_spawn_ex(&pid, elf_path, NULL, &spawnattr, argv, env, &thread_cref);
-    if (sre_ret != 0)
-        return sre_ret;
+    if (hm_spawn_ex(&pid, elf_path, NULL, &spawnattr, argv, env, &thread_cref) != 0)
+        return -1;
 
     /* build rtosck task_id by pid and thread cref */
     if (ptask_id != NULL)
