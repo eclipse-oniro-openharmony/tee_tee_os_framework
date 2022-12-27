@@ -444,6 +444,11 @@ bool TEE_BigIntGetBit(const TEE_BigInt *src, uint32_t bitIndex)
         return false;
     }
 
+    if (big_int_to_bn(pool->a, src, *src) != BIG_INT_SUCCESS) {
+        release_mem_pool(pool);
+        return false;
+    }
+
     if ((uint32_t)BN_num_bits(pool->a) < bitIndex) {
         release_mem_pool(pool);
         return false;
@@ -501,6 +506,11 @@ TEE_Result TEE_BigIntSetBit(TEE_BigInt *op, uint32_t bitIndex, bool value)
         tloge("reserve memory pool for set bit is failed\n");
         TEE_Panic(TEE_ERROR_OUT_OF_MEMORY);
         return TEE_ERROR_OUT_OF_MEMORY;
+    }
+
+    if (big_int_to_bn(pool->a, op, *op) != BIG_INT_SUCCESS) {
+        release_mem_pool(pool);
+        return (uint32_t)TEE_ERROR_GENERIC;
     }
 
     if ((uint32_t)BN_num_bits(pool->a) < bitIndex) {
