@@ -39,6 +39,8 @@ else
 CFILES += $(wildcard src/file_op/perm_srv_no_file_op.c)
 endif
 
+CFILES += $(wildcard src/anti_rollback/handle_anti_rollback_stub.c)
+
 # these libs are for elf verify
 LIBS += elf_verify${TARG} \
     elf_verify_key${TARG} \
@@ -86,6 +88,7 @@ inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_ta_cert/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_elf_verify/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_cms_crl/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/file_op/
+inc-flags += -I$(SERVICES_PATH)/permission_service/src/anti_rollback
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/auth/tee_auth_sign_rsa.h
 inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
 
