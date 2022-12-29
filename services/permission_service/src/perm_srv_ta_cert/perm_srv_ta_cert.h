@@ -25,10 +25,11 @@ TEE_Result perm_srv_remove_cert_from_storage(void);
 
 void perm_srv_cert_expiration_alarm(const TEE_Date_Time *time1, const TEE_Date_Time *time2);
 TEE_Result perm_srv_get_imported_cert_pubkey(uint8_t *dst, uint32_t *len);
-TEE_Result perm_srv_check_cert_import_enable(struct config_info *config, uint32_t cmd, bool *is_cert_import_enable);
+TEE_Result perm_srv_check_cert_import_enable(const struct config_info *config, uint32_t cmd,
+                                             bool *is_cert_import_enable);
 
 TEE_Result perm_srv_cert_expiration_date_check(const validity_period_t *valid_date);
 TEE_Result perm_srv_cert_expiration_check(const uint8_t *cert, uint32_t cert_size);
-TEE_Result perm_srv_cert_validation_check(const uint8_t *cert, uint32_t cert_size, const uint8_t *parent_key,
-                                          uint32_t parent_key_len);
+TEE_Result perm_srv_cert_validation_check(const uint8_t *cert, uint32_t cert_size,
+                                          const uint8_t *parent_key, uint32_t parent_key_len);
 #endif

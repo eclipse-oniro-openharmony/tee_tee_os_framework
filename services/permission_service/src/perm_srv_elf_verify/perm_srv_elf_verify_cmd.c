@@ -16,6 +16,7 @@
 #include <ta_framework.h>
 #include "tee_elf_verify.h"
 #include "permission_service.h"
+#include "handle_anti_rollback.h"
 #include "perm_srv_ta_ctrl.h"
 #include "perm_srv_ta_config.h"
 
@@ -69,15 +70,8 @@ static TEE_Result perm_srv_ta_run_authorization_check(const TEE_UUID *uuid, cons
     return TEE_ERROR_GENERIC;
 }
 
-TEE_Result perm_srv_elf_verify(const perm_srv_req_msg_t *msg, uint32_t sndr_taskid,
-                               const TEE_UUID *sndr_uuid, perm_srv_reply_msg_t *rsp)
+static TEE_Result check_perm_srv_elf_verify(const perm_srv_req_msg_t *msg, uint32_t sndr_taskid)
 {
-    elf_verify_req req;
-    elf_verify_reply reply;
-
-    (void)sndr_uuid;
-    (void)rsp;
-
     if (msg == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
@@ -91,6 +85,21 @@ TEE_Result perm_srv_elf_verify(const perm_srv_req_msg_t *msg, uint32_t sndr_task
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
+    return TEE_SUCCESS;
+}
+
+TEE_Result perm_srv_elf_verify(const perm_srv_req_msg_t *msg, uint32_t sndr_taskid,
+                               const TEE_UUID *sndr_uuid, perm_srv_reply_msg_t *rsp)
+{
+    elf_verify_req req;
+    elf_verify_reply reply;
+
+    (void)sndr_uuid;
+    (void)rsp;
+
+    if (check_perm_srv_elf_verify(msg, sndr_taskid) != TEE_SUCCESS)
+        return TEE_ERROR_BAD_PARAMETERS;
+
     if (memcpy_s(&req, sizeof(req), &(msg->req_msg.verify_req),
                  msg->header.send.msg_size) != EOK) {
         tloge("copy elf verify req failed\n");
@@ -98,6 +107,7 @@ TEE_Result perm_srv_elf_verify(const perm_srv_req_msg_t *msg, uint32_t sndr_task
     }
 
     (void)memset_s(&reply, sizeof(reply), 0, sizeof(reply));
+
     TEE_Result ret = secure_elf_verify(&req, &reply);
     if (ret != TEE_SUCCESS) {
         tloge("secure elf verify failed, ret=0x%x\n", ret);
@@ -106,6 +116,8 @@ TEE_Result perm_srv_elf_verify(const perm_srv_req_msg_t *msg, uint32_t sndr_task
             ret = perm_srv_ta_run_authorization_check(&(reply.srv_uuid),
                 &(reply.ta_property), reply.mani_ext.target_version,
                 reply.mani_ext.mem_page_align);
+        if (ret == TEE_SUCCESS)
+            ret = anti_version_rollback(&reply);
     }
 
     reply.verify_result = ret;

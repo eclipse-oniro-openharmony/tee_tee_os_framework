@@ -13,6 +13,7 @@
 #define PERM_SRV_TA_CONFIG_H
 
 #include <dlist.h>
+#include <stddef.h>
 #include <tee_defines.h>
 #include <ta_config_builder.h>
 #include "permission_service.h"
@@ -78,5 +79,4 @@ TEE_Result perm_srv_get_config_by_taskid(uint32_t taskid, struct config_info *co
 void perm_srv_clear_ta_permissions(const TEE_UUID *uuid);
 TEE_Result perm_srv_register_ta_taskid(const TEE_UUID *uuid, uint32_t taskid, uint32_t userid);
 TEE_Result perm_srv_unregister_ta_taskid(const TEE_UUID *uuid, uint32_t taskid);
-
 #endif

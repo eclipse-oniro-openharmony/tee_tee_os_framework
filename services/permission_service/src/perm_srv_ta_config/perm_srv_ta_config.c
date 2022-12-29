@@ -25,21 +25,17 @@
 #include "permission_config.h"
 
 #define UINT8_TYPE_BITS_LEN 8U
-#define THREE_BYTE_BITS_LEN 24U
-#define POLICY_MAX_VAL      1024
 #define ASN1_TLV_TAG_OFFSET 1 /* 1 byte for tag */
 #define TLV_LEN_OFFSET      2
 #define TLV_VALUE_OFFSET    3 /* 1 byte for tag, 2 bytes for len */
-#define TWO_BYTE_BITS_LEN   16U
 #define TLV_MAX_LEN         (0xffff + TLV_VALUE_OFFSET) /* 3 is offset value */
 #define POS_ARRAY_SIZE      5
 #define H_L_ERROR_NUM_VAL   (-1)
+
+#define BYTE_COUNT_IN_UUID  16
 #define UUID_FORMAT_STRLEN  37
 
-#define POLICY_VER_VALID_INDEX         0 /* this bits always is 1, check policy version is invalid */
 #define POLICY_VER_XML2TLV_PARSE_INDEX 1 /* tool type for parse xml */
-#define POLICY_VER_PRODUCT_INDEX       2 /* policy version for product */
-
 #define XML2TLV_PY_VALUE               (1 << POLICY_VER_XML2TLV_PARSE_INDEX) /* python parse xml */
 #define XML2TLV_JAR_VALUE              (0 << POLICY_VER_XML2TLV_PARSE_INDEX) /* jar parse xml */
 #define XML2TLV_PARSE_BIT_MAP          (1 << POLICY_VER_XML2TLV_PARSE_INDEX)
@@ -98,9 +94,7 @@ static int32_t get_byte_value_from_buff(const char *buff, uint32_t len, uint8_t 
     return 0;
 }
 
-#define BYTE_COUNT_IN_UUID  16
-#define UUID_FORMAT_STRLEN  37
-static int32_t convert_str_to_uuid(const char *buff, uint32_t len, TEE_UUID *uuid)
+static int32_t perm_srv_convert_str_to_uuid(const char *buff, uint32_t len, TEE_UUID *uuid)
 {
     const char *p = buff;
     uint8_t add_pos = 0;
@@ -165,7 +159,7 @@ static int32_t parser_callee_ta_uuid(const uint8_t *buff, uint32_t len, TEE_UUID
     }
 
     /* can make sure buffer is bigger enough */
-    ret = convert_str_to_uuid((const char *)buff + sizeof(value_len), value_len, uuid);
+    ret = perm_srv_convert_str_to_uuid((const char *)buff + sizeof(value_len), value_len, uuid);
     return ret;
 }
 
@@ -379,7 +373,7 @@ static int32_t parser_callee_info(const uint8_t *buff, uint32_t len, struct conf
         offset += (TLV_VALUE_OFFSET + value_len);
     }
 
-    return ret;
+    return PERMSRV_OK;
 }
 
 /*
@@ -437,7 +431,7 @@ static int32_t get_tag_uuid(const uint8_t *buff, uint32_t len, struct config_inf
     }
 
     /* make sure buffer is big enough */
-    ret = convert_str_to_uuid((const char *)buff, len, &(config->uuid));
+    ret = perm_srv_convert_str_to_uuid((const char *)buff, len, &(config->uuid));
     if (ret != PERMSRV_OK) {
         tloge("invalid uuid\n");
         return PERMSRV_ERROR;
@@ -828,7 +822,7 @@ static int32_t parser_python_tlv_to_ta_config(const uint8_t *buff, uint32_t len,
     return register_conf(&dyn_conf, install_ta_config, config, sizeof(*config));
 }
 
-static int32_t parse_tlv_to_ta_config(struct perm_config *perm_config, struct config_info *config)
+static int32_t parse_tlv_to_ta_config(const struct perm_config *perm_config, struct config_info *config)
 {
     int32_t ret;
     if ((perm_config->policy_version & XML2TLV_PARSE_BIT_MAP) == XML2TLV_JAR_VALUE)
@@ -876,7 +870,6 @@ static TEE_Result perm_srv_update_config_by_same_uuid(struct config_info *new_co
     }
 
     old_config = get_config_entry(&new_config->uuid);
-
     /*
      * remove previous one with same uuid if it exists, and retain old task_list
      * then insert the new one to list
@@ -1087,6 +1080,9 @@ TEE_Result perm_srv_register_ta_taskid(const TEE_UUID *uuid, uint32_t taskid, ui
     bool new_config_entry = false;
     TEE_Result ret;
 
+    if (uuid == NULL)
+        return TEE_ERROR_BAD_PARAMETERS;
+
     if (pthread_mutex_lock(&g_config_list_lock) != 0) {
         tloge("Failed to get config list lock\n");
         return TEE_ERROR_BAD_STATE;
@@ -1130,6 +1126,9 @@ TEE_Result perm_srv_unregister_ta_taskid(const TEE_UUID *uuid, uint32_t taskid)
     struct task_config *task_entry = NULL;
     struct dlist_node *task_pos = NULL;
     struct dlist_node *tmp = NULL;
+
+    if (uuid == NULL)
+        return TEE_ERROR_BAD_PARAMETERS;
 
     if (pthread_mutex_lock(&g_config_list_lock) != 0) {
         tloge("Failed to get task list lock\n");

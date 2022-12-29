@@ -31,7 +31,6 @@
 #include "perm_srv_common.h"
 
 #define CERT_ARRAY_SIZE   1024
-#define MAX_CERT_LEN      2048
 #define ECC_SIGNATURE_LEN 72
 
 static uint32_t g_ca_type;

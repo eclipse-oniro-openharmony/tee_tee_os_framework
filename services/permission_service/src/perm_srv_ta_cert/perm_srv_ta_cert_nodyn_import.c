@@ -46,7 +46,8 @@ TEE_Result perm_srv_get_imported_cert_pubkey(uint8_t *dst, uint32_t *len)
     return TEE_ERROR_NOT_SUPPORTED;
 }
 
-TEE_Result perm_srv_check_cert_import_enable(struct config_info *config, uint32_t cmd, bool *is_cert_import_enable)
+TEE_Result perm_srv_check_cert_import_enable(const struct config_info *config, uint32_t cmd,
+                                             bool *is_cert_import_enable)
 {
     if (config == NULL || is_cert_import_enable == NULL) {
         tloge("invalid params\n");

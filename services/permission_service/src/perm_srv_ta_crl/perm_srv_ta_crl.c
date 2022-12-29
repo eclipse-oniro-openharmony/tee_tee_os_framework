@@ -892,7 +892,6 @@ clean:
     return TEE_SUCCESS;
 }
 
-#define MAX_CERT_LEN 2048
 TEE_Result perm_srv_ta_crl_cert_process(const uint8_t *crl_cert, uint32_t crl_cert_size)
 {
     TEE_Result tee_ret = TEE_ERROR_GENERIC;
@@ -912,7 +911,7 @@ TEE_Result perm_srv_ta_crl_cert_process(const uint8_t *crl_cert, uint32_t crl_ce
         if (perm_srv_get_imported_cert_pubkey(tmp_pubkey_buff, &ca_key_size) == TEE_SUCCESS) {
             if (ca_key_size != 0)
                 ret = x509_crl_validate((uint8_t *)(uintptr_t)crl_cert, crl_cert_size,
-                    (uint8_t *)&tmp_pubkey_buff, ca_key_size);
+                                        (uint8_t *)tmp_pubkey_buff, ca_key_size);
         }
     }
     if (ret <= 0) {
