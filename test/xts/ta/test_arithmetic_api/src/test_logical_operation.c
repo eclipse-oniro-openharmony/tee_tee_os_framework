@@ -192,7 +192,7 @@ TEE_Result TestBigIntAbs()
 
     TEE_Free(src);
     TEE_Free(absDest);
-    tlogi("[%s] end.", __FUNCTION__);
+    tlogi("[%s] end. ret = 0x%x.", __FUNCTION__, TEE_SUCCESS);
     return TEE_SUCCESS;
 }
 #else

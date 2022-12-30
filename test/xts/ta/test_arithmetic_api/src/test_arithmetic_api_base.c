@@ -46,6 +46,7 @@ TEE_BigInt *CreateBigInt(uint32_t size, uint8_t *buffer)
 
 TEE_Result TestBigIntInit()
 {
+    tlogi("[%s] begin:", __FUNCTION__);
     TEE_Result ret = TEE_SUCCESS;
     uint32_t length = TEE_BigIntSizeInU32(SIZE_256);
     TEE_BigInt *bigInt = (TEE_BigInt *)TEE_Malloc(length * sizeof(TEE_BigInt), 0);
@@ -61,5 +62,6 @@ TEE_Result TestBigIntInit()
     }
 
     TEE_Free(bigInt);
+    tlogi("[%s] end. ret = 0x%x.", __FUNCTION__, ret);
     return ret;
 }
