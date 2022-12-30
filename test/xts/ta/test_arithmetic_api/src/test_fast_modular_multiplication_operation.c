@@ -41,6 +41,7 @@ static TEE_BigIntFMM* AllocateAndInitializeFMM(uint32_t modulusSizeInBits)
 
 TEE_Result TestBigIntInitFMM()
 {
+    tlogi("[%s] begin:", __FUNCTION__);
     uint32_t length = TEE_BigIntFMMSizeInU32(SIZE_256);
     const uint32_t checkLength = 10;
     if (length != checkLength) {
@@ -56,6 +57,7 @@ TEE_Result TestBigIntInitFMM()
 
     TEE_BigIntInitFMM(bigIntFMM, length);
     TEE_Free(bigIntFMM);
+    tlogi("[%s] end. ret = 0x%x.", __FUNCTION__, TEE_SUCCESS);
     return TEE_SUCCESS;
 }
 
