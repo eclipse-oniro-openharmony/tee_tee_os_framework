@@ -19,8 +19,6 @@
 #define PADDING_SIZE          7
 #define TA_CTRL_LIST_MAX_SIZE 8192
 #define RSA2048_SIGNATURE_LEN 256
-#define SHA256_LEN            32
-#define SHA512_LEN            64
 #define CERT_MAX_SIZE         2048
 #define CERT_UNIVERSAL_LEN    64
 #define TA_CTRL_MAGIC_NUM     0x12361215

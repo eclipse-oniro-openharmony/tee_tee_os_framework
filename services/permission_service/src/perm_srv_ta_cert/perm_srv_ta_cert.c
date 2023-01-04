@@ -31,6 +31,11 @@ TEE_Result perm_srv_cert_expiration_check(const uint8_t *cert, uint32_t cert_siz
     int32_t ret;
     validity_period_t valid_date = { { 0 }, { 0 } };
 
+    if (cert == NULL) {
+        tloge("cert is null\n");
+        return TEE_ERROR_BAD_PARAMETERS;
+    }
+
     /* Get validate date from the certificate */
     ret = get_validity_from_cert(&valid_date, (uint8_t *)(uintptr_t)cert, cert_size);
     if (ret < 0) {
@@ -41,8 +46,8 @@ TEE_Result perm_srv_cert_expiration_check(const uint8_t *cert, uint32_t cert_siz
     return perm_srv_cert_expiration_date_check(&valid_date);
 }
 
-TEE_Result perm_srv_cert_validation_check(const uint8_t *cert, uint32_t cert_size, const uint8_t *parent_key,
-                                                uint32_t parent_key_len)
+TEE_Result perm_srv_cert_validation_check(const uint8_t *cert, uint32_t cert_size,
+                                          const uint8_t *parent_key, uint32_t parent_key_len)
 {
     int32_t ret;
     uint8_t sn[SN_MAX_SIZE] = { 0 };

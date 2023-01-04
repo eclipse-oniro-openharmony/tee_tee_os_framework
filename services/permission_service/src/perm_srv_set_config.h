@@ -16,7 +16,6 @@
 #include "permission_service.h"
 #include "tee_elf_verify.h"
 
-#define SHA256_LEN                 32   /* now use sha256 hash alg */
 #define TA_CONFIG_SEGMENT_MAGIC    0xABCDABCD
 #define TA_CONFIG_SEGMENT_VERSION  0x1
 #define CONFIG_HEADER_V1           1
@@ -144,5 +143,5 @@ const rsa_pub_key_t *get_config_pub_key(void);
 uint32_t get_ca_type(void);
 uint8_t* get_g_ta_cert(void);
 TEE_Result tee_ext_set_config(const uint8_t *conf, uint32_t conf_len, const TEE_UUID *uuid, const uint8_t *service_name,
-                              uint32_t service_name_len, void *cert_param);
+                              const uint32_t service_name_len, void *cert_param);
 #endif

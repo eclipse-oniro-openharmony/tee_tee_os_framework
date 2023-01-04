@@ -23,9 +23,6 @@
 #define TLV_LLEN       sizeof(uint32_t)
 #define TLV_HEADER_LEN (TLV_TLEN + TLV_LLEN)
 
-#define STORE_RPMB 0
-#define STORE_SFS  1
-
 struct revoked_node_t {
     struct dlist_node head;
     uint8_t sn[CERT_UNIVERSAL_LEN];
@@ -51,6 +48,6 @@ struct revoked_config_t {
 TEE_Result perm_srv_global_ta_crl_list_loading(bool check_empty);
 TEE_Result perm_srv_check_cert_revoked(const uint8_t *sn, uint32_t sn_size, const uint8_t *issuer, uint32_t issuer_size,
                                        bool *revoked);
-TEE_Result perm_srv_ta_crl_cert_process(const uint8_t *crl_cert_buffer, uint32_t crl_cert_buffer_size);
+TEE_Result perm_srv_ta_crl_cert_process(const uint8_t *crl_cert, uint32_t crl_cert_size);
 void perm_srv_print_buff(const uint8_t *buff, size_t buff_size);
 #endif

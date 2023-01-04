@@ -33,12 +33,12 @@
 #include "permission_service.h"
 #include "perm_srv_common.h"
 #include "perm_srv_ta_crl_cmd.h"
-#include "perm_srv_ta_ctrl.h"
+#include "perm_srv_ta_crl.h"
 #include "perm_srv_elf_verify_cmd.h"
 #include "perm_srv_cms_crl_storage.h"
 #include "perm_srv_ta_cert.h"
 #include "perm_srv_ta_config.h"
-#include "perm_srv_ta_crl.h"
+#include "perm_srv_ta_ctrl.h"
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -71,7 +71,7 @@ static void clear_ta_bss(void)
         tloge("failed\n");
 }
 
-static struct ta_init_msg g_permsrv_init_msg = {
+static const struct ta_init_msg g_permsrv_init_msg = {
     .prop.uuid = TEE_SERVICE_PERM,
 };
 
@@ -467,7 +467,7 @@ static TEE_Result perm_srv_unregister_ta(const perm_srv_req_msg_t *msg, uint32_t
 }
 
 static TEE_Result perm_srv_release_ta(const perm_srv_req_msg_t *msg, uint32_t sndr_taskid,
-                                    const TEE_UUID *sndr_uuid, perm_srv_reply_msg_t *rsp)
+                                      const TEE_UUID *sndr_uuid, perm_srv_reply_msg_t *rsp)
 {
     (void)sndr_uuid;
     (void)rsp;
@@ -521,7 +521,8 @@ static void  perm_thread_handle_main_msg(const perm_srv_req_msg_t *req_msg, uint
     (void)memset_s(&rsp, sizeof(rsp), 0, sizeof(rsp));
 
     ret = handle_main_thread_msg_cmd(req_msg, cmd_id, sndr_taskid, sndr_uuid, &rsp);
-
+    if (ret != TEE_SUCCESS)
+        tlogd("handle main msg cmd fail 0x%x\n", ret);
     if (msg_type == HM_MSG_TYPE_CALL) {
         if (hm_msg_reply(msghdl, &rsp, sizeof(rsp)) != 0) {
             tloge("reply error\n");
@@ -590,7 +591,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
     ipc_args.channel = native_channel;
     ipc_args.recv_buf = &req_msg;
     ipc_args.recv_len = sizeof(req_msg);
-    while (1) {
+    while (true) {
         ret = hm_msg_receive(&ipc_args, msghdl, &info, 0, HM_MSG_TIMEOUT);
         if (ret < 0) {
             tloge("%s: message receive failed, %llx, %s\n", LOG_TAG, ret, hmapi_strerror(ret));
