@@ -12,6 +12,7 @@
 
 #ifndef TEST_CRYPTO_DATA_H
 #define TEST_CRYPTO_DATA_H
+#include "stddef.h"
 #include "test_crypto_api_types.h"
 // alg_map_data.c
 AlgMapInfo *FindAlgMapInfo(char *algName);

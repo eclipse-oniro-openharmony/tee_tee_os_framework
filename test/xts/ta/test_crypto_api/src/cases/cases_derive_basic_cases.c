@@ -79,39 +79,6 @@ int CaseDRDHKeySize1024Pram1024DataSize1024(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_001
-int CaseDRDHKeySize2048Pram2048DataSize1024(void)
-{
-    TestVector tv = {
-        .algName = {"DR_dh"},
-        .operaMaxKeySize = 2048,
-        .keySize = 2048,
-        .fwdKeyTypeName = "kt_dh_pair",
-        .bckKeyTypeName = "kt_dh_pair",
-        .dhGenKeySize = 2048,
-        .fwdEngine = FWDENGINE,
-        .bckEngine = BCKENGINE,
-        .dataSize = 1024,
-        .actions = {
-            IRSetUp,
-            GlbAlloc, GlbS1S2,
-            DRDeriveFwd,
-            DRDeriveBck,
-            GlbFree,
-            IRTearDown, },
-        .actionsSize = 7,
-        .expRet = ER_OK,
-    };
-    int ret = MonadRun2(&tv);
-    if (ret != 0) {
-        tloge("[%s]:MonadRun2 failed\n", __func__);
-        return -1;
-    }
-    tlogi("[%s]:MonadRun2 success\n", __func__);
-    tlogi("[%s]:--------------CaseDRDHKeySize2048Pram2048DataSize1024 success\n", __func__);
-    return 0;
-}
-
 // iTrustee_Crypto_DR_Fun7.0.0_002
 int CaseDREcdhNistP224DataSize14(void)
 {

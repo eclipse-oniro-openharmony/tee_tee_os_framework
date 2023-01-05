@@ -12,9 +12,10 @@
 
 #ifndef TEST_CRYPTO_API_TYPES_H
 #define TEST_CRYPTO_API_TYPES_H
+#include "tee_trusted_storage_api.h"
 #include "stddef.h"
-#include "tee_internal_api.h"
 #include "tee_crypto_api.h"
+#include "tee_log.h"
 
 enum {
     DATA_MODE_WHOLE  = 0,
