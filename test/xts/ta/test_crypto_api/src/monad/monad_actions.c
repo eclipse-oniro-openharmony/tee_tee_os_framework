@@ -10,12 +10,14 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#include "string.h"
 #include "securec.h"
 #include "tee_crypto_api.h"
 #include "test_crypto_data.h"
+#include "string.h"
+#include "test_crypto_api_types.h"
 #include "tee_log.h"
 #include "monad.h"
+
 static int SetupProcessInOutData(ProcessInOutData *data, size_t dataSize, size_t sliceSize)
 {
     data->data = malloc(dataSize + DATA_EXPAND_SIZE);
@@ -363,14 +365,14 @@ int CopyKeyAndSetOperationKey(TEE_ObjectHandle *fwdKey0, TEE_ObjectHandle *fwdKe
 
     TestKeyItem *keyItem = ir->tki;
 
-    TEE_CopyObjectAttributes(*fwdKey0, keyItem->keyObjList[0]);
-    TEE_CopyObjectAttributes(*fwdKey1, keyItem->keyObjList[1]);
+    TEE_CopyObjectAttributes1(*fwdKey0, keyItem->keyObjList[0]);
+    TEE_CopyObjectAttributes1(*fwdKey1, keyItem->keyObjList[1]);
     if (ir->isSwitchFwdBckOperaKey) {
-        TEE_CopyObjectAttributes(*bckKey0, keyItem->keyObjList[1]);
-        TEE_CopyObjectAttributes(*bckKey1, keyItem->keyObjList[0]);
+        TEE_CopyObjectAttributes1(*bckKey0, keyItem->keyObjList[1]);
+        TEE_CopyObjectAttributes1(*bckKey1, keyItem->keyObjList[0]);
     } else {
-        TEE_CopyObjectAttributes(*bckKey0, keyItem->keyObjList[0]);
-        TEE_CopyObjectAttributes(*bckKey1, keyItem->keyObjList[1]);
+        TEE_CopyObjectAttributes1(*bckKey0, keyItem->keyObjList[0]);
+        TEE_CopyObjectAttributes1(*bckKey1, keyItem->keyObjList[1]);
     }
     int ret1 = 0;
     int ret2 = 0;
@@ -382,7 +384,7 @@ int CopyKeyAndSetOperationKey(TEE_ObjectHandle *fwdKey0, TEE_ObjectHandle *fwdKe
         ret2 = TEE_SetOperationKey(ir->bckOperaHandle, *bckKey0);
     }
     if (ret1 != TEE_SUCCESS || ret2 != TEE_SUCCESS) {
-        tloge("[%s]:TEE_CopyObjectAttributes fwdKey0, fwdKey1, bckKey0, bckKey1 failed\n", __func__);
+        tloge("[%s]:TEE_CopyObjectAttributes1 fwdKey0, fwdKey1, bckKey0, bckKey1 failed\n", __func__);
         return -1;
     }
     return 0;
@@ -487,7 +489,6 @@ static DigestMacLenMap g_digestMacLenMapList[] = {
     { .alg = TEE_ALG_AES_CBC_MAC_NOPAD, .len = LEN_16, },
     { .alg = TEE_ALG_DES3_CBC_MAC_NOPAD, .len = LEN_8, },
     { .alg = TEE_ALG_DES_CBC_MAC_NOPAD, .len = LEN_8, },
-    { .alg = TEE_ALG_SIP_HASH, .len = LEN_8, },
 };
 static size_t g_digestMacLenMapListSize = sizeof(g_digestMacLenMapList) / sizeof(g_digestMacLenMapList[0]);
 static int CheckDigestMacLen(uint32_t alg, size_t len)
@@ -729,6 +730,7 @@ int SCDofinalBck(IntermediateReprestation *ir)
     }
     ir->decryptedData.dataSize = ir->decryptedData.dataUsed + destLen;
     tlogi("[%s]:TEE_CipherDoFinal success\n", __func__);
+    
     if (TEE_MemCompare((void *)ir->plainData.data,
         (void *)ir->decryptedData.data,
         (size_t)ir->plainData.dataSize)) {

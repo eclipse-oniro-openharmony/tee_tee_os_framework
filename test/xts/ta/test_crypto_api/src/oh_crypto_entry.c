@@ -13,8 +13,8 @@
 #include "tee_ext_api.h"
 #include "cases_entry.h"
 
-#define SYSTEM_CRYPTO "/system/bin/tee_test_crypto_api"
-#define VENDOR_CRYPTO "/vendor/bin/tee_test_crypto_api"
+#define SYSTEM_OH_CRYPTO "/system/bin/tee_test_crypto_api"
+#define VENDOR_OH_CRYPTO "/vendor/bin/tee_test_crypto_api"
 #define CRYPTO_UID 0
 
 // TA_INVOKE_CMD
@@ -26,22 +26,12 @@ TEE_Result TA_CreateEntryPoint(void)
 {
     tlogi("%s:start add caller info success\n", __func__);
     TEE_Result ret;
-#ifndef CONFIG_AUTH_USERNAME
-    ret = AddCaller_CA_exec(SYSTEM_CRYPTO, CRYPTO_UID);
+    ret = AddCaller_CA_exec(VENDOR_OH_CRYPTO, CRYPTO_UID);
     if (ret != TEE_SUCCESS)
         return ret;
-    ret = AddCaller_CA_exec(VENDOR_CRYPTO, CRYPTO_UID);
+    ret = AddCaller_CA_exec(SYSTEM_OH_CRYPTO, CRYPTO_UID);
     if (ret != TEE_SUCCESS)
         return ret;
-#else
-    ret = addcaller_ca_exec(SYSTEM_CRYPTO, "root");
-    if (ret != TEE_SUCCESS)
-        return ret;
-
-    ret = addcaller_ca_exec(VENDOR_CRYPTO, "root");
-    if (ret != TEE_SUCCESS)
-        return ret;
-#endif
     tlogi("%s:end add caller info success\n", __func__);
     return TEE_SUCCESS;
 }

@@ -4,4 +4,4 @@ gpd.ta.singleInstance:		true
 gpd.ta.multiSession: 		true
 gpd.ta.instanceKeepAlive:	false
 gpd.ta.dataSize:		8192000
-gpd.ta.stackSize:		81920
+gpd.ta.stackSize:		40960

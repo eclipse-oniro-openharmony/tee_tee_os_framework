@@ -14,6 +14,7 @@
 #define MONAD_H
 #include "test_crypto_api_types.h"
 #include "test_crypto_data.h"
+#include "tee_crypto_api.h"
 // monad_run.c
 int MonadRun2(TestVector *tv);
 

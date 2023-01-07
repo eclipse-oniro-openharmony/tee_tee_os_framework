@@ -371,17 +371,6 @@ AlgMapInfo g_algMapList[] = {
         .algOperaClassValue = TEE_OPERATION_MAC,
     },
     {
-        .algName = "M_sip_hash",
-        .algValue = TEE_ALG_SIP_HASH,
-        .fwdMode = TEE_MODE_MAC,
-        .bckMode = TEE_MODE_MAC,
-        .operaKeyCount = 1,
-        .needKeyCount = 1,
-        .isSwitchFwdBckOperaKey = 0,
-        .algOperaClassName = "M",
-        .algOperaClassValue = TEE_OPERATION_MAC,
-    },
-    {
         .algName = "M_hmac_sm3",
         .algValue = TEE_ALG_HMAC_SM3,
         .fwdMode = TEE_MODE_MAC,
@@ -882,12 +871,6 @@ KeyTypeMapInfo g_keyTypeMap[] = {
         .keyTypeName = {"kt_hmac_sha512"},
         .keyType = TEE_TYPE_HMAC_SHA512,
         .keyGenType = TEE_TYPE_HMAC_SHA512,
-        .needGenParams = NEED_NO_GEN_PARAMS,
-    },
-    {
-        .keyTypeName = {"kt_sip_hash"},
-        .keyType = TEE_TYPE_SIP_HASH,
-        .keyGenType = TEE_TYPE_SIP_HASH,
         .needGenParams = NEED_NO_GEN_PARAMS,
     },
     {
