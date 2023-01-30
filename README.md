@@ -9,7 +9,7 @@ tee_os_framework mainly contains the framework codes of tee, which is responsibl
 <tr>
 <td> tamgr </td><td>TA lifetime control, create TA process by sysmgr, commication manager, session manager and agent manager of CA2TA, process error information for TA</td>
 </tr><tr>
-<td> smcmgr</td><td>dispatch smc command, including CA commands, system suspend and resume command, idle state management</td>
+<td> teesmcmgr</td><td>dispatch smc command, including CA commands, system suspend and resume command, idle state management</td>
 </tr><tr>
 <td> tarunner</td><td> load,analysis and relocate the elf file of TA/drivers/services</td>
 </tr><tr>
@@ -21,7 +21,7 @@ tee_os_framework mainly contains the framework codes of tee, which is responsibl
 </tr><tr>
 <td> huk service</td><td> hardware root key access control</td>
 </tr><tr>
-<td> miscdrv</td><td>base driver, get shared information from bootloader</td>
+<td> teemiscdrv</td><td>base driver, get shared information from bootloader</td>
 </tr><tr>
 <td> cryptomgr</td><td>the framework code of encrypt/decrypt drivers </td>
 </tr><tr>
@@ -41,23 +41,25 @@ tee_os_framework mainly contains the framework codes of tee, which is responsibl
 base/tee/tee_os_framework
 ├── framework
 │   ├── gtask
-│   ├── smcmgr
+│   ├── teesmcmgr
 │   ├── drvmgr
 │   └── tarunner
-├── libs
+├── lib
 │   ├── drvlib                    # libs for drvmgr and drivers
 │   ├── syslib                    # libs for TA, services, tamgr
-│   └── teelib                    # libs for TEE internal services
+│   ├── teelib                    # libs for TEE internal services
+│   └── thirdparty
 ├── drivers
-│   ├── misc_drv
+│   ├── tee_misc_drv
+│   ├── include
 │   └── crypto_mgr
 ├── service
-│   ├── permission service
-│   ├── huk
+│   ├── permission_service
+│   ├── huk_service
 │   └── ssa
-├── ta
 ├── config
 │   ├── release_config            # release config macros
+│   ├── platform
 │   └── debug_config              # debug config macros
 ├── build
 ├── test
