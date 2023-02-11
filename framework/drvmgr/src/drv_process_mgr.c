@@ -45,14 +45,14 @@ static cref_t g_drv_spawn_sync_msghdl;
 
 int32_t create_spawn_sync_msg_info(void)
 {
-    int32_t ret = hm_create_ipc_native(DRV_SPAWN_SYNC_NAME, &g_drv_spawn_sync_channel);
+    int32_t ret = ipc_create_channel_native(DRV_SPAWN_SYNC_NAME, &g_drv_spawn_sync_channel);
     if (ret != 0) {
         /* called by drvmgr main, use hm_error instead of tloge */
         hm_error("create spawn sync channel fail\n");
         return -1;
     }
 
-    g_drv_spawn_sync_msghdl = hm_msg_create_hdl();
+    g_drv_spawn_sync_msghdl = ipc_msg_create_hdl();
     if (is_ref_err(g_drv_spawn_sync_msghdl)) {
         hm_error("create spawn sync hdl fail\n");
         return -1;
@@ -257,7 +257,7 @@ wait_retry:
     }
 
     retry_count++;
-    ret = hm_msg_receive(&ipc_args, g_drv_spawn_sync_msghdl, &msginfo, 0, WAIT_DRV_MSG_MAX_TIME);
+    ret = ipc_msg_receive(&ipc_args, g_drv_spawn_sync_msghdl, &msginfo, 0, WAIT_DRV_MSG_MAX_TIME);
     if (ret == E_EX_TIMER_TIMEOUT) {
         tloge("wait drv:0x%x spawn msg timeout:%u\n", taskid, WAIT_DRV_MSG_MAX_TIME);
         return -1;
@@ -436,7 +436,7 @@ static int32_t set_drv_heap_size(const struct task_node *node, struct drv_spawn_
 static int32_t get_drv_channel(const char *drv_name, cref_t *ch)
 {
     cref_t channel;
-    int32_t ret = hm_ipc_get_ch_from_path(drv_name, &channel);
+    int32_t ret = ipc_get_ch_from_path(drv_name, &channel);
     if (ret != 0) {
         tloge("get drv:%s channel fail:0x%x\n", drv_name, ret);
         return -1;
@@ -461,7 +461,7 @@ static int32_t send_cmd_perm_msg(uint64_t drv_vaddr, uint32_t drv_size, cref_t c
     msg->header.send.msg_id = REGISTER_DRV_CMD_PERM;
     msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t);
 
-    int32_t ret = hm_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, -1);
+    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, -1);
     if (ret != 0) {
         tloge("msg call:0x%x fail ret:0x%x\n", REGISTER_DRV_CMD_PERM, ret);
         return -1;
@@ -548,7 +548,7 @@ int32_t spawn_driver_handle(struct task_node *node)
     return 0;
 
 release_channel:
-    if (hm_ipc_release_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
+    if (ipc_release_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
         tloge("release drv:%s channel:0x%llx failed\n", node->tlv.drv_conf->mani.service_name, node->drv_task.channel);
     node->drv_task.channel = -1;
 
@@ -571,7 +571,7 @@ void release_driver(struct task_node *node)
     }
 
     if (is_ref_valid(node->drv_task.channel)) {
-        if (hm_ipc_release_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
+        if (ipc_release_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
             tloge("release drv:%s channel:0x%llx failed\n",
                 node->tlv.drv_conf->mani.service_name, node->drv_task.channel);
         node->drv_task.channel = -1;

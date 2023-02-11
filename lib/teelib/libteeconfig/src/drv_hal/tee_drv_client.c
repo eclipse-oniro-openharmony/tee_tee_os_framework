@@ -54,7 +54,7 @@ static struct drv_channel *alloc_and_init_channel(const char *drv_name, int64_t 
     }
 
     cref_t ch;
-    int32_t ret = hm_ipc_get_ch_from_path(drv_name, &ch);
+    int32_t ret = ipc_get_ch_from_path(drv_name, &ch);
     if (ret != 0) {
         tloge("get drv:%s channel fail ret:0x%x\n", drv_name, ret);
         free(new_ch);
@@ -145,7 +145,7 @@ static void dec_drv_channel_ref(struct drv_channel **chp)
         ch->ref_cnt--;
         if (ch->ref_cnt == 0) {
             tlogd("release drv:%s channel\n", ch->drv_name);
-            if (hm_ipc_release_path(ch->drv_name, ch->drv_channel) != 0)
+            if (ipc_release_path(ch->drv_name, ch->drv_channel) != 0)
                 tloge("release drv:%s channel:0x%llx failed\n", ch->drv_name, ch->drv_channel);
             dlist_delete(&ch->drv_list);
             free(ch);
@@ -275,7 +275,7 @@ static int64_t send_ioctl_cmd(cref_t channel, int64_t fd, uint32_t cmd_id, const
     msg->header.send.msg_id = DRV_GENERAL_CMD_ID;
     msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t) + param_len;
 
-    int32_t ret = hm_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, -1);
+    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, -1);
     if (ret != 0) {
         tloge("msg call fail ret:0x%x\n", ret);
         return -1;

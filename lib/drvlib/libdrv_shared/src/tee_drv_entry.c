@@ -35,7 +35,7 @@ static uint32_t g_drv_index;
 
 static int32_t hunt_drv_mgr_pid(msg_pid_t *pid)
 {
-    uint32_t ret = ipc_hunt_by_name(0, "drvmgr", pid);
+    uint32_t ret = ipc_hunt_by_name("drvmgr", pid);
     if (ret != 0) {
         hm_error("get drv mgr pid failed\n");
         return -1;
@@ -88,7 +88,7 @@ static int32_t hwi_context_init(const char *drv_name)
 static int32_t send_succ_msg_to_drvmgr(void)
 {
     cref_t ch = -1;
-    int32_t ret = hm_ipc_get_ch_from_path(DRV_SPAWN_SYNC_NAME, &ch);
+    int32_t ret = ipc_get_ch_from_path(DRV_SPAWN_SYNC_NAME, &ch);
     if (ret != 0) {
         hm_error("something wrong, spawn succ get sync channel fail:0x%x\n", ret);
         return -1;
@@ -97,13 +97,13 @@ static int32_t send_succ_msg_to_drvmgr(void)
     struct spawn_sync_msg msg = { 0 };
     msg.msg_id = PROCESS_INIT_SUCC;
 
-    ret = hm_msg_notification(ch, &msg, sizeof(msg));
+    ret = ipc_msg_notification(ch, &msg, sizeof(msg));
     if (ret != 0) {
         hm_error("spawn succ notify fail:0x%x\n", ret);
         return -1;
     }
 
-    uint32_t ipc_ret = hm_ipc_release_path(DRV_SPAWN_SYNC_NAME, ch);
+    uint32_t ipc_ret = ipc_release_path(DRV_SPAWN_SYNC_NAME, ch);
     if (ipc_ret != 0)
         hm_error("spawn succ release sync channel fail:0x%x\n", ipc_ret);
 

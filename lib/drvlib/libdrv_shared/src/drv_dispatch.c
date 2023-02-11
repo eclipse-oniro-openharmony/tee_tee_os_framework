@@ -218,7 +218,7 @@ static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const s
         tloge("handle driver syscall failed ret:0x%x\n", ret);
 
     rmsg->header.reply.ret_val = (ret == 0) ? ret_val : (int64_t)ret;
-    ret = hm_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
+    ret = ipc_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
     if (ret != 0) {
         tloge("hm msg reply failed\n");
         /*

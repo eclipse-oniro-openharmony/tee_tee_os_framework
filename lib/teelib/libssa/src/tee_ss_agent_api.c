@@ -207,12 +207,12 @@ static uint32_t get_gtask_and_ssa_handle(uint32_t *global_handle, uint32_t *ss_a
     if (global_handle == NULL || ss_agent_handle == NULL)
         return OS_ERROR;
 
-    if (ipc_hunt_by_name(0, GLOBAL_SERVICE_NAME, global_handle) != 0) {
+    if (ipc_hunt_by_name(GLOBAL_SERVICE_NAME, global_handle) != 0) {
         tloge("Get global_handle handle error\n");
         return OS_ERROR;
     }
 
-    if (ipc_hunt_by_name(0, SSA_SERVICE_NAME, ss_agent_handle) != 0) {
+    if (ipc_hunt_by_name(SSA_SERVICE_NAME, ss_agent_handle) != 0) {
         tloge("Get ssa handle error\n");
         return OS_ERROR;
     }

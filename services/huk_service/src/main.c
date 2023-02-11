@@ -87,7 +87,7 @@ static void handle_cmd(const struct huk_srv_msg *msg, cref_t msghdl, uint32_t sn
 
 ret_flow:
     if (msg_type == HM_MSG_TYPE_CALL) {
-        rc = hm_msg_reply(msghdl, &rsp, sizeof(rsp));
+        rc = ipc_msg_reply(msghdl, &rsp, sizeof(rsp));
         if (rc != 0)
             tloge("reply error 0x%x\n", rc);
     }
@@ -110,7 +110,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
         hm_exit((int)msghdl);
     }
 
-    if (hm_create_ipc_native(HUK_PATH, &ch) != 0) {
+    if (ipc_create_channel_native(HUK_PATH, &ch) != 0) {
         tloge("create main thread native channel failed!\n");
         hm_exit(-1);
     }
@@ -130,7 +130,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     ipc_args.recv_buf = &msg;
     ipc_args.recv_len = sizeof(msg);
     while (1) {
-        ret_hm = hm_msg_receive(&ipc_args, msghdl, &info, 0, -1);
+        ret_hm = ipc_msg_receive(&ipc_args, msghdl, &info, 0, -1);
         if (ret_hm < 0) {
             tloge("huk service: message receive failed, %llx, %s\n", ret_hm, hmapi_strerror(ret_hm));
             continue;

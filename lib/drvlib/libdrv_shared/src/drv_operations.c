@@ -292,7 +292,7 @@ static struct fd_data *find_fd_data(int32_t fd, const struct tee_uuid *uuid, con
              * when task(pid1) crash, driver_close_fd_by_pid will call by gtask in cpux,
              * and in cpuy, it may just receive pid1 drv_open cmd,
              * when cpux handle the cmd before cpuy, although cpuy will call driver_close_fd
-             * after hm_msg_reply fail, the fd1 opened by cpuy can be get from pid1
+             * after ipc_msg_reply fail, the fd1 opened by cpuy can be get from pid1
              * since it will be added to pid1 task_drv in driver_open_fd.
              * If the pid1 is reused by another ta, and this ta call drv_ioctl(fd1) maliciously,
              * it cannot auth in driver. So, compare uuid after fd is matched, it can limit only
@@ -776,7 +776,7 @@ int64_t driver_open(const struct tee_drv_param *params, const struct tee_driver_
      * and in this case, cpux may return fd after cpuy free all fd data,
      * since it not atomic between add fd data to drv_task and return fd to caller.
      * use local variable fd as return value after cpuy free all fd data,
-     * cpux will hm_msg_reply fail to ta since this ta has been killed by gtask
+     * cpux will ipc_msg_reply fail to ta since this ta has been killed by gtask
      */
     return (int64_t)fd;
 

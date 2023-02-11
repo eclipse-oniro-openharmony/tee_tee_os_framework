@@ -21,7 +21,7 @@ uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_szie)
     cref_t rslot = 0;
     uint32_t ret;
 
-    ret = (uint32_t)hm_ipc_get_ch_from_path(SSA_SERVICE_PATH, &rslot);
+    ret = (uint32_t)ipc_get_ch_from_path(SSA_SERVICE_PATH, &rslot);
     if (ret != HM_OK) {
         tloge("get channel from pathmgr failed\n");
         return ret;
@@ -29,14 +29,14 @@ uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_szie)
 
     hm_msg.msg_id = cmd_id;
     if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msg, msg_szie) != HM_OK) {
-        (void)hm_ipc_release_path(SSA_SERVICE_PATH, rslot);
+        (void)ipc_release_path(SSA_SERVICE_PATH, rslot);
         return HM_ERROR;
     }
 
-    ret = (uint32_t)hm_msg_notification(rslot, &hm_msg, sizeof(hm_msg));
+    ret = (uint32_t)ipc_msg_notification(rslot, &hm_msg, sizeof(hm_msg));
     if (ret != HM_OK)
         tloge("msg snd error %x\n", ret);
 
-    (void)hm_ipc_release_path(SSA_SERVICE_PATH, rslot);
+    (void)ipc_release_path(SSA_SERVICE_PATH, rslot);
     return ret;
 }

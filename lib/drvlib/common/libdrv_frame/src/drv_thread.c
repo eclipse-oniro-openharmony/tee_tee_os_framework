@@ -149,7 +149,7 @@ static void *tee_driver_thread(void *args)
         [0] = driver_dispatch,
     };
 
-    int32_t ret = hm_create_multi_ipc_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
+    int32_t ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
         hm_error("fail to create channel ret: 0x%x\n", ret);
         return NULL;
@@ -244,7 +244,7 @@ int32_t drv_thread_init(const char *thread_name, uint32_t stack_size, uint32_t t
         return -1;
     }
 
-    int32_t ret = hm_create_ipc_native(thread_name, &channel);
+    int32_t ret = ipc_create_channel_native(thread_name, &channel);
     if (ret != 0)
         hm_panic("%s: failed to create channel :%d\n", thread_name, ret);
 

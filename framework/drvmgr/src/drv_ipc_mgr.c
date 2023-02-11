@@ -100,7 +100,7 @@ static int64_t call_drv_open(const struct tee_drv_param *params, cref_t channel,
     msg->header.send.msg_id = 0;
     msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t) + param_len;
 
-    ret = hm_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, DRV_IPC_MAX_TIMEOUT);
+    ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, DRV_IPC_MAX_TIMEOUT);
     if (ret == E_EX_TIMER_TIMEOUT) {
         tloge("open msg call open timeout:%u\n", DRV_IPC_MAX_TIMEOUT);
         return -1;
@@ -154,7 +154,7 @@ int64_t call_drv_close(uint32_t taskid, const struct tee_uuid *caller_uuid, int6
     msg->header.send.msg_id = 0;
     msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t);
 
-    int32_t ret = hm_msg_call(channel, msg, msg->header.send.msg_size, rmsg,
+    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg,
         SYSCAL_MSG_BUFFER_SIZE, 0, DRV_IPC_MAX_TIMEOUT);
     if (ret == E_EX_TIMER_TIMEOUT) {
         tloge("close msg call close timeout:%u\n", DRV_IPC_MAX_TIMEOUT);
@@ -179,7 +179,7 @@ void call_drv_dump(cref_t channel)
     msg->header.send.msg_id = DRV_DUMP_CMD_ID;
     msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t);
 
-    int32_t ret = hm_msg_call(channel, msg, msg->header.send.msg_size, rmsg,
+    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg,
         SYSCAL_MSG_BUFFER_SIZE, 0, -1);
     if (ret != 0)
         tloge("dump msg call fail ret:0x%x\n", ret);

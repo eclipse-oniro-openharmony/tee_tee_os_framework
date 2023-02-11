@@ -33,7 +33,7 @@ int32_t huk_srv_msg_call(struct huk_srv_msg *msg, struct huk_srv_rsp *rsp)
         tloge("huk msg call mutex lock failed\n");
         return -1;
     }
-    rc = hm_ipc_get_ch_from_path(HUK_PATH, &rslot);
+    rc = ipc_get_ch_from_path(HUK_PATH, &rslot);
     if (rc == -1) {
         tloge("huksrv: get channel from pathmgr failed\n");
         if (pthread_mutex_unlock(&g_msg_call_mutex) != 0)
@@ -41,11 +41,11 @@ int32_t huk_srv_msg_call(struct huk_srv_msg *msg, struct huk_srv_rsp *rsp)
         return rc;
     }
 
-    rc = hm_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), 0, -1);
+    rc = ipc_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), 0, -1);
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)hm_ipc_release_path(HUK_PATH, rslot);
+    (void)ipc_release_path(HUK_PATH, rslot);
     if (pthread_mutex_unlock(&g_msg_call_mutex) != 0) {
         tloge("huk msg call mutex unlock failed\n");
         return -1;

@@ -146,7 +146,7 @@ static int32_t get_ipc_native_args(const char *task_name, struct tee_service_ipc
 {
     cref_t ch = 0;
 
-    int32_t ret = hm_create_ipc_native(task_name, &ch);
+    int32_t ret = ipc_create_channel_native(task_name, &ch);
     if (ret != 0) {
         tloge("create ipc channel failed, ret=%d\n", ret);
         return ret;
@@ -193,7 +193,7 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
         do_deal_with_msg(dispatch, n_dispatch, &req_msg, &rsp_msg, task_id);
 
         if (info.msg_type == HM_MSG_TYPE_CALL) {
-            ret = hm_msg_reply(msghdl, &rsp_msg, sizeof(rsp_msg));
+            ret = ipc_msg_reply(msghdl, &rsp_msg, sizeof(rsp_msg));
             if (ret != 0) {
                 tloge("message reply failed, ret=0x%x, reason:%s\n", ret, hmapi_strerror(ret));
                 continue;

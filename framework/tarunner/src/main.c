@@ -122,7 +122,7 @@ static int32_t create_task_channel(const char *task_name, const struct env_param
 
     if (param->target_type == DRV_TARGET_TYPE) {
         /* used for cs_server_loop */
-        ret = hm_create_ipc_native(task_name, drv_channel);
+        ret = ipc_create_channel_native(task_name, drv_channel);
         if (ret != HM_OK) {
             hm_error("create drv:%s channel failed\n", task_name);
             return HM_ERROR;
@@ -131,14 +131,14 @@ static int32_t create_task_channel(const char *task_name, const struct env_param
         hm_debug("create drv:%s channel:0x%llx\n", task_name, (unsigned long long)(*drv_channel));
 
         /* used for irq thread */
-        ret = hm_create_multi_ipc_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
+        ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
         if (ret != HM_OK) {
             hm_error("create drv irq channel failed\n");
             return HM_ERROR;
         }
     } else {
         /* Create 2 IPC channels */
-        ret = hm_create_multi_ipc_channel(task_name, IPC_CHANNEL_NUM, NULL, reg_items);
+        ret = ipc_create_channel(task_name, IPC_CHANNEL_NUM, NULL, reg_items);
         if (ret != HM_OK) {
             hm_error("create multi ipc channel failed: %d\n", ret);
             return HM_ERROR;
@@ -235,7 +235,7 @@ static int32_t library_init(const char *task_name, const struct env_param *param
 static void send_fail_msg_to_drvmgr(void)
 {
     cref_t ch = 0;
-    int32_t ret = hm_ipc_get_ch_from_path(DRV_SPAWN_SYNC_NAME, &ch);
+    int32_t ret = ipc_get_ch_from_path(DRV_SPAWN_SYNC_NAME, &ch);
     if (ret != 0) {
         hm_error("something wrong, spawn fail get drvmgr sync channel fail\n");
         return;
@@ -244,13 +244,13 @@ static void send_fail_msg_to_drvmgr(void)
     struct spawn_sync_msg msg = { 0 };
     msg.msg_id = PROCESS_INIT_FAIL;
 
-    ret = hm_msg_notification(ch, &msg, sizeof(msg));
+    ret = ipc_msg_notification(ch, &msg, sizeof(msg));
     if (ret != 0) {
         hm_error("spawn fail notify to drvmgr fail\n");
         return;
     }
 
-    if (hm_ipc_release_path(DRV_SPAWN_SYNC_NAME, ch) != 0)
+    if (ipc_release_path(DRV_SPAWN_SYNC_NAME, ch) != 0)
         hm_error("release drvmgr sync channel fail\n");
 }
 

@@ -41,7 +41,7 @@ int perm_srv_msg_call(const char *path, perm_srv_req_msg_t *msg, perm_srv_reply_
         tloge("perm msg call mutex lock failed\n");
         return -1;
     }
-    rc = hm_ipc_get_ch_from_path(path, &rslot);
+    rc = ipc_get_ch_from_path(path, &rslot);
     if (rc == -1) {
         tloge("permsrv: get channel from pathmgr failed\n");
         (void)pthread_mutex_unlock(&g_msg_call_mutex);
@@ -49,13 +49,13 @@ int perm_srv_msg_call(const char *path, perm_srv_req_msg_t *msg, perm_srv_reply_
     }
 
     if (rsp == NULL)
-        rc = hm_msg_notification(rslot, msg, sizeof(*msg));
+        rc = ipc_msg_notification(rslot, msg, sizeof(*msg));
     else
-        rc = hm_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), 0, -1);
+        rc = ipc_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), 0, -1);
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)hm_ipc_release_path(path, rslot);
+    (void)ipc_release_path(path, rslot);
     (void)pthread_mutex_unlock(&g_msg_call_mutex);
     return rc;
 }

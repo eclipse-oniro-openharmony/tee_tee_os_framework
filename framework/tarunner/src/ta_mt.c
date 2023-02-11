@@ -119,7 +119,7 @@ static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti, 
             continue;
         }
 
-        rc = hm_remove_ipc_channel((msg_pid_t)hmpid_to_pid(tid, pid), NULL, i, pti->t_channel[i]);
+        rc = ipc_remove_channel((msg_pid_t)hmpid_to_pid(tid, pid), NULL, i, pti->t_channel[i]);
         if (rc != 0)
             hm_error("remove ipc channel #%d failed: rc=%d\n", i, rc);
 
@@ -150,7 +150,7 @@ static TEE_Result ta_recycle_thread(uint32_t tid)
         hm_error("pthread join failed: rc=%d\n", rc);
 
     remove_all_ipc_channel(tid, pti, NULL);
-    hm_msg_delete_hdl(hm_get_mycnode(), pti->t_msghdl);
+    ipc_msg_delete_hdl(hm_get_mycnode(), pti->t_msghdl);
     /* clear thread info struct */
     release_thread_info(pti);
 
@@ -169,7 +169,7 @@ static int32_t create_ipc_channel(const char *task_name, cref_t *ch[])
     reg_items.reg_pid = true;
     reg_items.reg_name = false;
     reg_items.reg_tamgr = reg_tamgr;
-    if (hm_create_multi_ipc_channel(task_name, CREATE_IPC_CHANNEL_NUM, ch, reg_items) != 0) {
+    if (ipc_create_channel(task_name, CREATE_IPC_CHANNEL_NUM, ch, reg_items) != 0) {
         hm_error("Cannot create thread channel\n");
         return HM_ERROR;
     }
@@ -212,7 +212,7 @@ static void *tee_task_entry_thread(void *data)
     pti->tid = (uint32_t)tid;
 
     /* prepare message handle */
-    msghdl = hm_msg_create_hdl();
+    msghdl = ipc_msg_create_hdl();
     if (is_ref_err(msghdl)) {
         hm_error("Cannot create msg_hdl\n");
         goto err_get_tid;
@@ -249,7 +249,7 @@ err_create_ipc_chnl:
     tls->msghdl = 0;
 
 err_get_tls:
-    hm_msg_delete_hdl(hm_get_mycnode(), pti->t_msghdl);
+    ipc_msg_delete_hdl(hm_get_mycnode(), pti->t_msghdl);
 
 err_get_tid:
     /* reply error for TaskCreate */

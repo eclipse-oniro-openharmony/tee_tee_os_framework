@@ -62,7 +62,7 @@ static void gtask_init(void)
     extern cref_t __sysmgrch;
     struct reg_items_st reg_items = { true, true, true };
 
-    ret = hm_create_multi_ipc_channel("TEEGlobalTask", GT_CHANNEL_NUM, NULL, reg_items);
+    ret = ipc_create_channel("TEEGlobalTask", GT_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
         hm_error("GTASK: create ipc chnl failed: %d\n", ret);
         wait_for_kill();

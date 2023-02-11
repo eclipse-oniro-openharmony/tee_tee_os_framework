@@ -155,7 +155,7 @@ static void classic_thread_reply(int32_t status, const timer_event *t_event, cre
     if (status == STOP_TIMER && t_event->state == TIMER_STATE_EXECUTING)
         rsp_msg.hdr.send.msg_id = TIMER_OPS_FAIL;
 
-    ret = hm_msg_reply(msg_hdl, &rsp_msg, sizeof(rsp_msg));
+    ret = ipc_msg_reply(msg_hdl, &rsp_msg, sizeof(rsp_msg));
     if (ret != TMR_OK)
         hm_error("classic timer reply fail\n");
 }
@@ -334,7 +334,7 @@ static uint32_t tee_classic_timer_event_start(timer_event *t_event, timeval_t *t
     if (t_event->pid == (int32_t)get_selfpid())
         return TMR_OK;
 
-    ret = hm_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
+    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
         hm_error("start timer event fail\n");
@@ -367,7 +367,7 @@ static uint32_t tee_classic_timer_event_stop(timer_event *t_event)
     if (t_event->pid == (int32_t)get_selfpid())
         return TMR_OK;
 
-    ret = hm_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
+    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
         hm_error("stop timer event fail\n");
@@ -401,7 +401,7 @@ static uint32_t tee_classic_timer_event_destroy(timer_event *t_event)
     if (t_event->pid == (int32_t)get_selfpid()) {
         ret = TMR_OK;
     } else {
-        ret = hm_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg),
+        ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg),
                           &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
         if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS)
             hm_error("stop timer event fail\n");

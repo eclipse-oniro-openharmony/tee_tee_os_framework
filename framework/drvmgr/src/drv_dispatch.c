@@ -637,7 +637,7 @@ static int32_t drvcall_conf_unregister_handle(const struct tee_drv_param *params
     struct task_node *node = get_ta_node_and_set_exit(&uuid);
 
     reply->header.reply.ret_val = 0;
-    int32_t ret = hm_msg_reply(reply_hdl, reply, sizeof(*reply));
+    int32_t ret = ipc_msg_reply(reply_hdl, reply, sizeof(*reply));
     if (ret != 0)
         tloge("exception reply fail:0x%x\n", ret);
 
@@ -779,7 +779,7 @@ static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const s
      */
     if ((swi_id != UNREGISTER_DRVCALL_CONF) || (swi_id == UNREGISTER_DRVCALL_CONF && ret != 0)) {
         rmsg->header.reply.ret_val = (ret == 0) ? ret_val : (int64_t)ret;
-        ret = hm_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
+        ret = ipc_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
         if (ret != 0) {
             tloge("hm msg reply for 0x%x failed\n", swi_id);
             /*
