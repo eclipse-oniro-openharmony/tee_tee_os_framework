@@ -104,7 +104,7 @@ tees: setup_links libs $(drivers) $(frameworks) $(service)
 $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
-package: hmfilemgr
+package: $(STAGE_DIR)/bootfs.img
 	cp -a $(PLAT_CFG_DIR)/plat_cfg.c $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
 	cp -a $(PLAT_CFG_DIR)/plat_cfg.h $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
 
@@ -155,14 +155,10 @@ install_libs:
 	done
 
 # packaging the image
-PHONY += hmfilemgr
-hmfilemgr: $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
 $(STAGE_DIR)/bootfs.img:
-$(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr: $(STAGE_DIR)/bootfs.img
-	@echo "Building hmfilemgr"
-	$(MAKE) -C $(BUILD_TOOLS)/hmfilemgr ARCH=$(TEE_ARCH) -j
+	@echo "Build bootfs.img finish"
 	@mkdir $(FILEMGR_BOOT_ELF)
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr $(FILEMGR_BOOT_ELF)/.
+	cp -a $(STAGE_DIR)/bootfs.img $(FILEMGR_BOOT_ELF)/.
 
 PHONY += release
 release:
