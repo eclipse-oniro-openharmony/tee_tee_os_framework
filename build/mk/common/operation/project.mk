@@ -98,55 +98,6 @@ $(service):
 	$(if $(findstring true, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=arm TARG=_a32 USE_GNU_CXX=y -f $(PREBUILD_HEADER)/.config -f Makefile all)
 	$(if $(findstring false, $(CONFIG_SUPPORT_64BIT)), ,$(VER) LDFLAGS= $(MAKE) -C $(SERVICES_PATH)/$@ ARCH=aarch64 -f $(PREBUILD_HEADER)/.config -f Makefile all)
 
-COMPARE_IMAGE := 0
-WITH_LOG_ENCODE := false
-
-# Add boot-apps here
-# NOTE: boot-apps will package to kernel.elf do not need to change
-boot-apps := $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
-boot-apps += $(PREBUILD_LIBS)/$(TEE_ARCH)/hmsysmgr
-
-HM_APPS_TOOLS := $(BUILD_TOOLS)/generate_img
-HM_APPS_LIBCPIO := $(TOPDIR)/../tee_os_kernel/libcore_shared/syslib/libcpio
-
-.PHONY : cpio-strip
-cpio-strip :
-	@echo "[$@] building..."
-	$(Q)$(MAKE) $(MAKE_SILENT) -C $(HM_APPS_TOOLS)/$@ -f $(HM_APPS_TOOLS)/$@/Makefile \
-        SOURCE_DIR=$(HM_APPS_TOOLS)/$@ -Wall -Wextra \
-        LIBCPIO_BASE=$(HM_APPS_LIBCPIO) \
-        HM_APPS_DIR=$(TOPDIR)
-	@echo "[$@] done"
-
-DDK_FLAG:=false
-$(STAGE_DIR)/teehm.img.elf: $(ELFLOADER_OUTDIR)/elfloader.o hmfilemgr cpio-strip
-	@echo "[GEN_IMAGE] $@"
-	$(VER) $(BUILD_TOOLS)/generate_img/smart-strip.sh $(boot-apps)
-	$(VER) DDK_FLAG=$(DDK_FLAG) CONFIG_NO_PLATCFG_EMBEDDED=$(CONFIG_NO_PLATCFG_EMBEDDED) PREBUILD_DIR=$(PREBUILD_DIR) ELFLOADER_DIR=$(ELFLOADER_OUTDIR) OUTPUTDIR=$(OUTPUTDIR)\
-		KERNEL_OUTDIR=$(KERNEL_OUTDIR) BUILD_TOOLS=$(BUILD_TOOLS) $(BUILD_TOOLS)/generate_img/gen_boot_image.sh $(KERNEL_OUTDIR)/kernel.elf $(boot-apps) $@ 2>&1 \
-		| while read line; do echo " [GEN_IMAGE] $$line"; done; \
-		exit ${PIPESTATUS[0]}
-
-$(STAGE_DIR)/teehm.img: $(STAGE_DIR)/teehm.img.elf
-	@echo "[OBJCOPY $@]"
-	$(VER) $(OBJCOPY) -O binary $< $@
-ifeq ($(CONFIG_QEMU_PLATFORM),y)
-	cp $(STAGE_DIR)/teehm.img  $(STAGE_DIR)/bl32.bin
-endif
-
-$(STAGE_DIR)/trustedcore.img: $(STAGE_DIR)/teehm.img
-	@echo "[Installing $@]"
-	$(VER) IMAGE_ROOT=$(STAGE_DIR) $(BUILD_TOOLS)/pack_img/packimg.sh \
-		oh \
-		$(COMPARE_IMAGE) \
-		oh \
-		$(WITH_TEEOS_ENCRYPT) \
-		$(WITH_LOG_ENCODE)
-ifneq ($(CODE_CHECKER),y)
-	$(VER) $(TOPDIR)/../tee_os_kernel/libcore_shared/syslib/libc/clean_libc.sh  $(TOPDIR)/../tee_os_kernel
-	$(VER) $(TEELIB)/libopenssl/clean_openssl.sh $(TOPDIR)
-endif
-
 ifneq ($(VERSION_DDK),y)
 	$(VER) rm -rf $(BUILD_TOOLS)/generate_img/cpio-strip/cpio-strip
 endif
@@ -162,16 +113,6 @@ endif
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -fsigned-char -fno-strict-aliasing \
                    -pipe -fno-common
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
-
-SDK_CPPFLAGS := $(flags) $(c-flags) -I$(PREBUILD_DIR)/headers -I$(PREBUILD_DIR)/headers/ddk/legacy -I$(PREBUILD_DIR)/headers/sys/hmapi -I$(PREBUILD_DIR)/headers/sys/hmapi/kernel -I$(PREBUILD_DIR)/headers/sys/legacy -I$(PREBUILD_DIR)/headers/ddk/hmapi
-SDK_CPPFLAGS := $(filter-out --target=$(TARGET_ARCH), $(SDK_CPPFLAGS))
-SDK_CPPFLAGS += --target=$(HM_TARGET_ARCH)
-SDK_CPPFLAGS := $(call uniq, $(SDK_CPPFLAGS) $(GENERAL_OPTIONS))
-SDK_CPPFLAGS := $(filter-out -fsanitize=cfi, $(SDK_CPPFLAGS))
-SDK_CPPFLAGS := $(filter-out -flto, $(SDK_CPPFLAGS))
-SDK_CPPFLAGS += -include$(PREBUILD_DIR)/headers/autoconf.h
-SDK_CPPFLAGS += -include$(PREBUILD_DIR)/headers/platautoconf.h
-export SDK_CPPFLAGS
 
 # bootfs image
 include $(BUILD_PACK)/bootfs.mk

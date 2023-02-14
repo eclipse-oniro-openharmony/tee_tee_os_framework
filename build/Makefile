@@ -166,10 +166,6 @@ $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr: $(STAGE_DIR)/bootfs.img
 	@echo "Building hmfilemgr"
 	$(MAKE) -C $(BUILD_TOOLS)/hmfilemgr ARCH=$(TEE_ARCH) -j
 
-PHONY += teehm.img trustedcore.img
-package: $(STAGE_DIR)/trustedcore.img
-	@echo "!!generate trustedcore.img success"
-
 PHONY += release
 release:
 	@echo "!!compile release"
