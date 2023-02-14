@@ -17,6 +17,7 @@
 #include <tee_log.h>
 #include <tee_ext_api.h>
 #include "huk_service_msg_call.h"
+#include <ta_framework.h>
 
 static pthread_mutex_t g_msg_call_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
 int32_t huk_srv_msg_call(struct huk_srv_msg *msg, struct huk_srv_rsp *rsp)
@@ -33,7 +34,7 @@ int32_t huk_srv_msg_call(struct huk_srv_msg *msg, struct huk_srv_rsp *rsp)
         tloge("huk msg call mutex lock failed\n");
         return -1;
     }
-    rc = ipc_get_ch_from_path(HUK_PATH, &rslot);
+    rc = ipc_get_ch_from_path(HUK_TASK_NAME, &rslot);
     if (rc == -1) {
         tloge("huksrv: get channel from pathmgr failed\n");
         if (pthread_mutex_unlock(&g_msg_call_mutex) != 0)
@@ -45,7 +46,7 @@ int32_t huk_srv_msg_call(struct huk_srv_msg *msg, struct huk_srv_rsp *rsp)
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)ipc_release_path(HUK_PATH, rslot);
+    (void)ipc_release_path(HUK_TASK_NAME, rslot);
     if (pthread_mutex_unlock(&g_msg_call_mutex) != 0) {
         tloge("huk msg call mutex unlock failed\n");
         return -1;

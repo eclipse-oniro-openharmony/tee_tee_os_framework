@@ -109,19 +109,13 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
         hm_exit((int)msghdl);
     }
 
-    if (ipc_create_channel_native(HUK_PATH, &ch) != 0) {
+    if (ipc_create_channel_native(HUK_TASK_NAME, &ch) != 0) {
         tloge("create main thread native channel failed!\n");
         hm_exit(-1);
     }
 
     if (ac_init_simple() != 0) {
         tloge("ac init error\n");
-        hm_exit(-1);
-    }
-
-    ret_hm = hm_tamgr_register(HUK_TASK_NAME);
-    if (ret_hm != 0) {
-        tloge("hm tamgr register fail is %d!\n", ret_hm);
         hm_exit(-1);
     }
 

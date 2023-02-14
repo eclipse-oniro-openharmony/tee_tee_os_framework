@@ -141,9 +141,10 @@ static void gtask_run_and_destory(void)
     gtask_extend_utable();
 
     gtask_main();
-    ret = pathmgr_del_path("TEEGlobalTask");
-    (void)ret;
-    hm_error("Remove GTASK path ret = %d. teesmcmgr error is expected\n", ret);
+
+    (void)ipc_remove_channel(0, "TEEGlobalTask", 0, 0);
+    (void)ipc_remove_channel(0, NULL, 1, 0);
+    hm_error("Remove GTASK path. teesmcmgr error is expected\n", ret);
     init_shell();
 }
 /*

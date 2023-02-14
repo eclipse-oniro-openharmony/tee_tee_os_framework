@@ -84,12 +84,6 @@ static void acquire_hdlr(void)
     if (is_ref_err(g_gtask_channel_hdlr))
         fatal("acquire gtask channel returns %s\n", hmapi_strerror(ref_to_err(g_gtask_channel_hdlr)));
     set_is_gtask_alive(true);
-
-    rc = hm_tamgr_register("teesmcmgr");
-    if (rc != 0) {
-        error("tamgr registration failed\n");
-        hm_exit(1);
-    }
 }
 
 static void create_smc_thread(pthread_t *smc_thread)
