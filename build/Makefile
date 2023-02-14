@@ -107,7 +107,10 @@ $(service): setup_links libs link_libs
 package: $(STAGE_DIR)/bootfs.img
 	cp -a $(PLAT_CFG_DIR)/plat_cfg.c $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
 	cp -a $(PLAT_CFG_DIR)/plat_cfg.h $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
+	@mkdir $(FILEMGR_BOOT_ELF)
+	cp -a $(STAGE_DIR)/bootfs.img $(FILEMGR_BOOT_ELF)/.
 
+PHONY += $(STAGE_DIR)/bootfs.img
 PHONY += link_libs link_arm_libs link_aarch64_libs
 link_libs: link_arm_libs link_aarch64_libs
 
@@ -153,12 +156,6 @@ install_libs:
 	@for l in $(OUTPUTDIR)/arm/libs/* $(OUTPUTDIR)/aarch64/libs/*; do \
 		if [ -e $$l ] && [ ! -L $$l ]; then cp -rf $$l $(LIBS_INSTALL_DIR); fi; \
 	done
-
-# packaging the image
-$(STAGE_DIR)/bootfs.img:
-	@echo "Build bootfs.img finish"
-	@mkdir $(FILEMGR_BOOT_ELF)
-	cp -a $(STAGE_DIR)/bootfs.img $(FILEMGR_BOOT_ELF)/.
 
 PHONY += release
 release:
