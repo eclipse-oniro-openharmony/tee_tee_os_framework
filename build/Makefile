@@ -76,6 +76,7 @@ GEN_CONF_FILE:
 	sed -i '$$a\#endif /* AUTO_CONFIG_H */'  $(PLAT_AUTOCONF_FILE)
 	echo -e >> $(PREBUILD_DIR)/headers/.config
 	cat $(CONFIG_FILE) | tee -a $(PREBUILD_DIR)/headers/.config
+	cp -a $(PLAT_AUTOCONF_FILE) $(TOPDIR)/../tee_os_kernel/include/generated/.
 
 PATCH_OPENSSL:=$(shell $(TOPDIR)/lib/teelib/libopenssl/build_openssl.sh $(TOPDIR))
 
@@ -104,6 +105,8 @@ $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
 package: hmfilemgr
+	cp -a $(PLAT_CFG_DIR)/plat_cfg.c $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
+	cp -a $(PLAT_CFG_DIR)/plat_cfg.h $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
 
 PHONY += link_libs link_arm_libs link_aarch64_libs
 link_libs: link_arm_libs link_aarch64_libs
