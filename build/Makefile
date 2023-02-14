@@ -168,6 +168,8 @@ $(STAGE_DIR)/bootfs.img:
 $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr: $(STAGE_DIR)/bootfs.img
 	@echo "Building hmfilemgr"
 	$(MAKE) -C $(BUILD_TOOLS)/hmfilemgr ARCH=$(TEE_ARCH) -j
+	@mkdir $(FILEMGR_BOOT_ELF)
+	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr $(FILEMGR_BOOT_ELF)/.
 
 PHONY += release
 release:
