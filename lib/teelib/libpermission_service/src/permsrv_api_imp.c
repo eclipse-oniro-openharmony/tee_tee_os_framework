@@ -51,7 +51,7 @@ int perm_srv_msg_call(const char *path, perm_srv_req_msg_t *msg, perm_srv_reply_
     if (rsp == NULL)
         rc = ipc_msg_notification(rslot, msg, sizeof(*msg));
     else
-        rc = ipc_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), 0, -1);
+        rc = ipc_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), -1);
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 

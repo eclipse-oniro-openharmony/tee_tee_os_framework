@@ -19,6 +19,7 @@
 #include <generic_timer.h>
 #include <tee_time_adapt.h>
 #include <tee_mem_mgmt_api.h>
+#include <ipclib.h>
 
 enum classic_timer_msg {
     CREATE_TIMER,
@@ -334,7 +335,7 @@ static uint32_t tee_classic_timer_event_start(timer_event *t_event, timeval_t *t
     if (t_event->pid == (int32_t)get_selfpid())
         return TMR_OK;
 
-    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
+    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
         hm_error("start timer event fail\n");
@@ -367,7 +368,7 @@ static uint32_t tee_classic_timer_event_stop(timer_event *t_event)
     if (t_event->pid == (int32_t)get_selfpid())
         return TMR_OK;
 
-    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
+    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
         hm_error("stop timer event fail\n");
@@ -402,7 +403,7 @@ static uint32_t tee_classic_timer_event_destroy(timer_event *t_event)
         ret = TMR_OK;
     } else {
         ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg),
-                          &rsp_msg, sizeof(rsp_msg), 0, HM_NO_TIMEOUT);
+                          &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
         if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS)
             hm_error("stop timer event fail\n");
     }

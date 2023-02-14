@@ -99,9 +99,8 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     struct huk_srv_msg msg;
     spawn_uuid_t uuid;
     cref_t ch = 0;
-    msginfo_t info = {0};
+    struct src_msginfo info = {0};
     int32_t ret_hm;
-    struct channel_ipc_args ipc_args = {0};
 
     (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
     cref_t msghdl = get_mymsghdl();
@@ -126,23 +125,20 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
         hm_exit(-1);
     }
 
-    ipc_args.channel = ch;
-    ipc_args.recv_buf = &msg;
-    ipc_args.recv_len = sizeof(msg);
     while (1) {
-        ret_hm = ipc_msg_receive(&ipc_args, msghdl, &info, 0, -1);
+        ret_hm = ipc_msg_receive(ch, &msg, sizeof(msg), msghdl, &info, -1);
         if (ret_hm < 0) {
             tloge("huk service: message receive failed, %llx, %s\n", ret_hm, hmapi_strerror(ret_hm));
             continue;
         }
 
-        if (hm_getuuid((pid_t)info.src_cred.pid, &uuid) != 0)
+        if (hm_getuuid((pid_t)info.src_pid, &uuid) != 0)
             tloge("huk service get uuid failed\n");
 
-        if (info.src_cred.pid == 0)
+        if (info.src_pid == 0)
             handle_cmd(&msg, msghdl, GLOBAL_HANDLE, info.msg_type, &(uuid.uuid));
         else
-            handle_cmd(&msg, msghdl, (uint32_t)hmpid_to_pid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid),
+            handle_cmd(&msg, msghdl, (uint32_t)hmpid_to_pid(info.src_tid, info.src_pid),
                        info.msg_type, &(uuid.uuid));
     }
 

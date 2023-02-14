@@ -275,7 +275,7 @@ static int64_t send_ioctl_cmd(cref_t channel, int64_t fd, uint32_t cmd_id, const
     msg->header.send.msg_id = DRV_GENERAL_CMD_ID;
     msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t) + param_len;
 
-    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, -1);
+    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, -1);
     if (ret != 0) {
         tloge("msg call fail ret:0x%x\n", ret);
         return -1;

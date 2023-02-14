@@ -94,7 +94,7 @@ static int se_srv_msg_call(struct se_srv_msg_t *msg, struct se_srv_rsp_t *rsp)
         return rc;
     }
 
-    rc = ipc_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), 0, -1);
+    rc = ipc_msg_call(rslot, msg, sizeof(*msg), rsp, sizeof(*rsp), -1);
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 

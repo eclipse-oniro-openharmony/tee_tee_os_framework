@@ -64,7 +64,7 @@ static int32_t hwi_context_init(const char *drv_name)
     cref_t hwi_ch = 0;
     const int channel_index = 1;
 
-    int32_t ret = hm_get_ipc_channel(channel_index, &hwi_ch);
+    int32_t ret = ipc_get_my_channel(channel_index, &hwi_ch);
     if (ret != 0) {
         hm_error("drv %s get ipc channel for hwi fail:0x%x\n", drv_name, ret);
         return -1;

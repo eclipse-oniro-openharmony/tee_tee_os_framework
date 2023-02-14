@@ -234,12 +234,8 @@ close_fd:
 #define MAX_WAIT_RETRY_COUNT 16
 static int32_t wait_drv_spawn_msg(uint32_t taskid)
 {
-    struct hmcap_message_info msginfo = { 0 }; /* store sender msg info */
+    struct src_msginfo info = { 0 }; /* store sender msg info */
     struct spawn_sync_msg msg = { 0 };
-    struct channel_ipc_args ipc_args = { 0 };
-    ipc_args.channel = g_drv_spawn_sync_channel;
-    ipc_args.recv_buf = &msg;
-    ipc_args.recv_len = sizeof(msg);
 
     int32_t ret;
     uint32_t retry_count = 0;
@@ -257,7 +253,8 @@ wait_retry:
     }
 
     retry_count++;
-    ret = ipc_msg_receive(&ipc_args, g_drv_spawn_sync_msghdl, &msginfo, 0, WAIT_DRV_MSG_MAX_TIME);
+    ret = ipc_msg_receive(g_drv_spawn_sync_channel, &msg, sizeof(msg), g_drv_spawn_sync_msghdl, 
+                          &info, WAIT_DRV_MSG_MAX_TIME);
     if (ret == E_EX_TIMER_TIMEOUT) {
         tloge("wait drv:0x%x spawn msg timeout:%u\n", taskid, WAIT_DRV_MSG_MAX_TIME);
         return -1;
@@ -268,9 +265,9 @@ wait_retry:
         return -1;
     }
 
-    if (msginfo.src_cred.pid != pid_to_hmpid(taskid)) {
+    if (info.src_pid != pid_to_hmpid(taskid)) {
         tloge("sender:0x%x is not spawn process:0x%x, just wait again\n",
-            msginfo.src_cred.pid, taskid);
+            info.src_pid, taskid);
         goto wait_retry;
     }
 
@@ -461,7 +458,7 @@ static int32_t send_cmd_perm_msg(uint64_t drv_vaddr, uint32_t drv_size, cref_t c
     msg->header.send.msg_id = REGISTER_DRV_CMD_PERM;
     msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t);
 
-    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, 0, -1);
+    int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, -1);
     if (ret != 0) {
         tloge("msg call:0x%x fail ret:0x%x\n", REGISTER_DRV_CMD_PERM, ret);
         return -1;
