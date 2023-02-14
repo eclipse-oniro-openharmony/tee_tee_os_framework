@@ -110,13 +110,6 @@ package: hmfilemgr
 
 PHONY += link_libs link_arm_libs link_aarch64_libs
 link_libs: link_arm_libs link_aarch64_libs
-	mkdir -p $(OUTPUTDIR)/elfloader
-	mkdir -p $(OUTPUTDIR)/kernel
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/elfloader.o $(OUTPUTDIR)/elfloader/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/kernel.elf $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libuart.a $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libhardware.a $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libklibc.a $(OUTPUTDIR)/kernel/.
 
 link_arm_libs: libs
 	@echo "[link] libs=$(libs)"

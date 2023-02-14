@@ -18,7 +18,6 @@ override APP_DIR       := $(OUTPUTDIR)/$(ARCH)/apps
 override DRV_DIR       := $(OUTPUTDIR)/$(ARCH)/drivers
 override HDR_L_DIR     := $(OUTPUTDIR)/headers
 override KERNEL_OUTDIR := $(OUTPUTDIR)/kernel
-override ELFLOADER_OUTDIR := $(OUTPUTDIR)/elfloader
 
 ifneq ($V,)
 VER :=
