@@ -44,21 +44,21 @@ $(STAGE_DIR)/bootfs.img: $(boot-fs-files-y) FORCE
 	set -e ;\
 	for i in $(check-syms-y) ; do \
 		echo " [ CHECK SYMS ]: $$i" ;\
-		$(BUILD_TOOLS)/generate_img/check-syms.sh $$i \
+		$(TOPDIR)/../tee_os_kernel/build/tools/generate_img/check-syms.sh $$i \
 			$(PREBUILD_LIBS)/arm/libc_shared_a32.so \
 			$(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so \
 			$(OUTPUTDIR)/arm/obj/arm/libdrv_shared/libdrv_shared_a32.so; \
 	done ;\
 	for i in $(check-a64-syms-y) ; do \
 		echo " [ CHECK a64 SYMS ]: $$i" ;\
-		$(BUILD_TOOLS)/generate_img/check-syms.sh $$i \
+		$(TOPDIR)/../tee_os_kernel/build/tools/generate_img/check-syms.sh $$i \
 			$(PREBUILD_LIBS)/aarch64/libc_shared.so \
 			$(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so \
 			$(OUTPUTDIR)/aarch64/obj/aarch64/libdrv_shared/libdrv_shared.so; \
 	done ; fi
 	@test -d $(dir $@) || mkdir -p $(dir $@)
 	@echo " [ MAKING BOOT RAMFS ]: $@"
-	$(BUILD_TOOLS)/generate_img/smart-strip.sh $(boot-fs)
+	$(TOPDIR)/../tee_os_kernel/build/tools/generate_img/smart-strip.sh $(boot-fs)
 	$(VER) $(RAMFSMKIMG) -n $(HM_BOOTFS_SIZE) $@ $(boot-fs-files-y)
 
 FORCE: ;
