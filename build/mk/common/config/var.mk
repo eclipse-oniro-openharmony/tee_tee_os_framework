@@ -52,12 +52,6 @@ STAGE_DIR := $(OUTPUTDIR)/stage
 
 # selection of platform
 
-ifeq ($(strip $(QUICK_BOOT_CHK)), true)
-WITH_TEEOS_ENCRYPT := false
-else
-WITH_TEEOS_ENCRYPT := true
-endif
-
 ifeq ($(TARGET_BUILD_VARIANT),eng)
 	WITH_ENG_VERSION = true
 else
