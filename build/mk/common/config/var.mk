@@ -18,7 +18,6 @@ override APP_DIR       := $(OUTPUTDIR)/$(ARCH)/apps
 override DRV_DIR       := $(OUTPUTDIR)/$(ARCH)/drivers
 override HDR_L_DIR     := $(OUTPUTDIR)/headers
 override KERNEL_OUTDIR := $(OUTPUTDIR)/kernel
-override ELFLOADER_OUTDIR := $(OUTPUTDIR)/elfloader
 
 ifneq ($V,)
 VER :=
@@ -52,12 +51,6 @@ STAGE_DIR := $(OUTPUTDIR)/stage
 -include $(PREBUILD_HEADER)/.config
 
 # selection of platform
-
-ifeq ($(strip $(QUICK_BOOT_CHK)), true)
-WITH_TEEOS_ENCRYPT := false
-else
-WITH_TEEOS_ENCRYPT := true
-endif
 
 ifeq ($(TARGET_BUILD_VARIANT),eng)
 	WITH_ENG_VERSION = true

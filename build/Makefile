@@ -103,17 +103,16 @@ tees: setup_links libs $(drivers) $(frameworks) $(service)
 $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
-package: hmfilemgr
+package: $(STAGE_DIR)/bootfs.img
+	cp -a $(PLAT_AUTOCONF_FILE) $(TOPDIR)/../tee_os_kernel/include/generated/.
+	cp -a $(PLAT_CFG_DIR)/plat_cfg.c $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
+	cp -a $(PLAT_CFG_DIR)/plat_cfg.h $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
+	@mkdir $(FILEMGR_BOOT_ELF)
+	cp -a $(STAGE_DIR)/bootfs.img $(FILEMGR_BOOT_ELF)/.
 
+PHONY += $(STAGE_DIR)/bootfs.img
 PHONY += link_libs link_arm_libs link_aarch64_libs
 link_libs: link_arm_libs link_aarch64_libs
-	mkdir -p $(OUTPUTDIR)/elfloader
-	mkdir -p $(OUTPUTDIR)/kernel
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/elfloader.o $(OUTPUTDIR)/elfloader/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/kernel.elf $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libuart.a $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libhardware.a $(OUTPUTDIR)/kernel/.
-	cp -a $(OUTPUTDIR)/$(TEE_ARCH)/libs/libklibc.a $(OUTPUTDIR)/kernel/.
 
 link_arm_libs: libs
 	@echo "[link] libs=$(libs)"
@@ -157,18 +156,6 @@ install_libs:
 	@for l in $(OUTPUTDIR)/arm/libs/* $(OUTPUTDIR)/aarch64/libs/*; do \
 		if [ -e $$l ] && [ ! -L $$l ]; then cp -rf $$l $(LIBS_INSTALL_DIR); fi; \
 	done
-
-# packaging the image
-PHONY += hmfilemgr
-hmfilemgr: $(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr
-$(STAGE_DIR)/bootfs.img:
-$(OUTPUTDIR)/$(TEE_ARCH)/apps/hmfilemgr: $(STAGE_DIR)/bootfs.img
-	@echo "Building hmfilemgr"
-	$(MAKE) -C $(BUILD_TOOLS)/hmfilemgr ARCH=$(TEE_ARCH) -j
-
-PHONY += teehm.img trustedcore.img
-package: $(STAGE_DIR)/trustedcore.img
-	@echo "!!generate trustedcore.img success"
 
 PHONY += release
 release:
