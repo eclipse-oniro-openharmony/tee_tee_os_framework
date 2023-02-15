@@ -470,7 +470,7 @@ static int32_t send_cmd_perm_msg(uint64_t drv_vaddr, uint32_t drv_size, cref_t c
 static int32_t send_cmd_perm_to_drv(const struct task_node *node)
 {
     int32_t ret = -1;
-    uint32_t self_pid = get_selfpid();
+    uint32_t self_pid = get_self_taskid();
     if (self_pid == SRE_PID_ERR) {
         tloge("get self pid fail\n");
         return ret;

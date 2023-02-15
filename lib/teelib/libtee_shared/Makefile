@@ -68,7 +68,7 @@ ${BUILD_DIR}/$(EXPORT_FILE): $(EXPORT_FILE)
 	@${CC} ${flags} -P -E -o $@ -x c $<
 ld-flags := -lcrypto_hal$(TARG) -ltimer$(TARG) -lagent$(TARG) -lagent_base$(TARG) -lhmdrv$(TARG) \
     -lteeos$(TARG) -lpermission_service$(TARG) -lswcrypto_engine$(TARG) -ltaentry$(TARG) -lteeagentcommon_client$(TARG) -lcrypto$(TARG) \
-    -lteeconfig$(TARG) -lteemem$(TARG) -lac$(TARG) -lac_policy$(TARG) -lssa$(TARG) -lhuk${TARG} -lteedynsrv$(TARG)
+    -lteeconfig$(TARG) -lteemem$(TARG) -lac$(TARG) -lac_policy$(TARG) -lssa$(TARG) -lhuk${TARG} -lteedynsrv$(TARG) -llibipc_hal$(TARG)
 
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE),mbedtls)

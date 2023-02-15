@@ -929,7 +929,7 @@ void free_verify_v3(void)
 
     /* do NOT free, map from tafs */
     if (img_info->img_buf != NULL) {
-        (void)task_unmap(get_selfpid(), (uintptr_t)img_info->img_buf, get_img_size());
+        (void)task_unmap(get_self_taskid(), (uintptr_t)img_info->img_buf, get_img_size());
         img_info->img_buf = NULL;
     }
 

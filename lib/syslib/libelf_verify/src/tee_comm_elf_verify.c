@@ -384,7 +384,7 @@ void free_verify_v2(void)
     teec_image_head *image_hd = get_image_hd();
     /* do NOT free it, map from tafs */
     if (img_info->img_buf != NULL) {
-        (void)task_unmap(get_selfpid(), (uintptr_t)img_info->img_buf, get_img_size());
+        (void)task_unmap(get_self_taskid(), (uintptr_t)img_info->img_buf, get_img_size());
         img_info->img_buf = NULL;
     }
 

@@ -195,7 +195,7 @@ static void *classic_thread(void *arg)
         return NULL;
     }
 
-    t_event->pid = (int32_t)get_selfpid();
+    t_event->pid = (int32_t)get_self_taskid();
     ipc_args.channel = t_event->timer_channel;
     ipc_args.recv_buf = &req_msg;
     ipc_args.recv_len = sizeof(req_msg);
@@ -332,7 +332,7 @@ static uint32_t tee_classic_timer_event_start(timer_event *t_event, timeval_t *t
     t_event->state = TIMER_STATE_ACTIVE;
     t_event->expires.tval64 = expire_time.tval64;
 
-    if (t_event->pid == (int32_t)get_selfpid())
+    if (t_event->pid == (int32_t)get_self_taskid())
         return TMR_OK;
 
     ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
@@ -365,7 +365,7 @@ static uint32_t tee_classic_timer_event_stop(timer_event *t_event)
         return TMR_ERR;
 
     t_event->state = TIMER_STATE_INACTIVE;
-    if (t_event->pid == (int32_t)get_selfpid())
+    if (t_event->pid == (int32_t)get_self_taskid())
         return TMR_OK;
 
     ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
@@ -399,7 +399,7 @@ static uint32_t tee_classic_timer_event_destroy(timer_event *t_event)
         return TMR_ERR;
     }
 
-    if (t_event->pid == (int32_t)get_selfpid()) {
+    if (t_event->pid == (int32_t)get_self_taskid()) {
         ret = TMR_OK;
     } else {
         ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg),

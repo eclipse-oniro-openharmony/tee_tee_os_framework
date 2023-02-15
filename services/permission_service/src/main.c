@@ -220,7 +220,7 @@ static void perm_thread_remove_channel(const char *name, cref_t channel)
 {
     msg_pid_t pid;
 
-    pid = get_selfpid();
+    pid = get_self_taskid();
     if (pid == SRE_PID_ERR) {
         tloge("get self pid error\n");
         return;
@@ -559,7 +559,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
     if (init_build == 0)
         clear_ta_bss();
 
-    msghdl = get_mymsghdl();
+    msghdl = ipc_get_my_msghdl();
     if (is_ref_err(msghdl)) {
         tloge("Cannot create msg_hdl, %s\n", hmapi_strerror((int32_t)msghdl));
         hm_exit((int32_t)msghdl);

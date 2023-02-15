@@ -67,7 +67,7 @@ static void handle_cmd(const struct huk_srv_msg *msg, cref_t msghdl, uint32_t sn
     (void)memset_s(&rsp, sizeof(rsp), 0, sizeof(rsp));
     rsp.data.ret = TEE_ERROR_GENERIC;
     cmd_id = msg->header.send.msg_id;
-    self_pid = get_selfpid();
+    self_pid = get_self_taskid();
     if (self_pid == SRE_PID_ERR) {
         tloge("huk service get self pid error\n");
         rsp.data.ret = TEE_ERROR_GENERIC;
@@ -103,7 +103,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     int32_t ret_hm;
 
     (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
-    cref_t msghdl = get_mymsghdl();
+    cref_t msghdl = ipc_get_my_msghdl();
     if (is_ref_err(msghdl) != 0) {
         tloge("Cannot create msg hdl, %s\n", hmapi_strerror((int)msghdl));
         hm_exit((int)msghdl);
