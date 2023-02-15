@@ -67,7 +67,7 @@ static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_
 
     params->args = (uintptr_t)msg->args;
     params->data = (uintptr_t)msg->data;
-    params->caller_pid = hmpid_to_pid(TCBCREF2TID(info->src_tcb_cref), info->src_cred.pid);
+    params->caller_pid = pid_to_taskid(TCBCREF2TID(info->src_tcb_cref), info->src_cred.pid);
 
     return 0;
 }
@@ -144,7 +144,7 @@ static struct task_node *alloc_drvcall_node_internal_drv(const struct tee_uuid *
         return NULL;
     }
 
-    node->pid = pid_to_hmpid(taskid);
+    node->pid = taskid_to_pid(taskid);
     if (receive_task_conf(node) != 0) {
         tloge("receive task conf fail\n");
         free(tlv);
@@ -428,7 +428,7 @@ static int32_t driver_general_handle(const struct tee_drv_param *params, int64_t
 #define EXIT_PID_INDEX 0
 static int32_t driver_exception_handle(const struct tee_drv_param *params, int64_t *ret_val)
 {
-    uint32_t pid = pid_to_hmpid(params->caller_pid);
+    uint32_t pid = taskid_to_pid(params->caller_pid);
     if (pid != GLOBAL_HANDLE) {
         tloge("task:0x%x not gtask, cannot call exception handle\n", pid);
         return -1;
@@ -460,7 +460,7 @@ static int32_t driver_exception_handle(const struct tee_drv_param *params, int64
  */
 static bool check_caller_from_legal_service(const struct tee_drv_param *params)
 {
-    uint32_t pid = pid_to_hmpid(params->caller_pid);
+    uint32_t pid = taskid_to_pid(params->caller_pid);
     if (pid == GLOBAL_HANDLE)
         return true;
 

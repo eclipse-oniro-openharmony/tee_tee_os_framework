@@ -118,7 +118,7 @@ static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_
         return -1;
     }
 
-    *taskid = hmpid_to_pid(TCBCREF2TID(thread_cref), (uint32_t)pid);
+    *taskid = pid_to_taskid(TCBCREF2TID(thread_cref), (uint32_t)pid);
 
     return 0;
 }
@@ -265,7 +265,7 @@ wait_retry:
         return -1;
     }
 
-    if (info.src_pid != pid_to_hmpid(taskid)) {
+    if (info.src_pid != taskid_to_pid(taskid)) {
         tloge("sender:0x%x is not spawn process:0x%x, just wait again\n",
             info.src_pid, taskid);
         goto wait_retry;
@@ -284,11 +284,11 @@ wait_retry:
 #define DRV_KILL_WAIT_MAX_COUNT 5
 void drv_kill_task(uint32_t taskid)
 {
-    if (hm_kill((pid_t)pid_to_hmpid(taskid)) == 0) {
+    if (hm_kill((pid_t)taskid_to_pid(taskid)) == 0) {
         int32_t i;
         int32_t status;
         for (i = 0; i < DRV_KILL_WAIT_MAX_COUNT; i++) {
-            if (hm_wait(&status) == (pid_t)pid_to_hmpid(taskid)) {
+            if (hm_wait(&status) == (pid_t)taskid_to_pid(taskid)) {
                 tloge("wait drv:0x%x exit succ\n", taskid);
                 break;
             }
@@ -540,7 +540,7 @@ int32_t spawn_driver_handle(struct task_node *node)
     if (ret != 0)
         goto release_channel;
 
-    node->pid = pid_to_hmpid(taskid);
+    node->pid = taskid_to_pid(taskid);
 
     return 0;
 

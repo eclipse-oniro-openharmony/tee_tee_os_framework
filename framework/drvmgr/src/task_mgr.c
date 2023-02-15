@@ -291,8 +291,8 @@ static struct task_node *find_normal_node(const struct tee_uuid *uuid, uint32_t 
 
             /* temp->pid is INVALID_CALLER_PID when ta open drv in the first time */
             if (temp->pid == (uint32_t)INVALID_CALLER_PID) {
-                temp->pid = pid_to_hmpid(taskid);
-            } else if (temp->pid != pid_to_hmpid(taskid)) {
+                temp->pid = taskid_to_pid(taskid);
+            } else if (temp->pid != taskid_to_pid(taskid)) {
                 tloge("something wrong, uuid:0x%x pid:0x%x not match taskid:0x%x\n",
                     uuid->timeLow, temp->pid, taskid);
                 continue;
@@ -484,7 +484,7 @@ int32_t get_drvcall_and_fd_node(int64_t fd, const struct tee_drv_param *params,
     dlist_for_each(pos, &g_task_list) {
         struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
         if (memcmp(&temp->tlv.uuid, &params->uuid, sizeof(struct tee_uuid)) == 0 &&
-            temp->pid == pid_to_hmpid(params->caller_pid)) {
+            temp->pid == taskid_to_pid(params->caller_pid)) {
             /*
              * fd must match in case of the drvcall node exit abnormally,
              * and restart soon before the first process open has not return.
@@ -940,7 +940,7 @@ struct task_node *find_drv_node_by_taskid(uint32_t exit_pid)
     struct dlist_node *pos = NULL;
     dlist_for_each(pos, &g_task_list) {
         struct task_node *temp = dlist_entry(pos, struct task_node, node_list);
-        if (temp->target_type == DRV_TARGET_TYPE && pid_to_hmpid(temp->pid) == pid_to_hmpid(exit_pid)) {
+        if (temp->target_type == DRV_TARGET_TYPE && taskid_to_pid(temp->pid) == taskid_to_pid(exit_pid)) {
             tlogd("find drv taskid:0x%x uuid:0x%x\n", exit_pid, temp->tlv.uuid.timeLow);
             node = temp;
             break;

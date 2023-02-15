@@ -38,7 +38,7 @@ TEE_Result tee_srv_get_uuid_by_sender(uint32_t sender, TEE_UUID *uuid)
     if (uuid == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    int32_t ret = hm_getuuid((pid_t)pid_to_hmpid(sender), &sender_uuid);
+    int32_t ret = hm_getuuid((pid_t)taskid_to_pid(sender), &sender_uuid);
     if (ret != 0) {
         tloge("get uuid from hm failed, sender is 0x%x\n", sender);
         return TEE_ERROR_ITEM_NOT_FOUND;
@@ -184,7 +184,7 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
             continue;
         }
 
-        task_id = (uint32_t)hmpid_to_pid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
+        task_id = (uint32_t)pid_to_taskid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
         if (info.src_cred.pid != get_global_handle()) {
             if (set_service_caller_info(task_id, req_msg.cmd) != TEE_SUCCESS)
                 tloge("failed to set caller info, task id 0x%x, cmd 0x%x\n", task_id, req_msg.cmd);

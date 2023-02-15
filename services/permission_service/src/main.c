@@ -258,7 +258,7 @@ void *perm_thread_init_file(void *data)
         if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
-            sender_taskid = (uint32_t)hmpid_to_pid(info.src_tid, info.src_pid);
+            sender_taskid = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
 
         perm_thread_handle_file_msg(&req_msg, sender_taskid, info.msg_type, msghdl);
     }
@@ -373,7 +373,7 @@ void *perm_thread_init_async_file(void *data)
         if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
-            sender_taskid = (uint32_t)hmpid_to_pid(info.src_tid, info.src_pid);
+            sender_taskid = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
 
         perm_thread_handle_async_file_msg(&req_msg, sender_taskid);
     }
@@ -588,7 +588,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
         if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
-            sender_taskid = (uint32_t)hmpid_to_pid(info.src_tid, info.src_pid);
+            sender_taskid = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
 
         (void)memset_s(&sender_uuid, sizeof(sender_uuid), 0, sizeof(sender_uuid));
         if (hm_getuuid((pid_t)info.src_pid, &sender_uuid) != 0)

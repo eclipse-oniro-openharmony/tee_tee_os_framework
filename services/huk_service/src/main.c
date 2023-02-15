@@ -132,7 +132,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
         if (info.src_pid == 0)
             handle_cmd(&msg, msghdl, GLOBAL_HANDLE, info.msg_type, &(uuid.uuid));
         else
-            handle_cmd(&msg, msghdl, (uint32_t)hmpid_to_pid(info.src_tid, info.src_pid),
+            handle_cmd(&msg, msghdl, (uint32_t)pid_to_taskid(info.src_tid, info.src_pid),
                        info.msg_type, &(uuid.uuid));
     }
 

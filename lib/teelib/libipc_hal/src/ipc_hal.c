@@ -176,7 +176,7 @@ uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp,
         return SRE_IPC_ERR;
     }
 
-    cid = pid_to_cid(uw_dst_pid, 0);
+    cid = taskid_to_cid(uw_dst_pid, 0);
     dst_ch = cid_to_hm_ch(cid);
     if (dst_ch == 0) {
         hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
@@ -197,7 +197,7 @@ uint32_t hm_ipc_send_msg_sync(uint32_t msg_id, msg_pid_t dest_pid, const void *m
     uint32_t cid;
     struct msgsent_st msgsent;
 
-    cid = pid_to_cid(dest_pid, 0);
+    cid = taskid_to_cid(dest_pid, 0);
     dst_ch = cid_to_hm_ch(cid);
     if (dst_ch == 0) {
         hm_error("Cannot get dest channel of pid(0x%x)\n", dest_pid);
@@ -337,7 +337,7 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
         if (info.src_pid == GLOBAL_HANDLE)
             *(msgrcv.puw_sender_pid) = GLOBAL_HANDLE;
         else
-            *(msgrcv.puw_sender_pid) = (uint32_t)hmpid_to_pid(info.src_tid, info.src_pid);
+            *(msgrcv.puw_sender_pid) = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
     }
     if (msgrcv.msgp != NULL) {
         if (memcpy_s(msgrcv.msgp, msgrcv.size, msg.payload,
@@ -435,12 +435,7 @@ uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t
         return SRE_IPC_ERR;
     }
 
-    if (global_handle_check(&uw_dst_pid) != 0) {
-        hm_error("check uwDstPID against global handle failed\n");
-        return SRE_IPC_ERR;
-    }
-
-    cid = pid_to_cid(uw_dst_pid, uc_dst_qid);
+    cid = taskid_to_cid(uw_dst_pid, uc_dst_qid);
     dst_ch = cid_to_hm_ch(cid);
     if (dst_ch == 0) {
         hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
@@ -468,12 +463,7 @@ uint32_t ipc_msg_qsend_sync(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_
         return SRE_IPC_ERR;
     }
 
-    if (global_handle_check(&uw_dst_pid) != 0) {
-        hm_error("check uwDstPID against global handle failed\n");
-        return SRE_IPC_ERR;
-    }
-
-    cid = pid_to_cid(uw_dst_pid, uc_dst_qid);
+    cid = taskid_to_cid(uw_dst_pid, uc_dst_qid);
     dst_ch = cid_to_hm_ch(cid);
     if (dst_ch == 0) {
         hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);

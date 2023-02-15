@@ -119,7 +119,7 @@ static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti, 
             continue;
         }
 
-        rc = ipc_remove_channel((msg_pid_t)hmpid_to_pid(tid, pid), NULL, i, pti->t_channel[i]);
+        rc = ipc_remove_channel((msg_pid_t)pid_to_taskid(tid, pid), NULL, i, pti->t_channel[i]);
         if (rc != 0)
             hm_error("remove ipc channel #%d failed: rc=%d\n", i, rc);
 

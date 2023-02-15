@@ -695,7 +695,7 @@ static TEE_Result check_register_elf_caller(uint32_t task_id)
     spawn_uuid_t caller_uuid;
     TEE_UUID perm_uuid = TEE_SERVICE_PERM;
 
-    if (hm_getuuid(pid_to_hmpid(task_id), &caller_uuid) != 0) {
+    if (hm_getuuid(taskid_to_pid(task_id), &caller_uuid) != 0) {
         tloge("get register elf caller uuid failed\n");
         return TEE_ERROR_GENERIC;
     }

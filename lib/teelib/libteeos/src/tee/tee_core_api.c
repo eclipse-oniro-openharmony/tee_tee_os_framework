@@ -294,7 +294,7 @@ static TEE_Result new_ta2ta_session_handle(TEE_TASessionHandle *handle)
         return TEE_ERROR_GENERIC;
     }
 
-    session_handle->src_tid = pid_to_hmtid(task_id);
+    session_handle->src_tid = taskid_to_tid(task_id);
     dlist_init(&session_handle->list);
 
     set_bitmap(g_handle_bitmap, HANDLE_MAX, valid_handle);

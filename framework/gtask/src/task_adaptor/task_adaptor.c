@@ -41,7 +41,7 @@ struct task_adaptor_info *find_task_by_taskid(uint32_t task_id)
 
     dlist_for_each(pos, &g_task_list_head) {
         task_entry = dlist_entry(pos, struct task_adaptor_info, task_node);
-        if (pid_to_hmpid(task_entry->task_id) == pid_to_hmpid(task_id))
+        if (taskid_to_pid(task_entry->task_id) == taskid_to_pid(task_id))
             return task_entry;
     }
     return NULL;

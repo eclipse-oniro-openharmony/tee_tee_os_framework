@@ -269,7 +269,7 @@ int32_t handle_unlink_dynamic_drv(uint32_t cmd_id, uint32_t task_id, const uint8
         return GT_ERR_END_CMD;
     }
 
-    if (pid_to_hmpid(task_id) != drv_id) {
+    if (taskid_to_pid(task_id) != drv_id) {
         tloge("task:0x%x not support unlink dynamic drv lib\n", task_id);
         return GT_ERR_END_CMD;
     }

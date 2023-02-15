@@ -738,7 +738,7 @@ int64_t driver_open(const struct tee_drv_param *params, const struct tee_driver_
         return -1;
 
     uint64_t *args = (uint64_t *)(uintptr_t)params->args;
-    uint32_t pid = pid_to_hmpid(args[CALLER_TASKID_INDEX]);
+    uint32_t pid = taskid_to_pid(args[CALLER_TASKID_INDEX]);
     struct drv_task *task = NULL;
     if (get_drv_open_task(pid, &task) != 0) {
         free_drv_args(input_args);
@@ -838,7 +838,7 @@ static int32_t get_ioctl_param(uint64_t fd, struct tee_drv_param *params,
         return -1;
 
     spawn_uuid_t uuid;
-    uint32_t pid = pid_to_hmpid(params->caller_pid);
+    uint32_t pid = taskid_to_pid(params->caller_pid);
     int32_t ret = hm_getuuid(pid, &uuid);
     if (ret != 0) {
         tloge("get pid:%u uuid failed\n", pid);
@@ -902,7 +902,7 @@ int64_t driver_ioctl(uint64_t fd, struct tee_drv_param *params,
         return -1;
 
     uint64_t *args = (uint64_t *)(uintptr_t)params->args;
-    uint32_t pid = pid_to_hmpid(params->caller_pid);
+    uint32_t pid = taskid_to_pid(params->caller_pid);
     struct drv_task *task = find_and_get_drv_task_locked(pid, false);
     if (task == NULL) {
         tloge("task:%u has not open this driver, cannot ioctl\n", pid);
@@ -962,7 +962,7 @@ int64_t driver_close(uint64_t fd, const struct tee_drv_param *params)
         return -1;
 
     uint64_t *args = (uint64_t *)(uintptr_t)params->args;
-    uint32_t pid = pid_to_hmpid(args[CALLER_TASKID_INDEX]);
+    uint32_t pid = taskid_to_pid(args[CALLER_TASKID_INDEX]);
     struct drv_task *task = find_and_get_drv_task_locked(pid, false);
     if (task == NULL) {
         tloge("task:%u has not open this driver, cannot close\n", pid);
@@ -1077,7 +1077,7 @@ int32_t driver_register_cmd_perm(const struct tee_drv_param *params, int64_t *re
     }
 
     msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
-    if (pid_to_hmpid(drv_mgr_pid) != (pid_to_hmpid(params->caller_pid))) {
+    if (taskid_to_pid(drv_mgr_pid) != (taskid_to_pid(params->caller_pid))) {
         tloge("caller pid:0x%x cannot register drv cmd perm\n", params->caller_pid);
         return -1;
     }
