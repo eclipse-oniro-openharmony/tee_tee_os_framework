@@ -22,11 +22,11 @@ TEE_Result proceed_return_code(smc_cmd_t *cmd);
 bool is_command_processed(void);
 TEE_Result start_ta_task(const smc_cmd_t *cmd, uint32_t cmd_type);
 TEE_Result init_ta_context(const smc_cmd_t *cmd);
-TEE_Result init_ta2ta_agent_context(smc_cmd_t *out_cmd);
-TEE_Result init_ta2ta_context(smc_cmd_t *out_cmd, uint64_t ta_cmd, uint32_t task_id);
+TEE_Result init_ta2ta_agent_context(smc_cmd_t *cmd);
+TEE_Result init_ta2ta_context(smc_cmd_t *cmd, uint64_t ta_cmd, uint32_t task_id);
 TEE_Result init_session_context(uint32_t task_id,
     struct service_struct **service, struct session_struct **session);
-TEE_Result open_session(smc_cmd_t *cmd, uint32_t cmd_type, uint32_t task_id,
+TEE_Result open_session(smc_cmd_t *cmd, uint32_t cmd_type, uint32_t caller_id,
                         const struct ta2ta_info_t *ta2ta_info);
 TEE_Result close_session(const smc_cmd_t *cmd, uint32_t cmd_type, bool *sync);
 TEE_Result async_call_ta_entry(const smc_cmd_t *cmd, uint32_t cmd_type, uint32_t cmd_id);

@@ -34,8 +34,8 @@ TEE_Result dump_service_session_info(const smc_cmd_t *cmd);
 #endif
 
 struct service_struct *find_service_dead(const TEE_UUID *uuid, uint32_t service_index);
-bool find_task(uint32_t task_id, struct service_struct **entry, struct session_struct **session);
-bool find_task_dead(uint32_t task_id, struct service_struct **entry, struct session_struct **session);
+bool find_task(uint32_t task_id, struct service_struct **service, struct session_struct **session);
+bool find_task_dead(uint32_t task_id, struct service_struct **service, struct session_struct **session);
 bool is_system_service(const struct service_struct *service);
 void process_release_service(struct service_struct *service, uint32_t if_reuse_elf);
 void recycle_srvc_thread(struct service_struct *service);
