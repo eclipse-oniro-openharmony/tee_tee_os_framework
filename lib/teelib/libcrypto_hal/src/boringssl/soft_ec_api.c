@@ -541,11 +541,12 @@ static int32_t ed25519_sign_digest(struct memref_t *signature, const struct memr
     }
     signature->size = ED25519_SIGN_LEN;
     return CRYPTO_SUCCESS;
-#endif
+#else
     (void)signature;
     (void)digest;
     (void)private_key;
     return CRYPTO_NOT_SUPPORTED;
+#endif
 }
 
 int32_t soft_crypto_ecc_sign_digest(uint32_t alg_type, const struct ecc_priv_key_t *private_key,
@@ -587,11 +588,12 @@ static int32_t ed25519_verify_digest(const struct memref_t *signature, const str
         return CRYPTO_BAD_PARAMETERS;
     }
     return CRYPTO_SUCCESS;
-#endif
+#else
     (void)signature;
     (void)digest;
     (void)public_key;
     return CRYPTO_NOT_SUPPORTED;
+#endif
 }
 
 int32_t soft_crypto_ecc_verify_digest(uint32_t alg_type, const struct ecc_pub_key_t *public_key,
