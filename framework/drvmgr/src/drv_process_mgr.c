@@ -32,6 +32,7 @@
 #include "drv_dyn_policy_mgr.h"
 #include "task_mgr.h"
 #include "base_drv_node.h"
+#include <ipclib_hal.h>
 
 static const char *g_drv_loader = "/tarunner.elf";
 static const char *g_drv_a32_loader = "/tarunner_a32.elf";

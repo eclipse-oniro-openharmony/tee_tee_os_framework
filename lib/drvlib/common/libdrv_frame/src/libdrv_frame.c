@@ -31,6 +31,7 @@
 #include <ta_permission.h>
 #include <tee_tag.h>
 #include <tee_drv_internal.h>
+#include <ipclib_hal.h>
 
 static rref_t g_sysctrl_ref;
 
@@ -88,6 +89,12 @@ static int32_t system_init(const char *name)
     ret = ac_init(hmapi_cnode_cref(), __sysmgrch, name);
     if (ret != 0) {
         hm_error("%s: libac initialization failed\n", name);
+        return -1;
+    }
+
+    ret = hm_tamgr_register(name);
+    if (ret != 0) {
+        hm_error("%s: tamgr registration for platdrv failed\n", name);
         return -1;
     }
 

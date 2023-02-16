@@ -36,6 +36,7 @@
 #include "drv_process_mgr.h"
 #include "task_mgr.h"
 #include "base_drv_node.h"
+#include <ipclib_hal.h>
 
 static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_req_msg_t *msg,
                               const struct hmcap_message_info *info)

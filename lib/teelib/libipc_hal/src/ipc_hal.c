@@ -11,6 +11,12 @@
  */
 #include <ipclib.h>
 #include <ipclib_hal.h>
+#include <hmlog.h>
+#include <securec.h>
+
+#define MSG_MAX_LEN     512 /* same as GT_MSG_REV_SIZE */
+#define GLOBAL_HANDLE     0 /* defined in tee_init.h */
+#define GLOBAL_SERVICE_NAME "TEEGlobalTask"
 
 struct msg_st {
     uint32_t msg_id;
@@ -44,11 +50,22 @@ struct reply_msg_st {
     uint32_t status;
 } __attribute__((__packed__));
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: all would be checked in ipc_create_channel
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
+static msg_pid_t g_handle = SRE_PID_ERR;
+static int32_t global_handle_check(msg_pid_t *puw_dst_pid)
+{
+    if (puw_dst_pid == NULL)
+        return -EINVAL;
+
+    if (*puw_dst_pid == GLOBAL_HANDLE) {
+        if (g_handle == SRE_PID_ERR) {
+            if (ipc_hunt_by_name(GLOBAL_SERVICE_NAME, &g_handle) != 0)
+                return HM_ERROR;
+        }
+        *puw_dst_pid = g_handle;
+    }
+    return 0;
+}
+
 int32_t ipc_create_single_channel(const char *name, cref_t *pch, bool reg_pid, bool reg_name, bool reg_tamgr)
 {
     struct reg_items_st reg_items;
@@ -58,24 +75,12 @@ int32_t ipc_create_single_channel(const char *name, cref_t *pch, bool reg_pid, b
     return ipc_create_channel(name, 1, &pch, reg_items);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: all would be checked in ipc_create_channel
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 int32_t ipc_create_channel_native(const char *name, cref_t *pch)
 {
     return ipc_create_single_channel(name, pch, false, true, false);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: Private API. uwMsgHandle, msgp, size checked, other need not checked
- * BUFOVF: payload checked
- * RET: memcpy_s ipc_msg_notification, ipc_msg_call, channel_of_id, ipc_msg_notification checked
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
-static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_handle, msg_pid_t cid)
+static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_handle)
 {
     int32_t rc    = 0;
     struct msg_st hm_msg = { 0 };
@@ -104,16 +109,6 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_h
         return SRE_IPC_ERR;
     }
 
-    if (rc == E_EX_AGAIN) {
-        /* if returns E_EX_AGAIN, we try to update local cache and re-send */
-        channel_remove_id(cid);
-        msgsent.dst_ch = channel_of_id(cid);
-        if ((msgsent.dst_ch != 0) && !is_ref_err(msgsent.dst_ch)) {
-            struct notify_st *hm_ntf_p = (struct notify_st *)&hm_msg;
-            rc                         = ipc_msg_notification(msgsent.dst_ch, hm_ntf_p, sizeof(struct notify_st));
-        }
-    }
-
     if (rc != 0) {
         hm_error("notify failed to 0x%x, size=%u, ret=%d\n", hm_msg.msg_id, msgsent.size, rc);
         return SRE_IPC_ERR;
@@ -122,7 +117,7 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_h
     return HM_OK;
 }
 
-static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_msg_handle, msg_pid_t cid)
+static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_msg_handle)
 {
     int32_t rc;
     struct msg_st hm_msg     = { 0 };
@@ -141,14 +136,6 @@ static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_
     }
 
     rc = ipc_msg_call(msgsent.dst_ch, &hm_msg, sizeof(hm_msg), &rmsg, sizeof(rmsg), -1);
-    /* between two send times, receiver may restart, so need to update channel */
-    if (rc != 0) {
-        /* if returns E_EX_AGAIN, we try to update local cache and re-send */
-        channel_remove_id(cid);
-        msgsent.dst_ch = channel_of_id(cid);
-        if ((msgsent.dst_ch != 0) && !is_ref_err(msgsent.dst_ch))
-            rc = ipc_msg_call(msgsent.dst_ch, &hm_msg, sizeof(hm_msg), &rmsg, sizeof(rmsg), -1);
-    }
     if (rc != 0) {
         hm_error("msg_call to 0x%x failed, rc = %d\n", msgsent.uw_dst_pid, rc);
         return SRE_IPC_ERR;
@@ -157,18 +144,11 @@ static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_
     return HM_OK;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * Copy message from user space specified by @msgp and send it to the process indicated by @uw_dst_pid
- * ARG: uwDstPID is checked with dst_ch, size is checked, others checked in ipc_msgsnd_core
- * RET: cid_to_hm_ch checked
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp, uint16_t size)
 {
     cref_t dst_ch;
-    msg_pid_t cid;
     struct msgsent_st msgsent;
+    int32_t rc;
     hm_debug("MsgSend Start to 0x%x msgid = 0x%lx size = %u\n", uw_dst_pid, uw_msg_id, size);
 
     if (size > MSG_MAX_LEN) {
@@ -176,9 +156,12 @@ uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp,
         return SRE_IPC_ERR;
     }
 
-    cid = taskid_to_cid(uw_dst_pid, 0);
-    dst_ch = cid_to_hm_ch(cid);
-    if (dst_ch == 0) {
+    if (global_handle_check(&uw_dst_pid) != 0) {
+        hm_error("check uwDstPID against global handle failed\n");
+    }
+
+    rc =  ipc_get_ch_from_taskid(uw_dst_pid, 0, &dst_ch);
+    if (rc != 0) {
         hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
         return SRE_IPC_ERR;
     }
@@ -188,18 +171,21 @@ uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp,
     msgsent.uw_dst_pid = uw_dst_pid;
     msgsent.msgp       = msgp;
     msgsent.size       = size;
-    return ipc_msgsnd_core(msgsent, 0, cid);
+    return ipc_msgsnd_core(msgsent, 0);
 }
 
-uint32_t hm_ipc_send_msg_sync(uint32_t msg_id, msg_pid_t dest_pid, const void *msgp, uint32_t size)
+uint32_t ipc_send_msg_sync(uint32_t msg_id, msg_pid_t dest_pid, const void *msgp, uint32_t size)
 {
     cref_t dst_ch;
-    uint32_t cid;
     struct msgsent_st msgsent;
+    int32_t rc;
 
-    cid = taskid_to_cid(dest_pid, 0);
-    dst_ch = cid_to_hm_ch(cid);
-    if (dst_ch == 0) {
+    if (global_handle_check(&dest_pid) != 0) {
+        hm_error("check uwDstPID against global handle failed\n");
+    }
+
+    rc = ipc_get_ch_from_taskid(dest_pid, 0, &dst_ch);
+    if (rc != 0) {
         hm_error("Cannot get dest channel of pid(0x%x)\n", dest_pid);
         return SRE_IPC_ERR;
     }
@@ -209,30 +195,15 @@ uint32_t hm_ipc_send_msg_sync(uint32_t msg_id, msg_pid_t dest_pid, const void *m
     msgsent.uw_dst_pid = dest_pid;
     msgsent.msgp       = msgp;
     msgsent.size       = size;
-    return ipc_msgsnd_core_sync(msgsent, 0, cid);
+    return ipc_msgsnd_core_sync(msgsent, 0);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * Receive message and copy it to user space indicated by @msgp
- * ARG: all args would be checked in ipc_msg_rcv_a
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 uint32_t ipc_msg_rcv(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size)
 {
     msg_pid_t sender_pid;
     return ipc_msg_rcv_a(uw_timeout, puw_msg_id, msgp, size, &sender_pid);
 }
 
-/*
- * Receive message from sender specified by wait_sender
- * CODEREVIEW CHECKLIST
- * ARG: all args would be checked in ipc_msg_rcv_a
- * RET: ipc_msg_rcv_a is checked
- * RACING: No global variable
- * LEAK: No allocation
- * CODEREVIEW CHECKLIST by j00413728 <zhaoxuqiang@huawei.com>
- */
 uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t wait_sender)
 {
     msg_pid_t sender = SRE_PID_ERR;
@@ -252,68 +223,6 @@ uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp,
     return ret;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: all args would be checked in ipc_msg_q_recv
- * RET: ipc_msg_q_recv is checked
- * RACING: No global variable
- * LEAK: No allocation
- * CODEREVIEW CHECKLIST by j00413728 <zhaoxuqiang@huawei.com>
- */
-uint32_t ipc_msg_qrecv_safe(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, msg_pid_t wait_sender)
-{
-    msg_pid_t sender = SRE_PID_ERR;
-    uint32_t ret     = HM_OK;
-
-    while (wait_sender != sender) {
-        ret = ipc_msg_q_recv(puw_msg_handle, puw_msg_id, &sender, 1, OS_WAIT_FOREVER);
-        if (ret != HM_OK) {
-            hm_error("ipc msg q recv failed, ret = 0x%x\n", ret);
-            return ret;
-        }
-
-        if (wait_sender != sender)
-            hm_error("Qrecv msg from wrong sender %u/%u\n", sender, wait_sender);
-    }
-
-    return ret;
-}
-
-int32_t ipc_msg_receive(cref_t channel, void *recv_buf, size_t recv_len, cref_t msg_hdl,
-                        struct src_msginfo *info, int32_t timeout)
-{
-    struct channel_ipc_args ipc_args = { 0 };
-    struct hmcap_message_info hm_info = { 0 };
-    ipc_args.channel = channel;
-    ipc_args.recv_buf = recv_buf;
-    ipc_args.recv_len = recv_len;
-
-    cref_t _message_hdl = msg_hdl;
-    if (_message_hdl == 0 || info == NULL)
-        return E_EX_INVAL;
-
-    int32_t err = hmapi_recv_timeout(&ipc_args, &_message_hdl, 0, timeout, &hm_info);
-
-    if (err != 0) {
-        return E_EX_INVAL;
-    }
-
-    info -> src_pid = (uint32_t)hm_info.src_cred.pid;
-    info -> src_tid = TCBCREF2TID(hm_info.src_tcb_cref);
-    info -> msg_type = hm_info.msg_type;
-
-    return HM_OK;
-}
-
-/*
- * CODEREVIEW CHECKLIST
- * ARG: ch is always valid, from this module. uw_timeout is always valid.
- * puw_msg_id, msgp, puw_msg_handle, size, puw_sender_pid are checked
- * BUFOVF: memcpy_s: size is check by caller, size <= MSG_MAX_LEN
- * RET: ipc_msg_receive, memcpy_s, ipc_msg_reply is checked
- *      ipc_msg_receive would handle wrong msg_hdl
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_handle)
 {
     struct msg_st msg;
@@ -349,14 +258,14 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
     if (puw_msg_handle != NULL)
         *puw_msg_handle = 0;
 
-    if (info.msg_type == HM_MSG_TYPE_CALL) {
+    if (info.msg_type == MSG_TYPE_CALL) {
         rmsg.status = HM_IPC_OK; /* unused field */
         int32_t rc  = ipc_msg_reply(msg_hdl, &rmsg, sizeof(rmsg));
         if (rc < 0) {
             hm_error("reply msg error %d\n", rc);
             return SRE_IPC_ERR;
         }
-    } else if (info.msg_type == HM_MSG_TYPE_NOTIF) {
+    } else if (info.msg_type == MSG_TYPE_NOTIF) {
         hm_debug("Notification received, DONOT need to reply ch = 0x%llx\n", msg_hdl);
     } else {
         hm_error("Unexpected msg_recv %u\n", info.msg_type);
@@ -366,19 +275,9 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
     return HM_OK;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * Receive message and copy it to user space indicated by @msgp,
- * and put the ID of sender to the last parm @puwSenderPID.
- * It's the caller's responsibility to make sure it was not NULL, otherwise no sender ID will return.
- * ARG: size checked, other args would be checked in ipc_msgrcv_core
- * RET: get_mych checked, ipc_msgrcv_core returned
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t *puw_sender_pid)
 {
     cref_t ch;
-    cref_t ch_timer = 0;
     uint32_t ret;
     struct msgrcv_st msgrcv;
     if (size > MSG_MAX_LEN) {
@@ -386,22 +285,13 @@ uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, ui
         return SRE_IPC_ERR;
     }
 
-    ch = get_mych(0);
-    if (ch == 0) {
+    ret = ipc_get_my_channel(0, &ch);
+    if (ret != 0) {
         hm_error("Cannot recv, channel haven't been created yet\n");
         return SRE_IPC_NO_CHANNEL_ERR;
     }
 
-    if (uw_timeout != OS_NO_WAIT && uw_timeout != OS_WAIT_FOREVER) {
-        ch_timer = create_ch_timer(0);
-        if (ch_timer == 0) {
-            hm_error("Cannot recv, channel timer create failed\n");
-            return SRE_IPC_NO_CHANNEL_ERR;
-        }
-    }
-
     msgrcv.ch             = ch;
-    msgrcv.timer          = ch_timer;
     msgrcv.timeout        = (int32_t)uw_timeout;
     msgrcv.puw_msg_id     = puw_msg_id;
     msgrcv.msgp           = msgp;
@@ -415,19 +305,11 @@ uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, ui
     return ret;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * The msg_handle_t type in original function declaration is NOT compatible with 64bit
- * So we DONOT integrate it with MsgSnd()
- * ARG: ucDstQID checked, other args would be checked in ipc_msgsnd_core
- * RET: cid_to_hm_ch checked, ipc_msgsnd_core returned
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t uw_dst_pid, uint8_t uc_dst_qid)
 {
     cref_t dst_ch;
-    uint32_t cid;
     struct msgsent_st msgsent;
+    int32_t rc;
     hm_debug("MsgQSend to 0x%x ch = %u\n", uw_dst_pid, uc_dst_qid);
 
     if (uc_dst_qid >= CH_CNT_MAX) {
@@ -435,9 +317,12 @@ uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t
         return SRE_IPC_ERR;
     }
 
-    cid = taskid_to_cid(uw_dst_pid, uc_dst_qid);
-    dst_ch = cid_to_hm_ch(cid);
-    if (dst_ch == 0) {
+    if (global_handle_check(&uw_dst_pid) != 0) {
+        hm_error("check uwDstPID against global handle failed\n");
+    }
+
+    rc = ipc_get_ch_from_taskid(uw_dst_pid, uc_dst_qid, &dst_ch);
+    if (rc != 0) {
         hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
         return SRE_IPC_ERR;
     }
@@ -446,49 +331,13 @@ uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t
     msgsent.uw_dst_pid = uw_dst_pid;
     msgsent.msgp       = NULL;
     msgsent.size       = 0;
-    return ipc_msgsnd_core(msgsent, uw_msg_handle, cid);
+    return ipc_msgsnd_core(msgsent, uw_msg_handle);
 }
 
-/* this function not support send by both sender and receiver, it may dead lock */
-uint32_t ipc_msg_qsend_sync(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t uw_dst_pid, uint8_t uc_dst_qid)
-{
-    cref_t dst_ch;
-    msg_pid_t cid;
-    struct msgsent_st msgsent;
-
-    hm_debug("MsgQSend to 0x%x ch = %u\n", uw_dst_pid, uc_dst_qid);
-
-    if (uc_dst_qid >= CH_CNT_MAX) {
-        hm_error("Send channel Number overflow: %u\n", uc_dst_qid);
-        return SRE_IPC_ERR;
-    }
-
-    cid = taskid_to_cid(uw_dst_pid, uc_dst_qid);
-    dst_ch = cid_to_hm_ch(cid);
-    if (dst_ch == 0) {
-        hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
-        return SRE_IPC_ERR;
-    }
-    msgsent.dst_ch     = dst_ch;
-    msgsent.uw_msg_id  = uw_msg_id;
-    msgsent.uw_dst_pid = uw_dst_pid;
-    msgsent.msgp       = NULL;
-    msgsent.size       = 0;
-    return ipc_msgsnd_core_sync(msgsent, uw_msg_handle, cid);
-}
-
-/*
- * CODEREVIEW CHECKLIST
- * QRecv() in RTOSck set the *puwMsgHandle with a msg node in kernel. It cannot be integrated with RevA()
- * ARG: ucRecvQID checked, other args would be checked in ipc_msgrcv_core
- * RET: get_mych checked, ipc_msgrcv_core returned
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, msg_pid_t *puw_sender_pid,
                         uint8_t uc_recv_qid, uint32_t uw_timeout)
 {
     cref_t ch;
-    cref_t ch_timer = 0;
     uint32_t ret;
     struct msgrcv_st msgrcv;
     if (uc_recv_qid >= CH_CNT_MAX) {
@@ -496,22 +345,13 @@ uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, msg_
         return SRE_IPC_ERR;
     }
 
-    ch = get_mych(uc_recv_qid);
-    if (ch == 0) {
+    ret = ipc_get_my_channel(uc_recv_qid, &ch);
+    if (ret != 0) {
         hm_error("Cannot recv, channel haven't been created yet\n");
         return SRE_IPC_NO_CHANNEL_ERR;
     }
 
-    if (uw_timeout != OS_NO_WAIT && uw_timeout != OS_WAIT_FOREVER) {
-        ch_timer = create_ch_timer(uc_recv_qid);
-        if (ch_timer == 0) {
-            hm_error("Cannot recv, channel timer create failed\n");
-            return SRE_IPC_NO_CHANNEL_ERR;
-        }
-    }
-
     msgrcv.ch             = ch;
-    msgrcv.timer          = ch_timer;
     msgrcv.timeout        = (int32_t)uw_timeout;
     msgrcv.puw_msg_id     = puw_msg_id;
     msgrcv.msgp           = NULL;

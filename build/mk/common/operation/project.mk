@@ -24,7 +24,7 @@ libdrv_shared: libteeconfig
 
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem \
-	libssa libhuk libteedynsrv libopenssl libse
+	libssa libhuk libteedynsrv libopenssl libse libipc_hal
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
 drvlib := libdrv_frame
 

@@ -25,6 +25,7 @@
 #include "agent_manager.h"
 #include "ext_interface.h"
 #include "tee_load_lib.h"
+#include <ipclib_hal.h>
 
 static void s_cmd_response(smc_cmd_t *cmd, uint32_t ret_task_id)
 {

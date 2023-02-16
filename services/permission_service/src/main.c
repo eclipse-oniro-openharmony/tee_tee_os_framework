@@ -39,6 +39,7 @@
 #include "perm_srv_ta_cert.h"
 #include "perm_srv_ta_config.h"
 #include "perm_srv_ta_ctrl.h"
+#include <ipclib_hal.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -178,7 +179,7 @@ static void perm_thread_handle_file_msg(const perm_srv_req_msg_t *req_msg, uint3
         tlogd("handle file msg cmd fail 0x%x\n", ret);
 
 end:
-    if (msg_type == HM_MSG_TYPE_CALL) {
+    if (msg_type == MSG_TYPE_CALL) {
         rc = ipc_msg_reply(msghdl, &rsp, sizeof(rsp));
         if (rc != 0)
             tloge("reply error 0x%x\n", rc);
@@ -266,7 +267,7 @@ void *perm_thread_init_file(void *data)
     perm_thread_remove_channel(PERMSRV_SAVE_FILE, file_channel);
 
 exit:
-    ipc_msg_delete_hdl(hm_get_mycnode(), msghdl);
+    ipc_msg_delete_hdl(msghdl);
     return NULL;
 }
 
@@ -381,7 +382,7 @@ void *perm_thread_init_async_file(void *data)
     perm_thread_remove_channel(PERMSRV_ASYNC_OPT_FILE, async_file_channel);
 
 del_hdl:
-    ipc_msg_delete_hdl(hm_get_mycnode(), msghdl);
+    ipc_msg_delete_hdl(msghdl);
     return NULL;
 }
 
@@ -513,7 +514,7 @@ static void  perm_thread_handle_main_msg(const perm_srv_req_msg_t *req_msg, uint
     ret = handle_main_thread_msg_cmd(req_msg, cmd_id, sndr_taskid, sndr_uuid, &rsp);
     if (ret != TEE_SUCCESS)
         tlogd("handle main msg cmd fail 0x%x\n", ret);
-    if (msg_type == HM_MSG_TYPE_CALL) {
+    if (msg_type == MSG_TYPE_CALL) {
         if (ipc_msg_reply(msghdl, &rsp, sizeof(rsp)) != 0) {
             tloge("reply error\n");
             return;

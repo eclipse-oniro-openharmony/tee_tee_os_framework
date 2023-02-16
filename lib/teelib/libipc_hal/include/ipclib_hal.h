@@ -12,7 +12,11 @@
 #ifndef IPC_LIB_HAL_H
 #define IPC_LIB_HAL_H
 
-#include <ipclib.h>
+#include <msg_ops.h>
+
+#define MSG_TYPE_INVALID         0
+#define MSG_TYPE_NOTIF           1
+#define MSG_TYPE_CALL            2
 
 /* Create a IPC channel and register it to the TAMgr with path "$PID" */
 int32_t ipc_create_single_channel(const char *name, cref_t *pch, bool reg_pid, bool reg_name, bool reg_tamgr);
@@ -20,12 +24,21 @@ int32_t ipc_create_single_channel(const char *name, cref_t *pch, bool reg_pid, b
 /* For channels who doesn't need RTOSck-compatible */
 int32_t ipc_create_channel_native(const char *name, cref_t *pch);
 
-uint32_t ipc_msg_qsend_sync(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, uint32_t uw_dst_pid, uint8_t uc_dst_qid);
+uint32_t ipc_send_msg_sync(uint32_t msg_id, uint32_t dest_pid, const void *msgp, uint32_t size);
 
 /* send uw_msg_id use uc_dst_qid channel */
 uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t uw_dst_pid, uint8_t uc_dst_qid);
-uint32_t ipc_msg_qsend_sync(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, uint32_t uw_dst_pid, uint8_t uc_dst_qid);
 
 /* send msgp use 0 channel */
 uint32_t ipc_msg_snd(uint32_t uw_msg_id, uint32_t uw_dst_pid, const void *msgp, uint16_t size);
+
+uint32_t ipc_msg_rcv(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size);
+
+uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t wait_sender);
+
+uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t *puw_sender_pid);
+
+uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, msg_pid_t *puw_sender_pid,
+                        uint8_t uc_recv_qid, uint32_t uw_timeout);
+
 #endif

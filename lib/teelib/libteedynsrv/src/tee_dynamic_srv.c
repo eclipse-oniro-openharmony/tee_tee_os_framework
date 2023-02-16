@@ -30,6 +30,7 @@
 #include "sys_timer.h"
 #include "lib_timer.h"
 #include "hmlog.h"
+#include <ipclib_hal.h>
 
 TEE_Result tee_srv_get_uuid_by_sender(uint32_t sender, TEE_UUID *uuid)
 {
@@ -192,7 +193,7 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
 
         do_deal_with_msg(dispatch, n_dispatch, &req_msg, &rsp_msg, task_id);
 
-        if (info.msg_type == HM_MSG_TYPE_CALL) {
+        if (info.msg_type == MSG_TYPE_CALL) {
             ret = ipc_msg_reply(msghdl, &rsp_msg, sizeof(rsp_msg));
             if (ret != 0) {
                 tloge("message reply failed, ret=0x%x, reason:%s\n", ret, hmapi_strerror(ret));

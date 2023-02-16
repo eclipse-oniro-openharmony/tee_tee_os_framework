@@ -18,6 +18,7 @@
 #include "ipclib.h"
 #include "sys/usrsyscall_ext.h"
 #include "task_adaptor.h"
+#include <ipclib_hal.h>
 
 #define TASK_PRIO_SE_SERVICE (DEFAULT_TASK_PRIO - 2)
 struct task_adaptor_info *register_task_se_srv(void);

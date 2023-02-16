@@ -15,6 +15,7 @@
 #include "tee_config.h"
 #include "tee_log.h"
 #include "tee_init.h"
+#include <ipclib_hal.h>
 
 /*
  * below APIs are defined by Platform SDK released previously

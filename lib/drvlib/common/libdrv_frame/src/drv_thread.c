@@ -17,6 +17,7 @@
 #include <sys/usrsyscall_ext.h>
 #include <mem_page_ops.h>
 #include <tee_drv_internal.h>
+#include <ipclib_hal.h>
 
 #define IPC_CHANNEL_NUM 2
 static pthread_mutex_t g_drv_caller_info_mutex = PTHREAD_MUTEX_INITIALIZER;

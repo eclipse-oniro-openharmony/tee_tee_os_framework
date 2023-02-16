@@ -38,6 +38,7 @@ CPPFLAGS += -I$(SERVICES_PATH)/ssa/src/secure_storage_agent
 CPPFLAGS += -I$(SERVICES_PATH)/ssa/src
 CPPFLAGS += -I$(TOPDIR)/libs/libcrypto_common
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
+CPPFLAGS += -I$(TEELIB)/libipc_hal/include
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/include

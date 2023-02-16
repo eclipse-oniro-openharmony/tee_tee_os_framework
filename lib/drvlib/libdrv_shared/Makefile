@@ -43,6 +43,7 @@ inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteemem/include
+inc-flags += -I$(TEELIB)/libipc_hal/include
 
 ifneq ($(CONFIG_DRVMGR_64BIT), )
 inc-flags += -I$(SYSLIB)/libspawn_common/include

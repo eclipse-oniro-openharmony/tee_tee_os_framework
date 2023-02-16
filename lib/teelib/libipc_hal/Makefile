@@ -9,8 +9,8 @@
 # See the Mulan PSL v2 for more details.
 MODULE := libipc_hal${TARG}.a
 
+CPPFLAGS += -I$(TEELIB)/libipc_hal/include
 CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi
-
 # Source files required to build the target
 CFILES := $(wildcard src/*.c)
 

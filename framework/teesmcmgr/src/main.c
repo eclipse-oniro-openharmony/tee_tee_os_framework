@@ -70,8 +70,6 @@ rref_t get_gtask_channel_hdlr(void)
 
 static void acquire_hdlr(void)
 {
-    int32_t rc;
-
     set_teesmc_hdlr(irqmgr_acquire_teesmc_hdlr());
     if (is_ref_err(g_teesmc_hdlr))
         fatal("acquire teesmc hdlr returns %s\n", hmapi_strerror(ref_to_err(g_teesmc_hdlr)));

@@ -46,6 +46,7 @@
 #include "tee_s_cmd_dispatch.h"
 #include "tee_compat_check.h"
 #include "tee_load_lib.h"
+#include <ipclib_hal.h>
 
 #define GT_MSG_REV_SIZE 512
 

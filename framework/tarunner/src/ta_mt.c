@@ -26,6 +26,7 @@
 #include <tee_log.h>
 #include <asm/hmapi.h>
 #include "load_init.h"
+#include <ipclib_hal.h>
 
 #ifndef THREAD_STACK_SIZE
 #define THREAD_STACK_SIZE (4096 * 4 * 5)
@@ -150,7 +151,7 @@ static TEE_Result ta_recycle_thread(uint32_t tid)
         hm_error("pthread join failed: rc=%d\n", rc);
 
     remove_all_ipc_channel(tid, pti, NULL);
-    ipc_msg_delete_hdl(hm_get_mycnode(), pti->t_msghdl);
+    ipc_msg_delete_hdl(pti->t_msghdl);
     /* clear thread info struct */
     release_thread_info(pti);
 
@@ -219,14 +220,11 @@ static void *tee_task_entry_thread(void *data)
     }
     pti->t_msghdl = msghdl;
 
-    /* get self tls, and store msghdl in it */
-    tls = hmapi_tls_get();
-    if (tls == NULL) {
-        hm_error("Get tls error");
-        goto err_get_tls;
+    /* store msghdl in self tls */
+	if(ipc_save_my_msghdl(msghdl) != 0) {
+        hm_error("save hdl error");
+        goto err_save_hdl;
     }
-    tls->msghdl = msghdl;
-
     /* create IPC channel, and save to tls */
     for (i = 0; i < THREAD_CHNL_MAX; i++)
         ch[i] = &pti->t_channel[i];
@@ -248,8 +246,8 @@ err_reply_tid:
 err_create_ipc_chnl:
     tls->msghdl = 0;
 
-err_get_tls:
-    ipc_msg_delete_hdl(hm_get_mycnode(), pti->t_msghdl);
+err_save_hdl:
+    ipc_msg_delete_hdl(pti->t_msghdl);
 
 err_get_tid:
     /* reply error for TaskCreate */

@@ -37,6 +37,7 @@ inc-flags += -I$(TEELIB)/libhuk/include
 inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(TEELIB)/libssa/src
 inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
+inc-flags += -I$(TEELIB)/libipc_hal/include
 
 LDFLAGS += -z noexecstack
 

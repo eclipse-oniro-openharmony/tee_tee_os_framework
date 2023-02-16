@@ -16,6 +16,7 @@
 #include "init.h"
 #include "tee_inner_uuid.h"
 #include "service_manager.h"
+#include <ipclib_hal.h>
 
 int get_ta_info(uint32_t task_id, bool *ta_64bit, TEE_UUID *uuid)
 {

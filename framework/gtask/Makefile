@@ -71,6 +71,7 @@ inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(TEELIB)/libhuk/include
 inc-flags += -I$(TEELIB)/libse/include
 inc-flags += -I$(TEELIB)/libse/src/se_service
+inc-flags += -I$(TEELIB)/libipc_hal/include
 
 ifeq ($(product_type), cdc)
 $(info product type is cdc)

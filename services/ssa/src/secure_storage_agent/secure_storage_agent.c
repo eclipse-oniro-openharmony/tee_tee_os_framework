@@ -29,6 +29,7 @@
 #include "tee_internal_task_pub.h"
 #include "ssa_fs.h"
 #include <huk_service_msg.h>
+#include <ipclib_hal.h>
 
 bool g_is_ssa_reg = false;
 
@@ -1075,13 +1076,14 @@ void *ssa_handle_msg(void *arg)
     union ssa_agent_msg msg;
     struct ssa_agent_rsp rsp;
     (void)arg;
+    uint32_t global_taskid;
 
-    ret = ipc_hunt_by_name(GLOBAL_SERVICE_NAME, &g_global_handle);
+    ret = ipc_hunt_by_name(GLOBAL_SERVICE_NAME, &global_taskid);
     if (ret != TEE_SUCCESS) {
         tloge("hunt by gb name error 0x%x\n", ret);
         return NULL;
     }
-
+    g_global_handle = taskid_to_pid(global_taskid);
     set_global_handle(g_global_handle);
 
     while (1) {

@@ -135,16 +135,13 @@ static void gtask_extend_utable(void)
 
 static void gtask_run_and_destory(void)
 {
-    int32_t ret;
     /* smcmgr threads must be created after setting stack guard */
     gtask_set_priority();
     gtask_extend_utable();
 
     gtask_main();
 
-    (void)ipc_remove_channel(0, "TEEGlobalTask", 0, 0);
-    (void)ipc_remove_channel(0, NULL, 1, 0);
-    hm_error("Remove GTASK path. teesmcmgr error is expected\n", ret);
+    hm_error("Gtask error. teesmcmgr error is expected\n");
     init_shell();
 }
 /*

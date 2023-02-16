@@ -33,6 +33,7 @@
 #include "huk_get_deviceid.h"
 #include "huk_service_msg.h"
 #include "msg_ops.h"
+#include <ipclib_hal.h>
 
 #define MAGIC_STR_LEN               20
 
@@ -86,7 +87,7 @@ static void handle_cmd(const struct huk_srv_msg *msg, cref_t msghdl, uint32_t sn
         tloge("the cmd id 0x%x is not supported\n", cmd_id);
 
 ret_flow:
-    if (msg_type == HM_MSG_TYPE_CALL) {
+    if (msg_type == MSG_TYPE_CALL) {
         rc = ipc_msg_reply(msghdl, &rsp, sizeof(rsp));
         if (rc != 0)
             tloge("reply error 0x%x\n", rc);
@@ -109,7 +110,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
         hm_exit((int)msghdl);
     }
 
-    if (ipc_create_channel_native(HUK_TASK_NAME, &ch) != 0) {
+    if (ipc_create_channel_native(HUK_PATH, &ch) != 0) {
         tloge("create main thread native channel failed!\n");
         hm_exit(-1);
     }

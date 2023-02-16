@@ -30,6 +30,7 @@
 #include "tee_task_config.h"
 #include "tee_task.h"
 #include "timer.h"
+#include <ipclib_hal.h>
 
 static void response_to_ca(const smc_cmd_t *cmd)
 {

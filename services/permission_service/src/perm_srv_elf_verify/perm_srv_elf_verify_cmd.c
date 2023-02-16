@@ -19,6 +19,7 @@
 #include "handle_anti_rollback.h"
 #include "perm_srv_ta_ctrl.h"
 #include "perm_srv_ta_config.h"
+#include <ipclib_hal.h>
 
 static TEE_Result perm_srv_ta_run_authorization_check(const TEE_UUID *uuid, const ta_property_t *manifest,
                                       uint16_t target_version, bool mem_page_align)

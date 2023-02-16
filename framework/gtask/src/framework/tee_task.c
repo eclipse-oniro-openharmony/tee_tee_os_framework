@@ -45,6 +45,7 @@
 #include "task_adaptor_pub.h"
 #include "init.h"
 #include "dynload.h"
+#include <ipclib_hal.h>
 
 #define MAX_PATH_NAME_LEN 64
 #define PAGES_FOR_STACK   2

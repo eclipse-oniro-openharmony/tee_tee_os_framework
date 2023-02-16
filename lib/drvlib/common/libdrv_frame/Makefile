@@ -19,6 +19,7 @@ flags += -I$(TEELIB)/libteeos/include/legacy
 flags += -I$(TEELIB)/libteeos/include/tee
 flags += -I$(TEELIB)/libteeos/src/log/
 flags += -I$(TEELIB)/libteemem/include
+flags += -I$(TEELIB)/libipc_hal/include
 
 flags += -I$(DRIVERS_PATH)/include
 flags += -I$(TEELIB)/libteeconfig/include/

@@ -16,7 +16,6 @@
 #include <mem_ops_ext.h>
 #include <msg_ops.h>
 #include <dlist.h>
-#include <ipclib.h>
 #include "tee_mem_mgmt_api.h"
 #include "ta_framework.h"
 #include "tee_log.h"
@@ -27,6 +26,8 @@
 #include "tee_ta2ta.h"
 #include "tee_secfile_load_agent.h"
 #include "tee_inner_uuid.h"
+#include <ipclib.h>
+#include <ipclib_hal.h>
 
 #define TASK_SHARE_MEM_PT_NO 0x2
 #define OFFSET               7U

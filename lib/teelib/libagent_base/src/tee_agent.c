@@ -18,6 +18,7 @@
 #include <tee_ext_api.h>
 #include <tee_log.h>
 #include <tee_internal_task_pub.h>
+#include <ipclib_hal.h>
 
 TEE_Result tee_send_agent_cmd(uint32_t agent_id)
 {

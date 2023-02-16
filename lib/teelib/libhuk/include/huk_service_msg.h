@@ -15,6 +15,8 @@
 #include <tee_defines.h>
 #include <hm_msg_type.h>
 
+#define HUK_PATH "hukservice"
+
 #define HUK_ERROR      (-1)
 #define HUK_SUCCESS    0
 

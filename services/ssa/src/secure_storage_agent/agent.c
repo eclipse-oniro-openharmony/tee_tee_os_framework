@@ -19,6 +19,7 @@
 #include "agent.h"
 #include "securec.h"
 #include "tee_internal_task_pub.h"
+#include <ipclib_hal.h>
 
 static void ssa_msgqueue_add(uint32_t cmd, const union ssa_agent_msg *msg, uint32_t sndr)
 {

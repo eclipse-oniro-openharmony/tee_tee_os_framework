@@ -32,6 +32,7 @@
 #include "get_spawn_env.h"
 #include "load_init.h"
 #include "ta_mt.h"
+#include <ipclib_hal.h>
 
 #define RTLD_TA 0x100000
 #define IPC_CHANNEL_NUM 2

@@ -24,6 +24,7 @@
 #include "task_adaptor_pub.h"
 #include "task_dynamic_adaptor.h"
 #include "task_register.h"
+#include <ipclib_hal.h>
 
 #define MAX_TASK_NUM    20
 static struct dlist_node g_task_list_head;
