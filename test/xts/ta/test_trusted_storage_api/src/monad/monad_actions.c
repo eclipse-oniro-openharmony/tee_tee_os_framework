@@ -274,7 +274,6 @@ int EnumerateAllObject(IntermediateReprestation *ir)
         }
         res = TEE_OpenPersistentObject(tv->storageID, ir->enumObjectID, ir->enumObjectIDLen,
             tv->openFlags, &(ir->object));
-
         if (res != TEE_SUCCESS) {
             tloge("[%s]:GetNextObject open object failed, 0x%x\n", __func__, res);
             return res;

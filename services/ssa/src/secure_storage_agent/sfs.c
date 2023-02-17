@@ -435,7 +435,7 @@ TEE_Result calculate_block_hash(uint8_t *sha_buff, uint32_t sha_size, const uint
 }
 
 static TEE_Result master_hmac_params_check(const struct sfd_t *sfd,
-    uint8_t *hmac_buf, uint32_t *buf_size, uint32_t *cipher_blks)
+    const uint8_t *hmac_buf, const uint32_t *buf_size, uint32_t *cipher_blks)
 {
     uint32_t blks = 0;
     struct block_info_t *cur_block_pos = NULL;

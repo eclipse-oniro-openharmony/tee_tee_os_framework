@@ -934,7 +934,7 @@ TEE_Result perm_srv_parse_config_body(const TEE_UUID *uuid, struct perm_config *
 
     ret = perm_srv_update_config_by_same_uuid(config);
     if (ret != TEE_SUCCESS)
-         goto error;
+        goto error;
 
     return TEE_SUCCESS;
 error:

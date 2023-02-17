@@ -35,9 +35,8 @@ void TrustedStorageTest::TearDown()
 
 TEEC_Result TrustedStorageTest::InvokeTest(const char *casename)
 {
-    int rc;
-    rc = strcpy_s((char *)testMem.sharedMem.buffer, FUN_NAME_LEN, casename);
-    if(rc != 0){
+    int rc = strcpy_s(reinterpret_cast<char*>(testMem.sharedMem.buffer), FUN_NAME_LEN, casename);
+    if (rc != 0) {
         return TEEC_FAIL;
     }
     operation.params[0].memref.parent = &testMem.sharedMem;

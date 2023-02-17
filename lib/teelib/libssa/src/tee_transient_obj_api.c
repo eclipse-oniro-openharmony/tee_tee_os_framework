@@ -1051,7 +1051,7 @@ static TEE_Result populate_trasient_object(TEE_ObjectHandle object, uint32_t cou
     return TEE_SUCCESS;
 }
 
-static TEE_Result populate_param_check(TEE_ObjectHandle object, TEE_Attribute *attrs)
+static TEE_Result populate_param_check(TEE_ObjectHandle object, const TEE_Attribute *attrs)
 {
     bool check = (attrs == NULL || object == NULL);
     if (check) {

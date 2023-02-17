@@ -128,7 +128,7 @@ typedef struct {
 #define FILE_NAME_MAX_BUF 256
 #endif
 
-meta_data_t *create_meta_data(const uint8_t *objId, uint32_t objIdLen, uint32_t storage_id, uint32_t flags,
+meta_data_t *create_meta_data(const uint8_t *obj_id, uint32_t obj_id_len, uint32_t storage_id, uint32_t flags,
                               const TEE_UUID *uuid, TEE_Result *error, uint32_t arch_version);
 void free_meta_data(meta_data_t **ppmeta);
 void set_meta_data_verion(meta_data_t *meta_data, uint32_t arch_version);

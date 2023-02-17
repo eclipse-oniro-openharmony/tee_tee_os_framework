@@ -996,7 +996,7 @@ static int32_t do_sm2_encrypt(const EC_KEY *ec_key, const uint8_t *src_data, uin
     /* pass cv to destData */
     uint32_t api_level = tee_get_ta_api_level();
     if (api_level > API_LEVEL1_0) {
-      cv = d2i_SM2_Ciphertext(NULL, (const unsigned char **)&dest_data, temp_len);
+        cv = d2i_SM2_Ciphertext(NULL, (const unsigned char **)&dest_data, temp_len);
         dest_data -= temp_len;
         if (cv == NULL) {
             tloge("SM2 do encrypt failed");

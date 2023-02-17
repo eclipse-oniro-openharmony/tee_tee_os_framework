@@ -40,7 +40,7 @@ static char hex2asc(char n)
 #define HALF_OF(x)            ((x) / 2)
 static TEE_Result convert_uuid_to_str(const TEE_UUID *uuid, char *buff, int buffsize)
 {
-    uint8_t add_pos_array[POS_ARRAY_LEN] = { 8, 12, 16, 20, 64 }; /* add_pos_array[4]=64 is not used */
+    const uint8_t add_pos_array[POS_ARRAY_LEN] = { 8, 12, 16, 20, 64 }; /* add_pos_array[4]=64 is not used */
     uint32_t i;
     uint8_t add_pos = 0;
     unsigned char uuid_buff[sizeof(TEE_UUID)];
