@@ -41,7 +41,7 @@ void perm_srv_cert_expiration_alarm(const TEE_Date_Time *time1, const TEE_Date_T
 
 TEE_Result perm_srv_get_imported_cert_pubkey(uint8_t *dst, uint32_t *len)
 {
-     (void)dst;
+    (void)dst;
     *len = 0;
     return TEE_ERROR_NOT_SUPPORTED;
 }

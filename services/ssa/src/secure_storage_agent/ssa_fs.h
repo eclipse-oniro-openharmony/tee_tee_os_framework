@@ -24,12 +24,12 @@ TEE_Result check_name_by_storageid(const char *obj_id, uint32_t obj_len, uint32_
 
 void fs_set_serr(uint32_t ns_errno);
 TEE_Result fs_get_serr(void);
-int32_t ssa_fs_fopen(const char *name, uint32_t flags, uint32_t storage_id);
+int32_t ssa_fs_fopen(const char *name, uint32_t flag, uint32_t storage_id);
 int32_t ssa_fs_fclose(int32_t fd);
 uint32_t ssa_fs_fread(void *out_buf, uint32_t count, int32_t fd, int32_t *error);
 uint32_t ssa_fs_fwrite(const void *content, uint32_t count, int32_t fd);
 int32_t ssa_fs_fseek(int32_t fd, int32_t offset, uint32_t whence);
-int32_t ssa_fs_fremove(const char *r_pth, uint32_t storage_id);
+int32_t ssa_fs_fremove(const char *name, uint32_t storage_id);
 int32_t ssa_fs_ftruncate(const char *name, uint32_t len, uint32_t storage_id);
 int32_t ssa_fs_frename(const char *old_name, const char *new_name, uint32_t storage_id);
 int32_t ssa_fs_fcreate(const char *name, uint32_t flag, uint32_t storage_id);

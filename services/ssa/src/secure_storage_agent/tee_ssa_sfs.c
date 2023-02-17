@@ -557,7 +557,7 @@ static TEE_Result check_block_integrity(const struct sfd_t *sfd, const uint8_t *
     return TEE_SUCCESS;
 }
 
-static TEE_Result check_read_params(uint8_t *out_buf, struct sfd_t *sfd, TEE_Result *error)
+static TEE_Result check_read_params(const uint8_t *out_buf, struct sfd_t *sfd, TEE_Result *error)
 {
     if (error == NULL)
         return TEE_ERROR_BAD_PARAMETERS;

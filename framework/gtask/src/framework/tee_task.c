@@ -418,7 +418,6 @@ static int32_t get_mem_total_size(uint64_t *size)
         total_size = heap_size + tmp_size;
     }
 
-
     if (total_size <= heap_size || total_size <= tmp_size) {
         tloge("size overflow!\n");
         return -1;
@@ -589,7 +588,6 @@ static int set_argv_for_tsk(struct argv_base_buffer *argv, char *loader_path, ui
         if (get_dyn_client_name(get_cur_service()->ta_64bit, argv->client_name,
             sizeof(argv->client_name)) != 0)
             tlogd("no dyn client exists\n");
-
     } else {
         /* hm-native tasks, just hm_tee_test now! */
         if (memcpy_s(loader_path, loader_path_size, path_name, path_name_size) != 0) {

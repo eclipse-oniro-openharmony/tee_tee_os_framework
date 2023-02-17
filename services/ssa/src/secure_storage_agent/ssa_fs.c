@@ -388,7 +388,7 @@ retrun_errno:
     return ret;
 }
 
-static int32_t ssa_fs_fread_params_check(int32_t *error, void *out_buf, uint32_t count)
+static int32_t ssa_fs_fread_params_check(int32_t *error, const void *out_buf, uint32_t count)
 {
     if (error == NULL) {
         fs_set_serr(EINVAL);
@@ -944,14 +944,14 @@ return_errno:
  * difference between faccess and faccess2: faccess2 can detect all path file,
  * but faccess can just detect secure storage dir.
  */
-int32_t ssa_fs_faccess(const char *path, int mode, uint32_t storage_id)
+int32_t ssa_fs_faccess(const char *name, int mode, uint32_t storage_id)
 {
-    return _ssa_fs_faccess(path, mode, 0, storage_id);
+    return _ssa_fs_faccess(name, mode, 0, storage_id);
 }
 
-int32_t ssa_fs_faccess2(const char *path, int mode)
+int32_t ssa_fs_faccess2(const char *name, int mode)
 {
-    return _ssa_fs_faccess(path, mode, 1, TEE_OBJECT_STORAGE_PRIVATE);
+    return _ssa_fs_faccess(name, mode, 1, TEE_OBJECT_STORAGE_PRIVATE);
 }
 
 int32_t ssa_fs_disk_usage(uint32_t *secure_remain, uint32_t *data_secure_remain)

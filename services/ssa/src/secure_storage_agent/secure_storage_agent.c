@@ -445,7 +445,7 @@ void close_file_from_client(uint32_t sender, uint32_t obj)
         return;
     }
 
-    if ((obj <= 0) || (obj > MAX_CLIENT_OPEN_FILES)) {
+    if ((obj == 0) || (obj > MAX_CLIENT_OPEN_FILES)) {
         tloge("illegal objID 0x%x\n", obj);
         return;
     }
@@ -555,8 +555,6 @@ uint32_t open_file(meta_data_t *meta, uint32_t sndr, uint32_t flags, struct sfd_
 
     handle = get_file_handle(meta, sndr, flags, sfd, error);
     return handle;
-
-    return 0;
 }
 
 /*
@@ -580,7 +578,7 @@ TEE_Result delete_file(uint32_t sender, uint32_t obj)
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    if ((obj <= 0) || (obj > MAX_CLIENT_OPEN_FILES)) {
+    if ((obj == 0) || (obj > MAX_CLIENT_OPEN_FILES)) {
         tloge("illegal obj 0x%x\n", obj);
         return TEE_SUCCESS;
     }
@@ -689,7 +687,7 @@ static void ssa_write_attributes(const uint8_t *attributes, uint32_t attributes_
     uint32_t ret;
 
     (void)arch_version;
-    if (attributes == 0 || attributes_len <= 0) {
+    if (attributes == 0 || attributes_len == 0) {
         /* no need to write attributes, not error */
         *error = TEE_SUCCESS;
         return;
@@ -712,7 +710,7 @@ static void ssa_write_initial_data(const uint8_t *initial_data, uint32_t data_le
 {
     uint32_t ret;
 
-    if (initial_data == 0 || data_len <= 0) {
+    if (initial_data == 0 || data_len == 0) {
         /* no need to write initial data, not error */
         *error = TEE_SUCCESS;
         return;

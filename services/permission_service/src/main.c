@@ -152,7 +152,7 @@ static TEE_Result handle_file_msg_cmd(const perm_srv_req_msg_t *req_msg, uint32_
     if (i >= g_file_thread_cmd_num)
         tloge("not support the cmd id 0x%x\n", cmd_id);
 
-    if (ret != TEE_SUCCESS )
+    if (ret != TEE_SUCCESS)
         tloge("handle msg cmd fail 0x%x\n", ret);
     return ret;
 }
@@ -296,7 +296,7 @@ static TEE_Result handle_async_file_msg_cmd(const perm_srv_req_msg_t *req_msg, u
     if (i >= g_async_file_thread_cmd_num)
         tloge("not support the cmd id 0x%x\n", cmd_id);
 
-    if (ret != TEE_SUCCESS )
+    if (ret != TEE_SUCCESS)
         tloge("handle msg cmd fail 0x%x\n", ret);
 
     perm_srv_cms_crl_store(cmd_id);
@@ -505,7 +505,7 @@ static TEE_Result handle_main_thread_msg_cmd(const perm_srv_req_msg_t *req_msg, 
     if (i >= g_main_thread_cmd_num)
         tloge("not support the cmd id 0x%x\n", cmd_id);
 
-    if (ret != TEE_SUCCESS )
+    if (ret != TEE_SUCCESS)
         tloge("handle msg cmd fail 0x%x\n", ret);
 
     return ret;

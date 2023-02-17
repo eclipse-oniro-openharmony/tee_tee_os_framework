@@ -18,7 +18,7 @@
 #include "tee_crypto_hal.h"
 
 typedef TEE_Result (*perm_srv_cmd_func)(const perm_srv_req_msg_t *req_msg, uint32_t sndr_taskid,
-                                  const TEE_UUID *sndr_uuid, perm_srv_reply_msg_t *rsp);
+                                        const TEE_UUID *sndr_uuid, perm_srv_reply_msg_t *rsp);
 
 typedef struct {
     uint32_t cmd;

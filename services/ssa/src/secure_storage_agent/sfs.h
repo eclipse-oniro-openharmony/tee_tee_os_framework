@@ -199,7 +199,7 @@ TEE_Result ssa_write_mac(struct sfd_t *sfd);
 void create_object(const struct create_obj_msg_t *create_obj, uint32_t sndr, const TEE_UUID *uuid,
                    struct sfd_t **sfd, uint32_t *obj, TEE_Result *error);
 void open_object(struct open_obj_msg_t *open_obj, const TEE_UUID *uuid, uint32_t sndr, struct ssa_agent_rsp *rsp);
-TEE_Result calculate_master_hmac(struct sfd_t *sfd, uint8_t *hmacBuf, uint32_t *buf_size);
+TEE_Result calculate_master_hmac(struct sfd_t *sfd, uint8_t *hmac_buf, uint32_t *buf_size);
 void str_tran(const unsigned char *sha_buff, uint32_t buff_len, char *dest, uint32_t dest_len);
 TEE_Result calc_filename_datahmac_hash(meta_storage_t *sfs_meta, const struct sfd_t *sfd);
 TEE_Result calculate_hmac(const uint8_t *src, uint32_t src_len, uint8_t *dest,
@@ -207,10 +207,10 @@ TEE_Result calculate_hmac(const uint8_t *src, uint32_t src_len, uint8_t *dest,
 TEE_Result aes_xts_crypto(uint32_t mode, const struct sfd_t *sfd, const struct memref_t *tweak,
                           const struct memref_t *data_in, struct memref_t *data_out);
 TEE_Result fill_file_hole(struct sfd_t *sfd, uint32_t start_offset, uint32_t size);
-TEE_Result calculate_block_hash(uint8_t *shaBuff, uint32_t shaSize, const uint8_t *data, uint32_t dataSize);
+TEE_Result calculate_block_hash(uint8_t *sha_buff, uint32_t sha_size, const uint8_t *data, uint32_t data_size);
 TEE_Result get_spec_errno(TEE_Result ret_default);
 TEE_Result calc_hmac256(struct key_info_t *key_info, const uint8_t *src, int32_t length,
-                        uint8_t *dest, uint32_t *out_len);
+                        uint8_t *dest, uint32_t *dest_len);
 TEE_Result cmd_hash(const uint8_t *src_data, uint32_t src_len, uint8_t *dest_data, size_t dest_len);
 uint32_t create_file_instance_to_client(uint32_t sender, struct sfd_t *sfd);
 TEE_Result aes_cbc_crypto(uint32_t mode, uint8_t *key_value, uint32_t key_size, const uint8_t *iv,

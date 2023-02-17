@@ -16,7 +16,7 @@
 int32_t get_prot_by_secure_cache_mode(secure_mode_type secure_mode, cache_mode_type cache_mode);
 
 int32_t task_map_phy_mem_ex(uint32_t task_id, paddr_t phy_addr, uint32_t size,
-                                   uint64_t *virt_addr, int32_t prot, map_type type);
+                            uint64_t *virt_addr, int32_t prot, map_type type);
 
 #define GET_LOW_32BIT(x) ((uint64_t)0x00000000ffffffff & (x))
 #endif
