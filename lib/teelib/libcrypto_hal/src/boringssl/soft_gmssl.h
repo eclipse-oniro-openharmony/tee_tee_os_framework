@@ -34,7 +34,7 @@ int32_t crypto_sm3_hmac(const struct symmerit_key_t *key, const struct memref_t 
 int32_t sm2_sign_verify(const void *sm2_key, uint32_t mode, const struct memref_t *digest,
     struct memref_t *signature);
 
-int32_t sm2_encrypt_decypt(const void *private_key, uint32_t mode,
+int32_t sm2_encrypt_decypt(const void *sm2_key, uint32_t mode,
     const struct memref_t *data_in, struct memref_t *data_out);
 
 int32_t sm4_cipher_init(struct ctx_handle_t *ctx, const struct symmerit_key_t *key, const struct memref_t *iv);

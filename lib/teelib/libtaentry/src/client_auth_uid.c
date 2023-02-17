@@ -386,9 +386,8 @@ static TEE_Result add_ca_apk(const char *ca_name, const char *modulus, const cha
     (*caller_num)++;
     return TEE_SUCCESS;
 
-    tloge("AddCaller apk To List failed\n");
-
 free_out:
+    tloge("AddCaller apk To List failed\n");
     free_caller_node(item);
     return ret;
 }
