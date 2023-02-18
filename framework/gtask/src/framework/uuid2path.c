@@ -21,18 +21,6 @@
 /* uuid need 32, '/' need 2, '-' need 4, ".so" need 3, tafs need 4,'\0' need 1, libname max 18,(ta_framework.h) */
 #define MIN_LIB_NAME_LEN (int)(32 + 10 + sizeof(TAFS_MOUNTPOINT))
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: passed from internal functions
- * RIGHTS: N/A
- * BUFOVF: checked in snprintf_s
- * INFOLEAK: tlogd not affected
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 int uuid_to_fname(const TEE_UUID *uuid, char *name, int name_len)
 {
     int ret;

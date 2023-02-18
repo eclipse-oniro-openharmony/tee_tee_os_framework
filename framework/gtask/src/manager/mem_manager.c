@@ -152,18 +152,6 @@ static void set_index_memref_buffer(const struct pam_node *node, uint32_t index,
         param_32[index].memref.buffer = (uint32_t)buf;
     }
 }
-/*
- * CODEREVIEW CHECKLIST
- * ARG: checked
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: tee_free_sharemem: always return 0
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static void free_tee_mem(const void *addr, uint32_t size)
 {
     if (addr == NULL)

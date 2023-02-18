@@ -20,19 +20,6 @@
 #include "service_manager.h"
 #include "gtask_core.h"
 
-
-/*
- * CODEREVIEW CHECKLIST
- * ARG: passed from internal functions
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void load_internal_task(const TEE_UUID *puuid)
 {
     uint32_t num;

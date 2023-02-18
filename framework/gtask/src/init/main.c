@@ -31,18 +31,6 @@
 
 #define GT_CHANNEL_NUM 2
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: N/A
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: N/A
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static void wait_for_kill(void)
 {
     while (true)
@@ -144,18 +132,6 @@ static void gtask_run_and_destory(void)
     hm_error("Gtask error. teesmcmgr error is expected\n");
     init_shell();
 }
-/*
- * CODEREVIEW CHECKLIST
- * ARG: passed from libc, valid
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: checked
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 
 int main(void)
 {
