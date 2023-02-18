@@ -31,6 +31,7 @@
 #include <ta_permission.h>
 #include <tee_tag.h>
 #include <tee_drv_internal.h>
+#include <ipclib_hal.h>
 
 static rref_t g_sysctrl_ref;
 
@@ -46,13 +47,13 @@ static int32_t ipc_init(const char *name, cref_t *ch)
     int32_t ret;
     struct reg_items_st reg_items = { true, false, false };
 
-    ret = hm_create_multi_ipc_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
+    ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
         hm_error("%s: failed to create SRE channel with pid %d: %d\n", name, hm_getpid(), ret);
         return -1;
     }
 
-    ret = hm_create_ipc_native(name, ch);
+    ret = ipc_create_channel_native(name, ch);
     if (ret != 0) {
         hm_error("%s: failed to create channel :%d\n", name, ret);
         return -1;

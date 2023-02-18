@@ -36,6 +36,7 @@
 #include "drv_process_mgr.h"
 #include "task_mgr.h"
 #include "base_drv_node.h"
+#include <ipclib_hal.h>
 
 static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_req_msg_t *msg,
                               const struct hmcap_message_info *info)
@@ -67,7 +68,7 @@ static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_
 
     params->args = (uintptr_t)msg->args;
     params->data = (uintptr_t)msg->data;
-    params->caller_pid = hmpid_to_pid(TCBCREF2TID(info->src_tcb_cref), info->src_cred.pid);
+    params->caller_pid = pid_to_taskid(TCBCREF2TID(info->src_tcb_cref), info->src_cred.pid);
 
     return 0;
 }
@@ -144,7 +145,7 @@ static struct task_node *alloc_drvcall_node_internal_drv(const struct tee_uuid *
         return NULL;
     }
 
-    node->pid = pid_to_hmpid(taskid);
+    node->pid = taskid_to_pid(taskid);
     if (receive_task_conf(node) != 0) {
         tloge("receive task conf fail\n");
         free(tlv);
@@ -428,7 +429,7 @@ static int32_t driver_general_handle(const struct tee_drv_param *params, int64_t
 #define EXIT_PID_INDEX 0
 static int32_t driver_exception_handle(const struct tee_drv_param *params, int64_t *ret_val)
 {
-    uint32_t pid = pid_to_hmpid(params->caller_pid);
+    uint32_t pid = taskid_to_pid(params->caller_pid);
     if (pid != GLOBAL_HANDLE) {
         tloge("task:0x%x not gtask, cannot call exception handle\n", pid);
         return -1;
@@ -460,7 +461,7 @@ static int32_t driver_exception_handle(const struct tee_drv_param *params, int64
  */
 static bool check_caller_from_legal_service(const struct tee_drv_param *params)
 {
-    uint32_t pid = pid_to_hmpid(params->caller_pid);
+    uint32_t pid = taskid_to_pid(params->caller_pid);
     if (pid == GLOBAL_HANDLE)
         return true;
 
@@ -637,7 +638,7 @@ static int32_t drvcall_conf_unregister_handle(const struct tee_drv_param *params
     struct task_node *node = get_ta_node_and_set_exit(&uuid);
 
     reply->header.reply.ret_val = 0;
-    int32_t ret = hm_msg_reply(reply_hdl, reply, sizeof(*reply));
+    int32_t ret = ipc_msg_reply(reply_hdl, reply, sizeof(*reply));
     if (ret != 0)
         tloge("exception reply fail:0x%x\n", ret);
 
@@ -779,7 +780,7 @@ static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const s
      */
     if ((swi_id != UNREGISTER_DRVCALL_CONF) || (swi_id == UNREGISTER_DRVCALL_CONF && ret != 0)) {
         rmsg->header.reply.ret_val = (ret == 0) ? ret_val : (int64_t)ret;
-        ret = hm_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
+        ret = ipc_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
         if (ret != 0) {
             tloge("hm msg reply for 0x%x failed\n", swi_id);
             /*

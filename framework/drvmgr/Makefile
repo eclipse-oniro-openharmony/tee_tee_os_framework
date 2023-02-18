@@ -74,11 +74,12 @@ inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libteemem/include
+inc-flags += -I$(TEELIB)/libipc_hal/include
 inc-flags += -I$(SYSLIB)/libelf_verify/include
 
 LIBS += c_shared${TARG}
 LIBS += timer${TARG} ac${TARG}
-LIBS += teemem${TARG} teeos${TARG} spawn_common${TARG}
+LIBS += teemem${TARG} teeos${TARG} spawn_common${TARG} ipc_hal${TARG}
 
 ENTRY_POINT := main
 LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so

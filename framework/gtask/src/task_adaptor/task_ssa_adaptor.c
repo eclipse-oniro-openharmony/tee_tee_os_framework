@@ -18,6 +18,7 @@
 #include "tee_ss_agent_api.h"
 #include "gtask_inner.h"
 #include "agent_manager.h"
+#include <ipclib_hal.h>
 
 #define TASK_PRIO_SSA (DEFAULT_TASK_PRIO - 1)
 struct task_adaptor_info *register_task_ssa(void);

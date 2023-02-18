@@ -34,6 +34,7 @@
 #include "tee_internal_task_pub.h"
 #include "global_task.h"
 #include "tee_task_exception.h"
+#include <ipclib_hal.h>
 
 #define AGENT_MAX       32
 #define BITS_PER_BYTE   8

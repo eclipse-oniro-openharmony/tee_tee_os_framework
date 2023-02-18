@@ -35,6 +35,7 @@ CPPFLAGS += -I$(TEELIB)/libteemem/include
 CPPFLAGS += -I$(TEELIB)/libssa/src
 CPPFLAGS += -I$(TEELIB)/libssa/include
 CPPFLAGS += -I$(TEELIB)/libhuk/include
+CPPFLAGS += -I$(TEELIB)/libipc_hal/include
 
 # Source files required to build the target
 ASMFILES := $(wildcard src/*.S)

@@ -32,6 +32,7 @@
 #include "task_adaptor_pub.h"
 #include "tee_task.h"
 #include "tee_task_exception.h"
+#include <ipclib_hal.h>
 
 #define DEFAULT_EVENT_NR 0xffffffff
 

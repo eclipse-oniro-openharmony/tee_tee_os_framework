@@ -62,7 +62,7 @@ static void gtask_init(void)
     extern cref_t __sysmgrch;
     struct reg_items_st reg_items = { true, true, true };
 
-    ret = hm_create_multi_ipc_channel("TEEGlobalTask", GT_CHANNEL_NUM, NULL, reg_items);
+    ret = ipc_create_channel("TEEGlobalTask", GT_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
         hm_error("GTASK: create ipc chnl failed: %d\n", ret);
         wait_for_kill();
@@ -135,15 +135,13 @@ static void gtask_extend_utable(void)
 
 static void gtask_run_and_destory(void)
 {
-    int32_t ret;
     /* smcmgr threads must be created after setting stack guard */
     gtask_set_priority();
     gtask_extend_utable();
 
     gtask_main();
-    ret = pathmgr_del_path("TEEGlobalTask");
-    (void)ret;
-    hm_error("Remove GTASK path ret = %d. teesmcmgr error is expected\n", ret);
+
+    hm_error("Gtask error. teesmcmgr error is expected\n");
     init_shell();
 }
 /*

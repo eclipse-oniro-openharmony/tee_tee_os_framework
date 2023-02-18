@@ -16,7 +16,6 @@
 #include <mem_ops_ext.h>
 #include <msg_ops.h>
 #include <dlist.h>
-#include <ipclib.h>
 #include "tee_mem_mgmt_api.h"
 #include "ta_framework.h"
 #include "tee_log.h"
@@ -27,6 +26,8 @@
 #include "tee_ta2ta.h"
 #include "tee_secfile_load_agent.h"
 #include "tee_inner_uuid.h"
+#include <ipclib.h>
+#include <ipclib_hal.h>
 
 #define TASK_SHARE_MEM_PT_NO 0x2
 #define OFFSET               7U
@@ -282,7 +283,7 @@ static TEE_Result new_ta2ta_session_handle(TEE_TASessionHandle *handle)
     }
 
     session_handle->handle = (TEE_TASessionHandle)valid_handle;
-    task_id = get_selfpid();
+    task_id = get_self_taskid();
     if (task_id == SRE_PID_ERR) {
         tloge("get taskid failed\n");
         TEE_Free(session_handle);
@@ -294,7 +295,7 @@ static TEE_Result new_ta2ta_session_handle(TEE_TASessionHandle *handle)
         return TEE_ERROR_GENERIC;
     }
 
-    session_handle->src_tid = pid_to_hmtid(task_id);
+    session_handle->src_tid = taskid_to_tid(task_id);
     dlist_init(&session_handle->list);
 
     set_bitmap(g_handle_bitmap, HANDLE_MAX, valid_handle);

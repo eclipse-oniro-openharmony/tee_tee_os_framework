@@ -136,12 +136,12 @@ bool is_sys_task(uint32_t task_id)
     const uint32_t nr = get_drv_frame_nums();
     uint32_t i;
 
-    if (pid_to_hmpid(task_id) == pid_to_hmpid((uint32_t)RESERVED_SYSMGR_CRED) ||
-        (pid_to_hmpid(task_id) == pid_to_hmpid((uint32_t)g_timer_pid)))
+    if (taskid_to_pid(task_id) == taskid_to_pid((uint32_t)RESERVED_SYSMGR_CRED) ||
+        (taskid_to_pid(task_id) == taskid_to_pid((uint32_t)g_timer_pid)))
         return true;
 
     for (i = 0; i < nr; i++) {
-        if (pid_to_hmpid(task_id) == pid_to_hmpid((uint32_t)drv_info_list[i].pid))
+        if (taskid_to_pid(task_id) == taskid_to_pid((uint32_t)drv_info_list[i].pid))
             return true;
     }
     return false;

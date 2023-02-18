@@ -14,7 +14,7 @@
 #include <tee_log.h>
 #include <msg_ops.h>
 #include <api/errno.h>          /* is_ref_err */
-#include <sys/usrsyscall.h>     /* for hm_msg_create_hdl */
+#include <sys/usrsyscall.h>     /* for ipc_msg_create_hdl */
 #include <ipclib.h>             /* for channel */
 #include <sys/usrsyscall_new.h> /* for cref_t */
 #include <hm_thread.h>
@@ -39,6 +39,7 @@
 #include "perm_srv_ta_cert.h"
 #include "perm_srv_ta_config.h"
 #include "perm_srv_ta_ctrl.h"
+#include <ipclib_hal.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -178,8 +179,8 @@ static void perm_thread_handle_file_msg(const perm_srv_req_msg_t *req_msg, uint3
         tlogd("handle file msg cmd fail 0x%x\n", ret);
 
 end:
-    if (msg_type == HM_MSG_TYPE_CALL) {
-        rc = hm_msg_reply(msghdl, &rsp, sizeof(rsp));
+    if (msg_type == MSG_TYPE_CALL) {
+        rc = ipc_msg_reply(msghdl, &rsp, sizeof(rsp));
         if (rc != 0)
             tloge("reply error 0x%x\n", rc);
     }
@@ -190,19 +191,19 @@ static TEE_Result perm_thread_file_create_ipc_channel(cref_t *msghdl, cref_t *na
 {
     TEE_Result ret;
 
-    *msghdl = hm_msg_create_hdl();
+    *msghdl = ipc_msg_create_hdl();
     if (is_ref_err(*msghdl)) {
         tloge("thread file operation function create msg_hdl failed\n");
         return TEE_ERROR_GENERIC;
     }
 
-    if (hm_create_ipc_native(PERMSRV_FILE_OPT, native_channel) != 0) {
+    if (ipc_create_channel_native(PERMSRV_FILE_OPT, native_channel) != 0) {
         tloge("thread file operation function create native channel failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     /* create IPC channel */
-    if (hm_create_ipc_channel(PERMSRV_SAVE_FILE, file_channel, true, false, true) != 0) {
+    if (ipc_create_single_channel(PERMSRV_SAVE_FILE, file_channel, true, false, true) != 0) {
         tloge("thread file operation function create file channel failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -220,13 +221,13 @@ static void perm_thread_remove_channel(const char *name, cref_t channel)
 {
     msg_pid_t pid;
 
-    pid = get_selfpid();
+    pid = get_self_taskid();
     if (pid == SRE_PID_ERR) {
         tloge("get self pid error\n");
         return;
     }
 
-    if (hm_remove_ipc_channel(pid, name, 0, channel) != 0)
+    if (ipc_remove_channel(pid, name, 0, channel) != 0)
         tloge("remove the file channel failed\n");
 }
 
@@ -237,9 +238,8 @@ void *perm_thread_init_file(void *data)
     uint32_t sender_taskid = 0;
     cref_t native_channel = 0;
     cref_t file_channel = 0;
-    msginfo_t info = { 0 };
+    struct src_msginfo info = { 0 };
     cref_t msghdl;
-    struct channel_ipc_args ipc_args = { 0 };
     (void)data;
 
     (void)memset_s(&req_msg, sizeof(req_msg), 0, sizeof(req_msg));
@@ -248,22 +248,18 @@ void *perm_thread_init_file(void *data)
     if (rc != 0)
         goto exit;
 
-    ipc_args.channel = native_channel;
-    ipc_args.recv_buf = &req_msg;
-    ipc_args.recv_len = (unsigned long)sizeof(req_msg);
-
     while (true) {
-        rc = hm_msg_receive(&ipc_args, msghdl, &info, 0, -1);
-        if (rc < 0) {
+        rc = ipc_msg_receive(native_channel, &req_msg, (unsigned long)sizeof(req_msg), msghdl, &info, -1);
+		if (rc < 0) {
             tloge("%s: message receive failed, %llx, %s\n", LOG_TAG, rc, hmapi_strerror(rc));
             continue;
         }
 
         /* get sender taskid for rtosck */
-        if (info.src_cred.pid == 0)
+        if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
-            sender_taskid = (uint32_t)hmpid_to_pid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
+            sender_taskid = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
 
         perm_thread_handle_file_msg(&req_msg, sender_taskid, info.msg_type, msghdl);
     }
@@ -271,7 +267,7 @@ void *perm_thread_init_file(void *data)
     perm_thread_remove_channel(PERMSRV_SAVE_FILE, file_channel);
 
 exit:
-    hm_msg_delete_hdl(hm_get_mycnode(), msghdl);
+    ipc_msg_delete_hdl(msghdl);
     return NULL;
 }
 
@@ -330,19 +326,19 @@ static void perm_thread_handle_async_file_msg(const perm_srv_req_msg_t *req_msg,
 static TEE_Result perm_thread_async_file_create_ipc_channel(cref_t *msghdl, cref_t *native_channel,
                                                             cref_t *file_channel)
 {
-    *msghdl = hm_msg_create_hdl();
+    *msghdl = ipc_msg_create_hdl();
     if (is_ref_err(*msghdl)) {
         tloge("thread async file operation function create msg_hdl failed\n");
         return TEE_ERROR_GENERIC;
     }
 
-    if (hm_create_ipc_native(PERMSRV_ASYNC_OPT, native_channel) != 0) {
+    if (ipc_create_channel_native(PERMSRV_ASYNC_OPT, native_channel) != 0) {
         tloge("thread async file operation function create native channel failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     /* create IPC channel */
-    if (hm_create_ipc_channel(PERMSRV_ASYNC_OPT_FILE, file_channel, true, false, false) != 0) {
+    if (ipc_create_single_channel(PERMSRV_ASYNC_OPT_FILE, file_channel, true, false, false) != 0) {
         tloge("thread async file operation function create file channel failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -357,9 +353,8 @@ void *perm_thread_init_async_file(void *data)
     uint32_t sender_taskid = 0;
     cref_t async_native_channel = 0;
     cref_t async_file_channel = 0;
-    msginfo_t info = { 0 };
+    struct src_msginfo info = { 0 };
     cref_t msghdl;
-    struct channel_ipc_args ipc_args = { 0 };
     (void)data;
 
     (void)memset_s(&req_msg, sizeof(req_msg), 0, sizeof(req_msg));
@@ -368,22 +363,18 @@ void *perm_thread_init_async_file(void *data)
     if (rc != 0)
         goto del_hdl;
 
-    ipc_args.channel = async_native_channel;
-    ipc_args.recv_buf = &req_msg;
-    ipc_args.recv_len = (unsigned long)sizeof(req_msg);
-
     while (true) {
-        rc = hm_msg_receive(&ipc_args, msghdl, &info, 0, -1);
+        rc = ipc_msg_receive(async_native_channel, &req_msg, (unsigned long)sizeof(req_msg), msghdl, &info, -1);
         if (rc < 0) {
             tloge("%s: async msg receive failed, %llx, %s\n", LOG_TAG, rc, hmapi_strerror(rc));
             continue;
         }
 
         /* get sender taskid for rtosck */
-        if (info.src_cred.pid == 0)
+        if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
-            sender_taskid = (uint32_t)hmpid_to_pid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
+            sender_taskid = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
 
         perm_thread_handle_async_file_msg(&req_msg, sender_taskid);
     }
@@ -391,7 +382,7 @@ void *perm_thread_init_async_file(void *data)
     perm_thread_remove_channel(PERMSRV_ASYNC_OPT_FILE, async_file_channel);
 
 del_hdl:
-    hm_msg_delete_hdl(hm_get_mycnode(), msghdl);
+    ipc_msg_delete_hdl(msghdl);
     return NULL;
 }
 
@@ -523,8 +514,8 @@ static void  perm_thread_handle_main_msg(const perm_srv_req_msg_t *req_msg, uint
     ret = handle_main_thread_msg_cmd(req_msg, cmd_id, sndr_taskid, sndr_uuid, &rsp);
     if (ret != TEE_SUCCESS)
         tlogd("handle main msg cmd fail 0x%x\n", ret);
-    if (msg_type == HM_MSG_TYPE_CALL) {
-        if (hm_msg_reply(msghdl, &rsp, sizeof(rsp)) != 0) {
+    if (msg_type == MSG_TYPE_CALL) {
+        if (ipc_msg_reply(msghdl, &rsp, sizeof(rsp)) != 0) {
             tloge("reply error\n");
             return;
         }
@@ -560,23 +551,22 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
     uint32_t sender_taskid = 0;
     spawn_uuid_t sender_uuid;
     int32_t ret;
-    struct channel_ipc_args ipc_args = { 0 };
 
     (void)memset_s(&req_msg, sizeof(req_msg), 0, sizeof(req_msg));
     cref_t native_channel = 0;
-    msginfo_t info = { 0 };
+    struct src_msginfo info = { 0 };
     cref_t msghdl;
 
     if (init_build == 0)
         clear_ta_bss();
 
-    msghdl = get_mymsghdl();
+    msghdl = ipc_get_my_msghdl();
     if (is_ref_err(msghdl)) {
         tloge("Cannot create msg_hdl, %s\n", hmapi_strerror((int32_t)msghdl));
         hm_exit((int32_t)msghdl);
     }
 
-    if (hm_create_ipc_native(CERT_PATH, &native_channel) != 0) {
+    if (ipc_create_channel_native(CERT_PATH, &native_channel) != 0) {
         tloge("create main thread native channel failed\n");
         hm_exit(HM_TASK_EXIT);
     }
@@ -588,24 +578,21 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
 
     create_subthreads();
 
-    ipc_args.channel = native_channel;
-    ipc_args.recv_buf = &req_msg;
-    ipc_args.recv_len = sizeof(req_msg);
     while (true) {
-        ret = hm_msg_receive(&ipc_args, msghdl, &info, 0, HM_MSG_TIMEOUT);
+        ret = ipc_msg_receive(native_channel, &req_msg, sizeof(req_msg), msghdl, &info, -1);
         if (ret < 0) {
             tloge("%s: message receive failed, %llx, %s\n", LOG_TAG, ret, hmapi_strerror(ret));
             continue;
         }
 
         /* get sender taskid for rtosck */
-        if (info.src_cred.pid == 0)
+        if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
-            sender_taskid = (uint32_t)hmpid_to_pid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
+            sender_taskid = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
 
         (void)memset_s(&sender_uuid, sizeof(sender_uuid), 0, sizeof(sender_uuid));
-        if (hm_getuuid((pid_t)info.src_cred.pid, &sender_uuid) != 0)
+        if (hm_getuuid((pid_t)info.src_pid, &sender_uuid) != 0)
             tloge("get uuid failed\n");
 
         perm_thread_handle_main_msg(&req_msg, sender_taskid, &sender_uuid.uuid, info.msg_type, msghdl);

@@ -19,5 +19,6 @@ CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
 CPPFLAGS += -I$(TEELIB)/libteemem/include
+CPPFLAGS += -I$(TEELIB)/libipc_hal/include
 
 include $(BUILD_LIB)/lib-common.mk

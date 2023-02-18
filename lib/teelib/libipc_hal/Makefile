@@ -7,20 +7,11 @@
 # IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
+MODULE := libipc_hal${TARG}.a
 
-MODULE := libteedynsrv${TARG}.a
+CPPFLAGS += -I$(TEELIB)/libipc_hal/include
+CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi
+# Source files required to build the target
+CFILES := $(wildcard src/*.c)
 
-libteedynsrv_c_files += $(wildcard src/*.c)
-inc-flags += -I$(TEELIB)/libteedynsrv/include
-inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
-inc-flags += -I$(TEELIB)/libteeos/include/tee
-inc-flags += -I$(TEELIB)/libteeos/include/legacy
-inc-flags += -I$(TEELIB)/libtimer/include
-inc-flags += -I$(TEELIB)/libteemem/include
-inc-flags += -I$(TEELIB)/libipc_hal/include
-inc-flags += -I$(TOPDIR)/prebuild/tee-kernel-local-release/headers/ddk/hmapi/
-# Libraries
-include $(BUILD_CONFIG)/feature-macro.mk
 include $(BUILD_LIB)/lib-common.mk
-
-

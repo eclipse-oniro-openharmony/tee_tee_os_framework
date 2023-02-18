@@ -45,6 +45,7 @@
 #include "task_adaptor_pub.h"
 #include "init.h"
 #include "dynload.h"
+#include <ipclib_hal.h>
 
 #define MAX_PATH_NAME_LEN 64
 #define PAGES_FOR_STACK   2
@@ -126,7 +127,7 @@ void gt_wait_process(uint32_t task_id)
 
     hm_ipc_remove_cached_ch(task_id, 1, NULL);
     for (i = 0; i < WAIT_MAX; i++) {
-        if (hm_wait(&wstatus) == (pid_t)pid_to_hmpid(task_id)) {
+        if (hm_wait(&wstatus) == (pid_t)taskid_to_pid(task_id)) {
             tlogd("wait %" PRIu32 " exit succeeded\n", task_id);
             break;
         }
@@ -237,12 +238,12 @@ static int gt_create_thread(pid_t *pid)
             tloge("CALL_TA_CRTEATE_THREAD msg QRecv failed\n");
             return NORMAL_FAIL_RET;
         }
-        if (pid_to_hmpid(sender_pid) == get_timer_pid() && msg_id == TIMER_CALLBACK_TIMEOUT) {
+        if (taskid_to_pid(sender_pid) == get_timer_pid() && msg_id == TIMER_CALLBACK_TIMEOUT) {
             stop_timeout(event);
             tloge("CALL_TA_CREATE_THREAD timeout\n");
             return TIMEOUT_FAIL_RET;
         }
-    } while (pid_to_hmpid(sender_pid) != pid_to_hmpid(get_cur_service()->service_thread));
+    } while (taskid_to_pid(sender_pid) != taskid_to_pid(get_cur_service()->service_thread));
     stop_timeout(event);
     tlogd("gtask get tid 0x%" PRIx32 " from pid 0x%" PRIx32 "\n", msg_id, sender_pid);
 
@@ -282,7 +283,7 @@ static int gt_recycle_thread(uint32_t task_id, uint32_t session_id)
     msg_id = CALL_TA_REMOVE_THREAD;
     tlogd("Recycle thread %s task_id %" PRIx32 " msgid = 0x%" PRIx32 "\n", get_cur_service()->name, task_id, msg_id);
 
-    entry_msg.remove_msg.tid = pid_to_hmtid(task_id);
+    entry_msg.remove_msg.tid = taskid_to_tid(task_id);
     entry_msg.remove_msg.session_id = session_id;
     rc = ipc_msg_snd(msg_id, get_cur_service()->service_thread, &entry_msg, sizeof(entry_msg));
     if (rc != 0) {
@@ -301,7 +302,7 @@ static int gt_recycle_thread(uint32_t task_id, uint32_t session_id)
             tloge("recycle msg QRecv failed\n");
             return NORMAL_FAIL_RET;
         }
-        if (pid_to_hmpid(pid) == get_timer_pid() && msg_id == TIMER_CALLBACK_TIMEOUT) {
+        if (taskid_to_pid(pid) == get_timer_pid() && msg_id == TIMER_CALLBACK_TIMEOUT) {
             stop_timeout(event);
             tloge("CALL_TA_REMOVE_THREAD timeout\n");
             return TIMEOUT_FAIL_RET;
@@ -473,7 +474,7 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
 
     /* build rtosck task_id by pid and thread cref */
     if (ptask_id != NULL)
-        *ptask_id = hmpid_to_pid(TCBCREF2TID(thread_cref), (uint32_t)pid);
+        *ptask_id = pid_to_taskid(TCBCREF2TID(thread_cref), (uint32_t)pid);
 
     return 0;
 }
@@ -514,12 +515,12 @@ static void wait_srvc_thread_message(struct msg_recv_param *msg_recv_p, uint32_t
     do {
         if (ipc_msg_q_recv(&(msg_recv_p->msghandle), &(msg_recv_p->msg_id), task_id, 1, TASK_TIMEOUT) != 0)
             tloge("gtask get tid failed\n");
-        if (pid_to_hmpid(*task_id) == get_timer_pid() && msg_recv_p->msg_id == TIMER_CALLBACK_TIMEOUT) {
+        if (taskid_to_pid(*task_id) == get_timer_pid() && msg_recv_p->msg_id == TIMER_CALLBACK_TIMEOUT) {
             tloge("spawn multi-session TA timeout\n");
             msg_recv_p->msg_id = CREATE_THREAD_FAIL;
             break;
         }
-    } while (pid_to_hmpid(*task_id) != pid_to_hmpid(service_thread));
+    } while (taskid_to_pid(*task_id) != taskid_to_pid(service_thread));
     stop_timeout(event);
     tlogd("gtask get tid 0x%" PRIx32 " from pid 0x%" PRIx32 "\n", msg_recv_p->msg_id, task_id);
 }
@@ -539,7 +540,7 @@ static int32_t create_service_thread(const char *elf_path, char **argv, char **e
     wait_srvc_thread_message(&msg_recv_p, &task_id, service_thread);
     /* create thread fail, kill service thread and return error */
     if (msg_recv_p.msg_id == CREATE_THREAD_FAIL) {
-        if (hm_kill((int)pid_to_hmpid(service_thread)) == 0)
+        if (hm_kill((int)taskid_to_pid(service_thread)) == 0)
             gt_wait_process(service_thread);
         else
             tloge("kill BAD service thread failed\n");
@@ -549,7 +550,7 @@ static int32_t create_service_thread(const char *elf_path, char **argv, char **e
     get_cur_service()->service_thread = service_thread;
     *puw_pid                          = task_id;
     /* send msg to internal service */
-    task_adapt_ta_create(pid_to_hmpid(service_thread), &((get_cur_service()->property).uuid));
+    task_adapt_ta_create(taskid_to_pid(service_thread), &((get_cur_service()->property).uuid));
     return 0;
 }
 

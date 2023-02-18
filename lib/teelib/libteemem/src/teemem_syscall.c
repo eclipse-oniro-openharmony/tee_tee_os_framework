@@ -61,7 +61,7 @@ int32_t task_map_phy_mem_ex(uint32_t task_id, paddr_t phy_addr, uint32_t size,
         return HM_ERROR;
     }
 
-    task_id = PID2HMPID(task_id);
+    task_id = TASKID2PID(task_id);
 
     /* map PA to process VA */
     mapped_addr = hm_map_range_to_process((pid_t)task_id, 0, size, prot, phy_addr, (uint32_t)type);
@@ -95,7 +95,7 @@ int32_t task_unmap(uint32_t task_id, uint64_t virt_addr, uint32_t size)
         return HM_ERROR;
     }
 
-    task_id = PID2HMPID(task_id);
+    task_id = TASKID2PID(task_id);
 
     return hm_unmap_range_from_process((pid_t)task_id, virt_addr, size);
 }
@@ -152,7 +152,7 @@ static int32_t copy_task_param_check(uint64_t src, uint32_t src_size, uint64_t d
 
 int32_t tee_map_sharemem(uint32_t src_task, uint64_t vaddr, uint64_t size, uint64_t *vaddr_out)
 {
-    pid_t pid_in = PID2HMPID(src_task);
+    pid_t pid_in = TASKID2PID(src_task);
     return hm_map_sharemem(pid_in, vaddr, size, vaddr_out);
 }
 
@@ -165,7 +165,7 @@ int32_t copy_from_sharemem(uint32_t src_task, uint64_t src, uint32_t src_size, u
     if (ret != 0)
         return -1;
 
-    pid_t pid_in = PID2HMPID(src_task);
+    pid_t pid_in = TASKID2PID(src_task);
     ret = hm_map_sharemem(pid_in, src, src_size, &temp_dst);
     if (ret != 0) {
         tloge("map sharemem failed, src_task:0x%x\n", src_task);
@@ -197,7 +197,7 @@ int32_t copy_to_sharemem(uintptr_t src, uint32_t src_size, uint32_t dst_task, ui
     if (ret != 0)
         return -1;
 
-    pid_t pid_in = PID2HMPID(dst_task);
+    pid_t pid_in = TASKID2PID(dst_task);
     ret = hm_map_sharemem(pid_in, dst, dst_size, &temp_dst);
     if (ret != 0) {
         tloge("map sharemem failed, dst_task:0x%x\n", dst_task);

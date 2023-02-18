@@ -29,6 +29,7 @@
 #include "tee_internal_task_pub.h"
 #include "ssa_fs.h"
 #include <huk_service_msg.h>
+#include <ipclib_hal.h>
 
 bool g_is_ssa_reg = false;
 
@@ -121,7 +122,7 @@ static void pre_unregister_remove_hmipccachech(const union ssa_agent_msg *msg, u
         tlogd("unregister task: %x\n", msg->reg.taskid);
         hm_ipc_remove_cached_ch(msg->reg.taskid, 1, NULL);
     } else {
-        res_code = ipc_hunt_by_name(0, PERMSRV_SAVE_FILE, &g_permsrv_handle);
+        res_code = ipc_hunt_by_name(PERMSRV_SAVE_FILE, &g_permsrv_handle);
         if (res_code != 0) {
             g_permsrv_handle = 0;
             tlogd("hunt by permsrv name error... %x\n", res_code);
@@ -621,7 +622,7 @@ static TEE_Result set_ssa_caller_info(uint32_t sndr, uint32_t cmd)
     TEE_Result ret;
 
     if (g_permsrv_handle == 0) {
-        if (ipc_hunt_by_name(0, PERMSRV_SAVE_FILE, &g_permsrv_handle) != 0)
+        if (ipc_hunt_by_name(PERMSRV_SAVE_FILE, &g_permsrv_handle) != 0)
             g_permsrv_handle = 0;
     }
 
@@ -920,7 +921,7 @@ void ssa_register_uuid(union ssa_agent_msg *msg, uint32_t sndr, struct ssa_agent
     }
 
     /* must get the permsrv handle, because the permsrv may restart. other place don't need. */
-    if (ipc_hunt_by_name(0, PERMSRV_SAVE_FILE, &g_permsrv_handle) != 0)
+    if (ipc_hunt_by_name(PERMSRV_SAVE_FILE, &g_permsrv_handle) != 0)
         g_permsrv_handle = 0;
 
     if (sndr == g_global_handle || sndr == g_permsrv_handle) {
@@ -938,7 +939,7 @@ static void ssa_unregister_uuid(union ssa_agent_msg *msg, uint32_t sndr, struct 
         return;
     }
 
-    if (ipc_hunt_by_name(0, PERMSRV_SAVE_FILE, &g_permsrv_handle) != 0)
+    if (ipc_hunt_by_name(PERMSRV_SAVE_FILE, &g_permsrv_handle) != 0)
         g_permsrv_handle = 0;
 
     if (sndr == g_global_handle) {
@@ -1075,13 +1076,14 @@ void *ssa_handle_msg(void *arg)
     union ssa_agent_msg msg;
     struct ssa_agent_rsp rsp;
     (void)arg;
+    uint32_t global_taskid;
 
-    ret = ipc_hunt_by_name(0, GLOBAL_SERVICE_NAME, &g_global_handle);
+    ret = ipc_hunt_by_name(GLOBAL_SERVICE_NAME, &global_taskid);
     if (ret != TEE_SUCCESS) {
         tloge("hunt by gb name error 0x%x\n", ret);
         return NULL;
     }
-
+    g_global_handle = taskid_to_pid(global_taskid);
     set_global_handle(g_global_handle);
 
     while (1) {
@@ -1121,7 +1123,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
 
     tlogd("global_handle = 0x%x\n", g_global_handle);
 
-    res_code = ipc_hunt_by_name(0, SSA_SERVICE_NAME, &g_ssagent_handle);
+    res_code = ipc_hunt_by_name(SSA_SERVICE_NAME, &g_ssagent_handle);
     if (res_code != 0) {
         tloge("hunt by ssa error 0x%x\n", res_code);
         return;

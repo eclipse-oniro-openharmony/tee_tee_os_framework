@@ -30,6 +30,7 @@
 #include "sys_timer.h"
 #include "lib_timer.h"
 #include "hmlog.h"
+#include <ipclib_hal.h>
 
 TEE_Result tee_srv_get_uuid_by_sender(uint32_t sender, TEE_UUID *uuid)
 {
@@ -38,7 +39,7 @@ TEE_Result tee_srv_get_uuid_by_sender(uint32_t sender, TEE_UUID *uuid)
     if (uuid == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    int32_t ret = hm_getuuid((pid_t)pid_to_hmpid(sender), &sender_uuid);
+    int32_t ret = hm_getuuid((pid_t)taskid_to_pid(sender), &sender_uuid);
     if (ret != 0) {
         tloge("get uuid from hm failed, sender is 0x%x\n", sender);
         return TEE_ERROR_ITEM_NOT_FOUND;
@@ -146,7 +147,7 @@ static int32_t get_ipc_native_args(const char *task_name, struct tee_service_ipc
 {
     cref_t ch = 0;
 
-    int32_t ret = hm_create_ipc_native(task_name, &ch);
+    int32_t ret = ipc_create_channel_native(task_name, &ch);
     if (ret != 0) {
         tloge("create ipc channel failed, ret=%d\n", ret);
         return ret;
@@ -184,7 +185,7 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
             continue;
         }
 
-        task_id = (uint32_t)hmpid_to_pid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
+        task_id = (uint32_t)pid_to_taskid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
         if (info.src_cred.pid != get_global_handle()) {
             if (set_service_caller_info(task_id, req_msg.cmd) != TEE_SUCCESS)
                 tloge("failed to set caller info, task id 0x%x, cmd 0x%x\n", task_id, req_msg.cmd);
@@ -192,8 +193,8 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
 
         do_deal_with_msg(dispatch, n_dispatch, &req_msg, &rsp_msg, task_id);
 
-        if (info.msg_type == HM_MSG_TYPE_CALL) {
-            ret = hm_msg_reply(msghdl, &rsp_msg, sizeof(rsp_msg));
+        if (info.msg_type == MSG_TYPE_CALL) {
+            ret = ipc_msg_reply(msghdl, &rsp_msg, sizeof(rsp_msg));
             if (ret != 0) {
                 tloge("message reply failed, ret=0x%x, reason:%s\n", ret, hmapi_strerror(ret));
                 continue;

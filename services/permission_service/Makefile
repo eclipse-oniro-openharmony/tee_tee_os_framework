@@ -65,6 +65,7 @@ inc-flags += -I$(TEELIB)/libssa/include/
 inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libswcrypto_engine/include
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
+inc-flags += -I$(TEELIB)/libipc_hal/include
 inc-flags += -I$(K_SYSLIB)/libhongmeng/include
 inc-flags += -I$(K_SYSLIB)/libhmlog/include
 inc-flags += -I$(K_SYSLIB)/libmmgr_sysmgr/include

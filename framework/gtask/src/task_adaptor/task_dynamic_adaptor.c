@@ -45,14 +45,14 @@ static void send_msg_to_srv(const char *cur_task_name, const struct reg_ta_info 
         return;
     }
 
-    ret = hm_ipc_get_ch_from_path(cur_task_name, &ch);
+    ret = ipc_get_ch_from_path(cur_task_name, &ch);
     if (ret != 0) {
         tloge("get %s ch from pathmgr failed, ret=0x%x\n", cur_task_name, ret);
         return;
     }
 
-    ret = hm_msg_notification(ch, &req_msg, sizeof(req_msg));
-    (void)hm_ipc_release_path(cur_task_name, ch);
+    ret = ipc_msg_notification(ch, &req_msg, sizeof(req_msg));
+    (void)ipc_release_path(cur_task_name, ch);
     if (ret != 0)
         tloge("msg send to 0x%llx failed: 0x%x\n", ch, ret);
 }

@@ -137,7 +137,7 @@ int32_t hm_drv_init(const char *name)
     op_info = &g_drv_op_info[g_drv_frame_count];
 
     /* get channel according to path */
-    rc = hm_ipc_get_ch_from_path(name, &op_info->channel);
+    rc = ipc_get_ch_from_path(name, &op_info->channel);
     if (rc != 0) {
         hm_error("libhmdrv: get channel from pathmgr failed: %d\n", rc);
         goto unlock_out;
@@ -313,8 +313,8 @@ static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call
     if (calc_ext_data_offset(msg, params, ext_data_len) != 0)
         goto err_msg_call;
 
-    ret = hm_msg_call(g_drv_op_info[idex].channel, msg, msg->header.send.msg_size, rmsg,
-                      sizeof(struct hm_drv_req_msg_t) + params->rdata_len, 0, -1);
+    ret = ipc_msg_call(g_drv_op_info[idex].channel, msg, msg->header.send.msg_size, rmsg,
+                      sizeof(struct hm_drv_req_msg_t) + params->rdata_len, -1);
     if (ret != 0) {
         hm_error("drv_call: hm msg call 0x%llx failed: %d\n", (unsigned long long)g_drv_op_info[idex].channel, ret);
         goto err_msg_call;

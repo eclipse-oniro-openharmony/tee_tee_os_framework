@@ -46,6 +46,7 @@
 #include "tee_s_cmd_dispatch.h"
 #include "tee_compat_check.h"
 #include "tee_load_lib.h"
+#include <ipclib_hal.h>
 
 #define GT_MSG_REV_SIZE 512
 
@@ -555,7 +556,7 @@ static int32_t gtask_main_init(void)
 bool is_ns_cmd(uint32_t task_id, uint32_t back_cmd)
 {
     (void)back_cmd;
-    if (pid_to_hmpid(task_id) == SMCMGR_PID)
+    if (taskid_to_pid(task_id) == SMCMGR_PID)
         return true;
     return false;
 }

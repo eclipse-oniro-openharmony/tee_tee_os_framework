@@ -24,6 +24,7 @@
 #include <tee_log.h>
 #include "client_auth.h"
 #include "mem_ops_ext.h"
+#include <ipclib_hal.h>
 
 #define VERSION_EME     "RELEASE - v1.2"
 #define BSS_START_MAGIC 0x12345678
@@ -203,7 +204,7 @@ static void msg_send_elf(uint32_t msg_id, msg_pid_t dst_pid, const void *msgp, u
 {
     uint32_t ret;
 
-    ret = hm_ipc_send_msg_sync(msg_id, dst_pid, msgp, size);
+    ret = ipc_send_msg_sync(msg_id, dst_pid, msgp, size);
     if (ret != SRE_OK)
         tloge("Msg Snd failed, ret = %u\n", ret);
 }

@@ -17,6 +17,7 @@ CPPFLAGS += -I$(TEELIB)/libteeos/include
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libteemem/include
+CPPFLAGS += -I$(TEELIB)/libipc_hal/include
 CPPFLAGS += -I$(FRAMEWORK_PATH)/tarunner/src
 
 ifeq ($(CONFIG_TEST_CA_CHECK),y)

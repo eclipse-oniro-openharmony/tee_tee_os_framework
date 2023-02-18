@@ -123,7 +123,7 @@ struct service_struct *find_service_by_task_id(uint32_t task_id)
     struct service_struct *service_entry = NULL;
 
     dlist_for_each_entry(service_entry, &g_service_head, struct service_struct, service_list) {
-        if ((pid_to_hmpid(service_entry->service_thread) == pid_to_hmpid(task_id)) &&
+        if ((taskid_to_pid(service_entry->service_thread) == taskid_to_pid(task_id)) &&
             !service_entry->is_service_dead)
             return service_entry;
     }
@@ -530,7 +530,7 @@ void recycle_srvc_thread(struct service_struct *service)
          * gtask directly set TA process as zombie,
          * in case of service thread of TA is blocked and won't exit by itself
          */
-        if (hm_kill((int)pid_to_hmpid(service->service_thread)) == 0)
+        if (hm_kill((int)taskid_to_pid(service->service_thread)) == 0)
             gt_wait_process(service->service_thread);
         service->service_thread = 0;
         /* send msg to internal service */

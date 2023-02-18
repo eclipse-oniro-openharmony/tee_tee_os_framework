@@ -35,17 +35,17 @@ void tee_common_ipc_proc_cmd(const char *task_name,
         return;
     }
 
-    ret = hm_ipc_get_ch_from_path(task_name, &ch);
+    ret = ipc_get_ch_from_path(task_name, &ch);
     if (ret != 0) {
         tloge("get ch from pathmgr failed, task=%s, ret=0x%x\n", task_name, ret);
         return;
     }
 
-    ret = hm_msg_call(ch, &req_msg, sizeof(req_msg), rsp_msg, sizeof(*rsp_msg), 0, HM_NO_TIMEOUT);
+    ret = ipc_msg_call(ch, &req_msg, sizeof(req_msg), rsp_msg, sizeof(*rsp_msg), HM_NO_TIMEOUT);
     if (ret != 0)
         tloge("msg send to 0x%llx failed: 0x%x\n", ch, ret);
 
-    ret = (int32_t)hm_ipc_release_path(task_name, ch);
+    ret = (int32_t)ipc_release_path(task_name, ch);
     if (ret != 0) {
         tloge("release path failed, task=%s, ret=0x%x\n", task_name, ret);
         return;

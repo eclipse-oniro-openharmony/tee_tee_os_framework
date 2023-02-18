@@ -18,6 +18,7 @@
 #include "ipclib.h"
 #include "sys/usrsyscall_ext.h"
 #include "task_adaptor.h"
+#include <ipclib_hal.h>
 
 #define TASK_PRIO_SE_SERVICE (DEFAULT_TASK_PRIO - 2)
 struct task_adaptor_info *register_task_se_srv(void);
@@ -55,17 +56,17 @@ static void send_unregister_ta_to_sesrv(const char *cur_task_name, const struct 
     msg.header.send.msg_id = CMD_SESRV_UNREGISTER_TA;
     msg.data.reg_ta_info_msg.taskid = reg_msg->taskid;
 
-    rc = hm_ipc_get_ch_from_path(SE_PATH, &rslot);
+    rc = ipc_get_ch_from_path(SE_PATH, &rslot);
     if (rc == -1) {
         tloge("sesrv: get channel from pathmgr failed\n");
         return;
     }
 
-    rc = hm_msg_notification(rslot, &msg, sizeof(msg));
+    rc = ipc_msg_notification(rslot, &msg, sizeof(msg));
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)hm_ipc_release_path(SE_PATH, rslot);
+    (void)ipc_release_path(SE_PATH, rslot);
 }
 
 static void task_se_serv_crash_callback(const TEE_UUID *uuid, const char *task_name,
