@@ -197,18 +197,6 @@ int init_main(void)
     return 0;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: N/A
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void init_shell(void)
 {
     hm_error("gtask: *ERROR* GTask exit unexpectedly\n");

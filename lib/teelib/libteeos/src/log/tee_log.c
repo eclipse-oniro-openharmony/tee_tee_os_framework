@@ -68,19 +68,11 @@ typedef struct {
     uint8_t log_buffer[0];
 } log_item_t;
 
-/*
- * CODEREVIEW CHECKLIST
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void tee_log_init(const TEE_UUID *uuid)
 {
     (void)uuid;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void tee_log_exit(void)
 {
 }
@@ -182,16 +174,6 @@ static void fill_logitem(log_item_t *m_logitem, size_t m_logmaxlen, int count, i
         printf("append rdr logitem debug_call ret is not successful\n");
 }
 #define LOG_RESERVED_SIZE 1
-/*
- * CODEREVIEW CHECKLIST
- * ARG: fmt: checked
-    arglist: compiler-generated
- * BUFOVF: log_buffer: checked
- * INFOLEAK: log_buffer: inited
-         time: inited
- * RET: checked
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static void tee_print_helper(const char *log_tag, enum log_source_type source_type, LOG_LEVEL log_level,
                              const char *fmt, va_list arglist)
 {
@@ -240,10 +222,6 @@ static void tee_print_helper(const char *log_tag, enum log_source_type source_ty
     fill_logitem(log_item, log_max_len, count, real_len);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void __attribute__((weak)) tee_print(LOG_LEVEL log_level, const char *fmt, ...)
 {
     va_list ap;
@@ -270,10 +248,6 @@ void __attribute__((weak)) tee_print_driver(LOG_LEVEL log_level, const char *log
     va_end(ap);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void slog(const char *fmt, ...)
 {
     va_list ap;
@@ -285,10 +259,6 @@ void slog(const char *fmt, ...)
     va_end(ap);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void uart_printf_func(const char *fmt, ...)
 {
     va_list ap;
@@ -301,10 +271,6 @@ void uart_printf_func(const char *fmt, ...)
     va_end(ap);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void uart_cprintf(const char *fmt, ...)
 {
     va_list ap;

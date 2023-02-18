@@ -9,7 +9,6 @@
 # IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
-#set -e
 
 # add ignored syms to IGNORED
 IGNORED=$(echo cfi_disabled; echo llvm_gcov_init; echo llvm_gcov_reset; echo llvm_gcov_dump;)

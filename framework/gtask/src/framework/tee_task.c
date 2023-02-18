@@ -55,19 +55,6 @@
 #else
 #define TASK_TIMEOUT 0xFFFFFFFFU
 #endif
-/*
- * CODEREVIEW CHECKLIST
- * ARG: service: checked
- *    other: valid, passed from __SRE_TaskCreate
- * RIGHTS: N/A
- * BUFOVF: checked in strncpy_s
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static TEE_Result ta_name_to_path(const struct service_struct *service,
                                   char *path_name, size_t len, int *p_priority)
 {
@@ -107,18 +94,6 @@ static TEE_Result ta_name_to_path(const struct service_struct *service,
 }
 
 #define WAIT_MAX 5
-/*
- * CODEREVIEW CHECKLIST
- * ARG: N/A
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 void gt_wait_process(uint32_t task_id)
 {
     int i;
@@ -135,18 +110,6 @@ void gt_wait_process(uint32_t task_id)
         tloge("wait %" PRIu32 " exit failed\n", task_id);
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: N/A
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by z00415816 <zhaoxuqiang@huawei.com>
- */
 static timer_event *start_timeout(void)
 {
 #if (!defined CONFIG_OFF_TIMER) && (!defined CONFIG_OFF_DRV_TIMER)
@@ -187,18 +150,6 @@ static void stop_timeout(timer_event *event)
 #endif
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: passed from __SRE_TaskCreate
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: entry_msg: inited
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static int gt_create_thread(pid_t *pid)
 {
     struct global_to_service_thread_msg entry_msg = { { { 0 } } };
@@ -256,19 +207,6 @@ static int gt_create_thread(pid_t *pid)
     return SUCC_RET;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: N/A
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: entry_msg: inited
- * RET: gt_wait_process: ignored
- *    other: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static int gt_recycle_thread(uint32_t task_id, uint32_t session_id)
 {
     struct global_to_service_thread_msg entry_msg = { { { 0 } } };
@@ -338,18 +276,6 @@ static int32_t decide_executer(const char *ehdr, uint32_t ehdr_size, int32_t fd)
 
 #define EH_SIZE sizeof(Elf64_Ehdr)
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: passed from __SRE_TaskCreate
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: fd: closed
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static int __is_rtosck_binary(const char *name)
 {
     int ldr = ELF_NOT_SUPPORT;
@@ -426,18 +352,6 @@ static int32_t get_mem_total_size(uint64_t *size)
     return 0;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: passed from __SRE_TaskCreate
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: heap_size: checked
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[], char *env[],
                               const spawn_uuid_t *uuid)
 {
@@ -692,18 +606,6 @@ int sre_task_create(const struct tsk_init_param *init_param, uint32_t *task_id)
     return ret;
 }
 
-/*
- * CODEREVIEW CHECKLIST
- * ARG: N/A
- * RIGHTS: N/A
- * BUFOVF: N/A
- * INFOLEAK: N/A
- * RET: checked
- * RACING: N/A
- * RESLEAK: N/A
- * ARITHOVF: N/A
- * CODEREVIEW CHECKLIST by Yuan Pengfei <pf.yuan@huawei.com>
- */
 int32_t sre_task_delete_ex(uint32_t uw_task_pid, bool is_service_dead, uint32_t session_id)
 {
     int ret;

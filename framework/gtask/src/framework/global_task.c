@@ -340,7 +340,7 @@ TEE_Result handle_time_adjust(const smc_cmd_t *cmd)
 /*
  * handle open_session cmds which is called from process_ta_common_cmd
  * just for Complexity check.
- * DO NOT USE this func in anyother situations. w00414120.
+ * DO NOT USE this func in anyother situations.
  */
 extern struct service_struct *g_cur_service;
 static TEE_Result processs_opensession(smc_cmd_t *cmd, uint32_t cmd_type, uint32_t task_id, bool *async,
