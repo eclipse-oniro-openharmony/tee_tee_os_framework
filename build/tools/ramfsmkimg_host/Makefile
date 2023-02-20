@@ -65,7 +65,6 @@ endef
 install_headers:
 
 all: stage
-	mv $(BUILD_TOOLS)/ramfsmkimg_host/ramfsmkimg $(PREBUILD_TOOLS)/
 	rm $(BUILD_TOOLS)/ramfsmkimg_host/src/main.o
 	rm $(BUILD_TOOLS)/ramfsmkimg_host/.done-fetch
 stage: build
