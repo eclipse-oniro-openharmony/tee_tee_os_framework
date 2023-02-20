@@ -24,6 +24,7 @@
 #include <pathmgr_api.h>
 #include <ac.h>
 #include <ac_dynamic.h>
+#include <sys/usrsyscall_smc.h>
 #include "teesmcmgr.h"
 #include "tee_crypto_api.h"
 #include "global_task.h"
@@ -35,13 +36,6 @@ static void wait_for_kill(void)
 {
     while (true)
         hm_yield();
-}
-
-static rref_t g_sysctrl_ref;
-
-rref_t get_sysctrl_ref(void)
-{
-    return g_sysctrl_ref;
 }
 
 static void gtask_init(void)
@@ -82,13 +76,7 @@ static void gtask_init_fileio_ac(void)
 
 static void gtask_init_timer_irqmgr(void)
 {
-    g_sysctrl_ref = irqmgr_acquire_sysctrl_local_irq_hdlr();
-    if (is_ref_err(g_sysctrl_ref)) {
-        hm_error("GTASK: irqmgr_acquire_sysctrl_local_irq_hdlr failed: %s\n",
-            hmapi_strerror(ref_to_err(g_sysctrl_ref)));
-        wait_for_kill();
-    }
-
+    init_sysctrl_hdlr();
 #if (!defined CONFIG_OFF_DRV_TIMER)
     int32_t ret;
 

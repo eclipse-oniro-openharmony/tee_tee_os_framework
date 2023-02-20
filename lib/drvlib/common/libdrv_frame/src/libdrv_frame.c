@@ -21,7 +21,6 @@
 #include <sys/kuapi.h>
 #include <sys/hmapi_ext.h>
 #include <sys/usrsyscall_ext.h>
-#include <sys/usrsyscall_new_ext.h>
 #include <sys/fileio.h>
 #include <timer.h>
 #include <irqmgr.h>
@@ -33,14 +32,7 @@
 #include <tee_drv_internal.h>
 #include <ipclib_hal.h>
 
-static rref_t g_sysctrl_ref;
-
 #define IPC_CHANNEL_NUM 2
-
-cref_t get_sysctrl_hdlr(void)
-{
-    return g_sysctrl_ref;
-}
 
 static int32_t ipc_init(const char *name, cref_t *ch)
 {

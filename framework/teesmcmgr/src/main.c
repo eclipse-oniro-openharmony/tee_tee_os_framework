@@ -21,10 +21,9 @@
 #include <irqmgr_api.h>
 #include <sys/usrsyscall.h>
 #include <sys/kuapi.h>
+#include <sys/usrsyscall_smc.h>
 #include "teesmcmgr.h"
 
-static cref_t g_teesmc_hdlr;
-static rref_t g_sysctrl_hdlr;
 static rref_t g_gtask_channel_hdlr;
 static bool   g_is_gtask_alive;
 
@@ -36,26 +35,6 @@ void set_is_gtask_alive(bool value)
 bool get_is_gtask_alive(void)
 {
     return g_is_gtask_alive;
-}
-
-void set_teesmc_hdlr(cref_t value)
-{
-    g_teesmc_hdlr = value;
-}
-
-cref_t get_teesmc_hdlr(void)
-{
-    return g_teesmc_hdlr;
-}
-
-void set_sysctrl_hdlr(rref_t value)
-{
-    g_sysctrl_hdlr = value;
-}
-
-rref_t get_sysctrl_hdlr(void)
-{
-    return g_sysctrl_hdlr;
 }
 
 void set_gtask_channel_hdlr(rref_t value)
@@ -70,14 +49,8 @@ rref_t get_gtask_channel_hdlr(void)
 
 static void acquire_hdlr(void)
 {
-    set_teesmc_hdlr(irqmgr_acquire_teesmc_hdlr());
-    if (is_ref_err(g_teesmc_hdlr))
-        fatal("acquire teesmc hdlr returns %s\n", hmapi_strerror(ref_to_err(g_teesmc_hdlr)));
-
-    set_sysctrl_hdlr(irqmgr_acquire_sysctrl_local_irq_hdlr());
-    if (is_ref_err(g_sysctrl_hdlr))
-        fatal("acquire sysctrl local irq hdlr returns %s\n", hmapi_strerror(ref_to_err(g_sysctrl_hdlr)));
-
+    init_teesmc_hdlr();
+    init_sysctrl_hdlr();
     set_gtask_channel_hdlr(acquire_gtask_channel());
     if (is_ref_err(g_gtask_channel_hdlr))
         fatal("acquire gtask channel returns %s\n", hmapi_strerror(ref_to_err(g_gtask_channel_hdlr)));

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <securec.h>
 #include "teesmcmgr.h"
+#include <sys/usrsyscall_smc.h>
 
 #define GTASK_MSG_ID 0xDEADBEEF
 #define RECV_BUF_SIZE 32
@@ -56,7 +57,7 @@ static void send_to_gtask()
 static void starttz_core(void)
 {
     g_tz_started = true;
-    int32_t err = hmex_teesmc_switch_req(get_teesmc_hdlr(), CAP_TEESMC_REQ_STARTTZ);
+    int32_t err = smc_switch_req(CAP_TEESMC_REQ_STARTTZ);
     if (err < 0)
         fatal("starttz failed: %s\n", hmapi_strerror(err));
 
@@ -76,9 +77,9 @@ __attribute__((noreturn)) void *tee_idle_thread(void *arg)
     error("StartTZ done\n");
 
     while (1) {
-        debug("calling hmex teesmc switch req\n");
-        err = hmex_teesmc_switch_req(get_teesmc_hdlr(), CAP_TEESMC_REQ_IDLE);
-        debug("hmex teesmc switch req return err=%d %s\n", err, hmapi_strerror(err));
+        debug("calling smc_switch_req\n");
+        err = smc_switch_req(CAP_TEESMC_REQ_IDLE);
+        debug("smc_switch_req return err=%d %s\n", err, hmapi_strerror(err));
         if (err != 0)
             fatal("something wrong");
     }

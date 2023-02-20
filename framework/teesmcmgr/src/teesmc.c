@@ -14,6 +14,9 @@
 #include <hm_msg_type.h>
 #include <securec.h>
 #include <pathmgr_api.h>
+#include <ipclib.h>
+#include <sys/usrsyscall_smc.h>
+#include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
 
 #define NORMAL_MSG_ID 0xDEADBEEF
@@ -73,7 +76,7 @@ static void tee_smc_pm_fallback_for_error(enum cap_teesmc_ret ret)
         break;
     }
 
-    err = hmex_teesmc_switch_req(get_teesmc_hdlr(), req);
+    err = smc_switch_req(req);
     if (!err)
         info("CPU-PM fallback done id %d\n", ret);
     else
@@ -133,7 +136,7 @@ static void hmapi_configure(void)
     if (err < 0)
         fatal("hmapi set priority failed: %s\n", hmapi_strerror(err));
 
-    err = hmex_disable_local_irq(get_sysctrl_hdlr(), hmapi_tcb_cref());
+    err = disable_local_irq();
     if (err < 0)
         fatal("hmex disable local irq failed: %s\n", hmapi_strerror(err));
 }
@@ -143,7 +146,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
     (void)arg;
     int32_t err;
     errno_t ret_s;
-    struct hmcap_teesmc_smc_buf smc_buf = {0};
+    struct cap_teesmc_buf smc_buf = {0};
     struct gtask_msg normal_msg = {0};
     static const char magic_msg[] = MAGIC_MSG;
 
@@ -159,7 +162,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
     while (1) {
         debug("tee smc thread: wait for switch req\n");
         smc_buf.ops = SMC_BUF_OPS;
-        err = hmex_teesmc_wait_switch_req(get_teesmc_hdlr(), &smc_buf);
+        err = smc_wait_switch_req(&smc_buf);
         debug("tee smc thread: return from REE, err=%d, ops=%" PRIx64 "\n", err, smc_buf.ops);
 
         bool flag = (err == CAP_TEESMC_RET_CPU_SUSPEND) || (err == CAP_TEESMC_RET_CPU_RESUME) ||
@@ -171,7 +174,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
             err = 0;
             if (smc_buf.ops == HMCAP_TEESMC_OPS_NORMAL ||
                 smc_buf.ops == HMCAP_TEESMC_OPS_ABORT_TASK)
-                err = hmapi_notify(get_gtask_channel_hdlr(), NULL, 0);
+                err = ipc_msg_notification(get_gtask_channel_hdlr(), NULL, 0);
 
             if (err < 0)
                 error("failed to notify gtask, err=0x%x\n", err);
