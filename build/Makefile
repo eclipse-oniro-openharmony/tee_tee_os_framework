@@ -104,6 +104,7 @@ $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
 package: $(STAGE_DIR)/bootfs.img
+	rm -rf $(BUILD_TOOLS)/ramfsmkimg_host/ramfsmkimg
 	cp -a $(PLAT_AUTOCONF_FILE) $(TOPDIR)/../tee_os_kernel/include/generated/.
 	cp -a $(PLAT_CFG_DIR)/plat_cfg.c $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
 	cp -a $(PLAT_CFG_DIR)/plat_cfg.h $(TOPDIR)/../tee_os_kernel/build/tools/generate_img

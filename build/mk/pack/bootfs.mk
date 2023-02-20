@@ -8,16 +8,7 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 
-RAMFSMKIMG := $(PREBUILD_TOOLS)/ramfsmkimg
-
-# prebuild apps
-ifeq ($(PERF_FUATURE), true)
-boot-fs-files-y += $(PREBUILD_APPS)/perf
-endif
-
-ifeq ($(BENCHMARK), true)
-boot-fs-files-y += $(PREBUILD_APPS)/benchmark_a32
-endif
+RAMFSMKIMG := $(BUILD_TOOLS)/ramfsmkimg_host/ramfsmkimg
 
 boot-fs-files-y += $(OUTPUTDIR)/arm/apps/teesmcmgr.elf
 
