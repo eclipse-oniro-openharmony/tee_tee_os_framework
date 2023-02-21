@@ -314,8 +314,8 @@ enum TEE_LoginMethod {
     TEE_LOGIN_APPLICATION      = 0x4,
     TEE_LOGIN_USER_APPLICATION = 0x5,
     TEE_LOGIN_GROUP_APPLICATION = 0x6,
-    TEE_LOGIN_IDENTIFY = 0x7, /* iTrustee defined Lognin type */
-    TEEK_LOGIN_IDENTIFY = 0x80000001, /* iTrustee defined lognin type from linux kernel */
+    TEE_LOGIN_IDENTIFY = 0x7, /* expand Lognin type */
+    TEEK_LOGIN_IDENTIFY = 0x80000001, /* expand lognin type from linux kernel */
 };
 
 typedef struct {
