@@ -13,7 +13,7 @@
 #include "monad.h"
 #include "tee_log.h"
 
-// iTrustee_Crypto_Sym_Fun_003
+// Crypto_Sym_Fun_003
 int CaseSymEncryptAesEcbNopadKeySize128OnceOnce(void)
 {
     TestVector tv = {
@@ -46,7 +46,7 @@ int CaseSymEncryptAesEcbNopadKeySize128OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_004
+// Crypto_Sym_Fun_004
 int CaseSymEncryptAesEcbNopadKeySize128OnceMulti(void)
 {
     TestVector tv = {
@@ -81,7 +81,7 @@ int CaseSymEncryptAesEcbNopadKeySize128OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesEcbNopadKeySize128MultiOnce(void)
 {
     TestVector tv = {
@@ -114,7 +114,7 @@ int CaseSymEncryptAesEcbNopadKeySize128MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesEcbNopadKeySize128MultiMulti(void)
 {
     TestVector tv = {
@@ -149,7 +149,7 @@ int CaseSymEncryptAesEcbNopadKeySize128MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_003
+// Crypto_Sym_Fun_003
 int CaseSymEncryptAesCbcNopadKeySize192OnceOnce(void)
 {
     TestVector tv = {
@@ -182,7 +182,7 @@ int CaseSymEncryptAesCbcNopadKeySize192OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_004
+// Crypto_Sym_Fun_004
 int CaseSymEncryptAesCbcNopadKeySize192OnceMulti(void)
 {
     TestVector tv = {
@@ -217,7 +217,7 @@ int CaseSymEncryptAesCbcNopadKeySize192OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesCbcNopadKeySize192MultiOnce(void)
 {
     TestVector tv = {
@@ -250,7 +250,7 @@ int CaseSymEncryptAesCbcNopadKeySize192MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesCbcNopadKeySize192MultiMulti(void)
 {
     TestVector tv = {
@@ -285,7 +285,7 @@ int CaseSymEncryptAesCbcNopadKeySize192MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_003
+// Crypto_Sym_Fun_003
 int CaseSymEncryptAesCtrKeySize128OnceOnce(void)
 {
     TestVector tv = {
@@ -318,7 +318,7 @@ int CaseSymEncryptAesCtrKeySize128OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_004
+// Crypto_Sym_Fun_004
 int CaseSymEncryptAesCtrKeySize128OnceMulti(void)
 {
     TestVector tv = {
@@ -353,7 +353,7 @@ int CaseSymEncryptAesCtrKeySize128OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesCtrKeySize128MultiOnce(void)
 {
     TestVector tv = {
@@ -386,7 +386,7 @@ int CaseSymEncryptAesCtrKeySize128MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesCtrKeySize128MultiMulti(void)
 {
     TestVector tv = {
@@ -421,7 +421,7 @@ int CaseSymEncryptAesCtrKeySize128MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_003
+// Crypto_Sym_Fun_003
 int CaseSymEncryptAesXtsKeySize256OnceOnce(void)
 {
     TestVector tv = {
@@ -454,7 +454,7 @@ int CaseSymEncryptAesXtsKeySize256OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_004
+// Crypto_Sym_Fun_004
 int CaseSymEncryptAesXtsKeySize256OnceMulti(void)
 {
     TestVector tv = {
@@ -489,7 +489,7 @@ int CaseSymEncryptAesXtsKeySize256OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesXtsKeySize256MultiOnce(void)
 {
     TestVector tv = {
@@ -522,7 +522,7 @@ int CaseSymEncryptAesXtsKeySize256MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesXtsKeySize256MultiMulti(void)
 {
     TestVector tv = {
@@ -557,7 +557,7 @@ int CaseSymEncryptAesXtsKeySize256MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_003
+// Crypto_Sym_Fun_003
 int CaseSymEncryptAesCbcPkcs5KeySize256OnceOnce(void)
 {
     TestVector tv = {
@@ -590,7 +590,7 @@ int CaseSymEncryptAesCbcPkcs5KeySize256OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_004
+// Crypto_Sym_Fun_004
 int CaseSymEncryptAesCbcPkcs5KeySize256OnceMulti(void)
 {
     TestVector tv = {
@@ -625,7 +625,7 @@ int CaseSymEncryptAesCbcPkcs5KeySize256OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesCbcPkcs5KeySize256MultiOnce(void)
 {
     TestVector tv = {
@@ -658,7 +658,7 @@ int CaseSymEncryptAesCbcPkcs5KeySize256MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_001
+// Crypto_Sym_Fun_001
 int CaseSymEncryptAesCbcPkcs5KeySize256MultiMulti(void)
 {
     TestVector tv = {
@@ -693,7 +693,7 @@ int CaseSymEncryptAesCbcPkcs5KeySize256MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_007
+// Crypto_Sym_Fun_007
 int CaseSymEncryptSm4CbcNopadKeySize128OnceOnce(void)
 {
     TestVector tv = {
@@ -726,7 +726,7 @@ int CaseSymEncryptSm4CbcNopadKeySize128OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_008
+// Crypto_Sym_Fun_008
 int CaseSymEncryptSm4CbcNopadKeySize128OnceMulti(void)
 {
     TestVector tv = {
@@ -761,7 +761,7 @@ int CaseSymEncryptSm4CbcNopadKeySize128OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_005
+// Crypto_Sym_Fun_005
 int CaseSymEncryptSm4CbcNopadKeySize128MultiOnce(void)
 {
     TestVector tv = {
@@ -794,7 +794,7 @@ int CaseSymEncryptSm4CbcNopadKeySize128MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_006
+// Crypto_Sym_Fun_006
 int CaseSymEncryptSm4CbcNopadKeySize128MultiMulti(void)
 {
     TestVector tv = {
@@ -829,7 +829,7 @@ int CaseSymEncryptSm4CbcNopadKeySize128MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_007
+// Crypto_Sym_Fun_007
 int CaseSymEncryptSm4CtrKeySize128OnceOnce(void)
 {
     TestVector tv = {
@@ -862,7 +862,7 @@ int CaseSymEncryptSm4CtrKeySize128OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_008
+// Crypto_Sym_Fun_008
 int CaseSymEncryptSm4CtrKeySize128OnceMulti(void)
 {
     TestVector tv = {
@@ -897,7 +897,7 @@ int CaseSymEncryptSm4CtrKeySize128OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_005
+// Crypto_Sym_Fun_005
 int CaseSymEncryptSm4CtrKeySize128MultiOnce(void)
 {
     TestVector tv = {
@@ -930,7 +930,7 @@ int CaseSymEncryptSm4CtrKeySize128MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_006
+// Crypto_Sym_Fun_006
 int CaseSymEncryptSm4CtrKeySize128MultiMulti(void)
 {
     TestVector tv = {
@@ -965,7 +965,7 @@ int CaseSymEncryptSm4CtrKeySize128MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_007
+// Crypto_Sym_Fun_007
 int CaseSymEncryptSm4Cfb128KeySize128OnceOnce(void)
 {
     TestVector tv = {
@@ -998,7 +998,7 @@ int CaseSymEncryptSm4Cfb128KeySize128OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_008
+// Crypto_Sym_Fun_008
 int CaseSymEncryptSm4Cfb128KeySize128OnceMulti(void)
 {
     TestVector tv = {
@@ -1033,7 +1033,7 @@ int CaseSymEncryptSm4Cfb128KeySize128OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_005
+// Crypto_Sym_Fun_005
 int CaseSymEncryptSm4Cfb128KeySize128MultiOnce(void)
 {
     TestVector tv = {
@@ -1066,7 +1066,7 @@ int CaseSymEncryptSm4Cfb128KeySize128MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_006
+// Crypto_Sym_Fun_006
 int CaseSymEncryptSm4Cfb128KeySize128MultiMulti(void)
 {
     TestVector tv = {
@@ -1101,7 +1101,7 @@ int CaseSymEncryptSm4Cfb128KeySize128MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_007
+// Crypto_Sym_Fun_007
 int CaseSymEncryptSm4CbcPkcs7KeySize128OnceOnce(void)
 {
     TestVector tv = {
@@ -1134,7 +1134,7 @@ int CaseSymEncryptSm4CbcPkcs7KeySize128OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_008
+// Crypto_Sym_Fun_008
 int CaseSymEncryptSm4CbcPkcs7KeySize128OnceMulti(void)
 {
     TestVector tv = {
@@ -1169,7 +1169,7 @@ int CaseSymEncryptSm4CbcPkcs7KeySize128OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_005
+// Crypto_Sym_Fun_005
 int CaseSymEncryptSm4CbcPkcs7KeySize128MultiOnce(void)
 {
     TestVector tv = {
@@ -1202,7 +1202,7 @@ int CaseSymEncryptSm4CbcPkcs7KeySize128MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_Sym_Fun_006
+// Crypto_Sym_Fun_006
 int CaseSymEncryptSm4CbcPkcs7KeySize128MultiMulti(void)
 {
     TestVector tv = {

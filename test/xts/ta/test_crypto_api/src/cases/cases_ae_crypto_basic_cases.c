@@ -13,7 +13,7 @@
 #include "monad.h"
 #include "tee_log.h"
 
-// iTrustee_Crypto_AE_Fun_001
+// Crypto_AE_Fun_001
 int CaseAEAesCcmK128N7T32Aad32MultiOnce(void)
 {
     TestVector tv = {
@@ -52,7 +52,7 @@ int CaseAEAesCcmK128N7T32Aad32MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK128N7T32Aad32MultiMulti(void)
 {
     TestVector tv = {
@@ -93,7 +93,7 @@ int CaseAEAesCcmK128N7T32Aad32MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK128N7T32Aad32update0Multi(void)
 {
     TestVector tv = {
@@ -134,7 +134,7 @@ int CaseAEAesCcmK128N7T32Aad32update0Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_003
+// Crypto_AE_Fun_003
 int CaseAEAesCcmK128N7T32Aad32OnceOnce(void)
 {
     TestVector tv = {
@@ -173,7 +173,7 @@ int CaseAEAesCcmK128N7T32Aad32OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_004
+// Crypto_AE_Fun_004
 int CaseAEAesCcmK128N7T32Aad32OnceMulti(void)
 {
     TestVector tv = {
@@ -214,7 +214,7 @@ int CaseAEAesCcmK128N7T32Aad32OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_001
+// Crypto_AE_Fun_001
 int CaseAEAesCcmK192N8T48Aad288MultiOnce(void)
 {
     TestVector tv = {
@@ -253,7 +253,7 @@ int CaseAEAesCcmK192N8T48Aad288MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK192N8T48Aad288MultiMulti(void)
 {
     TestVector tv = {
@@ -294,7 +294,7 @@ int CaseAEAesCcmK192N8T48Aad288MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_003
+// Crypto_AE_Fun_003
 int CaseAEAesCcmK192N8T48Aad288OnceOnce(void)
 {
     TestVector tv = {
@@ -333,7 +333,7 @@ int CaseAEAesCcmK192N8T48Aad288OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_004
+// Crypto_AE_Fun_004
 int CaseAEAesCcmK192N8T48Aad288OnceMulti(void)
 {
     TestVector tv = {
@@ -374,7 +374,7 @@ int CaseAEAesCcmK192N8T48Aad288OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_001
+// Crypto_AE_Fun_001
 int CaseAEAesCcmK256N9T64Aad512MultiOnce(void)
 {
     TestVector tv = {
@@ -413,7 +413,7 @@ int CaseAEAesCcmK256N9T64Aad512MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK256N9T64Aad512MultiMulti(void)
 {
     TestVector tv = {
@@ -454,7 +454,7 @@ int CaseAEAesCcmK256N9T64Aad512MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_003
+// Crypto_AE_Fun_003
 int CaseAEAesCcmK256N13T128Aad512OnceOnce(void)
 {
     TestVector tv = {
@@ -493,7 +493,7 @@ int CaseAEAesCcmK256N13T128Aad512OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_004
+// Crypto_AE_Fun_004
 int CaseAEAesCcmK256N13T128Aad512OnceMulti(void)
 {
     TestVector tv = {
@@ -534,7 +534,7 @@ int CaseAEAesCcmK256N13T128Aad512OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_001
+// Crypto_AE_Fun_001
 int CaseAEAesCcmK128N10T80Aad4MMultiOnce(void)
 {
     TestVector tv = {
@@ -573,7 +573,7 @@ int CaseAEAesCcmK128N10T80Aad4MMultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK128N10T80Aad4MMultiMulti(void)
 {
     TestVector tv = {
@@ -614,7 +614,7 @@ int CaseAEAesCcmK128N10T80Aad4MMultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_001
+// Crypto_AE_Fun_001
 int CaseAEAesCcmK192N11T96Aad32MultiOnce(void)
 {
     TestVector tv = {
@@ -653,7 +653,7 @@ int CaseAEAesCcmK192N11T96Aad32MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK192N11T96Aad32MultiMulti(void)
 {
     TestVector tv = {
@@ -694,7 +694,7 @@ int CaseAEAesCcmK192N11T96Aad32MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_001
+// Crypto_AE_Fun_001
 int CaseAEAesCcmK256N12T112Aad288MultiOnce(void)
 {
     TestVector tv = {
@@ -733,7 +733,7 @@ int CaseAEAesCcmK256N12T112Aad288MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK256N12T112Aad288MultiMulti(void)
 {
     TestVector tv = {
@@ -774,7 +774,7 @@ int CaseAEAesCcmK256N12T112Aad288MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_001
+// Crypto_AE_Fun_001
 int CaseAEAesCcmK128N13T128Aad512MultiOnce(void)
 {
     TestVector tv = {
@@ -813,7 +813,7 @@ int CaseAEAesCcmK128N13T128Aad512MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_002
+// Crypto_AE_Fun_002
 int CaseAEAesCcmK128N13T128Aad512MultiMulti(void)
 {
     TestVector tv = {
@@ -854,7 +854,7 @@ int CaseAEAesCcmK128N13T128Aad512MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_008
+// Crypto_AE_Fun_008
 int CaseAEAesCcmK256N9T64Aad512DecryptOnlyTAG(void)
 {
     TestVector tv = {
@@ -893,7 +893,7 @@ int CaseAEAesCcmK256N9T64Aad512DecryptOnlyTAG(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_005
+// Crypto_AE_Fun_005
 int CaseAEAesCcmK192N8T64NoAadOnce(void)
 {
     TestVector tv = {
@@ -929,7 +929,7 @@ int CaseAEAesCcmK192N8T64NoAadOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_006
+// Crypto_AE_Fun_006
 int CaseAEAesCcmK192N8T64NoAadMulti(void)
 {
     TestVector tv = {
@@ -967,7 +967,7 @@ int CaseAEAesCcmK192N8T64NoAadMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_007
+// Crypto_AE_Fun_007
 int CaseAEAesCcmK128N7T32Aad512EncryptOnlyTAG(void)
 {
     TestVector tv = {
@@ -1005,7 +1005,7 @@ int CaseAEAesCcmK128N7T32Aad512EncryptOnlyTAG(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_009
+// Crypto_AE_Fun_009
 int CaseAEAesGcmK128N7T96Aad32MultiOnce(void)
 {
     TestVector tv = {
@@ -1044,7 +1044,7 @@ int CaseAEAesGcmK128N7T96Aad32MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_010
+// Crypto_AE_Fun_010
 int CaseAEAesGcmK128N7T96Aad32MultiMulti(void)
 {
     TestVector tv = {
@@ -1085,7 +1085,7 @@ int CaseAEAesGcmK128N7T96Aad32MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_010
+// Crypto_AE_Fun_010
 int CaseAEAesGcmK128N7T96Aad32update0Multi(void)
 {
     TestVector tv = {
@@ -1126,7 +1126,7 @@ int CaseAEAesGcmK128N7T96Aad32update0Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_011
+// Crypto_AE_Fun_011
 int CaseAEAesGcmK128N7T96Aad32OnceOnce(void)
 {
     TestVector tv = {
@@ -1165,7 +1165,7 @@ int CaseAEAesGcmK128N7T96Aad32OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_012
+// Crypto_AE_Fun_012
 int CaseAEAesGcmK128N7T96Aad32OnceMulti(void)
 {
     TestVector tv = {
@@ -1206,7 +1206,7 @@ int CaseAEAesGcmK128N7T96Aad32OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_009
+// Crypto_AE_Fun_009
 int CaseAEAesGcmK192N12T104Aad288MultiOnce(void)
 {
     TestVector tv = {
@@ -1245,7 +1245,7 @@ int CaseAEAesGcmK192N12T104Aad288MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_010
+// Crypto_AE_Fun_010
 int CaseAEAesGcmK192N12T104Aad288MultiMulti(void)
 {
     TestVector tv = {
@@ -1286,7 +1286,7 @@ int CaseAEAesGcmK192N12T104Aad288MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_011
+// Crypto_AE_Fun_011
 int CaseAEAesGcmK192N12T104Aad288OnceOnce(void)
 {
     TestVector tv = {
@@ -1325,7 +1325,7 @@ int CaseAEAesGcmK192N12T104Aad288OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_012
+// Crypto_AE_Fun_012
 int CaseAEAesGcmK192N12T104Aad288OnceMulti(void)
 {
     TestVector tv = {
@@ -1366,7 +1366,7 @@ int CaseAEAesGcmK192N12T104Aad288OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_009
+// Crypto_AE_Fun_009
 int CaseAEAesGcmK256N7T112Aad512MultiOnce(void)
 {
     TestVector tv = {
@@ -1405,7 +1405,7 @@ int CaseAEAesGcmK256N7T112Aad512MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_010
+// Crypto_AE_Fun_010
 int CaseAEAesGcmK256N7T112Aad512MultiMulti(void)
 {
     TestVector tv = {
@@ -1446,7 +1446,7 @@ int CaseAEAesGcmK256N7T112Aad512MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_011
+// Crypto_AE_Fun_011
 int CaseAEAesGcmK256N7T128Aad512OnceOnce(void)
 {
     TestVector tv = {
@@ -1485,7 +1485,7 @@ int CaseAEAesGcmK256N7T128Aad512OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_012
+// Crypto_AE_Fun_012
 int CaseAEAesGcmK256N7T128Aad512OnceMulti(void)
 {
     TestVector tv = {
@@ -1526,7 +1526,7 @@ int CaseAEAesGcmK256N7T128Aad512OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_009
+// Crypto_AE_Fun_009
 int CaseAEAesGcmK128N12T120Aad4MMultiOnce(void)
 {
     TestVector tv = {
@@ -1565,7 +1565,7 @@ int CaseAEAesGcmK128N12T120Aad4MMultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_010
+// Crypto_AE_Fun_010
 int CaseAEAesGcmK128N12T120Aad4MMultiMulti(void)
 {
     TestVector tv = {
@@ -1606,7 +1606,7 @@ int CaseAEAesGcmK128N12T120Aad4MMultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_009
+// Crypto_AE_Fun_009
 int CaseAEAesGcmK192N7T128Aad32MultiOnce(void)
 {
     TestVector tv = {
@@ -1645,7 +1645,7 @@ int CaseAEAesGcmK192N7T128Aad32MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_010
+// Crypto_AE_Fun_010
 int CaseAEAesGcmK192N7T128Aad32MultiMulti(void)
 {
     TestVector tv = {
@@ -1686,7 +1686,7 @@ int CaseAEAesGcmK192N7T128Aad32MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_016
+// Crypto_AE_Fun_016
 int CaseAEAesGcmK256N7T112Aad512DecryptOnlyTAG(void)
 {
     TestVector tv = {
@@ -1725,7 +1725,7 @@ int CaseAEAesGcmK256N7T112Aad512DecryptOnlyTAG(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_013
+// Crypto_AE_Fun_013
 int CaseAEAesGcmK192N12T96NoAadOnce(void)
 {
     TestVector tv = {
@@ -1761,7 +1761,7 @@ int CaseAEAesGcmK192N12T96NoAadOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_014
+// Crypto_AE_Fun_014
 int CaseAEAesGcmK192N12T96NoAadMulti(void)
 {
     TestVector tv = {
@@ -1799,7 +1799,7 @@ int CaseAEAesGcmK192N12T96NoAadMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_015
+// Crypto_AE_Fun_015
 int CaseAEAesGcmK128N7T104Aad512EncryptOnlyTAG(void)
 {
     TestVector tv = {
@@ -1837,7 +1837,7 @@ int CaseAEAesGcmK128N7T104Aad512EncryptOnlyTAG(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_017
+// Crypto_AE_Fun_017
 int CaseAESM4GcmK128N7T96Aad32MultiOnce(void)
 {
     TestVector tv = {
@@ -1876,7 +1876,7 @@ int CaseAESM4GcmK128N7T96Aad32MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N7T96Aad32MultiMulti(void)
 {
     TestVector tv = {
@@ -1917,7 +1917,7 @@ int CaseAESM4GcmK128N7T96Aad32MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_019
+// Crypto_AE_Fun_019
 int CaseAESM4GcmK128N7T96Aad32OnceOnce(void)
 {
     TestVector tv = {
@@ -1956,7 +1956,7 @@ int CaseAESM4GcmK128N7T96Aad32OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_020
+// Crypto_AE_Fun_020
 int CaseAESM4GcmK128N7T96Aad32OnceMulti(void)
 {
     TestVector tv = {
@@ -1997,7 +1997,7 @@ int CaseAESM4GcmK128N7T96Aad32OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N7T96Aad32update0Multi(void)
 {
     TestVector tv = {
@@ -2038,7 +2038,7 @@ int CaseAESM4GcmK128N7T96Aad32update0Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_017
+// Crypto_AE_Fun_017
 int CaseAESM4GcmK128N12T104Aad288MultiOnce(void)
 {
     TestVector tv = {
@@ -2077,7 +2077,7 @@ int CaseAESM4GcmK128N12T104Aad288MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N12T104Aad288MultiMulti(void)
 {
     TestVector tv = {
@@ -2118,7 +2118,7 @@ int CaseAESM4GcmK128N12T104Aad288MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_019
+// Crypto_AE_Fun_019
 int CaseAESM4GcmK128N12T104Aad288OnceOnce(void)
 {
     TestVector tv = {
@@ -2157,7 +2157,7 @@ int CaseAESM4GcmK128N12T104Aad288OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_020
+// Crypto_AE_Fun_020
 int CaseAESM4GcmK128N12T104Aad288OnceMulti(void)
 {
     TestVector tv = {
@@ -2198,7 +2198,7 @@ int CaseAESM4GcmK128N12T104Aad288OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_017
+// Crypto_AE_Fun_017
 int CaseAESM4GcmK128N7T112Aad512MultiOnce(void)
 {
     TestVector tv = {
@@ -2237,7 +2237,7 @@ int CaseAESM4GcmK128N7T112Aad512MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N7T112Aad512MultiMulti(void)
 {
     TestVector tv = {
@@ -2278,7 +2278,7 @@ int CaseAESM4GcmK128N7T112Aad512MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_019
+// Crypto_AE_Fun_019
 int CaseAESM4GcmK128N7T128Aad512OnceOnce(void)
 {
     TestVector tv = {
@@ -2317,7 +2317,7 @@ int CaseAESM4GcmK128N7T128Aad512OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_020
+// Crypto_AE_Fun_020
 int CaseAESM4GcmK128N7T128Aad512OnceMulti(void)
 {
     TestVector tv = {
@@ -2358,7 +2358,7 @@ int CaseAESM4GcmK128N7T128Aad512OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_017
+// Crypto_AE_Fun_017
 int CaseAESM4GcmK128N12T120Aad4MMultiOnce(void)
 {
     TestVector tv = {
@@ -2397,7 +2397,7 @@ int CaseAESM4GcmK128N12T120Aad4MMultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N12T120Aad4MMultiMulti(void)
 {
     TestVector tv = {
@@ -2438,7 +2438,7 @@ int CaseAESM4GcmK128N12T120Aad4MMultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_017
+// Crypto_AE_Fun_017
 int CaseAESM4GcmK128N7T128Aad32MultiOnce(void)
 {
     TestVector tv = {
@@ -2477,7 +2477,7 @@ int CaseAESM4GcmK128N7T128Aad32MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N7T128Aad32MultiMulti(void)
 {
     TestVector tv = {
@@ -2518,7 +2518,7 @@ int CaseAESM4GcmK128N7T128Aad32MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_017
+// Crypto_AE_Fun_017
 int CaseAESM4GcmK128N7T112Aad512DecryptOnlyTAG(void)
 {
     TestVector tv = {
@@ -2557,7 +2557,7 @@ int CaseAESM4GcmK128N7T112Aad512DecryptOnlyTAG(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N12T96NoAadOnce(void)
 {
     TestVector tv = {
@@ -2593,7 +2593,7 @@ int CaseAESM4GcmK128N12T96NoAadOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_017
+// Crypto_AE_Fun_017
 int CaseAESM4GcmK128N12T96NoAadMulti(void)
 {
     TestVector tv = {
@@ -2631,7 +2631,7 @@ int CaseAESM4GcmK128N12T96NoAadMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_AE_Fun_018
+// Crypto_AE_Fun_018
 int CaseAESM4GcmK128N7T104Aad512EncryptOnlyTAG(void)
 {
     TestVector tv = {

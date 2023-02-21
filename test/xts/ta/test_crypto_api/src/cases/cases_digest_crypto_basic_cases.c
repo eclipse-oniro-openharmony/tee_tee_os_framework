@@ -21,7 +21,7 @@
    multi means algorithm calculation multi times
  */
 
-// iTrustee_Crypto_DI_Fun_002
+// Crypto_DI_Fun_002
 int CaseDigestSha256OnceOnce(void)
 {
     TestVector tv = {
@@ -49,7 +49,7 @@ int CaseDigestSha256OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_004
+// Crypto_DI_Fun_004
 int CaseDigestSha256OnceMulti(void)
 {
     TestVector tv = {
@@ -78,7 +78,7 @@ int CaseDigestSha256OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_001
+// Crypto_DI_Fun_001
 int CaseDigestSha256MultiOnce(void)
 {
     TestVector tv = {
@@ -107,7 +107,7 @@ int CaseDigestSha256MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_003
+// Crypto_DI_Fun_003
 int CaseDigestSha256MultiMulti(void)
 {
     TestVector tv = {
@@ -138,7 +138,7 @@ int CaseDigestSha256MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_002
+// Crypto_DI_Fun_002
 int CaseDigestSha384OnceOnce(void)
 {
     TestVector tv = {
@@ -165,7 +165,7 @@ int CaseDigestSha384OnceOnce(void)
     tlogi("[%s]:--------------CaseDigestSha384OnceOnce success\n", __func__);
     return 0;
 }
-// iTrustee_Crypto_DI_Fun_004
+// Crypto_DI_Fun_004
 int CaseDigestSha384OnceMulti(void)
 {
     TestVector tv = {
@@ -194,7 +194,7 @@ int CaseDigestSha384OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_001
+// Crypto_DI_Fun_001
 int CaseDigestSha384MultiOnce(void)
 {
     TestVector tv = {
@@ -223,7 +223,7 @@ int CaseDigestSha384MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_003
+// Crypto_DI_Fun_003
 int CaseDigestSha384MultiMulti(void)
 {
     TestVector tv = {
@@ -254,7 +254,7 @@ int CaseDigestSha384MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_002
+// Crypto_DI_Fun_002
 int CaseDigestSha512OnceOnce(void)
 {
     TestVector tv = {
@@ -282,7 +282,7 @@ int CaseDigestSha512OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_004
+// Crypto_DI_Fun_004
 int CaseDigestSha512OnceMulti(void)
 {
     TestVector tv = {
@@ -311,7 +311,7 @@ int CaseDigestSha512OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_001
+// Crypto_DI_Fun_001
 int CaseDigestSha512MultiOnce(void)
 {
     TestVector tv = {
@@ -340,7 +340,7 @@ int CaseDigestSha512MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_003
+// Crypto_DI_Fun_003
 int CaseDigestSha512MultiMulti(void)
 {
     TestVector tv = {
@@ -371,7 +371,7 @@ int CaseDigestSha512MultiMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_002
+// Crypto_DI_Fun_002
 int CaseDigestSM3OnceOnce(void)
 {
     TestVector tv = {
@@ -399,7 +399,7 @@ int CaseDigestSM3OnceOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_004
+// Crypto_DI_Fun_004
 int CaseDigestSM3OnceMulti(void)
 {
     TestVector tv = {
@@ -428,7 +428,7 @@ int CaseDigestSM3OnceMulti(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_001
+// Crypto_DI_Fun_001
 int CaseDigestSM3MultiOnce(void)
 {
     TestVector tv = {
@@ -457,7 +457,7 @@ int CaseDigestSM3MultiOnce(void)
     return 0;
 }
 
-// iTrustee_Crypto_DI_Fun_003
+// Crypto_DI_Fun_003
 int CaseDigestSM3MultiMulti(void)
 {
     TestVector tv = {
