@@ -47,17 +47,11 @@
 void *tee_idle_thread(void *arg);
 void *tee_smc_thread(void *arg);
 
-rref_t acquire_sysctrl_local_irq_hdlr(void);
-cref_t acquire_teesmc_hdlr(void);
 rref_t acquire_gtask_channel(void);
 
-void set_teesmc_hdlr(cref_t value);
-void set_sysctrl_hdlr(rref_t value);
 void set_gtask_channel_hdlr(rref_t value);
 void set_is_gtask_alive(bool value);
 
-cref_t get_teesmc_hdlr(void);
-rref_t get_sysctrl_hdlr(void);
 rref_t get_gtask_channel_hdlr(void);
 bool   get_is_gtask_alive(void);
 

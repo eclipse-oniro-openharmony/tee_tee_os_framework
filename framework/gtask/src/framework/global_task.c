@@ -47,6 +47,7 @@
 #include "tee_compat_check.h"
 #include "tee_load_lib.h"
 #include <ipclib_hal.h>
+#include <sys/usrsyscall_irq.h>
 
 #define GT_MSG_REV_SIZE 512
 
@@ -72,9 +73,9 @@ static uint32_t g_systime_set_flag = 0;
 static void acquire_smc_buf_lock(uint32_t *lock)
 {
     int rc;
-    rc = hmex_disable_local_irq(get_sysctrl_ref(), hm_tcb_get_cref());
+    rc = disable_local_irq();
     if (rc != 0)
-        hm_panic("hmex_disable_local_irq failed: %s\n", hmapi_strerror(rc));
+        hm_panic("disable_local_irq failed: %s\n", hmapi_strerror(rc));
     do
         rc = __sync_bool_compare_and_swap(lock, 0, 1);
     while (!rc);
@@ -87,9 +88,9 @@ static void release_smc_buf_lock(uint32_t *lock)
     asm volatile("dmb sy");
     *lock = 0;
     asm volatile("dmb sy");
-    rc = hmex_enable_local_irq(get_sysctrl_ref(), hm_tcb_get_cref());
+    rc = enable_local_irq();
     if (rc != 0)
-        hm_panic("hmex_enable_local_irq failed: %s\n", hmapi_strerror(rc));
+        hm_panic("enable_local_irq failed: %s\n", hmapi_strerror(rc));
 }
 
 /*

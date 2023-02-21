@@ -25,5 +25,4 @@ struct drv_frame_t {
 
 int32_t drv_framework_init(const struct drv_frame_t *drv_frame);
 int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *ch, bool new_frame);
-cref_t get_sysctrl_hdlr(void);
 #endif
