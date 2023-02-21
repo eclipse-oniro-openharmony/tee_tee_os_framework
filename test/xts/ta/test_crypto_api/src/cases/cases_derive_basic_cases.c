@@ -13,7 +13,7 @@
 #include "monad.h"
 #include "tee_log.h"
 
-// iTrustee_Crypto_DR_Fun7.0.0_001
+// Crypto_DR_Fun7.0.0_001
 int CaseDRDHKeySize512Pram512DataSize1024(void)
 {
     TestVector tv = {
@@ -46,7 +46,7 @@ int CaseDRDHKeySize512Pram512DataSize1024(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_001
+// Crypto_DR_Fun7.0.0_001
 int CaseDRDHKeySize1024Pram1024DataSize1024(void)
 {
     TestVector tv = {
@@ -79,7 +79,7 @@ int CaseDRDHKeySize1024Pram1024DataSize1024(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_002
+// Crypto_DR_Fun7.0.0_002
 int CaseDREcdhNistP224DataSize14(void)
 {
     TestVector tv = {
@@ -112,7 +112,7 @@ int CaseDREcdhNistP224DataSize14(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_002
+// Crypto_DR_Fun7.0.0_002
 int CaseDREcdhNistP256DataSize128(void)
 {
     TestVector tv = {
@@ -145,7 +145,7 @@ int CaseDREcdhNistP256DataSize128(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_002
+// Crypto_DR_Fun7.0.0_002
 int CaseDREcdhNistP384DataSize512(void)
 {
     TestVector tv = {
@@ -178,7 +178,7 @@ int CaseDREcdhNistP384DataSize512(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_002
+// Crypto_DR_Fun7.0.0_002
 int CaseDREcdhNistP521DataSize1024(void)
 {
     TestVector tv = {
@@ -211,7 +211,7 @@ int CaseDREcdhNistP521DataSize1024(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_002
+// Crypto_DR_Fun7.0.0_002
 int CaseDREcdhNistP521DataSize4096(void)
 {
     TestVector tv = {
@@ -244,7 +244,7 @@ int CaseDREcdhNistP521DataSize4096(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_002
+// Crypto_DR_Fun7.0.0_002
 int CaseDREcdhNistP384DataSize10000(void)
 {
     TestVector tv = {
@@ -277,7 +277,7 @@ int CaseDREcdhNistP384DataSize10000(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_003
+// Crypto_DR_Fun7.0.0_003
 int CaseDRX25519DataSize1024(void)
 {
     TestVector tv = {
@@ -309,7 +309,7 @@ int CaseDRX25519DataSize1024(void)
     return 0;
 }
 
-// iTrustee_Crypto_DR_Fun7.0.0_003
+// Crypto_DR_Fun7.0.0_003
 int CaseDRX25519DataSize4096(void)
 {
     TestVector tv = {

@@ -13,7 +13,7 @@
 #include "monad.h"
 #include "tee_log.h"
 
-// iTrustee_Crypto_AsymEncrypt_Fun_001
+// Crypto_AsymEncrypt_Fun_001
 int CaseAsymEncryptRsaV15KeySize512Once(void)
 {
     TestVector tv = {
@@ -46,7 +46,7 @@ int CaseAsymEncryptRsaV15KeySize512Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_001
+// Crypto_AsymEncrypt_Fun_001
 int CaseAsymEncryptRsaV15KeySize2048Once(void)
 {
     TestVector tv = {
@@ -79,7 +79,7 @@ int CaseAsymEncryptRsaV15KeySize2048Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_002
+// Crypto_AsymEncrypt_Fun_002
 int CaseAsymEncryptRsaV15KeySize2048Multi(void)
 {
     TestVector tv = {
@@ -112,7 +112,7 @@ int CaseAsymEncryptRsaV15KeySize2048Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_001
+// Crypto_AsymEncrypt_Fun_001
 int CaseAsymEncryptRsaV15KeySize4096Once(void)
 {
     TestVector tv = {
@@ -145,7 +145,7 @@ int CaseAsymEncryptRsaV15KeySize4096Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_002
+// Crypto_AsymEncrypt_Fun_002
 int CaseAsymEncryptRsaV15KeySize4096Multi(void)
 {
     TestVector tv = {
@@ -178,7 +178,7 @@ int CaseAsymEncryptRsaV15KeySize4096Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_003
+// Crypto_AsymEncrypt_Fun_003
 int CaseAsymEncryptRsaOaepSha384KeySize2048Once(void)
 {
     TestVector tv = {
@@ -211,7 +211,7 @@ int CaseAsymEncryptRsaOaepSha384KeySize2048Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_004
+// Crypto_AsymEncrypt_Fun_004
 int CaseAsymEncryptRsaOaepSha384KeySize2048Multi(void)
 {
     TestVector tv = {
@@ -244,7 +244,7 @@ int CaseAsymEncryptRsaOaepSha384KeySize2048Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_003
+// Crypto_AsymEncrypt_Fun_003
 int CaseAsymEncryptRsaOaepSha512KeySize4096Once(void)
 {
     TestVector tv = {
@@ -277,7 +277,7 @@ int CaseAsymEncryptRsaOaepSha512KeySize4096Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_004
+// Crypto_AsymEncrypt_Fun_004
 int CaseAsymEncryptRsaOaepSha512KeySize4096Multi(void)
 {
     TestVector tv = {
@@ -310,7 +310,7 @@ int CaseAsymEncryptRsaOaepSha512KeySize4096Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_006
+// Crypto_AsymEncrypt_Fun_006
 int CaseAsymEncryptRsaNopadKeySize2688Once(void)
 {
     TestVector tv = {
@@ -342,7 +342,7 @@ int CaseAsymEncryptRsaNopadKeySize2688Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_006
+// Crypto_AsymEncrypt_Fun_006
 int CaseAsymEncryptRsaNopadKeySize2688Multi(void)
 {
     TestVector tv = {
@@ -375,7 +375,7 @@ int CaseAsymEncryptRsaNopadKeySize2688Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_006
+// Crypto_AsymEncrypt_Fun_006
 int CaseAsymEncryptRsaNopadKeySize4096Once(void)
 {
     TestVector tv = {
@@ -407,7 +407,7 @@ int CaseAsymEncryptRsaNopadKeySize4096Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_006
+// Crypto_AsymEncrypt_Fun_006
 int CaseAsymEncryptRsaNopadKeySize4096Multi(void)
 {
     TestVector tv = {
@@ -440,7 +440,7 @@ int CaseAsymEncryptRsaNopadKeySize4096Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_007
+// Crypto_AsymEncrypt_Fun_007
 int CaseAsymEncryptSm2PkeDataSize64Once(void)
 {
     TestVector tv = {
@@ -471,7 +471,7 @@ int CaseAsymEncryptSm2PkeDataSize64Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_008
+// Crypto_AsymEncrypt_Fun_008
 int CaseAsymEncryptSm2PkeDataSize64Multi(void)
 {
     TestVector tv = {
@@ -503,7 +503,7 @@ int CaseAsymEncryptSm2PkeDataSize64Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_007
+// Crypto_AsymEncrypt_Fun_007
 int CaseAsymEncryptSm2PkeDataSize470Once(void)
 {
     TestVector tv = {
@@ -534,7 +534,7 @@ int CaseAsymEncryptSm2PkeDataSize470Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_008
+// Crypto_AsymEncrypt_Fun_008
 int CaseAsymEncryptSm2PkeDataSize470Multi(void)
 {
     TestVector tv = {
@@ -566,7 +566,7 @@ int CaseAsymEncryptSm2PkeDataSize470Multi(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_007
+// Crypto_AsymEncrypt_Fun_007
 int CaseAsymEncryptSm2PkeDataSize1024Once(void)
 {
     TestVector tv = {
@@ -597,7 +597,7 @@ int CaseAsymEncryptSm2PkeDataSize1024Once(void)
     return 0;
 }
 
-// iTrustee_Crypto_AsymEncrypt_Fun_008
+// Crypto_AsymEncrypt_Fun_008
 int CaseAsymEncryptSm2PkeDataSize1024Multi(void)
 {
     TestVector tv = {
