@@ -9,13 +9,15 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include "tee_core_api.h"
 
+#include "tee_core_api.h"
 #include <pthread.h>
 #include <securec.h>
-#include <mem_ops_ext.h>
 #include <msg_ops.h>
 #include <dlist.h>
+#include <mem_ops.h>
+#include <ipclib.h>
+#include <ipclib_hal.h>
 #include "tee_mem_mgmt_api.h"
 #include "ta_framework.h"
 #include "tee_log.h"
@@ -26,8 +28,6 @@
 #include "tee_ta2ta.h"
 #include "tee_secfile_load_agent.h"
 #include "tee_inner_uuid.h"
-#include <ipclib.h>
-#include <ipclib_hal.h>
 
 #define TASK_SHARE_MEM_PT_NO 0x2
 #define OFFSET               7U
@@ -400,12 +400,12 @@ static TEE_Result get_ta2ta_session_handle(TEE_TASessionHandle handle, struct ta
 static void *alloc_sharemem(uint32_t size)
 {
     TEE_UUID gtask_uuid = TEE_SERVICE_GLOBAL;
-    return tee_alloc_sharemem_aux(&gtask_uuid, size);
+    return alloc_sharemem_aux(&gtask_uuid, size);
 }
 
-static void free_sharemem(const int8_t *addr, int32_t size)
+static void common_free_sharemem(const int8_t *addr, int32_t size)
 {
-    if (tee_free_sharemem((void *)addr, size) != 0) /* 0 means success */
+    if (free_sharemem((void *)addr, size) != 0) /* 0 means success */
         tloge("free share memory fail\n");
 }
 
@@ -461,7 +461,7 @@ static void handle_malloc_fail(uint32_t types, int8_t **buf, uint32_t buf_num, c
         case TEE_PARAM_TYPE_MEMREF_OUTPUT:
         case TEE_PARAM_TYPE_MEMREF_INOUT:
             if (buf[i] != NULL) {
-                free_sharemem(buf[i], params[i].memref.size);
+                common_free_sharemem(buf[i], params[i].memref.size);
                 buf[i] = NULL;
             }
             break;
@@ -581,7 +581,7 @@ static TEE_Result pop_params_from_shareregion(uint32_t types, TEE_Param *params,
             if (copy && memset_s(orig_buf, orig_size, 0, orig_size) != EOK)
                 ret = TEE_ERROR_GENERIC;
 
-            free_sharemem(orig_buf, orig_size);
+            common_free_sharemem(orig_buf, orig_size);
             clean_buf_addr(orig_operation, operation, i); /* orig_buf leaves its scope, no need to set to NULL */
             break;
         default:
@@ -610,7 +610,7 @@ static void ta2ta_pseudo_free_sharedmem(uint8_t *op, smc_cmd_t *smc_cmd, struct 
             ret_handle->ret = TEE_ERROR_GENERIC;
     }
 
-    free_sharemem((int8_t *)smc_cmd, PAGE_SIZE);
+    common_free_sharemem((int8_t *)smc_cmd, PAGE_SIZE);
     smc_cmd = NULL;
 
     if (ret_handle->valid_handle != UINT32_MAX)
@@ -639,7 +639,7 @@ static void release_mem_in_params(uint32_t types, struct smc_operation *orig_ope
         case TEE_PARAM_TYPE_MEMREF_INOUT:
             tmp_addr = ((((uint64_t)orig_operation->p_h_addr[i]) << MOVE_OFFSET) |
                         ((uint64_t)orig_operation->params[i].memref.buffer));
-            free_sharemem((int8_t *)(uintptr_t)tmp_addr, orig_operation->params[i].memref.size);
+            common_free_sharemem((int8_t *)(uintptr_t)tmp_addr, orig_operation->params[i].memref.size);
             clean_buf_addr(orig_operation, operation, i);
             tmp_addr = 0;
             break;
@@ -708,7 +708,7 @@ static TEE_Result ta2ta_pseudo_alloc_sharedmem(const TEE_UUID *uuid, smc_cmd_t *
         return TEE_ERROR_OUT_OF_MEMORY;
     }
     if (memset_s(*shared_mem, PAGE_SIZE, 0, PAGE_SIZE) != EOK) {
-        free_sharemem((int8_t *)(*shared_mem), PAGE_SIZE);
+        common_free_sharemem((int8_t *)(*shared_mem), PAGE_SIZE);
         *shared_mem = NULL;
         return TEE_ERROR_GENERIC;
     }
@@ -718,7 +718,7 @@ static TEE_Result ta2ta_pseudo_alloc_sharedmem(const TEE_UUID *uuid, smc_cmd_t *
     *shared_mem += sizeof(**smc_cmd);
 
     if (memcpy_s((*smc_cmd)->uuid, sizeof((*smc_cmd)->uuid), uuid, sizeof(*uuid)) != EOK) {
-        free_sharemem((int8_t *)(*smc_cmd), sizeof(**smc_cmd));
+        common_free_sharemem((int8_t *)(*smc_cmd), sizeof(**smc_cmd));
         *smc_cmd = NULL;
         return TEE_ERROR_GENERIC;
     }

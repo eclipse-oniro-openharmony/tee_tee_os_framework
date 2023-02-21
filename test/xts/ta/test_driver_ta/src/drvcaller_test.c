@@ -17,8 +17,7 @@
 #include <tee_ext_api.h>
 #include <tee_log.h>
 #include <test_drv_cmdid.h>
-
-#include "tee_sharemem_ops.h"
+#include <mem_ops.h>
 
 #define CA_PKGN_VENDOR "/vendor/bin/tee_test_drv"
 #define CA_PKGN_SYSTEM "/system/bin/tee_test_drv"
@@ -57,7 +56,7 @@ static TEE_Result TeeTestDrive(uint32_t cmd)
         return TEE_ERROR_GENERIC;
     }
 
-    char *tempBuffer = tee_alloc_sharemem_aux(&uuid, BUFFER_SIZE);
+    char *tempBuffer = alloc_sharemem_aux(&uuid, BUFFER_SIZE);
     if (tempBuffer == NULL) {
         tloge("alloc share mem failed\n");
         return TEE_ERROR_GENERIC;
@@ -87,7 +86,7 @@ static TEE_Result TeeTestDrive(uint32_t cmd)
     if (cmd == DRVTEST_COMMAND_COPYTOCLIENT) {
         if (strncmp(drvOutput, (char *)tempBuffer, drvOutputLen) != 0) {
             tloge("%s drv copy_to_client test failed, fd:%d, heap_buffer is:%s \n", drvName, (int32_t)fd, tempBuffer);
-            tee_free_sharemem(tempBuffer, BUFFER_SIZE);
+            free_sharemem(tempBuffer, BUFFER_SIZE);
             return TEE_ERROR_GENERIC;
         }
     }
@@ -97,7 +96,7 @@ static TEE_Result TeeTestDrive(uint32_t cmd)
         tloge("drv test fail!\n");
     }
 
-    if (tee_free_sharemem(tempBuffer, BUFFER_SIZE) != 0) {
+    if (free_sharemem(tempBuffer, BUFFER_SIZE) != 0) {
         tloge("free sharemem failed\n");
         ret = -1;
     }

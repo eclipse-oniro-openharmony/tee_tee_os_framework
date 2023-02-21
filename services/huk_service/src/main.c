@@ -13,7 +13,6 @@
 #include <sys/mman.h>
 #include <tee_log.h>
 #include <tee_mem_mgmt_api.h>
-#include <mem_ops_ext.h>
 #include <tee_defines.h>
 #include <ac.h>
 #include <ac_dynamic.h>

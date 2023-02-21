@@ -13,7 +13,6 @@
 #include <securec.h>
 #include <hmlog.h>
 #include "drv_param_ops.h"
-#include <mem_ops_ext.h>
 #include <sys/mman.h>
 #include "crypto_mgr_syscall.h"
 #include <sys/usrsyscall_ext.h>

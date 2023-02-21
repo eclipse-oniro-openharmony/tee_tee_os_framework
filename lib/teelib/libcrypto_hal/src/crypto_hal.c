@@ -13,14 +13,14 @@
 #include <securec.h>
 #include <tee_log.h>
 #include <tee_crypto_hal.h>
+#include <rnd_seed.h>
+#include <api/errno.h>
+#include <mem_ops.h>
 #include "crypto_manager.h"
 #include "soft_common_api.h"
 #include "crypto_mgr_syscall.h"
-#include <rnd_seed.h>
 #include "sys/usrsyscall_ext.h"
-#include <api/errno.h>
 #include "tee_drv_client.h"
-#include "tee_sharemem_ops.h"
 
 struct ctx_handle_t *alloc_ctx_handle(uint32_t alg_type, uint32_t engine)
 {
@@ -111,7 +111,7 @@ void tee_crypto_free_sharemem(struct ctx_handle_t *ctx)
 
     if (ctx->ctx_buffer != 0) {
         (void)memset_s((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size, 0, ctx->ctx_size);
-        tee_free_sharemem((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size);
+        free_sharemem((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size);
         ctx->ctx_buffer = 0;
         ctx->ctx_size = 0;
     }

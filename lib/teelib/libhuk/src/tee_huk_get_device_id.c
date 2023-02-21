@@ -13,7 +13,6 @@
 #include "tee_huk_derive_key.h"
 #include <securec.h>
 #include <errno.h>
-#include <mem_ops_ext.h>
 #include <tee_log.h>
 #include "huk_service_msg.h"
 #include "huk_service_msg_call.h"

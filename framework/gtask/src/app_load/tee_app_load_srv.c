@@ -14,11 +14,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <openssl/obj_mac.h>
-#include <mem_ops_ext.h> /* map unmap */
+#include <mem_ops.h>
 #include <procmgr_ext.h>
 #include <sys/fileio.h>
 #include <sys/mman.h>
-#include <mem_mode.h>
 #include <dyn_conf_dispatch_inf.h>
 #include "tee_mem_mgmt_api.h"
 #include "gtask_inner.h"

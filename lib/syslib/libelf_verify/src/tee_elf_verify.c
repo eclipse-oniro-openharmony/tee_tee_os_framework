@@ -11,10 +11,8 @@
  */
 #include "tee_elf_verify.h"
 #include <sys/fileio.h>
-#include <mem_mode.h>
 #include "tee_elf_verify.h"
 #include "tee_mem_mgmt_api.h"
-#include "mem_ops_ext.h"
 #include "tamgr_ext.h"
 #include "tee_inner_uuid.h"
 #include "tee_log.h"

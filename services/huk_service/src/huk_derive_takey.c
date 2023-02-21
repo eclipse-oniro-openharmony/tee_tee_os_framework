@@ -14,7 +14,7 @@
 #include <sys/mman.h>
 #include <tee_log.h>
 #include <tee_mem_mgmt_api.h>
-#include <mem_ops_ext.h>
+#include <mem_ops.h>
 #include <crypto_driver_adaptor.h>
 #include <crypto_hal_derive_key.h>
 
@@ -46,7 +46,7 @@ static int32_t huk_srv_map_from_task(uint32_t in_task_id, uint64_t va_addr, uint
     uint64_t vaddr;
     int32_t ret;
 
-    ret = tee_map_sharemem(in_task_id, va_addr, size, &vaddr);
+    ret = map_sharemem(in_task_id, va_addr, size, &vaddr);
     if (ret == 0)
         *virt_addr = (uintptr_t)vaddr;
     else

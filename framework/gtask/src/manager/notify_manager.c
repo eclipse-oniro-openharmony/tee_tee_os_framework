@@ -11,8 +11,7 @@
  */
 
 #include <stddef.h>
-#include <mem_ops_ext.h> // task_map_phy_mem && task_unmap
-#include <mem_mode.h>    // non_secure
+#include <mem_ops.h>
 #include "tee_log.h"
 #include "ta_framework.h"
 #include "gtask_inner.h"
@@ -73,8 +72,8 @@ static TEE_Result check_param_for_register_notify_memery(const smc_cmd_t *cmd, u
     }
 
     /* this will only be called once when booting up, the addr are trusted */
-    if (task_map_phy_mem(0, params[0].value.a | ((paddr_t)params[0].value.b << SHIFT_OFFSET),
-                         *mem_size, mem_addr, NON_SECURE)) {
+    if (task_map_ns_phy_mem(0, params[0].value.a | ((uint64_t)params[0].value.b << SHIFT_OFFSET),
+                         *mem_size, mem_addr)) {
         tloge("map notify data buffer error");
         return TEE_ERROR_GENERIC;
     }

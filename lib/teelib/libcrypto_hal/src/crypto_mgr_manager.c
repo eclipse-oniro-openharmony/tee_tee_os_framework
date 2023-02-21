@@ -13,11 +13,11 @@
 #include <stdio.h>
 #include <securec.h>
 #include <hmdrv.h>
+#include <mem_ops.h>
 #include "tee_log.h"
 #include <sre_syscalls_id.h>
 #include "crypto_default_engine.h"
 #include "tee_drv_client.h"
-#include <mem_ops_ext.h>
 #include "crypto_mgr_syscall.h"
 #include "tee_inner_uuid.h"
 #include "tee_object_api.h"
@@ -146,10 +146,10 @@ static int32_t prepare_ioctl_parameters(const struct drv_memref_t *data, uint32_
     if (ctx->ctx_size < size) {
         if (ctx->ctx_buffer != 0) {
             (void)memset_s((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size, 0, ctx->ctx_size);
-            tee_free_sharemem((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size);
+            free_sharemem((void *)(uintptr_t)ctx->ctx_buffer, ctx->ctx_size);
         }
 
-        share_mem->buffer = (uint64_t)(uintptr_t)tee_alloc_sharemem_aux(&uuid, size);
+        share_mem->buffer = (uint64_t)(uintptr_t)alloc_sharemem_aux(&uuid, size);
         if (share_mem->buffer == 0) {
             tloge("alloc share memory failed\n");
             return CRYPTO_OVERFLOW;
@@ -174,7 +174,7 @@ static int32_t prepare_ioctl_parameters(const struct drv_memref_t *data, uint32_
 
 error:
     (void)memset_s((void *)(uintptr_t)share_mem->buffer, size, 0, size);
-    tee_free_sharemem((void *)(uintptr_t)share_mem->buffer, size);
+    free_sharemem((void *)(uintptr_t)share_mem->buffer, size);
     ctx->ctx_size = 0;
     ctx->ctx_buffer = 0;
     share_mem->buffer = 0;
@@ -1907,7 +1907,7 @@ int32_t crypto_get_buf_ops(uint32_t cmd_id, uint64_t fd, void *buffer, uint32_t 
 
     uint32_t ioctl_size = size + sizeof(uint32_t);
     TEE_UUID uuid = CRYPTOMGR;
-    uint8_t *ioctl_buf = tee_alloc_sharemem_aux(&uuid, ioctl_size);
+    uint8_t *ioctl_buf = alloc_sharemem_aux(&uuid, ioctl_size);
     if (ioctl_buf == NULL) {
         tloge("init alloc share mem failed\n");
         return CRYPTO_OVERFLOW;
@@ -1933,7 +1933,7 @@ int32_t crypto_get_buf_ops(uint32_t cmd_id, uint64_t fd, void *buffer, uint32_t 
 
 end:
     if (ioctl_buf != NULL)
-        tee_free_sharemem(ioctl_buf, ioctl_size);
+        free_sharemem(ioctl_buf, ioctl_size);
 
     return ret;
 }
@@ -1998,7 +1998,7 @@ static int32_t crypto_root_key_ops(uint64_t fd, const struct memref_t *data_in,
 
     uint32_t ioctl_size = data_out->size + data_in->size + ARRAY_SIZE(fill_data) * sizeof(uint32_t);
     TEE_UUID uuid = CRYPTOMGR;
-    uint8_t *ioctl_buf = tee_alloc_sharemem_aux(&uuid, ioctl_size);
+    uint8_t *ioctl_buf = alloc_sharemem_aux(&uuid, ioctl_size);
     if (ioctl_buf == NULL) {
         tloge("root init alloc share mem failed\n");
         return CRYPTO_OVERFLOW;
@@ -2025,7 +2025,7 @@ static int32_t crypto_root_key_ops(uint64_t fd, const struct memref_t *data_in,
 
 end:
     if (ioctl_buf != NULL)
-        tee_free_sharemem(ioctl_buf, ioctl_size);
+        free_sharemem(ioctl_buf, ioctl_size);
 
     return ret;
 }

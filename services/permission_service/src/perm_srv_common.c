@@ -11,7 +11,7 @@
  */
 #include "perm_srv_common.h"
 #include <sys/mman.h>
-#include <mem_ops_ext.h> /* tee_map_sharemem */
+#include <mem_ops.h>
 #include <securec.h>
 #include <tee_log.h>
 
@@ -25,7 +25,7 @@ int32_t perm_srv_map_from_task(uint32_t taskid, uint64_t src_vaddr, uint32_t siz
     if (dst_vaddr == NULL)
         return -1;
 
-    int32_t ret = tee_map_sharemem(taskid, src_vaddr, size, &vaddr);
+    int32_t ret = map_sharemem(taskid, src_vaddr, size, &vaddr);
     if (ret == 0)
         *dst_vaddr = vaddr;
 

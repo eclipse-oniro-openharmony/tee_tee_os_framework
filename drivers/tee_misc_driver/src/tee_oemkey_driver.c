@@ -17,7 +17,7 @@
 #include "drv_sharedmem.h"
 #include "drv_param_type.h"
 #include "drv_param_ops.h"
-#include "tee_sharemem_ops.h"
+#include "mem_ops.h"
 #include "boot_sharedmem.h"
 #include "drv_sharedmem.h"
 #include "tee_drv_client.h"
@@ -71,7 +71,7 @@ static int32_t get_oemkey_buffer(uint32_t cmd_id, uint64_t fd, void *buffer, uin
     uint32_t ioctl_size = size + sizeof(uint32_t);
     TEE_UUID uuid = CRYPTOMGR;
 
-    uint8_t *shared_buf = tee_alloc_sharemem_aux(&uuid, ioctl_size);
+    uint8_t *shared_buf = alloc_sharemem_aux(&uuid, ioctl_size);
     if (shared_buf == NULL) {
         tloge("hamc init alloc share mem failed\n");
         return -1;
@@ -102,7 +102,7 @@ static int32_t get_oemkey_buffer(uint32_t cmd_id, uint64_t fd, void *buffer, uin
     }
 end:
     if (shared_buf != NULL)
-        tee_free_sharemem(shared_buf, ioctl_size);
+        free_sharemem(shared_buf, ioctl_size);
 
     return ret;
 }

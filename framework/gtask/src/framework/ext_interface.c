@@ -11,10 +11,9 @@
  */
 
 #include <stddef.h>
-#include <mem_ops_ext.h>
-#include <mem_mode.h>
 #include <sys/teecall.h>
 #include <msg_ops.h>
+#include <mem_ops.h>
 #include <root_status_ops.h> /* tee_read_root_status */
 #include <tee_sharemem.h>
 #include <dyn_conf_dispatch_inf.h>
@@ -28,7 +27,6 @@
 #include "tee_config.h"
 #include "securec.h"
 #include "gtask_core.h" /* for find_task */
-
 #include <sys/usrsyscall.h>
 #include <ipclib_hal.h>
 
@@ -40,7 +38,7 @@ static bool g_rdr_mem_registered = false;
 TEE_Result map_rdr_mem(const smc_cmd_t *cmd)
 {
     TEE_Param *tee_param = NULL;
-    paddr_t rdr_mem_addr;
+    uint64_t rdr_mem_addr;
     uint32_t rdr_mem_size;
     uint32_t param_types  = 0;
     uint64_t map_mem_addr = 0;
@@ -73,12 +71,12 @@ TEE_Result map_rdr_mem(const smc_cmd_t *cmd)
     tlogd("cmd id=0x%x\n", cmd->cmd_id);
 
     /* this will only be called once when booting up, the addr is trusted */
-    rdr_mem_addr = tee_param[0].value.a | (((paddr_t)tee_param[0].value.b) << SHIFT_OFFSET);
+    rdr_mem_addr = tee_param[0].value.a | (((uint64_t)tee_param[0].value.b) << SHIFT_OFFSET);
     rdr_mem_size = tee_param[1].value.a;
     is_cache_mem = tee_param[2].value.a;
 
     // check rdr memory address.
-    if (task_map_phy_mem(0, rdr_mem_addr, rdr_mem_size, &map_mem_addr, NON_SECURE) != 0) {
+    if (task_map_ns_phy_mem(0, rdr_mem_addr, rdr_mem_size, &map_mem_addr) != 0) {
         tloge("map rdr mem addr failed\n");
         return TEE_ERROR_GENERIC;
     }

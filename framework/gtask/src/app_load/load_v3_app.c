@@ -15,7 +15,6 @@
 #include <string.h>
 #include <procmgr_ext.h>
 #include <sys/mman.h>
-#include <mem_mode.h>
 #include <dyn_conf_dispatch_inf.h>
 #include "tee_log.h"
 

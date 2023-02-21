@@ -22,9 +22,9 @@
 #include <ta_mt.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_log.h>
-#include "client_auth.h"
-#include "mem_ops_ext.h"
+#include <mem_ops.h>
 #include <ipclib_hal.h>
+#include "client_auth.h"
 
 #define VERSION_EME     "RELEASE - v1.2"
 #define BSS_START_MAGIC 0x12345678
@@ -476,7 +476,7 @@ static TEE_Result map_params(struct global_to_ta_msg *entry_msg, size_t *map_siz
     uint64_t vaddr = 0;
     uint64_t params_vaddrs[] = { 0, 0, 0, 0 };
 
-    if (tee_map_sharemem(0, (uint64_t)(uintptr_t)entry_msg->params, sizeof(TEE_Param) * map_addrs_size, &vaddr) != 0) {
+    if (map_sharemem(0, (uint64_t)(uintptr_t)entry_msg->params, sizeof(TEE_Param) * map_addrs_size, &vaddr) != 0) {
         tloge("map params sharemem failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -486,7 +486,7 @@ static TEE_Result map_params(struct global_to_ta_msg *entry_msg, size_t *map_siz
         uint32_t type = TEE_PARAM_TYPE_GET(entry_msg->param_type, i);
         if (type == TEE_PARAM_TYPE_MEMREF_INPUT || type == TEE_PARAM_TYPE_MEMREF_OUTPUT ||
             type == TEE_PARAM_TYPE_MEMREF_INOUT) {
-            if (tee_map_sharemem(0, (uint64_t)(uintptr_t)entry_msg->params[i].memref.buffer,
+            if (map_sharemem(0, (uint64_t)(uintptr_t)entry_msg->params[i].memref.buffer,
                                  entry_msg->params[i].memref.size + 1, &(params_vaddrs[i])) != 0) {
                 tloge("map buffer failed\n");
                 goto out;

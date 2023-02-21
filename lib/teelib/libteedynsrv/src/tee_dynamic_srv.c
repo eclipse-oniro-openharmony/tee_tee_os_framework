@@ -13,7 +13,7 @@
 #include "tee_dynamic_srv.h"
 #include <sys/mman.h>
 #include <msg_ops.h>
-#include <mem_ops_ext.h>
+#include <mem_ops.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/hmapi_ext.h>
 #include <api/kcalls.h>
@@ -60,7 +60,7 @@ int tee_srv_map_from_task(uint32_t in_task_id, uint32_t va_addr, uint32_t size, 
     if (virt_addr == NULL)
         return -1;
 
-    ret = tee_map_sharemem(in_task_id, va_addr, size, &vaddr);
+    ret = map_sharemem(in_task_id, va_addr, size, &vaddr);
     if (ret == 0)
         *virt_addr = (uint32_t)vaddr;
     else

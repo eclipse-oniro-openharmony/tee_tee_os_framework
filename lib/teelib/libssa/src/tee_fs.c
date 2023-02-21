@@ -15,7 +15,6 @@
 #include "securec.h"
 #include "string.h"
 #include "tee_ss_agent_api.h"
-#include "mem_ops_ext.h"
 #include "tee_inner_uuid.h"
 
 #ifndef FILE_NAME_MAX_BUF

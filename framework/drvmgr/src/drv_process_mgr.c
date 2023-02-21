@@ -21,13 +21,14 @@
 #include <sys/fileio.h>
 #include <sys/hm_priorities.h>
 #include <tee_log.h>
-#include <mem_ops_ext.h>
 #include <tamgr_ext.h>
 #include <drv_thread.h>
 #include <spawn_init.h>
 #include <get_elf_info.h>
 #include <target_type.h>
 #include <tee_drv_internal.h>
+#include <mem_ops.h>
+#include <mem_page_ops.h>
 #include "drv_fd_ops.h"
 #include "drv_dyn_policy_mgr.h"
 #include "task_mgr.h"
@@ -483,7 +484,7 @@ static int32_t send_cmd_perm_to_drv(const struct task_node *node)
     }
 
     uint32_t tmp_size = node->tlv.drv_conf->cmd_perm_list_size * sizeof(struct drv_cmd_perm_info_t);
-    void *tmp_addr = tee_alloc_sharemem_aux(&node->tlv.uuid, tmp_size);
+    void *tmp_addr = alloc_sharemem_aux(&node->tlv.uuid, tmp_size);
     if (tmp_addr == NULL) {
         tloge("alloc share mem:0x%x fail\n", tmp_size);
         return ret;
@@ -497,7 +498,7 @@ static int32_t send_cmd_perm_to_drv(const struct task_node *node)
     ret = send_cmd_perm_msg((uint64_t)(uintptr_t)tmp_addr, tmp_size, node->drv_task.channel);
 
 free_addr:
-    if (tee_free_sharemem(tmp_addr, tmp_size) != 0)
+    if (free_sharemem(tmp_addr, tmp_size) != 0)
         tloge("free share mem fail\n");
 
     return ret;

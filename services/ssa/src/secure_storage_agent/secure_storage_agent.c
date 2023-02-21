@@ -11,8 +11,7 @@
  */
 #include <string.h>
 #include <sys/mman.h>
-#include <mem_ops_ext.h>
-#include <mem_mode.h>
+#include <mem_ops.h>
 #include <msg_ops.h>
 #include "ta_framework.h"
 #include "tee_log.h"
@@ -659,7 +658,7 @@ int ssa_map_from_task(uint32_t in_task_id, uint64_t va_addr, uint32_t size, uint
     if (vm_addr == NULL)
         return -1;
 
-    ret = tee_map_sharemem(in_task_id, va_addr, size, &out_addr);
+    ret = map_sharemem(in_task_id, va_addr, size, &out_addr);
     if (ret == 0) {
         *vm_addr = (uintptr_t)out_addr;
         if (*vm_addr == 0)
@@ -896,8 +895,8 @@ void ssa_register_agent(union ssa_agent_msg *msg, uint32_t sndr, struct ssa_agen
         return;
     }
     if (msg->reg_agent.agentid == TEE_FS_AGENT_ID) {
-        if (task_map_phy_mem(g_ssagent_handle, msg->reg_agent.phys_addr,
-            msg->reg_agent.size, &fs_agent_buffer, NON_SECURE)) {
+        if (task_map_ns_phy_mem(g_ssagent_handle, (uint64_t)msg->reg_agent.phys_addr,
+            msg->reg_agent.size, &fs_agent_buffer)) {
             tloge("map fs agent buffer fail\n");
         } else {
             tlogd("map fs agent buffer from %x to %lx, size=%u\n", msg->reg_agent.phys_addr, fs_agent_buffer,

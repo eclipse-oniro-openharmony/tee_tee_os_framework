@@ -413,15 +413,12 @@ RSA_get0_crt_params;
 hm_drv_call_new;
 get_die_id_size;
 tee_print;
-tee_map_sharemem;
 get_global_handle;
 set_global_handle;
 tee_secure_img_release_verify;
 ac_generate_dyn_uuid_data;
 ac_add_dynamic_policy;
 ac_del_dynamic_policy;
-task_unmap;
-task_map_phy_mem;
 cinit00;
 tee_init;
 renew_hmdrv_job_handler;
@@ -474,8 +471,6 @@ get_validity_from_cert;
 ecc_verify_digest;
 
 tee_get_chip_type;
-tee_free_sharemem;
-tee_alloc_sharemem_aux;
 
 ipc_create_single_channel;
 ipc_create_channel_native;

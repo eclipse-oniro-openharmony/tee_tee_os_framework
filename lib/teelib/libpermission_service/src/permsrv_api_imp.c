@@ -10,7 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 #include <pthread.h>
-#include <mem_ops_ext.h>
+#include <mem_ops.h>
 #include "tee_defines.h"
 #include "ta_framework.h"
 #include "tee_log.h"
@@ -151,7 +151,7 @@ TEE_Result tee_crl_cert_process(const char *crl_cert, uint32_t crl_cert_size)
     }
 
     crl_size   = crl_cert_size;
-    crl_shared = tee_alloc_sharemem_aux(&g_permsrv_uuid, crl_size);
+    crl_shared = alloc_sharemem_aux(&g_permsrv_uuid, crl_size);
     if (crl_shared == NULL) {
         tloge("malloc sharedBuff failed, size=0x%x\n", crl_size);
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -172,7 +172,7 @@ TEE_Result tee_crl_cert_process(const char *crl_cert, uint32_t crl_cert_size)
 
 clean:
     if (crl_shared != NULL)
-        (void)tee_free_sharemem(crl_shared, crl_size);
+        (void)free_sharemem(crl_shared, crl_size);
     return ret;
 }
 

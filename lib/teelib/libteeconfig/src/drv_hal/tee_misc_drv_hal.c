@@ -14,10 +14,10 @@
 #include <api/errno.h>
 #include <securec.h>
 #include <api/tee_common.h>
+#include <mem_ops.h>
 #include "tee_log.h"
 #include "boot_sharedmem.h"
 #include "tee_drv_client.h"
-#include "mem_ops_ext.h"
 #include "tee_inner_uuid.h"
 #include "tee_sharemem.h"
 
@@ -27,10 +27,10 @@ static void release_resource(int64_t fd, char *buffer, uint32_t buffer_size, cha
 {
     if (buffer != NULL) {
         (void)memset_s(buffer, buffer_size + sizeof(buffer_size), 0, buffer_size + sizeof(buffer_size));
-        (void)tee_free_sharemem(buffer, buffer_size);
+        (void)free_sharemem(buffer, buffer_size);
     }
     if (type != NULL)
-        (void)tee_free_sharemem(type, type_size);
+        (void)free_sharemem(type, type_size);
     int64_t ret = tee_drv_close(fd);
     if (ret != 0)
         tloge("close fd failed\n");
@@ -53,7 +53,7 @@ int32_t tee_shared_mem(const char *type, uint32_t type_size, void *buffer, uint3
         return -1;
     }
 
-    char *tmp_type = tee_alloc_sharemem_aux(&uuid, type_size);
+    char *tmp_type = alloc_sharemem_aux(&uuid, type_size);
     if (tmp_type == NULL) {
         tloge("alloc type buffer failed\n");
         release_resource(fd, NULL, 0, tmp_type, type_size);
@@ -63,7 +63,7 @@ int32_t tee_shared_mem(const char *type, uint32_t type_size, void *buffer, uint3
     (void)memset_s(tmp_type, type_size, 0, type_size);
     (void)memcpy_s(tmp_type, type_size, type, type_size);
 
-    char *tmp_buffer = tee_alloc_sharemem_aux(&uuid, *buffer_size + sizeof(*buffer_size));
+    char *tmp_buffer = alloc_sharemem_aux(&uuid, *buffer_size + sizeof(*buffer_size));
     if (tmp_buffer == NULL) {
         tloge("alloc tmp buffer failed\n");
         release_resource(fd, tmp_buffer, *buffer_size, tmp_type, type_size);
@@ -96,7 +96,7 @@ int32_t tee_shared_mem(const char *type, uint32_t type_size, void *buffer, uint3
 static void release_oemkey_buffer(char *buffer, size_t key_size, int64_t fd)
 {
     (void)memset_s(buffer, key_size, 0, key_size);
-    (void)tee_free_sharemem(buffer, key_size);
+    (void)free_sharemem(buffer, key_size);
     int64_t ret = tee_drv_close(fd);
     if (ret != 0)
         tloge("call other drv failed\n");
@@ -112,7 +112,7 @@ static int32_t tee_get_oemkey(const char *drv_name, TEE_UUID uuid, uint8_t *oem_
 
     struct oemkey_buffer_args oemkey_buffer;
 
-    char *tmp_buffer = tee_alloc_sharemem_aux(&uuid, key_size);
+    char *tmp_buffer = alloc_sharemem_aux(&uuid, key_size);
     if (tmp_buffer == NULL) {
         (void)tee_drv_close(fd);
         return -1;

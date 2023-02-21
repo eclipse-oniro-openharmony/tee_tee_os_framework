@@ -13,7 +13,7 @@
 #include "securec.h"
 #include "tee_log.h"
 #include "tee_perm_img.h"
-#include "mem_ops_ext.h"
+#include "mem_ops.h"
 #include "ta_load_config.h"
 #include "tamgr_ext.h"
 #include "ta_lib_img_unpack.h"

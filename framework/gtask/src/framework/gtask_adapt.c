@@ -10,13 +10,13 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "gtask_adapt.h"
-#include <mem_ops_ext.h>
 #include <msg_ops.h>
+#include <mem_ops.h>
+#include <ipclib_hal.h>
 #include "securec.h"
 #include "init.h"
 #include "tee_inner_uuid.h"
 #include "service_manager.h"
-#include <ipclib_hal.h>
 
 int get_ta_info(uint32_t task_id, bool *ta_64bit, TEE_UUID *uuid)
 {
@@ -237,7 +237,7 @@ TEE_Result alloc_tee_param_for_ta(uint32_t taskid, struct pam_node *node)
     }
 
     /* separate TEE_Param mem for ta */
-    void *p_for_ta = (void *)tee_alloc_sharemem_aux(&ta_uuid, (get_tee_param_len(ta_is_64) * TEE_PARAM_NUM));
+    void *p_for_ta = (void *)alloc_sharemem_aux(&ta_uuid, (get_tee_param_len(ta_is_64) * TEE_PARAM_NUM));
     if (p_for_ta == NULL) {
         tloge("p_for_ta alloc failed\n");
         return TEE_ERROR_OUT_OF_MEMORY;
