@@ -12,8 +12,8 @@
 #include "sesrv_api.h"
 #include <securec.h>
 #include <pthread.h>
+#include <mem_ops.h>
 #include "errno.h"
-#include "mem_ops_ext.h"
 #include "tee_defines.h"
 #include "ipclib.h"
 #include "tee_log.h"
@@ -53,7 +53,7 @@ static void tee_free_shared_mem(void *p, uint32_t size)
         return;
 
     (void)memset_s(p, size, 0, size);
-    if (tee_free_sharemem(p, size) != 0)
+    if (free_sharemem(p, size) != 0)
         tloge("free shared mem failed\n");
 }
 
@@ -62,7 +62,7 @@ static void *tee_alloc_shared_mem(uint32_t size)
     void *p = NULL;
     TEE_UUID uuid = TEE_SERVICE_SE;
 
-    p = tee_alloc_sharemem_aux(&uuid, size);
+    p = alloc_sharemem_aux(&uuid, size);
     if (p != NULL)
         (void)memset_s(p, size, 0, size);
 

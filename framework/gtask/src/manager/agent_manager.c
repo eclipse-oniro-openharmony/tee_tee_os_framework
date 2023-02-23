@@ -11,8 +11,7 @@
  */
 
 #include <stddef.h>
-#include <mem_ops_ext.h> // task_map_phy_mem && task_unmap
-#include <mem_mode.h>    // non_secure
+#include <mem_ops.h>
 #include <msg_ops.h>
 #include <dlist.h>
 #include "tee_log.h"
@@ -175,7 +174,7 @@ static TEE_Result process_get_agent_buffer(uint32_t agent_id, uint32_t task_id,
     }
 
     if (control->buffer == 0) {
-        if (task_map_phy_mem(task_id, control->phys_buffer, control->size, &buffer, NON_SECURE) != 0) {
+        if (task_map_ns_phy_mem(task_id, (uint64_t)control->phys_buffer, control->size, &buffer) != 0) {
             tloge("map smc cmd operation params failed\n");
             goto agent_error;
         }

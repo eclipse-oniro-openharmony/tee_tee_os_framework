@@ -9,8 +9,6 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include <mem_ops.h>
-#include <mem_ops_ext.h>
 #include "tee_defines.h"
 #include "ta_framework.h"
 #include "tee_ss_agent_api.h"
@@ -25,7 +23,7 @@
 #include "tee_property_inner.h"
 #include "tee_obj_attr.h"
 #include "tee_inner_uuid.h"
-#include "tee_sharemem_ops.h"
+#include "mem_ops.h"
 #include <ipclib_hal.h>
 
 static TEE_UUID g_uuid = TEE_SERVICE_SSA;
@@ -431,7 +429,7 @@ static TEE_Result fill_msg_info(union ssa_agent_msg *msg, struct create_obj_msg_
                               ((void *)(uintptr_t)(params->initial_data) != NULL);
     if (initial_data_ready) {
         buf_size = params->data_len;
-        buf = tee_alloc_sharemem_aux(&g_uuid, buf_size);
+        buf = alloc_sharemem_aux(&g_uuid, buf_size);
         if (buf == NULL) {
             tloge("malloc shared_buff for initial_data failed, size=%u\n", params->data_len);
             return TEE_ERROR_OUT_OF_MEMORY;
@@ -464,7 +462,7 @@ static TEE_Result ssa_populate_msg(union ssa_agent_msg *msg, struct create_obj_m
     }
 
     obj_id_size = params->obj_id_len + 1;
-    obj_id = tee_alloc_sharemem_aux(&g_uuid, obj_id_size);
+    obj_id = alloc_sharemem_aux(&g_uuid, obj_id_size);
     if (obj_id == NULL) {
         tloge("malloc shared_buff for obj_id failed, size=%u\n", obj_id_size);
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -537,7 +535,7 @@ static TEE_Result fill_attributes_to_object(struct create_obj_msg_t *params, TEE
     }
     *attr_buf_size += attr_body_size;
 
-    *attr_buf = tee_alloc_sharemem_aux(&g_uuid, *attr_buf_size);
+    *attr_buf = alloc_sharemem_aux(&g_uuid, *attr_buf_size);
     if (*attr_buf == NULL) {
         tloge("malloc shared_buff for attr_buf failed, size=%u\n", *attr_buf_size);
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -572,7 +570,7 @@ static TEE_Result create_obj_and_fill_default_data(struct create_obj_msg_t *para
     fill_obj_info(*object, params->flags);
 
     *attr_buf_size = sizeof(struct saved_attr_info_t);
-    *attr_buf = tee_alloc_sharemem_aux(&g_uuid, sizeof(struct saved_attr_info_t));
+    *attr_buf = alloc_sharemem_aux(&g_uuid, sizeof(struct saved_attr_info_t));
     if (*attr_buf == NULL) {
         tloge("malloc shared_buff for attr_buf failed, size=%u\n", *attr_buf_size);
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -652,9 +650,9 @@ errorHandler:
     free_temp_object((TEE_ObjectHandle)(uintptr_t)(params->attributes), &tmp_object);
 
 out: /* this is successful end. free share memory */
-    (void)tee_free_sharemem((void *)(uintptr_t)(msg.create_obj.object_id), msg.create_obj.obj_id_len + 1);
-    (void)tee_free_sharemem((void *)(uintptr_t)(msg.create_obj.initial_data), msg.create_obj.data_len);
-    (void)tee_free_sharemem(attr_buf, attr_buf_size);
+    (void)free_sharemem((void *)(uintptr_t)(msg.create_obj.object_id), msg.create_obj.obj_id_len + 1);
+    (void)free_sharemem((void *)(uintptr_t)(msg.create_obj.initial_data), msg.create_obj.data_len);
+    (void)free_sharemem(attr_buf, attr_buf_size);
     return ret;
 }
 
@@ -669,7 +667,7 @@ static TEE_Result open_obj_proc_cmd(struct create_obj_msg_t *params, struct save
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    shared_buff = tee_alloc_sharemem_aux(&g_uuid, shared_buff_size);
+    shared_buff = alloc_sharemem_aux(&g_uuid, shared_buff_size);
     if (shared_buff == NULL) {
         tloge("malloc shared_buff for obj_id failed, size=%u\n", shared_buff_size);
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -678,7 +676,7 @@ static TEE_Result open_obj_proc_cmd(struct create_obj_msg_t *params, struct save
     errno_t rc = memmove_s(shared_buff, shared_buff_size, (void *)(uintptr_t)(params->object_id), shared_buff_size);
     if (rc != EOK) {
         tloge("memmove object_id failed\n");
-        (void)tee_free_sharemem(shared_buff, shared_buff_size);
+        (void)free_sharemem(shared_buff, shared_buff_size);
         return TEE_ERROR_SECURITY;
     }
 
@@ -694,7 +692,7 @@ static TEE_Result open_obj_proc_cmd(struct create_obj_msg_t *params, struct save
 
     ss_agent_proc_cmd(params->cmd_id, msg, params->cmd_id, rsp);
 
-    (void)tee_free_sharemem(shared_buff, shared_buff_size);
+    (void)free_sharemem(shared_buff, shared_buff_size);
 
     return rsp->ret;
 }
@@ -707,7 +705,7 @@ static TEE_Result ssa_read_attribute_restore(struct saved_attr_info_t *attr_head
     TEE_Result ret;
 
     shared_buff_size = attr_head->attr_size;
-    shared_buff      = tee_alloc_sharemem_aux(&g_uuid, shared_buff_size);
+    shared_buff      = alloc_sharemem_aux(&g_uuid, shared_buff_size);
     if (shared_buff == NULL) {
         tloge("alloc shared_buff for attrBuf failed, size=%u\n", attr_head->attr_size);
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -723,13 +721,13 @@ static TEE_Result ssa_read_attribute_restore(struct saved_attr_info_t *attr_head
 
     if (rsp->ret != TEE_SUCCESS) {
         tloge("get attribute error!\n");
-        (void)tee_free_sharemem(shared_buff, shared_buff_size);
+        (void)free_sharemem(shared_buff, shared_buff_size);
         return rsp->ret;
     }
 
     ret = restore_attrs(object, shared_buff, shared_buff_size, attr_head->attr_size, attr_head->attr_count);
 
-    (void)tee_free_sharemem(shared_buff, shared_buff_size);
+    (void)free_sharemem(shared_buff, shared_buff_size);
 
     return ret;
 }
@@ -815,7 +813,7 @@ TEE_Result ss_agent_open_object(struct create_obj_msg_t *params, TEE_ObjectHandl
         goto errorHandler;
 
     attr_head_size = sizeof(struct saved_attr_info_t);
-    attr_head      = tee_alloc_sharemem_aux(&g_uuid, attr_head_size);
+    attr_head      = alloc_sharemem_aux(&g_uuid, attr_head_size);
     if (attr_head == NULL) {
         tloge("malloc attr_head failed\n");
         ret = TEE_ERROR_OUT_OF_MEMORY;
@@ -843,7 +841,7 @@ errorHandler:
     (void)tee_obj_free(&tmp_object);
 
 out:
-    (void)tee_free_sharemem(attr_head, attr_head_size);
+    (void)free_sharemem(attr_head, attr_head_size);
     return ret;
 }
 
@@ -860,12 +858,12 @@ static TEE_Result write_object_data_proc(TEE_ObjectHandle object, const void *bu
 
     msg.write_obj.obj_index = (uintptr_t)object->dataPtr;
     uint32_t buf_size       = size;
-    buf                     = tee_alloc_sharemem_aux(&g_uuid, buf_size);
+    buf                     = alloc_sharemem_aux(&g_uuid, buf_size);
     /* If there is no enough memory for buffer, try to spit writing to smaller parts */
     while ((buf == NULL) && (split < MAX_SPLIT_NUM)) {
         split = DOUBLE(split);
         buf_size = size / split + FILL_NUM;
-        buf      = tee_alloc_sharemem_aux(&g_uuid, buf_size);
+        buf      = alloc_sharemem_aux(&g_uuid, buf_size);
     }
 
     if (buf == NULL) {
@@ -907,7 +905,7 @@ static TEE_Result write_object_data_proc(TEE_ObjectHandle object, const void *bu
         object->ObjectInfo->dataPosition = rsp.write_obj.new_seek_pos;
     }
 
-    (void)tee_free_sharemem(buf, buf_size);
+    (void)free_sharemem(buf, buf_size);
     return rsp.ret;
 }
 
@@ -931,13 +929,13 @@ static TEE_Result read_object_data_proc(TEE_ObjectHandle object, void *buffer, u
     uint32_t read_count = 0;
     uint8_t *p = buffer;
     uint32_t buf_size = size;
-    uint8_t *buf = tee_alloc_sharemem_aux(&g_uuid, size);
+    uint8_t *buf = alloc_sharemem_aux(&g_uuid, size);
 
     /* If there is no enough memory for buffer, try to spit data to smaller parts */
     while ((buf == NULL) && (split < MAX_SPLIT_NUM)) {
         split = DOUBLE(split);
         buf_size = size / split + FILL_NUM;
-        buf      = tee_alloc_sharemem_aux(&g_uuid, buf_size);
+        buf      = alloc_sharemem_aux(&g_uuid, buf_size);
     }
     if (buf == NULL) {
         tloge("malloc shared_buff failed, size=%u, split=%u\n", size, split);
@@ -980,7 +978,7 @@ static TEE_Result read_object_data_proc(TEE_ObjectHandle object, void *buffer, u
     }
     *count = read_count;
 
-    (void)tee_free_sharemem(buf, buf_size);
+    (void)free_sharemem(buf, buf_size);
     return rsp.ret;
 }
 
@@ -1070,7 +1068,7 @@ TEE_Result ss_agent_rename_object(TEE_ObjectHandle object, const void *new_objec
     msg.rename_obj.obj_index = (uintptr_t)object->dataPtr;
 
     buf_size = new_object_id_len;
-    buf      = tee_alloc_sharemem_aux(&g_uuid, buf_size);
+    buf      = alloc_sharemem_aux(&g_uuid, buf_size);
     if (buf == NULL) {
         tloge("malloc shared_buff failed, size=%u\n", new_object_id_len);
         ss_agent_proc_cmd(SS_AGENT_FILE_ABORT, &msg, SS_AGENT_FILE_ABORT, &rsp);
@@ -1100,7 +1098,7 @@ TEE_Result ss_agent_rename_object(TEE_ObjectHandle object, const void *new_objec
     }
 
 out:
-    (void)tee_free_sharemem(buf, buf_size);
+    (void)free_sharemem(buf, buf_size);
     return ret;
 }
 
@@ -1314,7 +1312,7 @@ TEE_Result ta_start_enumerator(TEE_ObjectEnumHandle obj_enumerator)
         return TEE_ERROR_ITEM_NOT_FOUND;
     }
 
-    uint8_t *buf = tee_alloc_sharemem_aux(&g_uuid, enum_file_len);
+    uint8_t *buf = alloc_sharemem_aux(&g_uuid, enum_file_len);
     if (buf == NULL)
         return TEE_ERROR_OUT_OF_MEMORY;
 
@@ -1324,13 +1322,13 @@ TEE_Result ta_start_enumerator(TEE_ObjectEnumHandle obj_enumerator)
     ss_agent_proc_cmd(SS_AGENT_START_ENUMERATOR, &msg, SS_AGENT_START_ENUMERATOR, &rsp);
     if (rsp.ret != TEE_SUCCESS) {
         tloge("Failed to get the enumerator information.\n");
-        (void)tee_free_sharemem(buf, enum_file_len);
+        (void)free_sharemem(buf, enum_file_len);
         return rsp.ret;
     }
 
     enum_handle->obj_enum_buf = TEE_Malloc(enum_file_len, 0);
     if (enum_handle->obj_enum_buf == NULL) {
-        (void)tee_free_sharemem(buf, enum_file_len);
+        (void)free_sharemem(buf, enum_file_len);
         return TEE_ERROR_OUT_OF_MEMORY;
     }
 
@@ -1345,12 +1343,12 @@ TEE_Result ta_start_enumerator(TEE_ObjectEnumHandle obj_enumerator)
     enum_handle->obj_enum_buf_len = enum_file_len;
     enum_handle->active_status    = ENUM_FLAG_ACTIVED;
 
-    (void)tee_free_sharemem(buf, enum_file_len);
+    (void)free_sharemem(buf, enum_file_len);
     return TEE_SUCCESS;
 
 clean:
     TEE_Free(enum_handle->obj_enum_buf);
-    (void)tee_free_sharemem(buf, enum_file_len);
+    (void)free_sharemem(buf, enum_file_len);
     return rsp.ret;
 }
 

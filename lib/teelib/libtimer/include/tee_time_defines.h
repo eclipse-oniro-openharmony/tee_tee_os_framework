@@ -119,24 +119,6 @@ struct sw_timer_info {
     timeval_t clock_period;
 };
 
-/*
- * value:   0x02002e01
- * meaning: input ptr is null.
- */
-#define OS_ERRNO_TIMER_INPUT_PTR_NULL SRE_ERRNO_OS_ERROR(OS_MID_TIMER, 0x01)
-
-/*
- * value:   0x02002e02
- * meaning: timer interval is invalid.
- */
-#define OS_ERRNO_TIMER_INTERVAL_INVALID SRE_ERRNO_OS_ERROR(OS_MID_TIMER, 0x04)
-
-/*
- * value:   0x02002e0a
- * meaning: timer event is not available.
- */
-#define OS_ERRNO_TIMER_EVENT_NOT_AVAILABLE SRE_ERRNO_OS_ERROR(OS_MID_TIMER, 0x0a)
-
 enum timer_class_type {
     /* timer event using timer10 */
     TIMER_GENERIC,

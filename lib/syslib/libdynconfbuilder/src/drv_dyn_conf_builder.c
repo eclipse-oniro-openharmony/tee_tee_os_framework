@@ -16,11 +16,11 @@
 #include <cs.h>
 #include <dlist.h>
 #include <hmdrv.h>
-#include <mem_ops_ext.h>
 #include <tee_drv_internal.h>
 #include <drv_dyn_conf_mgr.h>
 #include <target_type.h>
 #include <ta_framework.h>
+#include <mem_ops.h>
 #include "drvcall_dyn_conf_builder.h"
 #include "tee_inner_uuid.h"
 
@@ -45,7 +45,7 @@ static int32_t check_uuid_valid(struct tee_uuid uuid)
 static void do_free_drv_conf(void **list, uint16_t *list_size, uint32_t st_size)
 {
     if (*list != NULL && (*list_size) != 0) {
-        tee_free_sharemem(*list, (*list_size) * st_size);
+        free_sharemem(*list, (*list_size) * st_size);
         *list = NULL;
         *list_size = 0;
     }
@@ -155,7 +155,7 @@ static int32_t init_drv_conf_filter_chip_type(const struct conf_queue_t *conf_qu
         return TEE_ERROR_GENERIC;
     }
 
-    *list = tee_alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
+    *list = alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
     if (*list == NULL) {
         hm_error("malloc for tlv list failed\n");
         return TEE_ERROR_GENERIC;
@@ -163,7 +163,7 @@ static int32_t init_drv_conf_filter_chip_type(const struct conf_queue_t *conf_qu
 
     if (memset_s(*list, tmp_size, 0, tmp_size) != 0) {
         hm_error("memset for tlv list failed\n");
-        (void)tee_free_sharemem(*list, tmp_size);
+        (void)free_sharemem(*list, tmp_size);
         *list = NULL;
         return TEE_ERROR_GENERIC;
     }
@@ -238,7 +238,7 @@ static int32_t init_drv_mac_info(struct drv_conf_t *drv_conf, const struct conf_
         return TEE_ERROR_GENERIC;
     }
 
-    drv_conf->mac_info_list = tee_alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
+    drv_conf->mac_info_list = alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
     if (drv_conf->mac_info_list == NULL) {
         hm_error("malloc for mac list failed\n");
         return TEE_ERROR_GENERIC;
@@ -262,7 +262,7 @@ static int32_t init_drv_cmd_perm(struct drv_conf_t *drv_conf, const struct conf_
         return TEE_ERROR_GENERIC;
     }
 
-    drv_conf->cmd_perm_list = tee_alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
+    drv_conf->cmd_perm_list = alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
     if (drv_conf->cmd_perm_list == NULL) {
         hm_error("malloc for cmd_perm list failed\n");
         return TEE_ERROR_GENERIC;

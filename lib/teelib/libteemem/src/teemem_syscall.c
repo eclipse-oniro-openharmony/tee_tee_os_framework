@@ -23,111 +23,13 @@
 #include <tamgr_ext.h>
 #include <ipclib.h>
 #include <mem_page_ops.h>
-#include <mem_mode.h>
 #include <hmdrv.h>
 #include <sre_syscalls_id.h>
-#include <mem_ops_ext.h>
-
-#define SRE_MAX_NOMAP_MAP_COUNT 19
-#define DEFAULT_RIGHT 0
-
-int32_t get_prot_by_secure_cache_mode(secure_mode_type secure_mode, cache_mode_type cache_mode)
-{
-    int32_t prot = PROT_READ | PROT_WRITE;
-
-    /* set NS flag */
-    if (secure_mode == NON_SECURE)
-        prot = (uint32_t)prot | PROT_NS;
-    if (cache_mode == NON_CACHE)
-        prot = (uint32_t)prot | PROT_MA_NC;
-    if (cache_mode == CACHE_MODE_DEVICE)
-        prot = (uint32_t)prot | PROT_nGnRnE;
-
-    return prot;
-}
-
-int32_t task_map_phy_mem_ex(uint32_t task_id, paddr_t phy_addr, uint32_t size,
-                                   uint64_t *virt_addr, int32_t prot, map_type type)
-{
-    uint64_t mapped_addr;
-
-    if (virt_addr == NULL || phy_addr == 0 || size == 0) {
-        hm_error("invalid parameters\n");
-        return HM_ERROR;
-    }
-
-    if (UINT64_MAX - phy_addr < size) {
-        hm_error("phy addr plus size overflow\n");
-        return HM_ERROR;
-    }
-
-    task_id = TASKID2PID(task_id);
-
-    /* map PA to process VA */
-    mapped_addr = hm_map_range_to_process((pid_t)task_id, 0, size, prot, phy_addr, (uint32_t)type);
-    if (mapped_addr == MAP_FAILED_UINT64) {
-        hm_error("hm_map_range failed\n");
-        return HM_ERROR;
-    }
-
-    /* get value via pointer,hm_map_range_to_process return aligned addr */
-    *virt_addr = (uint64_t)(mapped_addr + (phy_addr & PAGE_OFFSET_MASK));
-    return HM_OK;
-}
-
-int32_t task_map_phy_mem(uint32_t task_id, paddr_t phy_addr, uint32_t size, uint64_t *virt_addr,
-                         secure_mode_type secure_mode)
-{
-    int32_t prot;
-    prot = get_prot_by_secure_cache_mode(secure_mode, CACHE);
-    return task_map_phy_mem_ex(task_id, phy_addr, size, virt_addr, prot, MAP_ORIGIN);
-}
-
-int32_t task_unmap(uint32_t task_id, uint64_t virt_addr, uint32_t size)
-{
-    if (virt_addr == 0 || size == 0) {
-        hm_error("invalid parameters\n");
-        return HM_ERROR;
-    }
-
-    if (UINT64_MAX - virt_addr < size) {
-        hm_error("virt addr plus size overflow\n");
-        return HM_ERROR;
-    }
-
-    task_id = TASKID2PID(task_id);
-
-    return hm_unmap_range_from_process((pid_t)task_id, virt_addr, size);
-}
-
-void *tee_alloc_sharemem_aux(const struct tee_uuid *uuid, uint32_t size)
-{
-    return hm_alloc_sharemem(uuid, size, 0);
-}
+#include <tee_sharemem_ops.h>
 
 void *tee_alloc_coherent_sharemem_aux(const struct tee_uuid *uuid, uint32_t size)
 {
     return hm_alloc_sharemem(uuid, size, MAP_COHERENT);
-}
-
-uint32_t tee_free_sharemem(void *addr, uint32_t size)
-{
-    if (addr == NULL || size == 0 || ((size + PAGE_SIZE) < size)) {
-        hm_info("invalid parameter size:0x%x\n", size);
-        return (uint32_t)HM_ERROR;
-    }
-
-    /*
-     * unmap a TA2TA region causes force full unmap on server,
-     * so we give a minimal size (PAGE_SIZE) here
-     */
-    size = PAGE_ALIGN_UP(size);
-    if (munmap((void *)addr, size)) {
-        hm_error("munmap failed, errno = %d\n", errno);
-        return (uint32_t)HM_ERROR;
-    }
-
-    return HM_OK;
 }
 
 static int32_t copy_task_param_check(uint64_t src, uint32_t src_size, uint64_t dst, uint32_t dst_size)
@@ -148,12 +50,6 @@ static int32_t copy_task_param_check(uint64_t src, uint32_t src_size, uint64_t d
     }
 
     return 0;
-}
-
-int32_t tee_map_sharemem(uint32_t src_task, uint64_t vaddr, uint64_t size, uint64_t *vaddr_out)
-{
-    pid_t pid_in = TASKID2PID(src_task);
-    return hm_map_sharemem(pid_in, vaddr, size, vaddr_out);
 }
 
 int32_t copy_from_sharemem(uint32_t src_task, uint64_t src, uint32_t src_size, uintptr_t dst, uint32_t dst_size)
@@ -219,17 +115,3 @@ int32_t copy_to_sharemem(uintptr_t src, uint32_t src_size, uint32_t dst_task, ui
 
     return 0;
 }
-
-
-uint64_t tee_virt_to_phys(uintptr_t vaddr)
-{
-    uint64_t paddr = 0;
-
-    if (virt_to_phys_ex(vaddr, &paddr) < 0) {
-        hm_error("tee virt_to_phys failed\n");
-        return 0;
-    }
-
-    return paddr;
-}
-

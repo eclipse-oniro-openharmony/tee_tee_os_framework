@@ -12,9 +12,7 @@
 
 #include <stddef.h>
 #include <string.h>
-#include <mem_ops_ext.h>      // task_map_phy_mem && task_unmap
-#include <mem_ops.h>          // OS_MEM_DEFAULT_PTNUM
-#include <mem_mode.h>         // non_secure
+#include <mem_ops.h>
 #include <hm_mman.h>
 #include <dlist.h>
 #include <api/tee_common.h>
@@ -156,7 +154,7 @@ static void free_tee_mem(const void *addr, uint32_t size)
 {
     if (addr == NULL)
         return;
-    tee_free_sharemem((void *)addr, size);
+    free_sharemem((void *)addr, size);
 }
 
 static bool is_resmem_param_type(uint32_t type)
@@ -192,7 +190,7 @@ static TEE_Result copy_from_src(uint32_t task_id, void **tee_addr, void *ree_add
         tloge("get ta uuid failed\n");
         return TEE_ERROR_GENERIC;
     }
-    *tee_addr = tee_alloc_sharemem_aux(&ta_uuid, size + 1);
+    *tee_addr = alloc_sharemem_aux(&ta_uuid, size + 1);
     if (*tee_addr == NULL) {
         tloge("copy tee mem alloc failed, size=0x%x.\n", size);
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -480,7 +478,7 @@ static TEE_Result map_memref_for_gtask(bool ta2ta, const smc_cmd_t *cmd, tee_par
 {
     if (ta2ta) {
         uint64_t tmp_addr;
-        if (tee_map_sharemem(cmd->uid, (uint32_t)p.memref.buffer | (buffer_h_addr << SHIFT_OFFSET),
+        if (map_sharemem(cmd->uid, (uint32_t)p.memref.buffer | (buffer_h_addr << SHIFT_OFFSET),
                              p.memref.size, &tmp_addr) != 0) {
             tloge("ta2ta map smc cmd operation failed\n");
             return TEE_ERROR_GENERIC;
@@ -519,8 +517,8 @@ static TEE_Result params_map_for_ta_resmem(uint32_t i, uint32_t task_id, struct 
     uint32_t *buffer_h_addr = node->op.p_h_addr;
     tee_param_32 *p         = node->op.p;
 
-    paddr_t tmp_addr = (paddr_t)p[i].memref.buffer | ((paddr_t)buffer_h_addr[i] << SHIFT_OFFSET);
-    if (task_map_phy_mem(task_id, tmp_addr, p[i].memref.size, &resmem_vaddr, NON_SECURE)) {
+    uint64_t tmp_addr = (uint64_t)p[i].memref.buffer | ((uint64_t)buffer_h_addr[i] << SHIFT_OFFSET);
+    if (task_map_ns_phy_mem(task_id, tmp_addr, p[i].memref.size, &resmem_vaddr)) {
         tloge("map resmem to ta failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -649,7 +647,7 @@ static void *__operation_map_for_gt(paddr_t phys, uint32_t size, bool *mapped)
         return mailbox_phys_to_virt(phys);
 
     /* Before mailbox initialized, we still need map the operation. */
-    if (task_map_phy_mem(0, phys, size, &op_vaddr, NON_SECURE)) {
+    if (task_map_ns_phy_mem(0, (uint64_t)phys, size, &op_vaddr)) {
         tloge("2map smc cmd operation failed\n");
         return NULL;
     }
@@ -668,7 +666,7 @@ static TEE_Result map_cmd_to_operation(bool ta2ta, uint32_t *operation_size, con
         uint64_t tmp_operation;
 
         *operation_size = sizeof(struct smc_operation);
-        if (tee_map_sharemem(cmd->uid, cmd->operation_phys | ((paddr_t)cmd->operation_h_phys << SHIFT_OFFSET),
+        if (map_sharemem(cmd->uid, cmd->operation_phys | ((paddr_t)cmd->operation_h_phys << SHIFT_OFFSET),
                              *operation_size, &tmp_operation) != 0) {
             tloge("ta2ta mode map smc cmd operation failed\n");
             return TEE_ERROR_GENERIC;
@@ -845,7 +843,7 @@ void *map_ns_cmd(paddr_t cmd_phy)
 {
     uint64_t cmd_virt;
     /* map ns smc cmd to secure os */
-    if (task_map_phy_mem(0, cmd_phy, GT_SHARED_CMD_QUEUES_SIZE, &cmd_virt, NON_SECURE)) {
+    if (task_map_ns_phy_mem(0, (uint64_t)cmd_phy, GT_SHARED_CMD_QUEUES_SIZE, &cmd_virt)) {
         tloge("map smc cmd failed\n");
         return NULL;
     }
@@ -865,7 +863,7 @@ TEE_Result map_secure_operation(uint64_t tacmd, smc_cmd_t *out_cmd, uint32_t tas
     }
 
     /* 1. do cmd copy */
-    if (tee_map_sharemem(task_id, tacmd, sizeof(smc_cmd_t), &tmp_cmd) != 0) {
+    if (map_sharemem(task_id, tacmd, sizeof(smc_cmd_t), &tmp_cmd) != 0) {
         tloge("map smc cmd failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -985,7 +983,7 @@ static TEE_Result register_mempool(const smc_cmd_t *cmd, struct mempool_state *s
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    if (task_map_phy_mem(0, state->start, state->size, &vaddr, NON_SECURE)) {
+    if (task_map_ns_phy_mem(0, (uint64_t)state->start, state->size, &vaddr)) {
         tloge("map mem pool failed\n");
         return TEE_ERROR_GENERIC;
     }

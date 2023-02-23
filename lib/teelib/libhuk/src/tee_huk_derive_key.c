@@ -12,8 +12,8 @@
 #include "tee_huk_derive_key.h"
 #include <securec.h>
 #include <errno.h>
-#include <mem_ops_ext.h>
 #include <tee_log.h>
+#include <mem_ops.h>
 #include "tee_inner_uuid.h"
 #include "huk_service_msg.h"
 #include "huk_service_msg_call.h"
@@ -23,7 +23,7 @@ void *huk_alloc_shared_mem(uint32_t size)
     void *p = NULL;
     TEE_UUID uuid = TEE_SERVICE_HUK;
 
-    p = tee_alloc_sharemem_aux(&uuid, size);
+    p = alloc_sharemem_aux(&uuid, size);
     if (p != NULL)
         (void)memset_s(p, size, 0, size);
 
@@ -37,7 +37,7 @@ void huk_free_shared_mem(uint8_t *p, uint32_t size)
         return;
     }
     (void)memset_s(p, size, 0, size);
-    if (tee_free_sharemem(p, size) != 0)
+    if (free_sharemem(p, size) != 0)
         tloge("free shared mem failed\n");
 }
 

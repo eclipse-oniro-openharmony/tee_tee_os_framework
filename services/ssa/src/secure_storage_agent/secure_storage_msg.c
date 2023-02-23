@@ -11,7 +11,6 @@
  */
 #include <string.h>
 #include <sys/mman.h>
-#include <mem_mode.h>
 #include "ta_framework.h"
 #include "tee_log.h"
 #include "tee_init.h"

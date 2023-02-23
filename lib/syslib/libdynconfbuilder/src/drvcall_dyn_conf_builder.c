@@ -14,11 +14,11 @@
 #include <securec.h>
 #include <hmlog.h>
 #include <tee_defines.h>
-#include <mem_ops_ext.h>
 #include <hmdrv.h>
 #include <tee_drv_internal.h>
 #include <ta_framework.h>
 #include <drvcall_dyn_conf_mgr.h>
+#include <mem_ops.h>
 #include "tee_inner_uuid.h"
 
 #ifdef TEE_SUPPORT_DYN_CONF
@@ -32,7 +32,7 @@ void free_drvcall_perm(struct drvcall_perm_apply_t *drvcall_perm)
     if (drvcall_perm->drvcall_perm_apply_list != NULL) {
         uint32_t size = drvcall_perm->drvcall_perm_apply_list_size *
                         sizeof(struct drvcall_perm_apply_item_t);
-        tee_free_sharemem(drvcall_perm->drvcall_perm_apply_list, size);
+        free_sharemem(drvcall_perm->drvcall_perm_apply_list, size);
         drvcall_perm->drvcall_perm_apply_list = NULL;
     }
 }
@@ -60,7 +60,7 @@ int32_t init_drvcall_conf(struct drvcall_perm_apply_t *drvcall_perm_apply,
         return TEE_SUCCESS;
 
     drvcall_perm_apply->drvcall_perm_apply_list_size = 0;
-    drvcall_perm_apply->drvcall_perm_apply_list = tee_alloc_sharemem_aux(&drv_server_uuid, size);
+    drvcall_perm_apply->drvcall_perm_apply_list = alloc_sharemem_aux(&drv_server_uuid, size);
     if (drvcall_perm_apply->drvcall_perm_apply_list == NULL) {
         hm_error("malloc share mem for drvcall perm apply list failed\n");
         return TEE_ERROR_GENERIC;
