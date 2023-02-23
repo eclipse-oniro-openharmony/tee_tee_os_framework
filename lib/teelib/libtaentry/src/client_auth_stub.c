@@ -10,11 +10,24 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "client_auth.h"
+#include <tee_ext_api.h>
 
 TEE_Result check_client_perm(uint32_t param_types, const TEE_Param params[TEE_PARAMS_NUM])
 {
     (void)param_types;
     (void)params;
 
+    return TEE_SUCCESS;
+}
+
+TEE_Result AddCaller_CA_exec(const char *ca_name, uint32_t ca_uid)
+{
+    (void)ca_name;
+    (void)ca_uid;
+    return TEE_SUCCESS;
+}
+
+TEE_Result AddCaller_TA_all(void)
+{
     return TEE_SUCCESS;
 }
