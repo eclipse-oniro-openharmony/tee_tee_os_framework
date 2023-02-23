@@ -13,7 +13,6 @@
 #define DRVMGR_SRC_DRV_DISPATCH_H
 
 #include <dlist.h>
-#include <hm_msg_type.h>
 #include <tee_defines.h>
 #include <cs.h>
 

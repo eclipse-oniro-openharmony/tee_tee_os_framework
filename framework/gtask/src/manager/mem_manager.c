@@ -15,7 +15,6 @@
 #include <mem_ops.h>
 #include <hm_mman.h>
 #include <dlist.h>
-#include <api/tee_common.h>
 #include <sys/teecall.h>
 #include "tee_log.h"
 #include "tee_mem_mgmt_api.h"

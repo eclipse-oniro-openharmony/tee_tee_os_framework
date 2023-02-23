@@ -17,7 +17,6 @@
 #include "hm_msg_type.h"
 #include <errno.h>
 #include <sys/usrsyscall_new_ext.h>
-#include <hm_msg_type.h>
 #include <sys/hm_types.h>
 
 typedef int32_t (*crypto_drv_init) (const void *ops, void *buf, uint32_t buf_len);

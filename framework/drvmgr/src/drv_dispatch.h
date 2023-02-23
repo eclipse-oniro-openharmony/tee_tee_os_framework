@@ -12,7 +12,6 @@
 #ifndef DRVMGR_SRC_DRV_DISPATCH_H
 #define DRVMGR_SRC_DRV_DISPATCH_H
 
-#include <hm_msg_type.h>
 #include <tee_defines.h>
 #include <cs.h>
 

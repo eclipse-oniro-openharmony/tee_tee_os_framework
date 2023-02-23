@@ -11,7 +11,6 @@
  */
 #include <stdio.h>
 #include <inttypes.h>
-#include <hm_msg_type.h>
 #include <securec.h>
 #include <pathmgr_api.h>
 #include <ipclib.h>

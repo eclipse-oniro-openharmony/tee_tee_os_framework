@@ -13,7 +13,6 @@
 #define SE_SERVICE_SE_SERVICE_H
 
 #include "tee_defines.h"
-#include "hm_msg_type.h"
 
 #define SE_PATH "seservice"
 

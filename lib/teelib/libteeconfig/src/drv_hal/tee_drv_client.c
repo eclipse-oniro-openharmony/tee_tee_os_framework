@@ -16,7 +16,6 @@
 #include <pthread.h>
 #include <malloc.h>
 #include <securec.h>
-#include <hm_msg_type.h>
 #include <tee_log.h>
 #include <hmdrv.h>
 #include <ipclib.h>
