@@ -120,7 +120,7 @@ static void tee_smc_notify_drv(enum cap_teesmc_ret ret)
     msg.send.msg_class = HM_MSG_HEADER_CLASS_DRV_PWRMGR;
     msg.send.msg_id = tee_smc_pm_ret_to_msg_id(ret);
     msg.send.msg_size = sizeof(msg);
-    err = hmex_channel_msgnotify(drv, &msg, sizeof(msg));
+    err = ipc_msg_notification(drv, &msg, sizeof(msg));
     if (err == 0) {
         info("notify driver done id %u\n", ret);
     } else {
