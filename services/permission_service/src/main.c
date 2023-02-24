@@ -13,7 +13,6 @@
 #include <sys/mman.h>
 #include <tee_log.h>
 #include <msg_ops.h>
-#include <api/errno.h>          /* is_ref_err */
 #include <sys/usrsyscall.h>     /* for ipc_msg_create_hdl */
 #include <ipclib.h>             /* for channel */
 #include <sys/usrsyscall_new.h> /* for cref_t */

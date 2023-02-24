@@ -11,7 +11,6 @@
  */
 
 #include <stdint.h>
-#include <hm_msg_type.h> /* for ARRAY_SIZE */
 #include <sre_syscalls_id.h>
 #include "securec.h"
 #include "tee_defines.h"

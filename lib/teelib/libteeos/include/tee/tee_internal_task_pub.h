@@ -14,7 +14,6 @@
 #define TEE_INTERNAL_TASK_PUB_H
 
 #include <stddef.h>
-#include "types.h"
 #include "tee_defines.h"
 #include "ta_framework.h"
 #include "tee_service_public.h"

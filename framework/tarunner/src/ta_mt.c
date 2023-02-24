@@ -14,7 +14,6 @@
 #include <string.h>
 #include <inttypes.h>
 #include <dlfcn.h>
-#include <api/errno.h> /* is_ref_err */
 #include <pthread.h>
 #include <sys/usrsyscall_ext.h>
 #include <pthread_ext.h>

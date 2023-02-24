@@ -13,8 +13,6 @@
 #ifndef DRVMGR_DRV_DYN_CONF_MGR_H
 #define DRVMGR_DRV_DYN_CONF_MGR_H
 
-#include <arch/types.h>
-#include <hm_msg_type.h>
 #include <pthread.h>
 #include <dlist.h>
 #include <tee_defines.h>

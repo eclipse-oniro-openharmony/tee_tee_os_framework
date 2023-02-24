@@ -15,7 +15,6 @@
 #include <autoconf.h>
 #include <securec.h>
 
-#include <api/kcalls.h>
 #include <sys/syscalls.h>
 #include <sys/hm_types.h>
 #include <procmgr.h>

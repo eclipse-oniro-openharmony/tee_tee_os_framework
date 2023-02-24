@@ -15,7 +15,6 @@
 #include <dlist.h>
 #include <limits.h>
 #include <sre_errno.h>
-#include <hm_msg_type.h>
 #include <tee_time_defines.h>
 
 void release_timer_event(const TEE_UUID *uuid);

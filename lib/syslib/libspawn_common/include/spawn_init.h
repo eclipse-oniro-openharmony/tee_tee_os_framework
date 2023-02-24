@@ -14,7 +14,6 @@
 #define LIBSPAWN_COMMON_INCLUDE_SPAWN_INIT_H
 
 #include <stdint.h>
-#include <sys/types.h>
 #include <tee_defines.h>
 
 #define ARGV_SIZE  64

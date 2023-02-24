@@ -11,9 +11,7 @@
  */
 #include <stdio.h>
 #include <string.h>
-#include <api/errno.h>
 #include <securec.h>
-#include <api/tee_common.h>
 #include <mem_ops.h>
 #include "tee_log.h"
 #include "boot_sharedmem.h"

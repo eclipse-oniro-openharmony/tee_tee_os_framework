@@ -16,7 +16,6 @@
 #include <mem_ops.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/hmapi_ext.h>
-#include <api/kcalls.h>
 #include <sys/time.h>
 #include "timer_export.h"
 #include <procmgr_ext.h>

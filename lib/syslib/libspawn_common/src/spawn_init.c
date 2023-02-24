@@ -14,7 +14,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <securec.h>
-#include <sys/types.h>
 #include <ac_map.h>
 #include <tee_log.h>
 

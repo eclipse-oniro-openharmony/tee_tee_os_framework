@@ -11,7 +11,6 @@
  */
 #ifndef DRIVERS_SHAREDMEM_H
 #define DRIVERS_SHAREDMEM_H
-#include <types.h>
 #include "tee_defines.h"
 #define MAP_INVALID_32BITADDR        0xFFFFFFFF
 #define MAP_INVALID_64BITADDR        0xFFFFFFFFFFFFFFFF

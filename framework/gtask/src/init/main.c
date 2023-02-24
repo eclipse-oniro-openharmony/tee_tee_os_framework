@@ -12,7 +12,6 @@
 
 #include <autoconf.h>
 #include <stdio.h>
-#include <bootinfo_types.h>
 #include <ipclib.h>
 #include <mmgrapi.h>
 #include <irqmgr_api.h>

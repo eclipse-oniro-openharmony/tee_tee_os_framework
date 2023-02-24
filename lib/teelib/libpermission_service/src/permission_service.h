@@ -12,7 +12,6 @@
 #ifndef __PERSRV_H__
 #define __PERSRV_H__
 
-#include <hm_msg_type.h>
 #include <sys/hm_types.h>
 #include "crypto_wrapper.h"
 #include "tee_internal_task_pub.h"
