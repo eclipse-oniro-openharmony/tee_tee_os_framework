@@ -29,7 +29,7 @@ drvmgr_c_files := src/main.c \
 		src/drv_auth.c \
 		src/drv_dyn_conf_mgr.c \
 		src/drvcall_dyn_conf_mgr.c \
-		src/drv_dyn_policy_mgr.c \
+		src/drv_dyn_policy_mgr_stub.c \
 		src/base_drv_node.c \
 		src/task_mgr.c
 
