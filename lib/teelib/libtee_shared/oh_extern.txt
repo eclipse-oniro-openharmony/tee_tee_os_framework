@@ -145,6 +145,7 @@ TEE_Wait
 
 /* extend API */
 AddCaller_CA_exec
+AddCaller_TA_all
 tee_drv_open
 tee_drv_ioctl
 tee_drv_close

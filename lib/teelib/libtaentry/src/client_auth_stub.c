@@ -9,12 +9,25 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#ifndef LIBTAENTRY_CLIENT_AUTH_H
-#define LIBTAENTRY_CLIENT_AUTH_H
+#include "client_auth.h"
+#include <tee_ext_api.h>
 
-#include <stdint.h>
-#include <tee_defines.h>
+TEE_Result check_client_perm(uint32_t param_types, const TEE_Param params[TEE_PARAMS_NUM])
+{
+    (void)param_types;
+    (void)params;
 
-TEE_Result check_client_perm(uint32_t param_types, const TEE_Param params[TEE_PARAMS_NUM]);
+    return TEE_SUCCESS;
+}
 
-#endif
+TEE_Result AddCaller_CA_exec(const char *ca_name, uint32_t ca_uid)
+{
+    (void)ca_name;
+    (void)ca_uid;
+    return TEE_SUCCESS;
+}
+
+TEE_Result AddCaller_TA_all(void)
+{
+    return TEE_SUCCESS;
+}

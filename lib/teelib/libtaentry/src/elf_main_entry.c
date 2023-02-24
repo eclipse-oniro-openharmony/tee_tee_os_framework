@@ -112,7 +112,7 @@ static void clear_ta_bss(const struct ta_routine_info *append_args)
 }
 
 static TEE_Result ta_invoke_command_entry_point(void *session_context, uint32_t cmd_id, uint32_t param_types,
-                                                TEE_Param params[TA_COMMAND_TEE_PARAM_NUM],
+                                                TEE_Param params[TEE_PARAMS_NUM],
                                                 const struct ta_routine_info *routine)
 {
     if ((routine != NULL) && (routine->info[INVOKE_COMMAND_INDEX] != NULL)) {
@@ -135,7 +135,7 @@ static TEE_Result ta_create_entry_point(const struct ta_routine_info *routine)
     return TEE_SUCCESS;
 }
 
-static TEE_Result ta_open_session_entry_point(uint32_t type, TEE_Param param[TA_COMMAND_TEE_PARAM_NUM], void **context,
+static TEE_Result ta_open_session_entry_point(uint32_t type, TEE_Param param[TEE_PARAMS_NUM], void **context,
                                               const struct ta_routine_info *routine)
 {
     if ((routine != NULL) && (routine->info[OPEN_SESSION_INDEX] != NULL)) {
@@ -350,9 +350,7 @@ static TEE_Result tee_task_entry_open_session_main(const struct global_to_ta_msg
         ret = check_client_perm(param_type, params);
         if (ret != TEE_SUCCESS) {
             tloge("check client perm failed 0x%x\n", ret);
-#ifdef CONFIG_TA_AUTH_CA_CALLER
             return TEE_ERROR_ACCESS_DENIED;
-#endif
         }
     }
 
@@ -449,7 +447,7 @@ static bool is_resmem_param_type(uint32_t type)
 
 static void recover_ta_params(uint32_t *param_type)
 {
-    for (uint32_t i = 0; i < TA_COMMAND_TEE_PARAM_NUM; i++) {
+    for (uint32_t i = 0; i < TEE_PARAMS_NUM; i++) {
         uint32_t type = TEE_PARAM_TYPE_GET(*param_type, i);
         if (is_resmem_param_type(type)) {
             uint32_t orig_type = type - (TEE_PARAM_TYPE_RESMEM_INPUT - TEE_PARAM_TYPE_MEMREF_INPUT);
