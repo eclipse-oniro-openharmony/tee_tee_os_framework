@@ -20,7 +20,7 @@
 #include <sys/usrsyscall_ext.h>
 #include <fcntl.h>
 #include <dlfcn.h>
-#include <sre_log.h>
+#include <tee_log.h>
 #include "drv_random.h"
 #include "crypto_syscall_ec.h"
 #include "crypto_syscall_hash.h"
