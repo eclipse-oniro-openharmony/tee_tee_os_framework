@@ -24,7 +24,6 @@
 #include <sys/hm_priorities.h> // for `HM_PRIO_TEE_*`
 #include <hmdrv.h>
 #include <msg_ops.h>
-#include <sre_syscalls_id.h> // SW_SYSCALL_TIMER_CREATE
 #include <spawn_init.h>
 #include <get_elf_info.h>
 #include <target_type.h>

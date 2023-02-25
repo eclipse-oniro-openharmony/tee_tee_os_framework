@@ -12,7 +12,6 @@
 #include "drv_sharedmem.h"
 #include <securec.h>
 #include "tee_log.h"
-#include "sre_syscalls_id.h"
 #include "sys/mman.h"
 #include "shared_mem_api.h"
 #include "tee_inner_uuid.h"

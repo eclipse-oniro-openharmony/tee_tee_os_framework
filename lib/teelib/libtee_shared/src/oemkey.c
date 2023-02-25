@@ -11,7 +11,6 @@
  */
 
 #include <stdint.h>
-#include <sre_syscalls_id.h>
 #include "securec.h"
 #include "tee_defines.h"
 #include "tee_sharemem.h"

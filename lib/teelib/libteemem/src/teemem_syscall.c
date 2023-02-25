@@ -21,7 +21,6 @@
 #include <ipclib.h>
 #include <mem_page_ops.h>
 #include <hmdrv.h>
-#include <sre_syscalls_id.h>
 #include <tee_sharemem_ops.h>
 
 static int32_t copy_task_param_check(uint64_t src, uint32_t src_size, uint64_t dst, uint32_t dst_size)

@@ -15,7 +15,6 @@
 #include <hmdrv.h>
 #include <mem_ops.h>
 #include "tee_log.h"
-#include <sre_syscalls_id.h>
 #include "crypto_default_engine.h"
 #include "tee_drv_client.h"
 #include "crypto_mgr_syscall.h"

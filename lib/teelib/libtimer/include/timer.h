@@ -14,7 +14,6 @@
 #define SYS_LIBS_LIBTIMER_TIMER_H
 
 #include <stdint.h>
-#include <sre_syscalls_id.h>
 #include <time.h>
 #include <sys_timer.h>
 #include <tee_time_api.h>
