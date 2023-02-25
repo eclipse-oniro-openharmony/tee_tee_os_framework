@@ -90,12 +90,6 @@ static int32_t system_init(const char *name)
         return -1;
     }
 
-    ret = ta_permission_init();
-    if (ret != 0) {
-        hm_error("failed to init ta permission\n");
-        return -1;
-    }
-
     return 0;
 }
 
