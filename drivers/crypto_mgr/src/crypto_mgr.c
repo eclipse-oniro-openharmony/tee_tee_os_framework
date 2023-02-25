@@ -19,7 +19,7 @@
 #include <ac.h>
 #include "tee_driver_module.h"
 #include "crypto_mgr_syscall.h"
-#include <sre_log.h>
+#include <tee_log.h>
 #include "drv_random.h"
 #include "crypto_driver_adaptor.h"
 
