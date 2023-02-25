@@ -14,7 +14,6 @@
 #define __PERSRV_API_H__
 
 #include "tee_defines.h"
-#include "permsrv_api_legacy.h"
 
 enum TaManager {
     TA_MANAGER_UNKNOWN,
