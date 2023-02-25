@@ -20,12 +20,15 @@
 #include <hm_thread.h>
 #include <mm_kcall.h> /* hm get mycnode */
 #include <ipclib.h>
-#include <procmgr_ext.h>
+#include <cs.h>
+#include <hm_getpid.h>
+#include <hm_exit.h>
 #include <ta_framework.h>
 #include <tee_log.h>
 #include <asm/hmapi.h>
 #include "load_init.h"
 #include <ipclib_hal.h>
+#include <spawn_ext.h>
 
 #ifndef THREAD_STACK_SIZE
 #define THREAD_STACK_SIZE (4096 * 4 * 5)
@@ -141,9 +144,9 @@ static TEE_Result ta_recycle_thread(uint32_t tid)
     hm_info("Suspend thread, tid=0x%x\n", tid);
 
     /* cleanup thread resources, ignore any failed cleanup */
-    rc = hm_thread_terminate(pti->thread_ref);
+    rc = thread_terminate(pti->thread);
     if (rc != 0)
-        hm_error("terminate thread failed cref=0x%" PRIx64 " rc=%d\n", pti->thread_ref, rc);
+        hm_error("terminate thread failed tid=0x%" PRIx32 " rc=%d\n", tid, rc);
 
     rc = pthread_join(pti->thread, NULL);
     if (rc != 0)
@@ -293,7 +296,6 @@ static TEE_Result ta_create_thread(ta_entry_type entry, uint32_t inited, const s
         hm_error("pthread create failed: %d\n", rc);
         goto err_out;
     }
-    pti->thread_ref = pthread_get_sysmgrch_np(pti->thread);
 
     return TEE_SUCCESS;
 
@@ -422,7 +424,7 @@ void tee_task_entry_mt(ta_entry_type ta_entry, int32_t priority, const char *nam
         return;
     }
 
-    stack_size = hm_getstacksize();
+    stack_size = getstacksize();
     if (stack_size == 0) {
         hm_error("get stack size failed, use default stack size 0x%x\n", THREAD_STACK_SIZE);
         stack_size = THREAD_STACK_SIZE;

@@ -12,7 +12,6 @@
 #include "tee_drv_entry.h"
 #include <stdio.h>
 #include <inttypes.h>
-#include <procmgr_ext.h>
 #include <sys/hmapi_ext.h>
 #include <sys/hm_priorities.h>
 #include <sys/kuapi.h>

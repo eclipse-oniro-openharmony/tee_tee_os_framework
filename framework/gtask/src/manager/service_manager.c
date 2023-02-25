@@ -32,6 +32,7 @@
 #include "mem_manager.h"
 #include "agent_manager.h"
 #include "procmgr.h"
+#include "hm_kill.h"
 #include "ipclib.h"
 #include "tee_task.h"
 #include "tee_time_api.h"

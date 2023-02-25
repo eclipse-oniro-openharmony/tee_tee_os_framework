@@ -19,7 +19,6 @@
 #include <ac.h>
 #include <ipclib.h>
 #include <tee_log.h>
-#include <procmgr_ext.h>
 #include <ta_framework.h>
 #include <hmdrv.h>
 #include <tee_drv_internal.h>
@@ -37,6 +36,7 @@
 #include "task_mgr.h"
 #include "base_drv_node.h"
 #include <ipclib_hal.h>
+#include <spawn_ext.h>
 
 static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_req_msg_t *msg,
                               const struct hmcap_message_info *info)
@@ -54,7 +54,7 @@ static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_
         return -1;
     }
 
-    ret = hm_getuuid(info->src_cred.pid, &uuid);
+    ret = getuuid(info->src_cred.pid, &uuid);
     if (ret != 0) {
         tloge("get pid:%u uuid failed\n", info->src_cred.pid);
         return -1;

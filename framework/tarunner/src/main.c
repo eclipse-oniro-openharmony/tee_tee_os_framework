@@ -18,7 +18,8 @@
 #include <sys/mman.h>
 #include <sys/hm_priorities.h> /* for `HM_PRIO_TEE_*` */
 #include <sys/fileio.h>
-#include <procmgr_ext.h>
+#include <procmgr.h>
+#include <hm_getpid.h>
 #include <ipclib.h>
 #include <cs.h>
 #include <teecall_cap.h>

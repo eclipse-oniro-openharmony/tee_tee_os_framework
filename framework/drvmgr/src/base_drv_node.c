@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "base_drv_node.h"
-#include <procmgr_ext.h>
 #include <sys/hmapi_ext.h>
 #include <libdrv_frame.h>
 #include "drv_dispatch.h"

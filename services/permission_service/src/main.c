@@ -21,6 +21,7 @@
 #include <pthread.h>            /* for thread */
 #include <tamgr_ext.h>
 #include <procmgr.h>
+#include <hm_exit.h>
 #include <ac.h>
 #include <ac_dynamic.h>
 #include <tee_defines.h>
@@ -591,7 +592,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
             sender_taskid = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
 
         (void)memset_s(&sender_uuid, sizeof(sender_uuid), 0, sizeof(sender_uuid));
-        if (hm_getuuid((pid_t)info.src_pid, &sender_uuid) != 0)
+        if (getuuid((pid_t)info.src_pid, &sender_uuid) != 0)
             tloge("get uuid failed\n");
 
         perm_thread_handle_main_msg(&req_msg, sender_taskid, &sender_uuid.uuid, info.msg_type, msghdl);

@@ -15,7 +15,9 @@
 #include <dlfcn.h>
 #include <pthread.h>
 #include <ipclib.h>
-#include <procmgr_ext.h>
+#include <spawn_ext.h>
+#include <hm_wait.h>
+#include <hm_kill.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/hmapi_ext.h>
 #include <sys/fileio.h>
@@ -79,22 +81,22 @@ static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_
     char *argv[], char *env[], uint32_t *taskid)
 {
     pid_t pid;
-    cref_t thread_cref;
+    tid_t tid;
     posix_spawnattr_t spawnattr;
 
-    int32_t ret = hm_spawnattr_init(&spawnattr);
+    int32_t ret = spawnattr_init(&spawnattr);
     if (ret != 0) {
         tloge("spawnattr init failed\n");
         return -1;
     }
 
-    ret = hm_spawnattr_setstack(&spawnattr, param->stack_size);
+    ret = spawnattr_setstack(&spawnattr, param->stack_size);
     if (ret != 0) {
         tloge("set stack size:0x%x failed\n", param->stack_size);
         return -1;
     }
 
-    ret = hm_spawnattr_setheap(&spawnattr, param->heap_size);
+    ret = spawnattr_setheap(&spawnattr, param->heap_size);
     if (ret != 0) {
         tloge("set heap size:0x%x failed\n", param->heap_size);
         return -1;
@@ -106,7 +108,7 @@ static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_
         tloge("set uuid failed\n");
         return -1;
     }
-    hm_spawnattr_setuuid(&spawnattr, &uuid);
+    spawnattr_setuuid(&spawnattr, &uuid);
 
     spawnattr.ptid = 0;
 
@@ -114,13 +116,13 @@ static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_
     if (loader_type == ELF_TARUNNER_A32)
         drv_loader = g_drv_a32_loader;
 
-    ret = hm_spawn_ex(&pid, drv_loader, NULL, &spawnattr, argv, env, &thread_cref);
+    ret = posix_spawn_ex(&pid, drv_loader, NULL, &spawnattr, argv, env, &tid);
     if (ret != 0) {
         tloge("spawn driver failed ret:0x%x\n", ret);
         return -1;
     }
 
-    *taskid = pid_to_taskid(TCBCREF2TID(thread_cref), (uint32_t)pid);
+    *taskid = pid_to_taskid((uint32_t)tid, (uint32_t)pid);
 
     return 0;
 }

@@ -18,6 +18,8 @@
 #include <sys/syscalls.h>
 #include <sys/hm_types.h>
 #include <procmgr.h>
+#include <spawn_ext.h>
+#include <hm_exit.h>
 #include <ipclib.h>
 #include <tee_config.h>
 
@@ -42,13 +44,13 @@ static int32_t set_proc_mem_size(const struct proc_mem_info *info, posix_spawnat
     int32_t ret;
 
     if (info->stack_size != 0) {
-        ret = hm_spawnattr_setstack(spawnattr, info->stack_size);
+        ret = spawnattr_setstack(spawnattr, info->stack_size);
         if (ret != 0)
             return ret;
     }
 
     if (info->heap_size != 0) {
-        ret = hm_spawnattr_setheap(spawnattr, info->heap_size);
+        ret = spawnattr_setheap(spawnattr, info->heap_size);
         if (ret != 0)
             return ret;
     }
@@ -75,17 +77,17 @@ static int run_init_task(char *name, char *envp[], const struct proc_mem_info *i
     (void)memset_s(&suuid, sizeof(suuid), 0, sizeof(suuid));
     suuid.uuid = *uuid;
 
-    ret = hm_spawnattr_init(&spawnattr);
+    ret = spawnattr_init(&spawnattr);
     if (ret != 0)
         return ret;
 
-    hm_spawnattr_setuuid(&spawnattr, &suuid);
+    spawnattr_setuuid(&spawnattr, &suuid);
     if (info->stack_size != 0 || info->heap_size != 0) {
         ret = set_proc_mem_size(info, &spawnattr);
         if (ret != 0)
             return ret;
     }
-    ret = hm_spawn(&pid, subargv[0], NULL, &spawnattr, subargv, envp);
+    ret = posix_spawn_ex(&pid, subargv[0], NULL, &spawnattr, subargv, envp, NULL);
     if (ret < 0) {
         hm_error("spawn %s failed: %d.\n", name, ret);
         return ret;

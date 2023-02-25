@@ -16,7 +16,6 @@
 #include "sys/mman.h"
 #include "shared_mem_api.h"
 #include "tee_inner_uuid.h"
-#include <procmgr_ext.h>
 #ifndef CONFIG_MISC_DRIVER
 #include <hm_mman_ext.h>
 #include "drv_thread.h"
@@ -156,7 +155,7 @@ int32_t get_caller_uuid(spawn_uuid_t *uuid)
 
     pid = (int)((uint32_t)pid_call & LOW_MASK_16BIT);
 
-    if (hm_getuuid(pid, uuid) != 0) {
+    if (getuuid(pid, uuid) != 0) {
         tloge("get uuid error, pid:%d\n", pid);
         return TLV_SHAREDMEM_ERROR_GENERIC;
     }

@@ -11,7 +11,8 @@
  */
 #include <stdio.h>
 #include <inttypes.h>
-#include <procmgr_ext.h>
+#include <cs.h>
+#include <hm_exit.h>
 #include <sys/hmapi_ext.h>
 #include <sys/hm_priorities.h>
 #include <sys/fileio.h>
