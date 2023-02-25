@@ -16,7 +16,6 @@
 #include <tee_defines.h>
 #include <ac.h>
 #include <ac_dynamic.h>
-#include <sre_syscalls_ext.h>
 #include <ipclib.h>
 #include <tamgr_ext.h>
 #include <hm_exit.h>

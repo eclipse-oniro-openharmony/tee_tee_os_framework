@@ -26,7 +26,6 @@
 #include "gtask_config_hal.h"
 #include "mem_page_ops.h"
 #include "securec.h"
-#include "sre_syscalls_ext.h"
 
 #include "gtask_adapt.h"
 #include "tee_ta2ta.h" /* for smc_operation */

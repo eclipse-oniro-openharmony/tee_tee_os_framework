@@ -12,7 +12,6 @@
 #include "tee_defines.h"
 #include "sfs.h"
 #include "tee_mem_mgmt_api.h"
-#include "sre_syscalls_ext.h"
 #include "tee_log.h"
 #include "ta_framework.h"
 #include "tee_ext_api.h"
