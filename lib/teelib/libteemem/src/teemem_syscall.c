@@ -19,7 +19,6 @@
 #include <mem_ops.h>
 #include <tee_log.h>
 #include <hmlog.h>
-#include <sys/hmapi.h>
 #include <tamgr_ext.h>
 #include <ipclib.h>
 #include <mem_page_ops.h>

@@ -25,10 +25,8 @@
 #include "tee_app_load_srv.h"
 #include "tee_property_api.h"
 #include "timer_export.h"
-#include <sys/usrsyscall.h>
 #include <sys/teecall.h>
 #include <hmlog.h>
-#include <hm_mman.h>
 #include "tee_init.h"
 #include <string.h>
 #include <ipclib.h>

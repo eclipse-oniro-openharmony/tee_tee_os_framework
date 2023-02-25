@@ -18,7 +18,6 @@
 #include <openssl/rsa.h>
 #include <openssl/obj_mac.h>
 #include <msg_ops.h>
-#include <sys/usrsyscall.h>
 #include <tee_internal_task_pub.h>
 #include "tee_crypto_hal.h"
 #include "tee_elf_verify.h"
