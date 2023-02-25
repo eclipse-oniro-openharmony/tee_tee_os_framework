@@ -27,9 +27,9 @@ static uint32_t get_u32_env(const char *env_name)
     if (env_var == NULL) {
         hm_error("get %s env fail\n", env_name);
     } else {
-        errno = HM_OK;
+        errno = 0;
         unsigned long temp = strtoul(env_var, NULL, DECIMAL_BASE);
-        if (errno != HM_OK) {
+        if (errno != 0) {
             hm_error("%s invalid env:%s\n", env_name, env_var);
             return UINT32_MAX;
         }

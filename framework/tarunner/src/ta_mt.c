@@ -117,7 +117,7 @@ static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti, 
 
     for (i = 0; i < THREAD_CHNL_MAX; i++) {
         pid = hm_getpid();
-        if (pid == HM_ERROR) {
+        if (pid == -1) {
             hm_error("get pid failed\n");
             continue;
         }
@@ -174,10 +174,10 @@ static int32_t create_ipc_channel(const char *task_name, cref_t *ch[])
     reg_items.reg_tamgr = reg_tamgr;
     if (ipc_create_channel(task_name, CREATE_IPC_CHANNEL_NUM, ch, reg_items) != 0) {
         hm_error("Cannot create thread channel\n");
-        return HM_ERROR;
+        return -1;
     }
 
-    return HM_OK;
+    return 0;
 }
 
 static void call_task_entry(const struct thread_info *pti)

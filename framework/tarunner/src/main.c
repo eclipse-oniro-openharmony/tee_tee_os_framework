@@ -53,27 +53,27 @@ static int32_t param_check(int32_t argc, const char * const * argv)
 
     if (argc < (ARGV_TERMINATE_INDEX - 1)) {
         hm_error("invalid argc %d\n", argc);
-        return HM_ERROR;
+        return -1;
     }
 
     length = strnlen(argv[ARGV_TASK_NAME_INDEX], ARGV0_SIZE);
     if (length == 0 || length >= ARGV0_SIZE) {
         hm_error("invalid service name\n");
-        return HM_ERROR;
+        return -1;
     }
 
     if (strncmp(argv[ARGV_TASK_NAME_INDEX], g_tarunner_path, (strlen(g_tarunner_path) + 1)) == 0) {
         hm_error("load TA in buffer not implemented\n");
-        return HM_ERROR;
+        return -1;
     }
 
     length = strnlen(argv[ARGV_TASK_PATH_INDEX], ARGV_SIZE);
     if (length == 0 || length >= ARGV_SIZE) {
         hm_error("invalid path name\n");
-        return HM_ERROR;
+        return -1;
     }
 
-    return HM_OK;
+    return 0;
 }
 
 /*
@@ -82,7 +82,7 @@ static int32_t param_check(int32_t argc, const char * const * argv)
  */
 static bool is_agent(const char *task_name)
 {
-    if (strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == HM_OK)
+    if (strncmp(task_name, "task_ssa", strlen("task_ssa") + 1) == 0)
         return true;
     return false;
 }
@@ -124,25 +124,25 @@ static int32_t create_task_channel(const char *task_name, const struct env_param
     if (param->target_type == DRV_TARGET_TYPE) {
         /* used for cs_server_loop */
         ret = ipc_create_channel_native(task_name, drv_channel);
-        if (ret != HM_OK) {
+        if (ret != 0) {
             hm_error("create drv:%s channel failed\n", task_name);
-            return HM_ERROR;
+            return -1;
         }
 
         hm_debug("create drv:%s channel:0x%llx\n", task_name, (unsigned long long)(*drv_channel));
 
         /* used for irq thread */
         ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
-        if (ret != HM_OK) {
+        if (ret != 0) {
             hm_error("create drv irq channel failed\n");
-            return HM_ERROR;
+            return -1;
         }
     } else {
         /* Create 2 IPC channels */
         ret = ipc_create_channel(task_name, IPC_CHANNEL_NUM, NULL, reg_items);
-        if (ret != HM_OK) {
+        if (ret != 0) {
             hm_error("create multi ipc channel failed: %d\n", ret);
-            return HM_ERROR;
+            return -1;
         }
     }
 
@@ -158,23 +158,23 @@ static int32_t init1(const char *task_name, const struct env_param *param, cref_
     /* Extend utable for drv or agent, such as SSA */
     if ((param->target_type == DRV_TARGET_TYPE) || extend_one_more_utable(task_name)) {
         ret = extend_utables();
-        if (ret != HM_OK) {
+        if (ret != 0) {
             hm_error("extend utable for \"%s\" failed: %d\n", task_name, ret);
-            return HM_ERROR;
+            return -1;
         }
     }
 
     ret = create_task_channel(task_name, param, drv_channel);
     if (ret != 0)
-        return HM_ERROR;
+        return -1;
 
     ret = fileio_init();
-    if (ret != HM_OK) {
+    if (ret != 0) {
         hm_error("file io init failed: %d\n", ret);
-        return HM_ERROR;
+        return -1;
     }
 
-    return HM_OK;
+    return 0;
 }
 
 static int32_t init2(void *libtee, const char *task_name, uint32_t target_type)
@@ -189,7 +189,7 @@ static int32_t init2(void *libtee, const char *task_name, uint32_t target_type)
 
     (void)target_type;
     (void)func;
-    return HM_OK;
+    return 0;
 }
 
 static int32_t init3(const struct env_param *param)
@@ -197,23 +197,23 @@ static int32_t init3(const struct env_param *param)
     int32_t ret;
 
     ret = hm_setuid(param->uid);
-    if (ret != HM_OK) {
+    if (ret != 0) {
         hm_error("failed to setuid: %d\n", ret);
-        return HM_ERROR;
+        return -1;
     }
 
     /* Reject taldr cap, and grant TA cap */
-    if (delete_rref_and_grant() != HM_OK) {
+    if (delete_rref_and_grant() != 0) {
         hm_error("delete rref grant failed\n");
-        return HM_ERROR;
+        return -1;
     }
 
     ret = mprotect(&__tcb_cref, PAGE_SIZE, PROT_READ);
-    if (ret != HM_OK) {
+    if (ret != 0) {
         hm_error("protect tcb cref failed: %d\n", ret);
-        return HM_ERROR;
+        return -1;
     }
-    return HM_OK;
+    return 0;
 }
 
 static int32_t library_init(const char *task_name, const struct env_param *param, void **libtee)
@@ -221,16 +221,16 @@ static int32_t library_init(const char *task_name, const struct env_param *param
     /* Load TEE library */
     *libtee = ta_mt_dlopen(g_tee_share_so_path, RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
     if (*libtee == NULL)
-        return HM_ERROR;
+        return -1;
 
     /* TEE library initialization */
-    if (init2(*libtee, task_name, param->target_type) != HM_OK)
-        return HM_ERROR;
+    if (init2(*libtee, task_name, param->target_type) != 0)
+        return -1;
 
-    if (init3(param) != HM_OK)
-        return HM_ERROR;
+    if (init3(param) != 0)
+        return -1;
 
-    return HM_OK;
+    return 0;
 }
 
 static void send_fail_msg_to_drvmgr(void)
@@ -290,12 +290,12 @@ static int32_t get_routine_info(void *handle, uint32_t size, struct ta_routine_i
     /* should check caller info when open session */
     routine->addcaller_flag = true;
 
-    if (mprotect(routine, size, PROT_READ) != HM_OK) {
+    if (mprotect(routine, size, PROT_READ) != 0) {
         hm_error("change routine attribute failed\n");
-        return HM_ERROR;
+        return -1;
     }
 
-    return HM_OK;
+    return 0;
 }
 
 static void lib_tee_task_entry(void *handle, int32_t priority, const char *task_name, void *libtee)
@@ -324,7 +324,7 @@ static void lib_tee_task_entry(void *handle, int32_t priority, const char *task_
         goto err_out;
     }
 
-    if (get_routine_info(handle, size, routine) != HM_OK)
+    if (get_routine_info(handle, size, routine) != 0)
         goto err_out;
 
     tee_task_entry_mt(ta_entry, priority, task_name, routine);
@@ -333,7 +333,7 @@ static void lib_tee_task_entry(void *handle, int32_t priority, const char *task_
     hm_panic("tee task entry returns\n");
 
 err_out:
-    if (munmap(routine, size) != HM_OK)
+    if (munmap(routine, size) != 0)
         hm_error("free routine failed\n");
 }
 
@@ -473,7 +473,7 @@ __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * c
     void *libtee = NULL;
     cref_t drv_channel = 0;
 
-    if (param_check(argc, argv) != HM_OK) {
+    if (param_check(argc, argv) != 0) {
         hm_error("param check failed\n");
         goto err_out;
     }
@@ -482,11 +482,11 @@ __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * c
         goto err_out;
 
     /* task context initialization */
-    if (init1(argv[ARGV_TASK_NAME_INDEX], &param, &drv_channel) != HM_OK)
+    if (init1(argv[ARGV_TASK_NAME_INDEX], &param, &drv_channel) != 0)
         goto err_out;
 
     /* load tee library and init it */
-    if (library_init(argv[ARGV_TASK_NAME_INDEX], &param, &libtee) != HM_OK)
+    if (library_init(argv[ARGV_TASK_NAME_INDEX], &param, &libtee) != 0)
         goto err_out;
 
     if (param.target_type == DRV_TARGET_TYPE) {
@@ -503,5 +503,5 @@ __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * c
 
 err_out:
     load_fail(param.target_type);
-    return HM_ERROR;
+    return -1;
 }

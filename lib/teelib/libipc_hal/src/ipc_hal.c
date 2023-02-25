@@ -59,7 +59,7 @@ static int32_t global_handle_check(msg_pid_t *puw_dst_pid)
     if (*puw_dst_pid == GLOBAL_HANDLE) {
         if (g_handle == SRE_PID_ERR) {
             if (ipc_hunt_by_name(GLOBAL_SERVICE_NAME, &g_handle) != 0)
-                return HM_ERROR;
+                return -1;
         }
         *puw_dst_pid = g_handle;
     }
@@ -114,7 +114,7 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_h
         return SRE_IPC_ERR;
     }
 
-    return HM_OK;
+    return 0;
 }
 
 static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_msg_handle)
@@ -141,7 +141,7 @@ static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_
         return SRE_IPC_ERR;
     }
 
-    return HM_OK;
+    return 0;
 }
 
 uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp, uint16_t size)
@@ -207,11 +207,11 @@ uint32_t ipc_msg_rcv(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint
 uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t wait_sender)
 {
     msg_pid_t sender = SRE_PID_ERR;
-    uint32_t ret     = HM_OK;
+    uint32_t ret     = 0;
 
     while (wait_sender != sender) {
         ret = ipc_msg_rcv_a(uw_timeout, puw_msg_id, msgp, (uint16_t)(size), &sender);
-        if (ret != HM_OK) {
+        if (ret != 0) {
             hm_error("ipc msg Rcv failed, ret = 0x%x\n", ret);
             return ret;
         }
@@ -272,7 +272,7 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
         return SRE_IPC_ERR;
     }
 
-    return HM_OK;
+    return 0;
 }
 
 uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t *puw_sender_pid)
