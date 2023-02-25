@@ -14,7 +14,6 @@
 
 #include <dlist.h>
 #include <limits.h>
-#include <sre_errno.h>
 #include <tee_defines.h>
 #include <hm_msg_type.h>
 
