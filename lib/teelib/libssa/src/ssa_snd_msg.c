@@ -21,19 +21,19 @@ uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_szie)
     uint32_t ret;
 
     ret = (uint32_t)ipc_get_ch_from_path(SSA_SERVICE_PATH, &rslot);
-    if (ret != HM_OK) {
+    if (ret != 0) {
         tloge("get channel from pathmgr failed\n");
         return ret;
     }
 
     hm_msg.msg_id = cmd_id;
-    if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msg, msg_szie) != HM_OK) {
+    if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msg, msg_szie) != 0) {
         (void)ipc_release_path(SSA_SERVICE_PATH, rslot);
-        return HM_ERROR;
+        return -1;
     }
 
     ret = (uint32_t)ipc_msg_notification(rslot, &hm_msg, sizeof(hm_msg));
-    if (ret != HM_OK)
+    if (ret != 0)
         tloge("msg snd error %x\n", ret);
 
     (void)ipc_release_path(SSA_SERVICE_PATH, rslot);

@@ -52,7 +52,7 @@ int32_t extend_utables(void)
     for (i = 0; i < cnt; i++) {
         if (hmapi_extend_utable() != 0) {
             hm_error("extend utable failed %d\n", i);
-            return HM_ERROR;
+            return -1;
         }
     }
 
