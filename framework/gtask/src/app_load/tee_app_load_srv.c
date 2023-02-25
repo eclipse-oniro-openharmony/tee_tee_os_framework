@@ -15,10 +15,10 @@
 #include <string.h>
 #include <openssl/obj_mac.h>
 #include <mem_ops.h>
-#include <procmgr_ext.h>
 #include <sys/fileio.h>
 #include <sys/mman.h>
 #include <dyn_conf_dispatch_inf.h>
+#include <spawn_ext.h>
 #include "tee_mem_mgmt_api.h"
 #include "gtask_inner.h"
 #include "mem_manager.h"
@@ -694,7 +694,7 @@ static TEE_Result check_register_elf_caller(uint32_t task_id)
     spawn_uuid_t caller_uuid;
     TEE_UUID perm_uuid = TEE_SERVICE_PERM;
 
-    if (hm_getuuid(taskid_to_pid(task_id), &caller_uuid) != 0) {
+    if (getuuid(taskid_to_pid(task_id), &caller_uuid) != 0) {
         tloge("get register elf caller uuid failed\n");
         return TEE_ERROR_GENERIC;
     }

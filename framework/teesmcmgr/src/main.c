@@ -10,6 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 #include <procmgr.h>
+#include <hm_exit.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <securec.h>

@@ -14,11 +14,11 @@
 #include <sys/mman.h>
 #include <msg_ops.h>
 #include <mem_ops.h>
+#include <spawn_ext.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/hmapi_ext.h>
 #include <sys/time.h>
 #include "timer_export.h"
-#include <procmgr_ext.h>
 #include <pthread.h>
 #include "tee_init.h"
 #include "tee_mem_mgmt_api.h"
@@ -38,7 +38,7 @@ TEE_Result tee_srv_get_uuid_by_sender(uint32_t sender, TEE_UUID *uuid)
     if (uuid == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    int32_t ret = hm_getuuid((pid_t)taskid_to_pid(sender), &sender_uuid);
+    int32_t ret = getuuid((pid_t)taskid_to_pid(sender), &sender_uuid);
     if (ret != 0) {
         tloge("get uuid from hm failed, sender is 0x%x\n", sender);
         return TEE_ERROR_ITEM_NOT_FOUND;

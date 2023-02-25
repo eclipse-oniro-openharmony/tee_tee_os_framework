@@ -14,11 +14,11 @@
 #include <securec.h>
 #include <dlist.h>
 #include <ipclib.h>
-#include <procmgr_ext.h>
 #include <tee_log.h>
 #include <tee_bitmap.h>
 #include <hmdrv.h>
 #include <tee_drv_internal.h>
+#include <spawn_ext.h>
 #include "tee_driver_module.h"
 #include "tee_drv_entry.h"
 #include "drv_param_ops.h"
@@ -839,7 +839,7 @@ static int32_t get_ioctl_param(uint64_t fd, struct tee_drv_param *params,
 
     spawn_uuid_t uuid;
     uint32_t pid = taskid_to_pid(params->caller_pid);
-    int32_t ret = hm_getuuid(pid, &uuid);
+    int32_t ret = getuuid(pid, &uuid);
     if (ret != 0) {
         tloge("get pid:%u uuid failed\n", pid);
         return -1;

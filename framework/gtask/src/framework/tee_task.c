@@ -12,6 +12,9 @@
 
 #include "tee_task.h"
 #include "procmgr.h"
+#include "spawn_ext.h"
+#include "hm_wait.h"
+#include "hm_kill.h"
 #include <autoconf.h>
 #include <inttypes.h>
 
@@ -320,7 +323,7 @@ static int32_t set_stack_size(posix_spawnattr_t *spawnattr)
     if (total_size < PAGE_SIZE * PAGES_FOR_STACK)
         total_size = PAGE_SIZE * PAGES_FOR_STACK;
 
-    return hm_spawnattr_setstack(spawnattr, total_size);
+    return spawnattr_setstack(spawnattr, total_size);
 }
 
 static int32_t get_mem_total_size(uint64_t *size)
@@ -357,11 +360,11 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
                               const spawn_uuid_t *uuid)
 {
     pid_t pid;
-    cref_t thread_cref;
+    tid_t tid;
     posix_spawnattr_t spawnattr;
     uint64_t heap_size;
 
-    if (hm_spawnattr_init(&spawnattr) != 0)
+    if (spawnattr_init(&spawnattr) != 0)
         return -1;
 
     if (get_cur_service() == NULL)
@@ -372,23 +375,23 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
         return -1;
     }
 
-    hm_spawnattr_setuuid(&spawnattr, uuid);
+    spawnattr_setuuid(&spawnattr, uuid);
 
     if (get_mem_total_size(&heap_size) != 0)
         return -1;
 
-    if (hm_spawnattr_setheap(&spawnattr, heap_size) != 0)
+    if (spawnattr_setheap(&spawnattr, heap_size) != 0)
         return -1;
 
     if (ta_vsroot_flush(&((get_cur_service()->property).uuid)) == true)
         spawnattr.flags |= (VSROOT_FLAGS_FLUSH_CACHE | VSROOT_FLAGS_FIXED_ASID);
 
-    if (hm_spawn_ex(&pid, elf_path, NULL, &spawnattr, argv, env, &thread_cref) != 0)
+    if (posix_spawn_ex(&pid, elf_path, NULL, &spawnattr, argv, env, &tid) != 0)
         return -1;
 
-    /* build rtosck task_id by pid and thread cref */
+    /* build task_id by pid and tid */
     if (ptask_id != NULL)
-        *ptask_id = pid_to_taskid(TCBCREF2TID(thread_cref), (uint32_t)pid);
+        *ptask_id = pid_to_taskid((uint32_t)tid, (uint32_t)pid);
 
     return 0;
 }

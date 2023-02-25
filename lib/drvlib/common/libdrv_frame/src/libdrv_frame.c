@@ -15,7 +15,6 @@
 #include <dlfcn.h>
 #include <hm_getpid.h>
 #include <mmgrapi.h>
-#include <procmgr_ext.h>
 #include <pathmgr_api.h>
 #include <ipclib.h>
 #include <sys/kuapi.h>

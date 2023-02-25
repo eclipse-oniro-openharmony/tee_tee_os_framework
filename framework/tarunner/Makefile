@@ -30,7 +30,7 @@ inc-flags += -I$(TEELIB)/libteeos/include
 inc-flags += -I$(TEELIB)/libipc_hal/include
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(TEELIB)/libteemem/include
-inc-flags += -I$(PREBUILD_DIR)/sys/hmapi
+inc-flags += -I$(PREBUILD_DIR)/headers/sys/mmgr_sysmgr
 inc-flags += -I$(FRAMEWORK_PATH)/gtask/src/framework
 
 LIBS += ipc_hal${TARG}

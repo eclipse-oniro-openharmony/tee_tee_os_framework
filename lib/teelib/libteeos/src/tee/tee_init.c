@@ -13,7 +13,8 @@
 
 #include <securec.h>
 
-#include "procmgr_ext.h"
+#include "hm_getpid.h"
+#include "spawn_ext.h"
 #include "tee_defines.h"
 #include "tee_obj.h"
 #include "tee_reserved_api.h"
@@ -199,7 +200,7 @@ void set_running_uuid(void)
         return;
     }
 
-    int32_t ret = hm_getuuid(pid, &uuid);
+    int32_t ret = getuuid(pid, &uuid);
     if (ret < 0) {
         tloge("get uuid is error\n");
         return;

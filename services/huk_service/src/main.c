@@ -19,7 +19,7 @@
 #include <sre_syscalls_ext.h>
 #include <ipclib.h>
 #include <tamgr_ext.h>
-#include <procmgr_ext.h>
+#include <hm_exit.h>
 #include <tee_private_api.h>
 #include <ta_framework.h>
 #include <chip_info.h>
@@ -31,6 +31,7 @@
 #include "huk_service_msg.h"
 #include "msg_ops.h"
 #include <ipclib_hal.h>
+#include <spawn_ext.h>
 
 #define MAGIC_STR_LEN               20
 
@@ -124,7 +125,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
             continue;
         }
 
-        if (hm_getuuid((pid_t)info.src_pid, &uuid) != 0)
+        if (getuuid((pid_t)info.src_pid, &uuid) != 0)
             tloge("huk service get uuid failed\n");
 
         if (info.src_pid == 0)
