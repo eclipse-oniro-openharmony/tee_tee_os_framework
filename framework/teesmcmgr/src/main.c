@@ -12,14 +12,11 @@
 #include <procmgr.h>
 #include <stdio.h>
 #include <pthread.h>
-#include <sys/hmapi.h>
 #include <securec.h>
 #include <string.h>
 #include <malloc.h>
 #include <tamgr_ext.h>
 #include <mmgrapi.h>
-#include <irqmgr_api.h>
-#include <sys/usrsyscall.h>
 #include <sys/kuapi.h>
 #include <sys/usrsyscall_smc.h>
 #include "teesmcmgr.h"

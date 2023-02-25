@@ -17,7 +17,6 @@
 #include <mem_ops.h>
 #include "tee_log.h"
 #include "ta_framework.h"
-#include "hm_mman.h"
 #include "tee_property_inner.h"
 
 #define COMPARE_SMALL (-1)

@@ -26,7 +26,6 @@
 #include "gtask_config_hal.h"
 #include "securec.h"
 
-#include <sys/usrsyscall.h>
 #include "gtask_adapt.h"
 #include "dynload.h"
 #include "task_adaptor_pub.h"

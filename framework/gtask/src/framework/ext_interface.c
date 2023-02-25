@@ -27,7 +27,6 @@
 #include "tee_config.h"
 #include "securec.h"
 #include "gtask_core.h" /* for find_task */
-#include <sys/usrsyscall.h>
 #include <ipclib_hal.h>
 
 static bool g_rdr_mem_registered = false;

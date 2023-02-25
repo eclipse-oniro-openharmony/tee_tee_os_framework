@@ -11,7 +11,6 @@
  */
 #include "ssa_snd_msg.h"
 #include <ipclib.h>
-#include <sys/usrsyscall.h>
 #include <tee_log.h>
 #include <securec.h>
 

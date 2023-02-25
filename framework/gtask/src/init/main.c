@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <ipclib.h>
 #include <mmgrapi.h>
-#include <irqmgr_api.h>
 #include <hmdrv.h>
 #include <sys/fileio.h>
 #include <timer.h>
