@@ -9,12 +9,10 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include <hm_mman.h>
 #include <sys/mman.h>
 #include <mm_kcall.h>
 #include <hm/hongmeng.h>
 #include <malloc.h>
-#include <procmgr.h>
 #include <securec.h>
 #include <mem_ops.h>
 #include <tee_log.h>
@@ -25,11 +23,6 @@
 #include <hmdrv.h>
 #include <sre_syscalls_id.h>
 #include <tee_sharemem_ops.h>
-
-void *tee_alloc_coherent_sharemem_aux(const struct tee_uuid *uuid, uint32_t size)
-{
-    return hm_alloc_sharemem(uuid, size, MAP_COHERENT);
-}
 
 static int32_t copy_task_param_check(uint64_t src, uint32_t src_size, uint64_t dst, uint32_t dst_size)
 {
@@ -60,8 +53,7 @@ int32_t copy_from_sharemem(uint32_t src_task, uint64_t src, uint32_t src_size, u
     if (ret != 0)
         return -1;
 
-    pid_t pid_in = TASKID2PID(src_task);
-    ret = hm_map_sharemem(pid_in, src, src_size, &temp_dst);
+    ret = map_sharemem(src_task, src, src_size, &temp_dst);
     if (ret != 0) {
         tloge("map sharemem failed, src_task:0x%x\n", src_task);
         return -1;
@@ -92,8 +84,7 @@ int32_t copy_to_sharemem(uintptr_t src, uint32_t src_size, uint32_t dst_task, ui
     if (ret != 0)
         return -1;
 
-    pid_t pid_in = TASKID2PID(dst_task);
-    ret = hm_map_sharemem(pid_in, dst, dst_size, &temp_dst);
+    ret = map_sharemem(dst_task, dst, dst_size, &temp_dst);
     if (ret != 0) {
         tloge("map sharemem failed, dst_task:0x%x\n", dst_task);
         return -1;
