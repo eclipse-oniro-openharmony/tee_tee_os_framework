@@ -12,8 +12,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <sre_syscalls_id.h>
-#include <sre_syscalls_id_ext.h>
 #include <securec.h>
 #include <api/tee_common.h>
 #include "tee_log.h"

@@ -11,7 +11,6 @@
  */
 #include <securec.h>
 #include "tee_log.h"
-#include "sre_syscalls_id.h"
 #include "sys/mman.h"
 #include "drv_module.h"
 #include "drv_sharedmem.h"

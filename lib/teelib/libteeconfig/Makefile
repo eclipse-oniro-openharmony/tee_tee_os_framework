@@ -48,9 +48,6 @@ inc-flags += -I$(TEELIB)/libteemem/include
 # Source files required to build the target
 libteeconfig_c_files += $(wildcard src/drv_hal/*.c)
 libteeconfig_c_files += $(wildcard src/tee_config/*.c)
-ifeq ($(CONFIG_TEST_CA_CHECK), y)
-    libteeconfig_c_files += src/tee_test_config/tee_test_calist.c
-endif
 
 include $(BUILD_LIB)/lib-common.mk
 include $(BUILD_CONFIG)/feature-macro.mk
