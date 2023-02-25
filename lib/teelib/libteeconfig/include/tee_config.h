@@ -83,19 +83,11 @@ struct drv_frame_info {
 uint32_t get_product_service_property_num(void);
 const struct ta_property *get_product_service_property_config(void);
 
-/* for permission config */
-uint32_t get_teeos_ta_permission_num(void);
-const struct ta_permission *get_teeos_ta_permission_config(void);
-
 uint32_t get_product_dynamic_ta_num(void);
 const struct ta_permission *get_product_ta_permission_config(void);
 
-const struct ta_permission *get_permission_config_by_index(uint32_t num);
-uint32_t get_dynamic_ta_num();
 uint32_t get_drv_frame_nums(void);
 struct drv_frame_info *get_drv_frame_infos(void);
 int32_t get_tbac_info_by_name(const char *name, uint64_t *sid, uint64_t *job_type);
-
-bool is_modload_perm_valid(const TEE_UUID *uuid, const char *name);
 
 #endif
