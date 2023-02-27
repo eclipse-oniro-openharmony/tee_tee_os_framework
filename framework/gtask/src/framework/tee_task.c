@@ -13,7 +13,7 @@
 #include "tee_task.h"
 #include "procmgr.h"
 #include "spawn_ext.h"
-#include "hm_wait.h"
+#include <sys/wait.h>
 #include <signal.h>
 #include <autoconf.h>
 #include <inttypes.h>
@@ -102,7 +102,7 @@ void gt_wait_process(uint32_t task_id)
 
     hm_ipc_remove_cached_ch(task_id, 1, NULL);
     for (i = 0; i < WAIT_MAX; i++) {
-        if (hm_wait(&wstatus) == (pid_t)taskid_to_pid(task_id)) {
+        if (wait(&wstatus) == (pid_t)taskid_to_pid(task_id)) {
             tlogd("wait %" PRIu32 " exit succeeded\n", task_id);
             break;
         }
