@@ -13,7 +13,6 @@
 #define TA_PERMISSION_H
 
 #include <tee_defines.h>
-#include "tee_reserve.h"
 
 static const TEE_UUID g_sem_reserved_permsrv[] = {
 };
