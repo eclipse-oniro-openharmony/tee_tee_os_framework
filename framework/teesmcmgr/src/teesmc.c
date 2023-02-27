@@ -133,11 +133,11 @@ static void hmapi_configure(void)
 
     err = set_priority(HM_PRIO_TEE_SMCMGR);
     if (err < 0)
-        fatal("hmapi set priority failed: %x\n", err);
+        panic("hmapi set priority failed: %x\n", err);
 
     err = disable_local_irq();
     if (err < 0)
-        fatal("hmex disable local irq failed: %x\n", err);
+        panic("hmex disable local irq failed: %x\n", err);
 }
 
 __attribute__((noreturn)) void *tee_smc_thread(void *arg)
@@ -152,7 +152,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
     normal_msg.msg_id = NORMAL_MSG_ID;
     ret_s = memcpy_s(normal_msg.payload, sizeof(normal_msg.payload), magic_msg, sizeof(magic_msg));
     if (ret_s != EOK)
-        fatal("memory copy failed\n");
+        panic("memory copy failed\n");
 
     info("Start teesmc\n");
     hmapi_configure();

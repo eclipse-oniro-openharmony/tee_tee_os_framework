@@ -12,7 +12,7 @@
 
 #include "ta_config_builder.h"
 #include <securec.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <tee_ext_api.h>
 #include <tee_mem_mgmt_api.h>
 
@@ -20,7 +20,7 @@ static bool check_multiply_overflow(uint32_t a, uint32_t b)
 {
     uint32_t p = a * b;
     if (a != 0 && (p / a != b)) {
-        hm_error("the result is over flow");
+        tloge("the result is over flow");
         return true;
     }
 
@@ -55,7 +55,7 @@ static TEE_Result tee_ext_get_device_unique_id(uint8_t *device_unique_id, uint32
 {
     (void)device_unique_id;
     (void)length;
-    hm_error("device id not support\n");
+    tloge("device id not support\n");
     return TEE_ERROR_GENERIC;
 }
 
@@ -69,7 +69,7 @@ TEE_Result check_device_id(struct config_info *config, const uint8_t *buff, uint
         return TEE_SUCCESS;
 
     if (len != TLV_DEVICE_ID_LEN) {
-        hm_error("config tlv parser::device id len invalid should be: %u\n", TLV_DEVICE_ID_LEN);
+        tloge("config tlv parser::device id len invalid should be: %u\n", TLV_DEVICE_ID_LEN);
         config->control_info.debug_info.valid_device = false;
         return TEE_ERROR_GENERIC;
     }
@@ -79,7 +79,7 @@ TEE_Result check_device_id(struct config_info *config, const uint8_t *buff, uint
     uint8_t tlv_device_id[DEVICE_ID_LEN * 2 + 1] = { 0 }; /* 2 is double */
 
     if (tee_ext_get_device_unique_id(unique_id, &id_len) != TEE_SUCCESS) {
-        hm_error("get device id failed\n");
+        tloge("get device id failed\n");
         config->control_info.debug_info.valid_device = false;
         return TEE_ERROR_GENERIC;
     }
@@ -98,12 +98,12 @@ static int32_t handle_ta_basic_info_service_name(struct config_info *cfg_info,
                                                  uint32_t size, const char *value)
 {
     if (size == 0 || size >= MAX_SERVICE_NAME_LEN) {
-        hm_error("param invalid while handle config info ta basic info service name\n");
+        tloge("param invalid while handle config info ta basic info service name\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (memcpy_s(cfg_info->service_name, MAX_SERVICE_NAME_LEN, value, size) != 0) {
-        hm_error("memcpy failed while handle config info ta basic info service name\n");
+        tloge("memcpy failed while handle config info ta basic info service name\n");
         return TEE_ERROR_GENERIC;
     }
     cfg_info->service_name[size] = '\0';
@@ -118,7 +118,7 @@ static int32_t build_ta_basic_info_service_name(struct dlist_node **pos, const s
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta basic info service name\n");
+        tloge("obj size is invalid while build ta basic info service name\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -127,7 +127,7 @@ static int32_t build_ta_basic_info_service_name(struct dlist_node **pos, const s
     switch (node->tag) {
     case CONFIGINFO_TA_BASIC_INFO_SERVICE_NAME_SERVICE_NAME:
         if (handle_ta_basic_info_service_name(cfg_info, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle ta basic info service name failed\n");
+            tloge("handle ta basic info service name failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -141,13 +141,13 @@ static int32_t build_ta_basic_info_service_name(struct dlist_node **pos, const s
 static int32_t handle_ta_basic_info_uuid(struct config_info *cfg_info, uint32_t size, const char *value)
 {
     if (size == 0 || size > MAX_UUID_SIZE) {
-        hm_error("param invalid while handle config info ta basic info uuid\n");
+        tloge("param invalid while handle config info ta basic info uuid\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     int32_t ret = tlv_to_uuid(value, size, &cfg_info->uuid);
     if (ret != TEE_SUCCESS) {
-        hm_error("param invalid while handle config info ta basic info trans uuid failed\n");
+        tloge("param invalid while handle config info ta basic info trans uuid failed\n");
         return ret;
     }
 
@@ -160,7 +160,7 @@ static int32_t build_ta_basic_info_uuid(struct dlist_node **pos, const struct co
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta basic info uuid\n");
+        tloge("obj size is invalid while build ta basic info uuid\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -169,7 +169,7 @@ static int32_t build_ta_basic_info_uuid(struct dlist_node **pos, const struct co
     switch (node->tag) {
     case CONFIGINFO_TA_BASIC_INFO_UUID_UUID:
         if (handle_ta_basic_info_uuid(cfg_info, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle ta basic info uuid\n");
+            tloge("handle ta basic info uuid\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -186,7 +186,7 @@ static int32_t build_ta_basic_info(struct dlist_node **pos, const struct conf_no
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta basic info\n");
+        tloge("obj size is invalid while build ta basic info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -196,19 +196,19 @@ static int32_t build_ta_basic_info(struct dlist_node **pos, const struct conf_no
     case CONFIGINFO_TA_BASIC_INFO_SERVICE_NAME:
         if (handle_conf_node_to_obj(pos, build_ta_basic_info_service_name,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta basic info service name failed\n");
+            tloge("build ta basic info service name failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case CONFIGINFO_TA_BASIC_INFO_UUID:
         if (handle_conf_node_to_obj(pos, build_ta_basic_info_uuid,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta basic info service name failed\n");
+            tloge("build ta basic info service name failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build ta basic info\n");
+        tlogd("skip in build ta basic info\n");
         if (handle_conf_node_to_obj(pos, NULL, cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -223,7 +223,7 @@ static int32_t build_ta_mani_info_instance_keep_alive(struct dlist_node **pos, c
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info instance keep alive\n");
+        tloge("obj size is invalid while build ta manifest info instance keep alive\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -247,7 +247,7 @@ static int32_t build_ta_mani_info_multi_command(struct dlist_node **pos, const s
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info multi command\n");
+        tloge("obj size is invalid while build ta manifest info multi command\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -271,7 +271,7 @@ static int32_t build_ta_mani_info_multi_session(struct dlist_node **pos, const s
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info multi session\n");
+        tloge("obj size is invalid while build ta manifest info multi session\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -294,24 +294,24 @@ static int32_t handle_ta_mani_info_stack_size(uint32_t *stack_size, uint32_t siz
     uint64_t tmp_stack_size;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid param while handle stack size\n");
+        tloge("invalid param while handle stack size\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char buff[MAX_UINT32_LEN + 1];
     if (memcpy_s(buff, sizeof(buff), value, size) != 0) {
-        hm_error("memcpy failed while handle stack size\n");
+        tloge("memcpy failed while handle stack size\n");
         return TEE_ERROR_GENERIC;
     }
     buff[size] = '\0';
 
     if (trans_str_to_int(buff, size, BASE_OF_TEN, &tmp_stack_size) != TEE_SUCCESS) {
-        hm_error("get stack size failed\n");
+        tloge("get stack size failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (tmp_stack_size > UINT32_MAX) {
-        hm_error("stack size is invalied %llx\n", (unsigned long long)tmp_stack_size);
+        tloge("stack size is invalied %llx\n", (unsigned long long)tmp_stack_size);
         return TEE_ERROR_GENERIC;
     }
 
@@ -326,7 +326,7 @@ static int32_t build_ta_mani_info_stack_size(struct dlist_node **pos, const stru
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info stack size\n");
+        tloge("obj size is invalid while build ta manifest info stack size\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -336,7 +336,7 @@ static int32_t build_ta_mani_info_stack_size(struct dlist_node **pos, const stru
     case CONFIGINFO_TA_MANIFEST_INFO_STACK_SIZE_STACK_SIZE:
         if (handle_ta_mani_info_stack_size(&cfg_info->manifest_info.stack_size,
                                            node->size, node->value) != TEE_SUCCESS) {
-            hm_error("build ta manifest info stack size failed\n");
+            tloge("build ta manifest info stack size failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -352,24 +352,24 @@ static int32_t handle_ta_mani_info_heap_size(uint32_t *heap_size, uint32_t size,
     uint64_t tmp_heap_size;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid param while handle heap size\n");
+        tloge("invalid param while handle heap size\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char buff[MAX_UINT32_LEN + 1];
     if (memcpy_s(buff, sizeof(buff), value, size) != 0) {
-        hm_error("memcpy failed while handle heap size\n");
+        tloge("memcpy failed while handle heap size\n");
         return TEE_ERROR_GENERIC;
     }
     buff[size] = '\0';
 
     if (trans_str_to_int(buff, size, BASE_OF_TEN, &tmp_heap_size) != TEE_SUCCESS) {
-        hm_error("get heap size failed\n");
+        tloge("get heap size failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (tmp_heap_size > UINT32_MAX) {
-        hm_error("heap size is invalied %llx\n", (unsigned long long)tmp_heap_size);
+        tloge("heap size is invalied %llx\n", (unsigned long long)tmp_heap_size);
         return TEE_ERROR_GENERIC;
     }
 
@@ -384,7 +384,7 @@ static int32_t build_ta_mani_info_heap_size(struct dlist_node **pos, const struc
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info heap size\n");
+        tloge("obj size is invalid while build ta manifest info heap size\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -394,7 +394,7 @@ static int32_t build_ta_mani_info_heap_size(struct dlist_node **pos, const struc
     case CONFIGINFO_TA_MANIFEST_INFO_HEAP_SIZE_HEAP_SIZE:
         if (handle_ta_mani_info_heap_size(&cfg_info->manifest_info.heap_size,
                                           node->size, node->value) != TEE_SUCCESS) {
-            hm_error("build ta manifest info heap size failed\n");
+            tloge("build ta manifest info heap size failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -410,24 +410,24 @@ static int32_t handle_ta_mani_info_target_type(uint32_t *target_type, uint32_t s
     uint64_t tmp_target_type;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid param while handle target type\n");
+        tloge("invalid param while handle target type\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char buff[MAX_UINT32_LEN + 1];
     if (memcpy_s(buff, sizeof(buff), value, size) != 0) {
-        hm_error("memcpy failed while handle target type\n");
+        tloge("memcpy failed while handle target type\n");
         return TEE_ERROR_GENERIC;
     }
     buff[size] = '\0';
 
     if (trans_str_to_int(buff, size, BASE_OF_TEN, &tmp_target_type) != TEE_SUCCESS) {
-        hm_error("get heap size failed\n");
+        tloge("get heap size failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (tmp_target_type > UINT32_MAX) {
-        hm_error("target type is invalied %llx\n", (unsigned long long)tmp_target_type);
+        tloge("target type is invalied %llx\n", (unsigned long long)tmp_target_type);
         return TEE_ERROR_GENERIC;
     }
 
@@ -442,7 +442,7 @@ static int32_t build_ta_mani_info_target_type(struct dlist_node **pos, const str
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info target type\n");
+        tloge("obj size is invalid while build ta manifest info target type\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -452,7 +452,7 @@ static int32_t build_ta_mani_info_target_type(struct dlist_node **pos, const str
     case CONFIGINFO_TA_MANIFEST_INFO_TARGET_TYPE_TARGET_TYPE:
         if (handle_ta_mani_info_target_type(&cfg_info->manifest_info.target_type,
                                             node->size, node->value) != TEE_SUCCESS) {
-            hm_error("build ta manifest info target type failed\n");
+            tloge("build ta manifest info target type failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -469,7 +469,7 @@ static int32_t build_ta_mani_info_single_instance(struct dlist_node **pos, const
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info single instance\n");
+        tloge("obj size is invalid while build ta manifest info single instance\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -503,7 +503,7 @@ static int32_t build_ta_mani_info(struct dlist_node **pos, const struct conf_nod
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta manifest info\n");
+        tloge("obj size is invalid while build ta manifest info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -526,7 +526,7 @@ static int32_t build_ta_mani_info(struct dlist_node **pos, const struct conf_nod
     }
 
     if (i == ta_mani_funcs_size) {
-        hm_debug("skip in build ta manifest info\n");
+        tlogd("skip in build ta manifest info\n");
         if (handle_conf_node_to_obj(pos, NULL, cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
     }
@@ -541,7 +541,7 @@ static int32_t build_ta_control_info_se_open_session(struct dlist_node **pos, co
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build se open session\n");
+        tloge("obj size is invalid while build se open session\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -565,7 +565,7 @@ static int32_t build_ta_control_info_se_info(struct dlist_node **pos, const stru
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build se info\n");
+        tloge("obj size is invalid while build se info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -575,12 +575,12 @@ static int32_t build_ta_control_info_se_info(struct dlist_node **pos, const stru
     case CONFIGINFO_TA_CONTROL_INFO_SE_INFO_SE_OPEN_SESSION:
         if (handle_conf_node_to_obj(pos, build_ta_control_info_se_open_session,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta control info se info se open session failed\n");
+            tloge("build ta control info se info se open session failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build ta control info se info\n");
+        tlogd("skip in build ta control info se info\n");
         if (handle_conf_node_to_obj(pos, NULL, cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -596,7 +596,7 @@ static int32_t build_ta_control_info_debug_status(struct dlist_node **pos, const
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build debug status\n");
+        tloge("obj size is invalid while build debug status\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -617,19 +617,19 @@ static int32_t build_ta_control_info_debug_status(struct dlist_node **pos, const
 static int32_t handle_ta_control_info_debug_device_id(struct config_info *cfg_info, const struct conf_node_t *node)
 {
     if (cfg_info == NULL || node == NULL || node->size != TLV_DEVICE_ID_LEN) {
-        hm_error("bad param\n");
+        tloge("bad param\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     uint8_t buff[TLV_DEVICE_ID_LEN + 1] = { 0 };
     if (memcpy_s(buff, TLV_DEVICE_ID_LEN, node->value, node->size) != 0) {
-        hm_error("memcpy for debug device id failed\n");
+        tloge("memcpy for debug device id failed\n");
         return TEE_ERROR_GENERIC;
     }
     buff[node->size] = '\0';
 
     if (check_device_id(cfg_info, buff, node->size) != TEE_SUCCESS) {
-        hm_error("check device id failed\n");
+        tloge("check device id failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -642,7 +642,7 @@ static int32_t build_ta_control_info_debug_device_id(struct dlist_node **pos, co
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build debug device id\n");
+        tloge("obj size is invalid while build debug device id\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -651,7 +651,7 @@ static int32_t build_ta_control_info_debug_device_id(struct dlist_node **pos, co
     switch (node->tag) {
     case CONFIGINFO_TA_CONTROL_INFO_DEBUG_INFO_DEBUG_DEVICE_ID_DEBUG_DEVICE_ID:
         if (handle_ta_control_info_debug_device_id(cfg_info, node) != TEE_SUCCESS) {
-            hm_error("check device id failed\n");
+            tloge("check device id failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -668,7 +668,7 @@ static int32_t build_ta_control_info_debug_info(struct dlist_node **pos, const s
     (void)pos;
     struct config_info *cfg_info = NULL;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build debug info\n");
+        tloge("obj size is invalid while build debug info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -678,19 +678,19 @@ static int32_t build_ta_control_info_debug_info(struct dlist_node **pos, const s
     case CONFIGINFO_TA_CONTROL_INFO_DEBUG_INFO_DEBUG_STATUS:
         if (handle_conf_node_to_obj(pos, build_ta_control_info_debug_status,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta control info debug info debug status failed\n");
+            tloge("build ta control info debug info debug status failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case CONFIGINFO_TA_CONTROL_INFO_DEBUG_INFO_DEBUG_DEVICE_ID:
         if (handle_conf_node_to_obj(pos, build_ta_control_info_debug_device_id,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta control info debug info debug status failed\n");
+            tloge("build ta control info debug info debug status failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build ta control info debug info\n");
+        tlogd("skip in build ta control info debug info\n");
         if (handle_conf_node_to_obj(pos, NULL, cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -705,7 +705,7 @@ static int32_t build_ta_control_info(struct dlist_node **pos, const struct conf_
     (void)pos;
     struct config_info *cfg_info = (struct config_info *)obj;
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta control info\n");
+        tloge("obj size is invalid while build ta control info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -714,7 +714,7 @@ static int32_t build_ta_control_info(struct dlist_node **pos, const struct conf_
     case CONFIGINFO_TA_CONTROL_INFO_SE_INFO:
         if (handle_conf_node_to_obj(pos, build_ta_control_info_se_info,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta control info rpmb info failed\n");
+            tloge("build ta control info rpmb info failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -722,12 +722,12 @@ static int32_t build_ta_control_info(struct dlist_node **pos, const struct conf_
     case CONFIGINFO_TA_CONTROL_INFO_DEBUG_INFO:
         if (handle_conf_node_to_obj(pos, build_ta_control_info_debug_info,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta control info rpmb info failed\n");
+            tloge("build ta control info rpmb info failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build ta control info\n");
+        tlogd("skip in build ta control info\n");
         if (handle_conf_node_to_obj(pos, NULL, cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -741,7 +741,7 @@ static int32_t build_ta_config(struct dlist_node **pos, const struct conf_node_t
     struct config_info *cfg_info = NULL;
 
     if (obj_size != sizeof(*cfg_info)) {
-        hm_error("obj size is invalid while build ta config\n");
+        tloge("obj size is invalid while build ta config\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -751,26 +751,26 @@ static int32_t build_ta_config(struct dlist_node **pos, const struct conf_node_t
     case CONFIGINFO_TA_BASIC_INFO:
         if (handle_conf_node_to_obj(pos, build_ta_basic_info,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta basic info failed\n");
+            tloge("build ta basic info failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case CONFIGINFO_TA_MANIFEST_INFO:
         if (handle_conf_node_to_obj(pos, build_ta_mani_info,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta basic info failed\n");
+            tloge("build ta basic info failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case CONFIGINFO_TA_CONTROL_INFO:
         if (handle_conf_node_to_obj(pos, build_ta_control_info,
                                     cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS) {
-            hm_error("build ta basic info failed\n");
+            tloge("build ta basic info failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build ta config\n");
+        tlogd("skip in build ta config\n");
         if (handle_conf_node_to_obj(pos, NULL, cfg_info, sizeof(*cfg_info)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -782,12 +782,12 @@ static int32_t build_ta_config(struct dlist_node **pos, const struct conf_node_t
 int32_t install_ta_config(void *obj, uint32_t obj_size, const struct conf_queue_t *conf_queue)
 {
     if (conf_queue == NULL || obj == NULL) {
-        hm_error("param is invalid while install ta config\n");
+        tloge("param is invalid while install ta config\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (obj_size != sizeof(struct config_info)) {
-        hm_error("obj size is invalied while install ta config\n");
+        tloge("obj size is invalied while install ta config\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -795,7 +795,7 @@ int32_t install_ta_config(void *obj, uint32_t obj_size, const struct conf_queue_
 
     /* init ta config info */
     if (memset_s(cfg_info, sizeof(*cfg_info), 0, sizeof(*cfg_info)) != 0) {
-        hm_error("memset for ta config info failed\n");
+        tloge("memset for ta config info failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -803,7 +803,7 @@ int32_t install_ta_config(void *obj, uint32_t obj_size, const struct conf_queue_
         struct dlist_node *pos = dlist_get_next(&conf_queue->queue);
         int32_t ret = handle_conf_node_to_obj(&pos, build_ta_config, cfg_info, sizeof(*cfg_info));
         if (ret != TEE_SUCCESS) {
-            hm_error("handle ta config failed\n");
+            tloge("handle ta config failed\n");
             return ret;
         }
     }

@@ -51,14 +51,14 @@ int32_t create_spawn_sync_msg_info(void)
 {
     int32_t ret = ipc_create_channel_native(DRV_SPAWN_SYNC_NAME, &g_drv_spawn_sync_channel);
     if (ret != 0) {
-        /* called by drvmgr main, use hm_error instead of tloge */
-        hm_error("create spawn sync channel fail\n");
+        /* called by drvmgr main, use tloge instead of tloge */
+        tloge("create spawn sync channel fail\n");
         return -1;
     }
 
     g_drv_spawn_sync_msghdl = ipc_msg_create_hdl();
     if (is_ref_err(g_drv_spawn_sync_msghdl)) {
-        hm_error("create spawn sync hdl fail\n");
+        tloge("create spawn sync hdl fail\n");
         return -1;
     }
 

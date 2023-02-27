@@ -12,7 +12,6 @@
 #include "tee_agent.h"
 #include <ipclib.h>
 #include <msg_ops.h>
-#include <hmlog.h>
 #include <tee_defines.h>
 #include <ta_framework.h>
 #include <tee_ext_api.h>
@@ -35,7 +34,7 @@ TEE_Result tee_send_agent_cmd(uint32_t agent_id)
 
     ret = ipc_msg_snd(TEE_TASK_AGENT_SMC_CMD, GLOBAL_HANDLE, &send_msg, sizeof(send_msg));
     if (ret != SRE_OK) {
-        hm_error("msg snd error %x\n", ret);
+        tloge("msg snd error %x\n", ret);
         return TEE_ERROR_GENERIC;
     }
 
@@ -43,12 +42,12 @@ TEE_Result tee_send_agent_cmd(uint32_t agent_id)
                            GLOBAL_HANDLE);
     tlogd("send agent cmd receive message from gtask %x\n", ret);
     if (ret != SRE_OK) {
-        hm_error("msg rcv error %x\n", ret);
+        tloge("msg rcv error %x\n", ret);
         return TEE_ERROR_GENERIC;
     }
 
     if (ret_msg.cmd_id == TEE_INVALID_AGENT) {
-        hm_error("send agent cmd to gtask failed, agent id = %u\n", agent_id);
+        tloge("send agent cmd to gtask failed, agent id = %u\n", agent_id);
         return TEE_ERROR_GENERIC;
     }
 
@@ -68,10 +67,10 @@ static TEE_Result wait_msg_from_gtask(void)
         ret = ipc_msg_rcv_a(OS_WAIT_FOREVER, &msg, &ret_msg, sizeof(ret_msg), &sndr);
         if (ret != SRE_OK) {
             if (ret == SRE_IPC_NO_CHANNEL_ERR) {
-                hm_error("msg rcv fail to get channel\n");
+                tloge("msg rcv fail to get channel\n");
                 return TEE_ERROR_GENERIC;
             }
-            hm_error("msg rcv error %x\n", ret);
+            tloge("msg rcv error %x\n", ret);
             continue;
         }
 
@@ -79,16 +78,16 @@ static TEE_Result wait_msg_from_gtask(void)
             continue;
 
         if (sndr != GLOBAL_HANDLE || msg != TA_LOCK_ACK) {
-            hm_error("get agent lock exception:msg %x, cmd 0x%x, sender 0x%x\n", msg, ret_msg.cmd_id, sndr);
+            tloge("get agent lock exception:msg %x, cmd 0x%x, sender 0x%x\n", msg, ret_msg.cmd_id, sndr);
             ret_data = (uint8_t *)(&ret_msg);
             for (i = 0; i < sizeof(ret_msg); i++)
-                hm_error("msg get from gtask is ret_data[%u] = 0x%x\n", i, ret_data[i]);
+                tloge("msg get from gtask is ret_data[%u] = 0x%x\n", i, ret_data[i]);
             continue; /* rcv the ta_lock agent ack msg */
         }
 
         /* if ta try to lock/unlock an invalid agent, gtask will return TEE_INVALID_AGENT */
         if (ret_msg.cmd_id != TEE_AGENT_LOCK) {
-            hm_error("agent lock/unlock failed ret cmd is %x\n", ret_msg.cmd_id);
+            tloge("agent lock/unlock failed ret cmd is %x\n", ret_msg.cmd_id);
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -109,7 +108,7 @@ TEE_Result tee_agent_lock(uint32_t agent_id)
 
     ret = ipc_msg_snd(TA_LOCK_AGENT, GLOBAL_HANDLE, &send_msg, sizeof(send_msg));
     if (ret != SRE_OK) {
-        hm_error("msg snd to gtask error %x\n", ret);
+        tloge("msg snd to gtask error %x\n", ret);
         return TEE_ERROR_GENERIC;
     }
 
@@ -132,7 +131,7 @@ TEE_Result tee_agent_unlock(uint32_t agent_id)
 
     ret = ipc_msg_snd(TA_UNLOCK_AGENT, GLOBAL_HANDLE, &send_msg, sizeof(send_msg));
     if (ret != SRE_OK) {
-        hm_error("msg snd to gtask error %x\n", ret);
+        tloge("msg snd to gtask error %x\n", ret);
         return TEE_ERROR_GENERIC;
     }
 
@@ -146,21 +145,21 @@ TEE_Result tee_get_agent_buffer(uint32_t agent_id, void **buffer, uint32_t *leng
     uint32_t ret;
 
     if (buffer == NULL || length == NULL) {
-        hm_error("invalid input parameters\n");
+        tloge("invalid input parameters\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     send_msg.agent_id = agent_id;
     ret = ipc_msg_snd(TA_GET_AGENT_BUFFER, GLOBAL_HANDLE, &send_msg, sizeof(send_msg));
     if (ret != SRE_OK) {
-        hm_error("msg snd error %x\n", ret);
+        tloge("msg snd error %x\n", ret);
         return TEE_ERROR_GENERIC;
     }
 
     ret = ipc_msg_rcv_safe(OS_WAIT_FOREVER, NULL, &entry_msg, sizeof(entry_msg),
                            GLOBAL_HANDLE);
     if (ret != SRE_OK) {
-        hm_error("receive msg failed in get agent buffer, ret=0x%x\n", ret);
+        tloge("receive msg failed in get agent buffer, ret=0x%x\n", ret);
         return TEE_ERROR_GENERIC;
     }
 
@@ -173,7 +172,7 @@ TEE_Result tee_get_agent_buffer(uint32_t agent_id, void **buffer, uint32_t *leng
         *buffer = entry_msg.session_context;
         *length = entry_msg.param_type;
     } else {
-        hm_error("Failed to get buffer of agent %u\n", agent_id);
+        tloge("Failed to get buffer of agent %u\n", agent_id);
         return TEE_ERROR_GENERIC;
     }
 
@@ -185,12 +184,12 @@ void obtain_agent_work_lock(uint32_t agent_id)
 {
     TEE_Result ret = tee_agent_lock(agent_id);
     if (ret != TEE_SUCCESS)
-        hm_error("failed to lock agent 0x%x\n", agent_id);
+        tloge("failed to lock agent 0x%x\n", agent_id);
 }
 
 void agent_work_unlock(uint32_t agent_id)
 {
     TEE_Result ret = tee_agent_unlock(agent_id);
     if (ret != TEE_SUCCESS)
-        hm_error("failed to unlock agent 0x%x\n", agent_id);
+        tloge("failed to unlock agent 0x%x\n", agent_id);
 }

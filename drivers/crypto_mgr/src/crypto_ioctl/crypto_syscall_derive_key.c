@@ -12,14 +12,14 @@
 #include "crypto_syscall_common.h"
 #include <securec.h>
 #include "tee_driver_module.h"
-#include <hmlog.h>
+#include <tee_log.h>
 #include "drv_param_ops.h"
 #include "crypto_syscall_ec.h"
 
 static int32_t ecdh_derive_key_ops(const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg, uint32_t alg_type)
 {
     if (ops->ecdh_derive_key == NULL) {
-        hm_error("hardware engine ecdh derive key fun is null\n");
+        tloge("hardware engine ecdh derive key fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -53,12 +53,12 @@ static int32_t ecdh_derive_key_ops(const struct crypto_drv_ops_t *ops, struct me
     ret = ops->ecdh_derive_key(alg_type, client_key, server_key, &ec_params, &secret);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do ecdh derive key failed. ret = %d\n", ret);
+        tloge("hardware engine do ecdh derive key failed. ret = %d\n", ret);
         goto end;
     }
 
     if (secret.size > crypto_arg->size) {
-        hm_error("new secret size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, secret.size);
+        tloge("new secret size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, secret.size);
         goto end;
     }
     crypto_arg->size = secret.size;
@@ -94,7 +94,7 @@ int32_t ecdh_derive_key_call(const struct drv_data *drv, unsigned long args, uin
         goto end;
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, ecdh_buf_arg,
@@ -106,7 +106,7 @@ static int32_t dh_generate_key_ops(const struct crypto_drv_ops_t *ops, struct me
     uint32_t dh_mode)
 {
     if (ops->dh_generate_key == NULL) {
-        hm_error("hardware engine dh generate key fun is null\n");
+        tloge("hardware engine dh generate key fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -142,19 +142,19 @@ static int32_t dh_generate_key_ops(const struct crypto_drv_ops_t *ops, struct me
     ret = ops->dh_generate_key(&dh_generate_key_data, &pub_key, &priv_key);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do dh generate key failed. ret = %d\n", ret);
+        tloge("hardware engine do dh generate key failed. ret = %d\n", ret);
         return ret;
     }
 
     if (pub_key.size > crypto_arg->size) {
-        hm_error("new pub_key size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, pub_key.size);
+        tloge("new pub_key size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, pub_key.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = pub_key.size;
 
     crypto_arg++;
     if (priv_key.size > crypto_arg->size) {
-        hm_error("new priv_key size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, priv_key.size);
+        tloge("new priv_key size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, priv_key.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = priv_key.size;
@@ -186,7 +186,7 @@ int32_t dh_generate_key_call(const struct drv_data *drv, unsigned long args, uin
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, dh_generate_buf_arg,
@@ -197,7 +197,7 @@ end:
 static int32_t dh_derive_key_ops(const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg)
 {
     if (ops->dh_derive_key == NULL) {
-        hm_error("hardware engine dh derive key fun is null\n");
+        tloge("hardware engine dh derive key fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -230,12 +230,12 @@ static int32_t dh_derive_key_ops(const struct crypto_drv_ops_t *ops, struct memr
     ret = ops->dh_derive_key(&dh_derive_key_data, &secret);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do dh derive key failed. ret = %d\n", ret);
+        tloge("hardware engine do dh derive key failed. ret = %d\n", ret);
         return ret;
     }
 
     if (secret.size > crypto_arg->size) {
-        hm_error("new secret size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, secret.size);
+        tloge("new secret size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, secret.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
 
@@ -268,7 +268,7 @@ int32_t dh_derive_key_call(const struct drv_data *drv, unsigned long args, uint3
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, dh_derive_buf_arg,
@@ -280,12 +280,12 @@ static int32_t derive_root_key(const struct crypto_drv_ops_t *ops, uint32_t key_
     const struct memref_t *data_in, struct memref_t *data_out)
 {
     if (data_in == NULL || data_out == NULL) {
-        hm_error("invalid params\n");
+        tloge("invalid params\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
     if (ops->derive_root_key == NULL) {
-        hm_error("hardware engine derive root key fun is null\n");
+        tloge("hardware engine derive root key fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -296,7 +296,7 @@ static int32_t derive_root_key(const struct crypto_drv_ops_t *ops, uint32_t key_
     ret = ops->derive_root_key(key_type, data_in, data_out);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do derive root key failed. ret = %d\n", ret);
+        tloge("hardware engine do derive root key failed. ret = %d\n", ret);
         return ret;
     }
 
@@ -370,12 +370,12 @@ static int32_t hw_derive_root_key_ops(const struct crypto_drv_ops_t *ops,
 
     int32_t ret = hw_derive_root_key_iter(ops, derive_type, &data_in, &data_out, iter_num);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("derive root key iter fail\n");
+        tloge("derive root key iter fail\n");
         return ret;
     }
     buf_arg--;
     if (data_out.size > buf_arg->size) {
-        hm_error("new data out size > origin size. origin size = %u, new size = %u\n", buf_arg->size, data_out.size);
+        tloge("new data out size > origin size. origin size = %u, new size = %u\n", buf_arg->size, data_out.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     buf_arg->size = data_out.size;
@@ -399,13 +399,13 @@ int32_t derive_root_key_call(const struct drv_data *drv, unsigned long args, uin
 
     ret = hw_derive_root_key_ops(ops, derive_buf_arg, ioctl_args);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("derive root key failed. ret = %d", ret);
+        tloge("derive root key failed. ret = %d", ret);
         goto end;
     }
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, derive_buf_arg,
@@ -417,7 +417,7 @@ static int32_t pbkdf2_fun_ops(const struct crypto_drv_ops_t *ops,
     struct memref_t *buf_arg, const struct crypto_ioctl *ioctl_args)
 {
     if (ops->pbkdf2 == NULL) {
-        hm_error("hardware engine pbkdf2 fun is null\n");
+        tloge("hardware engine pbkdf2 fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -447,12 +447,12 @@ static int32_t pbkdf2_fun_ops(const struct crypto_drv_ops_t *ops,
     ret = ops->pbkdf2(&password, &salt, iterations, digest_type, &data_out);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do pbkdf2 failed. ret = %d\n", ret);
+        tloge("hardware engine do pbkdf2 failed. ret = %d\n", ret);
         return ret;
     }
 
     if (data_out.size > tmp_buf_arg->size) {
-        hm_error("new data out size > origin size. origin size = %u, new size = %u\n",
+        tloge("new data out size > origin size. origin size = %u, new size = %u\n",
             tmp_buf_arg->size, data_out.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
@@ -481,7 +481,7 @@ int32_t pbkdf2_call(const struct drv_data *drv, unsigned long args, uint32_t arg
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, pbkdf2_buf_arg,

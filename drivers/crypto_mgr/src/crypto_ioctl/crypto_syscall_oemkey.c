@@ -12,13 +12,13 @@
 #include "crypto_syscall_oemkey.h"
 #include <securec.h>
 #include "tee_driver_module.h"
-#include <hmlog.h>
+#include <tee_log.h>
 #include "drv_param_ops.h"
 
 static int32_t get_oemkey_ops(const struct crypto_drv_ops_t *ops, struct memref_t *buf_arg)
 {
     if (ops->get_oemkey == NULL) {
-        hm_error("hardware engine get oemkey fun is null\n");
+        tloge("hardware engine get oemkey fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -34,7 +34,7 @@ static int32_t get_oemkey_ops(const struct crypto_drv_ops_t *ops, struct memref_
 
     ret = ops->get_oemkey(buffer, size);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("get oemkey failed\n");
+        tloge("get oemkey failed\n");
 
     do_power_off(ops);
 
@@ -62,7 +62,7 @@ int32_t get_oemkey_call(const struct drv_data *drv, unsigned long args,
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,

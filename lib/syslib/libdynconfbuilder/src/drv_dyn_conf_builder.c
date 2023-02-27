@@ -12,7 +12,7 @@
 
 #include "drv_dyn_conf_builder.h"
 #include <securec.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <cs.h>
 #include <dlist.h>
 #include <hmdrv.h>
@@ -83,12 +83,12 @@ static void free_drv_tlv(struct drv_tlv *drv)
 static int32_t init_drv_conf_mani(const struct drv_mani_t *mani, struct drv_conf_t *drv_conf)
 {
     if (mani->service_name_size >= DRV_NAME_MAX_LEN) {
-        hm_error("service name is too long %u\n", mani->service_name_size);
+        tloge("service name is too long %u\n", mani->service_name_size);
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (memcpy_s(drv_conf->mani.service_name, DRV_NAME_MAX_LEN, mani->service_name, mani->service_name_size) != 0) {
-        hm_error("memcpy service name to drv conf failed\n");
+        tloge("memcpy service name to drv conf failed\n");
         return TEE_ERROR_GENERIC;
     }
     drv_conf->mani.service_name[mani->service_name_size] = '\0';
@@ -151,18 +151,18 @@ static int32_t init_drv_conf_filter_chip_type(const struct conf_queue_t *conf_qu
 
     uint32_t tmp_size = count * size;
     if (size == 0 || count >= (MAX_IMAGE_LEN / size)) {
-        hm_error("tmp size is invalid %u\n", tmp_size);
+        tloge("tmp size is invalid %u\n", tmp_size);
         return TEE_ERROR_GENERIC;
     }
 
     *list = alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
     if (*list == NULL) {
-        hm_error("malloc for tlv list failed\n");
+        tloge("malloc for tlv list failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (memset_s(*list, tmp_size, 0, tmp_size) != 0) {
-        hm_error("memset for tlv list failed\n");
+        tloge("memset for tlv list failed\n");
         (void)free_sharemem(*list, tmp_size);
         *list = NULL;
         return TEE_ERROR_GENERIC;
@@ -234,13 +234,13 @@ static int32_t init_drv_mac_info(struct drv_conf_t *drv_conf, const struct conf_
     /* drv_conf->mac_info_list_size <= 0xffff means tmp_size cannot larger than 0xFFFFFFFF */
     uint32_t tmp_size = drv_conf->mac_info_list_size * sizeof(struct drv_mac_info_t);
     if (tmp_size >= MAX_IMAGE_LEN) {
-        hm_error("mac info tmp size is invalid %u\n", tmp_size);
+        tloge("mac info tmp size is invalid %u\n", tmp_size);
         return TEE_ERROR_GENERIC;
     }
 
     drv_conf->mac_info_list = alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
     if (drv_conf->mac_info_list == NULL) {
-        hm_error("malloc for mac list failed\n");
+        tloge("malloc for mac list failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -258,13 +258,13 @@ static int32_t init_drv_cmd_perm(struct drv_conf_t *drv_conf, const struct conf_
     /* drv_conf->cmd_perm_list_size < 0xffff means tmp_size cannot larger than 0xFFFFFFFF */
     uint32_t tmp_size = drv_conf->cmd_perm_list_size * sizeof(struct drv_cmd_perm_info_t);
     if (tmp_size >= MAX_IMAGE_LEN) {
-        hm_error("cmd perm tmp size is invalid %u\n", tmp_size);
+        tloge("cmd perm tmp size is invalid %u\n", tmp_size);
         return TEE_ERROR_GENERIC;
     }
 
     drv_conf->cmd_perm_list = alloc_sharemem_aux(&g_drv_server_uuid, tmp_size);
     if (drv_conf->cmd_perm_list == NULL) {
-        hm_error("malloc for cmd_perm list failed\n");
+        tloge("malloc for cmd_perm list failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -275,7 +275,7 @@ static int32_t init_drv_conf(const struct drv_mani_t *mani, struct drv_conf_t *d
                              const struct conf_queue_t *conf_queue)
 {
     if (memset_s(drv_conf, sizeof(*drv_conf), 0, sizeof(*drv_conf)) != 0) {
-        hm_error("memset for init drv conf failed\n");
+        tloge("memset for init drv conf failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -304,24 +304,24 @@ static int32_t handle_drv_basic_info_thread_limit(uint32_t *thread_limit, uint32
     uint64_t tmp_limit;
 
     if (value == NULL || size > MAX_UINT32_LEN || size == 0) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char buff[MAX_UINT32_LEN + 1];
     if (memcpy_s(buff, sizeof(buff), value, size) != 0) {
-        hm_error("memcpy failed\n");
+        tloge("memcpy failed\n");
         return TEE_ERROR_GENERIC;
     }
     buff[size] = '\0';
 
     if (trans_str_to_int(buff, size, BASE_OF_TEN, &tmp_limit) != TEE_SUCCESS) {
-        hm_error("get thread limit failed, and thread_limit\n");
+        tloge("get thread limit failed, and thread_limit\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (tmp_limit > THREAD_LIMIT_MAX) {
-        hm_info("get thread limit %llu larger than THREAD_LIMIT_MAX %u\n",
+        tlogi("get thread limit %llu larger than THREAD_LIMIT_MAX %u\n",
                 (unsigned long long)tmp_limit, THREAD_LIMIT_MAX);
         *thread_limit = THREAD_LIMIT_MAX;
         return TEE_SUCCESS;
@@ -329,7 +329,7 @@ static int32_t handle_drv_basic_info_thread_limit(uint32_t *thread_limit, uint32
 
     *thread_limit = (uint32_t)tmp_limit;
     if (*thread_limit == 0) {
-        hm_error("get thread limit should not be 0\n");
+        tloge("get thread limit should not be 0\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -339,13 +339,13 @@ static int32_t handle_drv_basic_info_thread_limit(uint32_t *thread_limit, uint32
 static int32_t handle_drv_basic_info_exception_mode(uint8_t *exception_mode, uint32_t size, const char *value)
 {
     if (value == NULL || size >= MAX_IMAGE_LEN) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return TEE_ERROR_GENERIC;
     }
 
     char buff[size + 1];
     if (memcpy_s(buff, size + 1, value, size) != 0) {
-        hm_error("memcpy failed\n");
+        tloge("memcpy failed\n");
         return TEE_ERROR_GENERIC;
     }
     buff[size] = '\0';
@@ -365,7 +365,7 @@ static int32_t handle_drv_basic_info_exception_mode(uint8_t *exception_mode, uin
         return TEE_SUCCESS;
     }
 
-    hm_error("cannot handle exception_mode %s\n", buff);
+    tloge("cannot handle exception_mode %s\n", buff);
     return TEE_ERROR_GENERIC;
 }
 
@@ -376,7 +376,7 @@ static int32_t build_drv_basic_info(struct dlist_node **pos, const struct conf_n
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv basic info\n");
+        tloge("obj size is invalid while build drv basic info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -418,7 +418,7 @@ static int32_t tlv_to_iomap_region(const char *iomap_buff, uint32_t buff_len, st
     const char *head = iomap_buff;
 
     if (buff_len == 0) {
-        hm_error("iomap buff len is 0\n");
+        tloge("iomap buff len is 0\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -428,12 +428,12 @@ static int32_t tlv_to_iomap_region(const char *iomap_buff, uint32_t buff_len, st
         if (iomap_buff[i] == ',' || iomap_buff[i] == ';' || iomap_buff[i] == '\0') {
             uint64_t offset = (uint64_t)(uintptr_t)(&iomap_buff[i] - head);
             if (offset > MAX_UINT64_LEN || offset == 0) {
-                hm_error("get iomap range offset failed %llu\n", (unsigned long long)offset);
+                tloge("get iomap range offset failed %llu\n", (unsigned long long)offset);
                 return TEE_ERROR_GENERIC;
             }
 
             if (memcpy_s(buff, MAX_UINT64_LEN, head, (size_t)offset) != 0) {
-                hm_error("memcpy for iomap buff failed\n");
+                tloge("memcpy for iomap buff failed\n");
                 return TEE_ERROR_GENERIC;
             }
             buff[(uint32_t)offset] = '\0';
@@ -442,20 +442,20 @@ static int32_t tlv_to_iomap_region(const char *iomap_buff, uint32_t buff_len, st
         }
 
         if (*count >= list_size) {
-            hm_error("io map region list overflow\n");
+            tloge("io map region list overflow\n");
             return TEE_ERROR_GENERIC;
         }
 
         if (iomap_buff[i] == ',') {
             if (trans_str_to_int(buff, strnlen(buff, MAX_UINT64_LEN),
                                  BASE_OF_HEX, &list[*count].start) != TEE_SUCCESS) {
-                hm_error("get iomap region start failed\n");
+                tloge("get iomap region start failed\n");
                 return TEE_ERROR_GENERIC;
             }
         } else if (iomap_buff[i] == ';' || iomap_buff[i] == '\0') {
             if (trans_str_to_int(buff, strnlen(buff, MAX_UINT64_LEN),
                                  BASE_OF_HEX, &list[*count].end) != TEE_SUCCESS) {
-                hm_error("get iomap region end failed\n");
+                tloge("get iomap region end failed\n");
                 return TEE_ERROR_GENERIC;
             }
             *count = *count + 1;
@@ -469,7 +469,7 @@ static int32_t check_drv_io_map_invalid(const void *obj)
 {
     const struct drv_conf_t *drv_conf = (const struct drv_conf_t *)obj;
     if (drv_conf == NULL) {
-        hm_error("invalid drv conf\n");
+        tloge("invalid drv conf\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -477,12 +477,12 @@ static int32_t check_drv_io_map_invalid(const void *obj)
     for (i = 0; i < drv_conf->io_map_list_size; i++) {
         if (drv_conf->io_map_list[i].start % 0x1000 != 0 ||
             drv_conf->io_map_list[i].end % 0x1000 != 0) {
-            hm_error("io map region should be aligned by 0x1000\n");
+            tloge("io map region should be aligned by 0x1000\n");
             return TEE_ERROR_GENERIC;
         }
 
         if (drv_conf->io_map_list[i].end <= drv_conf->io_map_list[i].start) {
-            hm_error("io map region end must larger than start\n");
+            tloge("io map region end must larger than start\n");
             return TEE_ERROR_GENERIC;
         }
     }
@@ -493,7 +493,7 @@ static int32_t check_drv_io_map_invalid(const void *obj)
 static int32_t handle_drv_io_map_item_iomap(struct drv_conf_t *drv_conf, uint32_t size, const char *value)
 {
     if (size == 0 || value == NULL || size >= MAX_IMAGE_LEN) {
-        hm_error("invalid params\n");
+        tloge("invalid params\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -501,13 +501,13 @@ static int32_t handle_drv_io_map_item_iomap(struct drv_conf_t *drv_conf, uint32_
     /* size has been checked in handle_conf_node_to_obj, size is smaller than MAX_IMAGE_LEN */
     iomap_buff = malloc(size + 1);
     if (iomap_buff == NULL) {
-        hm_error("malloc for iomap buff failed\n");
+        tloge("malloc for iomap buff failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     /* if walk in this func, iomap list size couldn't be zero */
     if (memcpy_s(iomap_buff, size + 1, value, size) != 0) {
-        hm_error("memcpy for iomap buff failed\n");
+        tloge("memcpy for iomap buff failed\n");
         free(iomap_buff);
         return TEE_ERROR_GENERIC;
     }
@@ -516,7 +516,7 @@ static int32_t handle_drv_io_map_item_iomap(struct drv_conf_t *drv_conf, uint32_
     if (tlv_to_iomap_region(iomap_buff, strnlen(iomap_buff, MAX_IMAGE_LEN),
                             drv_conf->io_map_list, drv_conf->io_map_list_size,
                             &drv_conf->io_map_list_index) != 0) {
-        hm_error("tlv to iomap region failed \n");
+        tloge("tlv to iomap region failed \n");
         free(iomap_buff);
         return TEE_ERROR_GENERIC;
     }
@@ -532,7 +532,7 @@ static int32_t build_drv_io_map_item(struct dlist_node **pos, const struct conf_
     struct drv_conf_t *drv_conf = NULL;
 
     if (obj_size != sizeof(*drv_conf)) {
-        hm_error("obj size is invalid while build drv io map item\n");
+        tloge("obj size is invalid while build drv io map item\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -541,7 +541,7 @@ static int32_t build_drv_io_map_item(struct dlist_node **pos, const struct conf_
     switch (node->tag) {
     case DRV_PERM_DRV_IO_MAP_ITEM_IOMAP:
         if (handle_drv_io_map_item_iomap(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv io map item iomap failed\n");
+            tloge("handle drv io map item iomap failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -557,7 +557,7 @@ static int32_t build_drv_io_map(struct dlist_node **pos, const struct conf_node_
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv io map\n");
+        tloge("obj size is invalid while build drv io map\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -567,12 +567,12 @@ static int32_t build_drv_io_map(struct dlist_node **pos, const struct conf_node_
     switch (node->tag) {
     case DRV_PERM_DRV_IO_MAP_ITEM:
         if (handle_conf_node_to_obj(pos, build_drv_io_map_item, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS) {
-            hm_error("build drv io map item failed\n");
+            tloge("build drv io map item failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build iomap\n");
+        tlogd("skip in build iomap\n");
         if (handle_conf_node_to_obj(pos, NULL, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -588,13 +588,13 @@ static int32_t handle_drv_irq_item_irq(struct drv_conf_t *drv_conf, uint32_t siz
     char buff[MAX_UINT64_LEN + 1];
 
     if (size == 0 || value == NULL || size >= MAX_IMAGE_LEN) {
-        hm_error("size is invalid\n");
+        tloge("size is invalid\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char *irq_buff = malloc(size + 1);
     if (irq_buff == NULL) {
-        hm_error("malloc for irq buff failed\n");
+        tloge("malloc for irq buff failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -611,13 +611,13 @@ static int32_t handle_drv_irq_item_irq(struct drv_conf_t *drv_conf, uint32_t siz
         if (irq_buff[i] == ',' || irq_buff[i] == '\0') {
             uint64_t offset = (uint64_t)(uintptr_t)(&irq_buff[i] - head);
             if (offset > MAX_UINT64_LEN || offset == 0) {
-                hm_error("get irq offset failed %llu\n", (unsigned long long)offset);
+                tloge("get irq offset failed %llu\n", (unsigned long long)offset);
                 ret = TEE_ERROR_GENERIC;
                 goto out;
             }
 
             if (memcpy_s(buff, MAX_UINT64_LEN, head, (size_t)offset) != 0) {
-                hm_error("memcpy for irq buff failed\n");
+                tloge("memcpy for irq buff failed\n");
                 ret = TEE_ERROR_GENERIC;
                 goto out;
             }
@@ -628,7 +628,7 @@ static int32_t handle_drv_irq_item_irq(struct drv_conf_t *drv_conf, uint32_t siz
             if (drv_conf->irq_list_index >= drv_conf->irq_list_size ||
                 trans_str_to_int(buff, strnlen(buff, MAX_UINT64_LEN), BASE_OF_TEN,
                                  &drv_conf->irq_list[drv_conf->irq_list_index]) != TEE_SUCCESS) {
-                hm_error("get irq failed\n");
+                tloge("get irq failed\n");
                 ret = TEE_ERROR_GENERIC;
                 goto out;
             }
@@ -648,7 +648,7 @@ static int32_t build_drv_irq_item(struct dlist_node **pos, const struct conf_nod
     struct drv_conf_t *drv_conf = NULL;
 
     if (obj_size != sizeof(*drv_conf)) {
-        hm_error("obj size is invalid while build drv irq item\n");
+        tloge("obj size is invalid while build drv irq item\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -657,7 +657,7 @@ static int32_t build_drv_irq_item(struct dlist_node **pos, const struct conf_nod
     switch (node->tag) {
     case DRV_PERM_IRQ_ITEM_IRQ:
         if (handle_drv_irq_item_irq(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv irq item irq failed\n");
+            tloge("handle drv irq item irq failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -675,7 +675,7 @@ static int32_t check_drv_irq_invalid(const void *obj)
     uint32_t i;
     for (i = 0; i < drv_conf->irq_list_size; i++) {
         if (drv_conf->irq_list[i] < IRQ_MIN) {
-            hm_error("invalid irq %llu\n", (unsigned long long)drv_conf->irq_list[i]);
+            tloge("invalid irq %llu\n", (unsigned long long)drv_conf->irq_list[i]);
             return TEE_ERROR_GENERIC;
         }
     }
@@ -687,7 +687,7 @@ static int32_t build_drv_irq(struct dlist_node **pos, const struct conf_node_t *
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv irq\n");
+        tloge("obj size is invalid while build drv irq\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -697,12 +697,12 @@ static int32_t build_drv_irq(struct dlist_node **pos, const struct conf_node_t *
     switch (node->tag) {
     case DRV_PERM_IRQ_ITEM:
         if (handle_conf_node_to_obj(pos, build_drv_irq_item, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS) {
-            hm_error("build drv irq item failed\n");
+            tloge("build drv irq item failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip drv irq\n");
+        tlogd("skip drv irq\n");
         if (handle_conf_node_to_obj(pos, NULL, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -716,7 +716,7 @@ static int32_t tlv_to_map_secure_region(const char *secure_buff, uint32_t secure
                                         struct drv_map_secure_t *list, uint32_t list_size, uint16_t *count)
 {
     if (secure_buff_len == 0) {
-        hm_error("secure buff len is 0\n");
+        tloge("secure buff len is 0\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -729,12 +729,12 @@ static int32_t tlv_to_map_secure_region(const char *secure_buff, uint32_t secure
         if (secure_buff[i] == ',' || secure_buff[i] == ';' || secure_buff[i] == '\0') {
             uint64_t offset = (uint64_t)(uintptr_t)(&secure_buff[i] - head);
             if (offset > MAX_UINT64_LEN || offset == 0) {
-                hm_error("get map_secure range offset failed %llu\n", (unsigned long long)offset);
+                tloge("get map_secure range offset failed %llu\n", (unsigned long long)offset);
                 return TEE_ERROR_GENERIC;
             }
 
             if (memcpy_s(buff, MAX_UINT64_LEN, head, (size_t)offset) != 0) {
-                hm_error("memcpy for map_secure buff failed\n");
+                tloge("memcpy for map_secure buff failed\n");
                 return TEE_ERROR_GENERIC;
             }
             buff[(uint32_t)offset] = '\0';
@@ -743,20 +743,20 @@ static int32_t tlv_to_map_secure_region(const char *secure_buff, uint32_t secure
         }
 
         if (*count >= list_size) {
-            hm_error("map_secure region list overflow\n");
+            tloge("map_secure region list overflow\n");
             return TEE_ERROR_GENERIC;
         }
 
         if (secure_buff[i] == ',') {
             if (trans_str_to_int(buff, strnlen(buff, MAX_UINT64_LEN),
                                  BASE_OF_HEX, &list[*count].region.start) != TEE_SUCCESS) {
-                hm_error("get map_secure region start failed\n");
+                tloge("get map_secure region start failed\n");
                 return TEE_ERROR_GENERIC;
             }
         } else if (secure_buff[i] == ';' || secure_buff[i] == '\0') {
             if (trans_str_to_int(buff, strnlen(buff, MAX_UINT64_LEN),
                                  BASE_OF_HEX, &list[*count].region.end) != TEE_SUCCESS) {
-                hm_error("get map_secure region end failed\n");
+                tloge("get map_secure region end failed\n");
                 return TEE_ERROR_GENERIC;
             }
             *count = *count + 1;
@@ -803,7 +803,7 @@ static int32_t handle_drv_map_secure_item_uuid(struct drv_conf_t *drv_conf, uint
         if (region_pos < drv_conf->map_secure_list_size &&
             memcpy_s(&drv_conf->map_secure_list[region_pos].uuid, sizeof(drv_conf->map_secure_list[region_pos].uuid),
                      &uuid, sizeof(uuid)) != 0) {
-            hm_error("memcpy for uuid in map secure list failed\n");
+            tloge("memcpy for uuid in map secure list failed\n");
             return TEE_ERROR_GENERIC;
         }
     } else if (region_pos > uuid_pos) {
@@ -811,12 +811,12 @@ static int32_t handle_drv_map_secure_item_uuid(struct drv_conf_t *drv_conf, uint
             if (i < drv_conf->map_secure_list_size &&
                 memcpy_s(&drv_conf->map_secure_list[i].uuid, sizeof(drv_conf->map_secure_list[i].uuid),
                          &uuid, sizeof(uuid)) != 0) {
-                hm_error("memcpy for uuid in map sercure list failed\n");
+                tloge("memcpy for uuid in map sercure list failed\n");
                 return TEE_ERROR_GENERIC;
             }
         }
     } else {
-        hm_error("uuid pos cannot larger than region pos, something wrong happeds\n");
+        tloge("uuid pos cannot larger than region pos, something wrong happeds\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -826,7 +826,7 @@ static int32_t handle_drv_map_secure_item_uuid(struct drv_conf_t *drv_conf, uint
 static int32_t handle_drv_map_secure_item_region(struct drv_conf_t *drv_conf, uint32_t size, const char *value)
 {
     if (size >= MAX_IMAGE_LEN) {
-        hm_error("param is invalid %u\n", size);
+        tloge("param is invalid %u\n", size);
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -838,12 +838,12 @@ static int32_t handle_drv_map_secure_item_region(struct drv_conf_t *drv_conf, ui
 
     char *iomap_buff = malloc(size + 1);
     if (iomap_buff == NULL) {
-        hm_error("malloc for iomap buff failed\n");
+        tloge("malloc for iomap buff failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (memset_s(iomap_buff, size + 1, 0, size + 1) != 0 || memcpy_s(iomap_buff, size + 1, value, size) != 0) {
-        hm_error("memset or memcpy for iomap buff failed\n");
+        tloge("memset or memcpy for iomap buff failed\n");
         goto out;
     }
 
@@ -861,12 +861,12 @@ static int32_t handle_drv_map_secure_item_region(struct drv_conf_t *drv_conf, ui
                 memcpy_s(&drv_conf->map_secure_list[i].uuid, sizeof(drv_conf->map_secure_list[i].uuid),
                          &drv_conf->map_secure_list[uuid_pos - 1].uuid,
                          sizeof(drv_conf->map_secure_list[uuid_pos - 1].uuid)) != 0) {
-                hm_error("memcpy map secure region uuid failed\n");
+                tloge("memcpy map secure region uuid failed\n");
                 goto out;
             }
         }
     } else {
-        hm_error("region pos cannot larger than uuid pos, something wrong happeds\n");
+        tloge("region pos cannot larger than uuid pos, something wrong happeds\n");
         goto out;
     }
 
@@ -883,7 +883,7 @@ static int32_t build_drv_map_secure_item(struct dlist_node **pos, const struct c
     struct drv_conf_t *drv_conf = NULL;
 
     if (obj_size != sizeof(*drv_conf)) {
-        hm_error("obj size is invalid while build drv map secure item\n");
+        tloge("obj size is invalid while build drv map secure item\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -892,13 +892,13 @@ static int32_t build_drv_map_secure_item(struct dlist_node **pos, const struct c
     switch (node->tag) {
     case DRV_PERM_MAP_SECURE_ITEM_UUID:
         if (handle_drv_map_secure_item_uuid(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv map secure item uuid failed\n");
+            tloge("handle drv map secure item uuid failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case DRV_PERM_MAP_SECURE_ITEM_REGION:
         if (handle_drv_map_secure_item_region(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv map secure item region failed\n");
+            tloge("handle drv map secure item region failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -917,17 +917,17 @@ static int32_t check_drv_map_secure_invalid(const void *obj)
     for (i = 0; i < drv_conf->map_secure_list_size; i++) {
         if (drv_conf->map_secure_list[i].region.start % 0x1000 != 0 ||
             drv_conf->map_secure_list[i].region.end % 0x1000 != 0) {
-            hm_error("map secure region should be aligned by 4K\n");
+            tloge("map secure region should be aligned by 4K\n");
             return TEE_ERROR_GENERIC;
         }
 
         if (drv_conf->map_secure_list[i].region.end <= drv_conf->map_secure_list[i].region.start) {
-            hm_error("map secure region end must larger than start\n");
+            tloge("map secure region end must larger than start\n");
             return TEE_ERROR_GENERIC;
         }
 
         if (check_uuid_valid(drv_conf->map_secure_list[i].uuid) != TEE_SUCCESS) {
-            hm_error("map secure uuid is invalid\n");
+            tloge("map secure uuid is invalid\n");
             return TEE_ERROR_GENERIC;
         }
     }
@@ -941,7 +941,7 @@ static int32_t build_drv_map_secure(struct dlist_node **pos, const struct conf_n
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv map secure\n");
+        tloge("obj size is invalid while build drv map secure\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -952,12 +952,12 @@ static int32_t build_drv_map_secure(struct dlist_node **pos, const struct conf_n
     case DRV_PERM_MAP_SECURE_ITEM:
         if (handle_conf_node_to_obj(pos, build_drv_map_secure_item,
                                     drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS) {
-            hm_error("build drv map secure item failed\n");
+            tloge("build drv map secure item failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip drv map secure\n");
+        tlogd("skip drv map secure\n");
         if (handle_conf_node_to_obj(pos, NULL, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -974,7 +974,7 @@ static int32_t check_drv_map_nosecure_invalid(const void *obj)
     uint32_t i;
     for (i = 0; i < drv_conf->map_nosecure_list_size; i++) {
         if (check_uuid_valid(drv_conf->map_nosecure_list[i].uuid) != TEE_SUCCESS) {
-            hm_error("map nosecure uuid is invalid\n");
+            tloge("map nosecure uuid is invalid\n");
             return TEE_ERROR_GENERIC;
         }
     }
@@ -985,19 +985,19 @@ static int32_t check_drv_map_nosecure_invalid(const void *obj)
 static int32_t handle_drv_map_nosecure_item_uuid(struct drv_conf_t *drv_conf, uint32_t size, const char *value)
 {
     if (size >= MAX_IMAGE_LEN) {
-        hm_error("size is invalid\n");
+        tloge("size is invalid\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char *buff = malloc(size + 1);
     if (buff == NULL) {
-        hm_error("malloc for nosecure item failed\n");
+        tloge("malloc for nosecure item failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     int32_t ret = TEE_SUCCESS;
     if (memcpy_s(buff, size + 1, value, size) != 0) {
-        hm_error("memcpy for nosecure item failed\n");
+        tloge("memcpy for nosecure item failed\n");
         ret = TEE_ERROR_GENERIC;
         goto out;
     }
@@ -1009,7 +1009,7 @@ static int32_t handle_drv_map_nosecure_item_uuid(struct drv_conf_t *drv_conf, ui
         if (buff[i] == ',' || buff[i] == '\0') {
             uint32_t offset = (uint32_t)(uintptr_t)(&buff[i] - head);
             if (drv_conf->map_nosecure_list_index >= drv_conf->map_nosecure_list_size) {
-                hm_error("map nosecure list index overflow\n");
+                tloge("map nosecure list index overflow\n");
                 ret = TEE_ERROR_GENERIC;
                 goto out;
             }
@@ -1037,7 +1037,7 @@ static int32_t build_drv_map_nosecure_item(struct dlist_node **pos, const struct
     struct drv_conf_t *drv_conf = NULL;
 
     if (obj_size != sizeof(*drv_conf)) {
-        hm_error("obj size is invalid while build drv map nosecure item\n");
+        tloge("obj size is invalid while build drv map nosecure item\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1046,7 +1046,7 @@ static int32_t build_drv_map_nosecure_item(struct dlist_node **pos, const struct
     switch (node->tag) {
     case DRV_PERM_MAP_NOSECURE_ITEM_UUID:
         if (handle_drv_map_nosecure_item_uuid(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv map nosecure item uuid failed\n");
+            tloge("handle drv map nosecure item uuid failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -1063,7 +1063,7 @@ static int32_t build_drv_map_nosecure(struct dlist_node **pos, const struct conf
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv map nonsecure\n");
+        tloge("obj size is invalid while build drv map nonsecure\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1074,7 +1074,7 @@ static int32_t build_drv_map_nosecure(struct dlist_node **pos, const struct conf
     case DRV_PERM_MAP_NOSECURE_ITEM:
         if (handle_conf_node_to_obj(pos, build_drv_map_nosecure_item,
                                     drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS) {
-            hm_error("build drv map nosecure item failed\n");
+            tloge("build drv map nosecure item failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -1095,13 +1095,13 @@ static int32_t check_drv_mac_info_invalid(const void *obj)
     uint32_t i, j;
     for (i = 0; i < drv_conf->mac_info_list_size; i++) {
         if (check_uuid_valid(drv_conf->mac_info_list[i].uuid) != TEE_SUCCESS) {
-            hm_error("mac info uuid is invalid\n");
+            tloge("mac info uuid is invalid\n");
             return TEE_ERROR_GENERIC;
         }
         for (j = i + 1; j < drv_conf->mac_info_list_size; j++) {
             if (memcmp(&drv_conf->mac_info_list[i].uuid, &drv_conf->mac_info_list[j].uuid,
                        sizeof(drv_conf->mac_info_list[i].uuid)) == 0) {
-                hm_error("mac info uuid %08x-%04x-%04x set more than one time\n",
+                tloge("mac info uuid %08x-%04x-%04x set more than one time\n",
                          drv_conf->mac_info_list[i].uuid.timeLow, drv_conf->mac_info_list[i].uuid.timeMid,
                          drv_conf->mac_info_list[i].uuid.timeHiAndVersion);
                 return TEE_ERROR_GENERIC;
@@ -1115,7 +1115,7 @@ static int32_t check_drv_mac_info_invalid(const void *obj)
 static int32_t handle_drv_mac_info_item_permission(struct drv_conf_t *drv_conf, uint32_t size, const char *value)
 {
     if (drv_conf->mac_info_list_index >= drv_conf->mac_info_list_size) {
-        hm_error("mac_info_list_index is invalid\n");
+        tloge("mac_info_list_index is invalid\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1130,7 +1130,7 @@ static int32_t handle_drv_mac_info_item_uuid(struct drv_conf_t *drv_conf, uint32
     uint32_t count = drv_conf->mac_info_list_index;
 
     if (count >= drv_conf->mac_info_list_size) {
-        hm_error("mac_info_list_index is overflow %u\n", count);
+        tloge("mac_info_list_index is overflow %u\n", count);
         return TEE_ERROR_GENERIC;
     }
 
@@ -1140,7 +1140,7 @@ static int32_t handle_drv_mac_info_item_uuid(struct drv_conf_t *drv_conf, uint32
 
     if (memcpy_s(&drv_conf->mac_info_list[count].uuid, sizeof(drv_conf->mac_info_list[count].uuid),
                  &uuid, sizeof(struct tee_uuid)) != 0) {
-        hm_error("memcpy for uuid in mac info list failed\n");
+        tloge("memcpy for uuid in mac info list failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -1153,7 +1153,7 @@ static int32_t build_drv_mac_info_item(struct dlist_node **pos, const struct con
     (void)pos;
     struct drv_conf_t *drv_conf = NULL;
     if (obj_size != sizeof(*drv_conf)) {
-        hm_error("obj size is invalid while build drv mac info item\n");
+        tloge("obj size is invalid while build drv mac info item\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1162,13 +1162,13 @@ static int32_t build_drv_mac_info_item(struct dlist_node **pos, const struct con
     switch (node->tag) {
     case DRV_PERM_DRV_MAC_INFO_ITEM_UUID:
         if (handle_drv_mac_info_item_uuid(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv mac info item uuid failed\n");
+            tloge("handle drv mac info item uuid failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case DRV_PERM_DRV_MAC_INFO_ITEM_PERMISSION:
         if (handle_drv_mac_info_item_permission(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv mac info item permission failed\n");
+            tloge("handle drv mac info item permission failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -1185,7 +1185,7 @@ static int32_t build_drv_mac_info(struct dlist_node **pos, const struct conf_nod
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv mac info\n");
+        tloge("obj size is invalid while build drv mac info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1196,13 +1196,13 @@ static int32_t build_drv_mac_info(struct dlist_node **pos, const struct conf_nod
     case DRV_PERM_DRV_MAC_INFO_ITEM:
         if (handle_conf_node_to_obj(pos, build_drv_mac_info_item,
                                     drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS) {
-            hm_error("build drv mac info item failed\n");
+            tloge("build drv mac info item failed\n");
             return TEE_ERROR_GENERIC;
         }
         drv_conf->mac_info_list_index = drv_conf->mac_info_list_index + 1;
         break;
     default:
-        hm_debug("skip in build drv mac info\n");
+        tlogd("skip in build drv mac info\n");
         if (handle_conf_node_to_obj(pos, NULL, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -1219,12 +1219,12 @@ static int32_t check_drv_cmd_perm_invalid(const void *obj)
     uint32_t i, j;
     for (i = 0; i < drv_conf->cmd_perm_list_size; i++) {
         if (drv_conf->cmd_perm_list[i].perm == 0) {
-            hm_error("cmd perm is invalid\n");
+            tloge("cmd perm is invalid\n");
             return TEE_ERROR_GENERIC;
         }
         for (j = i + 1; j < drv_conf->cmd_perm_list_size; j++) {
             if (drv_conf->cmd_perm_list[i].cmd == drv_conf->cmd_perm_list[j].cmd) {
-                hm_error("cmd %llx has been set more than one time in cmd perm\n",
+                tloge("cmd %llx has been set more than one time in cmd perm\n",
                          (unsigned long long)drv_conf->cmd_perm_list[i].cmd);
                 return TEE_ERROR_GENERIC;
             }
@@ -1238,29 +1238,29 @@ static int32_t handle_drv_cmd_perm_info_item_cmd(struct drv_conf_t *drv_conf, ui
 {
     uint64_t tmp_cmd = 0;
     if (size == 0 || size > MAX_UINT32_LEN) {
-        hm_error("param invalid while handle cmd perm info item cmd\n");
+        tloge("param invalid while handle cmd perm info item cmd\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char buff[MAX_UINT32_LEN + 1];
     if (memcpy_s(buff, sizeof(buff), value, size) != 0) {
-        hm_error("memcpy failed while handle cmd perm info item cmd\n");
+        tloge("memcpy failed while handle cmd perm info item cmd\n");
         return TEE_ERROR_GENERIC;
     }
     buff[size] = '\0';
 
     if (trans_str_to_int(buff, size, BASE_OF_HEX, &tmp_cmd) != TEE_SUCCESS) {
-        hm_error("get cmd failed\n");
+        tloge("get cmd failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (tmp_cmd > DRV_CMD_MAX) {
-        hm_error("get cmd %llu is larger than DRV_CMD_MAX\n", (unsigned long long)tmp_cmd);
+        tloge("get cmd %llu is larger than DRV_CMD_MAX\n", (unsigned long long)tmp_cmd);
         return TEE_ERROR_GENERIC;
     }
 
     if (drv_conf->cmd_perm_list_index >= drv_conf->cmd_perm_list_size) {
-        hm_error("cmd_perm_list_index is overflow %u\n", drv_conf->cmd_perm_list_index);
+        tloge("cmd_perm_list_index is overflow %u\n", drv_conf->cmd_perm_list_index);
         return TEE_ERROR_GENERIC;
     }
 
@@ -1272,30 +1272,30 @@ static int32_t handle_drv_cmd_perm_info_item_cmd(struct drv_conf_t *drv_conf, ui
 static int32_t handle_drv_cmd_perm_info_item_permission(struct drv_conf_t *drv_conf, uint32_t size, const char *value)
 {
     if (size == 0 || size > MAX_UINT32_LEN) {
-        hm_error("param invalid while handle cmd perm info item permission\n");
+        tloge("param invalid while handle cmd perm info item permission\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char buff[MAX_UINT32_LEN + 1];
     if (memcpy_s(buff, sizeof(buff), value, size) != 0) {
-        hm_error("memcpy failed while handle cmd perm info item permission\n");
+        tloge("memcpy failed while handle cmd perm info item permission\n");
         return TEE_ERROR_GENERIC;
     }
     buff[size] = '\0';
 
     uint64_t off = 0;
     if (trans_str_to_int(buff, size, BASE_OF_TEN, &off) != TEE_SUCCESS) {
-        hm_error("get perm failed\n");
+        tloge("get perm failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     if (off == 0 || off > BIT_NUM_OF_UINT64) {
-        hm_error("cmd permssion must in range of [1, 64]\n");
+        tloge("cmd permssion must in range of [1, 64]\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (drv_conf->cmd_perm_list_index >= drv_conf->cmd_perm_list_size) {
-        hm_error("cmd_perm_list_index is overflow %u\n", drv_conf->cmd_perm_list_index);
+        tloge("cmd_perm_list_index is overflow %u\n", drv_conf->cmd_perm_list_index);
         return TEE_ERROR_GENERIC;
     }
 
@@ -1310,7 +1310,7 @@ static int32_t build_drv_cmd_perm_info_item(struct dlist_node **pos, const struc
     (void)pos;
     struct drv_conf_t *drv_conf = NULL;
     if (obj_size != sizeof(*drv_conf)) {
-        hm_error("obj size is invalid while build drv cmd perm info item\n");
+        tloge("obj size is invalid while build drv cmd perm info item\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1319,13 +1319,13 @@ static int32_t build_drv_cmd_perm_info_item(struct dlist_node **pos, const struc
     switch (node->tag) {
     case DRV_PERM_DRV_CMD_PERM_INFO_ITEM_CMD:
         if (handle_drv_cmd_perm_info_item_cmd(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv cmd perm info item cmd failed\n");
+            tloge("handle drv cmd perm info item cmd failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case DRV_PERM_DRV_CMD_PERM_INFO_ITEM_PERMISSION:
         if (handle_drv_cmd_perm_info_item_permission(drv_conf, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle drv cmd perm info item permission failed\n");
+            tloge("handle drv cmd perm info item permission failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
@@ -1342,7 +1342,7 @@ static int32_t build_drv_cmd_perm_info(struct dlist_node **pos, const struct con
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv cmd perm info\n");
+        tloge("obj size is invalid while build drv cmd perm info\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1353,13 +1353,13 @@ static int32_t build_drv_cmd_perm_info(struct dlist_node **pos, const struct con
     case DRV_PERM_DRV_CMD_PERM_INFO_ITEM:
         if (handle_conf_node_to_obj(pos, build_drv_cmd_perm_info_item,
                                     drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS) {
-            hm_error("build drv cmd perm info item failed\n");
+            tloge("build drv cmd perm info item failed\n");
             return TEE_ERROR_GENERIC;
         }
         drv_conf->cmd_perm_list_index = drv_conf->cmd_perm_list_index + 1;
         break;
     default:
-        hm_debug("skip in build drv cmd perm info\n");
+        tlogd("skip in build drv cmd perm info\n");
         if (handle_conf_node_to_obj(pos, NULL, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -1374,7 +1374,7 @@ static int32_t build_drv_drvcall_conf(struct dlist_node **pos, const struct conf
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv drvcall conf\n");
+        tloge("obj size is invalid while build drv drvcall conf\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1382,7 +1382,7 @@ static int32_t build_drv_drvcall_conf(struct dlist_node **pos, const struct conf
     struct drvcall_perm_apply_t *drvcall_perm = &drv->drvcall_perm_apply;
     int32_t ret = build_drvcall_perm_apply(pos, node, drvcall_perm, sizeof(*drvcall_perm));
     if (ret != 0) {
-        hm_error("drv build drvcall conf fail\n");
+        tloge("drv build drvcall conf fail\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -1406,7 +1406,7 @@ static int32_t build_drv_conf(struct dlist_node **pos, const struct conf_node_t 
     struct drv_tlv *drv = NULL;
 
     if (obj_size != sizeof(*drv)) {
-        hm_error("obj size is invalid while build drv conf\n");
+        tloge("obj size is invalid while build drv conf\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1430,7 +1430,7 @@ static int32_t build_drv_conf(struct dlist_node **pos, const struct conf_node_t 
     }
 
     if (i == dyn_conf_funcs_size) {
-        hm_debug("skip in build drv conf\n");
+        tlogd("skip in build drv conf\n");
         if (handle_conf_node_to_obj(pos, NULL, drv_conf, sizeof(*drv_conf)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
     }
@@ -1480,30 +1480,30 @@ static int32_t send_drv_service_name(const char *service_name, uint32_t name_siz
 void uninstall_drv_permission(const void *obj, uint32_t obj_size)
 {
     if (obj == NULL) {
-        hm_error("obj is invalid while uninstall drv permission\n");
+        tloge("obj is invalid while uninstall drv permission\n");
         return;
     }
 
     if (obj_size == 0 || obj_size >= DRV_NAME_MAX_LEN) {
-        hm_error("obj size is invalid while uninstall drv permission\n");
+        tloge("obj size is invalid while uninstall drv permission\n");
         return;
     }
 
     const char *service_name = (const char *)obj;
     if (send_drv_service_name(service_name, obj_size) != 0)
-        hm_error("uninstall drv permission failed");
+        tloge("uninstall drv permission failed");
 }
 
 int32_t install_drv_permission(void *obj, uint32_t obj_size, const struct conf_queue_t *conf_queue)
 {
     /* 1. check the param */
     if (obj == NULL || conf_queue == NULL) {
-        hm_error("param is invalid while install drv permission\n");
+        tloge("param is invalid while install drv permission\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (obj_size != sizeof(struct drv_mani_t)) {
-        hm_error("obj size is invalid while install drv permission\n");
+        tloge("obj size is invalid while install drv permission\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -1513,7 +1513,7 @@ int32_t install_drv_permission(void *obj, uint32_t obj_size, const struct conf_q
     /* 3.create new obj */
     struct drv_tlv *drv = (struct drv_tlv *)malloc(sizeof(struct drv_tlv));
     if (drv == NULL) {
-        hm_error("drv malloc failed\n");
+        tloge("drv malloc failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -1522,7 +1522,7 @@ int32_t install_drv_permission(void *obj, uint32_t obj_size, const struct conf_q
 
     int32_t ret = -1;
     if (memcpy_s(&drv->uuid, sizeof(drv->uuid), &mani->srv_uuid, sizeof(mani->srv_uuid)) != 0) {
-        hm_error("set uuid to drv fail\n");
+        tloge("set uuid to drv fail\n");
         goto out;
     }
 
@@ -1538,7 +1538,7 @@ int32_t install_drv_permission(void *obj, uint32_t obj_size, const struct conf_q
         struct dlist_node *pos = dlist_get_next(&conf_queue->queue);
         ret = handle_conf_node_to_obj(&pos, build_drv_conf, drv, sizeof(*drv));
         if (ret != TEE_SUCCESS) {
-            hm_error("handle drv conf failed\n");
+            tloge("handle drv conf failed\n");
             goto out;
         }
     }

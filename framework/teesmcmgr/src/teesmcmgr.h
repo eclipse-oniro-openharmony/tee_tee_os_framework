@@ -13,7 +13,7 @@
 #define TEESMCMGR_H
 
 #include <stdint.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <stdbool.h>
 #include <sys/hmapi.h>
 #define SMCMGR_STACK_SIZE  0x2000
@@ -23,25 +23,19 @@
 
 #define panic(fmt...)                             \
     do {                                          \
-        hm_panic("*PANIC* teesmcmgr: " fmt); \
-    } while (0)
-#define fatal(fmt...)                             \
-    do {                                          \
-        hm_fatal("*FATAL* teesmcmgr: " fmt); \
-        if (hmapi_proc_exit((uint32_t)-1))        \
-            hm_panic("*PANIC* teesmcmgr error");  \
+        tee_abort(fmt);                           \
     } while (0)
 #define error(fmt...)                             \
     do {                                          \
-        hm_error("*ERROR* teesmcmgr: " fmt); \
+        tloge(fmt);                               \
     } while (0)
-#define info(fmt...)                             \
-    do {                                         \
-        hm_info("*INFO* teesmcmgr: " fmt); \
+#define info(fmt...)                              \
+    do {                                          \
+        tlogi(fmt);                               \
     } while (0)
 #define debug(fmt...)                             \
     do {                                          \
-        hm_debug("*DEBUG* teesmcmgr: " fmt); \
+        tlogd(fmt);                               \
     } while (0)
 
 void *tee_idle_thread(void *arg);

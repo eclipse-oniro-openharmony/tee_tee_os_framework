@@ -27,6 +27,7 @@
 #include <tee_tag.h>
 #include <tee_drv_internal.h>
 #include <ipclib_hal.h>
+#include <tee_log.h>
 
 #define IPC_CHANNEL_NUM 2
 
@@ -37,20 +38,20 @@ static int32_t ipc_init(const char *name, cref_t *ch)
 
     ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
-        hm_error("%s: failed to create SRE channel with pid %d: %d\n", name, getpid(), ret);
+        tloge("%s: failed to create SRE channel with pid %d: %d\n", name, getpid(), ret);
         return -1;
     }
 
     ret = ipc_create_channel_native(name, ch);
     if (ret != 0) {
-        hm_error("%s: failed to create channel :%d\n", name, ret);
+        tloge("%s: failed to create channel :%d\n", name, ret);
         return -1;
     }
 
 #ifndef CONFIG_TIMER_DISABLE
     ret = hm_timer_init();
     if (ret != 0) {
-        hm_error("%s :failed to init hm timer: %d\n", name, ret);
+        tloge("%s :failed to init hm timer: %d\n", name, ret);
         return -1;
     }
 #endif
@@ -76,13 +77,13 @@ static int32_t system_init(const char *name)
 
     ret = ac_init(hmapi_cnode_cref(), __sysmgrch, name);
     if (ret != 0) {
-        hm_error("%s: libac initialization failed\n", name);
+        tloge("%s: libac initialization failed\n", name);
         return -1;
     }
 
     ret = hm_tamgr_register(name);
     if (ret != 0) {
-        hm_error("%s: tamgr registration for platdrv failed\n", name);
+        tloge("%s: tamgr registration for platdrv failed\n", name);
         return -1;
     }
 
@@ -94,7 +95,7 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
     int32_t ret;
 
     if (drv_frame == NULL || drv_frame->name == NULL || ch == NULL) {
-        hm_error("invalid params\n");
+        tloge("invalid params\n");
         return -1;
     }
 
@@ -117,7 +118,7 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
 
     ret = hmapi_extend_utable();
     if (ret < 0) {
-        hm_error("%s: failed to extend utable: %x\n", drv_frame->name, ret);
+        tloge("%s: failed to extend utable: %x\n", drv_frame->name, ret);
         return ret;
     }
 

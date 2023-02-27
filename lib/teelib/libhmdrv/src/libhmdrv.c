@@ -19,7 +19,7 @@
 #include <sys/usrsyscall.h>
 #include <ipclib.h>
 #include <unistd.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <ac.h>
 #include <ac_job.h>
 #include <tee_config.h>
@@ -52,18 +52,18 @@ static void mutex_unlock_ops(pthread_mutex_t *mtx)
 {
     int32_t ret = pthread_mutex_unlock(mtx);
     if (ret != 0)
-        hm_error("mutex unlock failed with ret %d\n", ret);
+        tloge("mutex unlock failed with ret %d\n", ret);
 }
 
 static bool is_valid_name(const char *name)
 {
     if (name == NULL) {
-        hm_error("name is NULL\n");
+        tloge("name is NULL\n");
         return false;
     }
 
     if (strnlen(name, MAX_DRV_NAME_LEN) == MAX_DRV_NAME_LEN) {
-        hm_error("name len is too long\n");
+        tloge("name len is too long\n");
         return false;
     }
 
@@ -75,7 +75,7 @@ static int32_t get_info_idex_by_name(const char *name)
     uint32_t i;
 
     if (mutex_lock_ops(&g_framp_op_mutex) != 0) {
-        hm_error("mutex lock failed\n");
+        tloge("mutex lock failed\n");
         return -1;
     }
 
@@ -98,7 +98,7 @@ static int32_t tbac_init(struct drv_op_info *op_info)
 
     rc = get_tbac_info_by_name(op_info->name, &sid, &job_type);
     if (rc != 0) {
-        hm_error("libhmdrv: get tbac info failed\n");
+        tloge("libhmdrv: get tbac info failed\n");
         return rc;
     }
 
@@ -110,7 +110,7 @@ static int32_t tbac_init(struct drv_op_info *op_info)
     op_info->is_tbac_hooked = true;
     rc = ac_job_init(&op_info->job, sid, job_type);
     if (rc != 0)
-        hm_error("libhmdrv: create ac job error: %d\n", rc);
+        tloge("libhmdrv: create ac job error: %d\n", rc);
 
     return rc;
 }
@@ -125,12 +125,12 @@ int32_t hm_drv_init(const char *name)
         return rc;
 
     if (mutex_lock_ops(&g_framp_op_mutex) != 0) {
-        hm_error("mutex lock failed\n");
+        tloge("mutex lock failed\n");
         return rc;
     }
 
     if (g_drv_frame_count >= DRIVER_FRAME_NR) {
-        hm_error("drv frame count overflow: %u\n", g_drv_frame_count);
+        tloge("drv frame count overflow: %u\n", g_drv_frame_count);
         goto unlock_out;
     }
 
@@ -139,12 +139,12 @@ int32_t hm_drv_init(const char *name)
     /* get channel according to path */
     rc = ipc_get_ch_from_path(name, &op_info->channel);
     if (rc != 0) {
-        hm_error("libhmdrv: get channel from pathmgr failed: %d\n", rc);
+        tloge("libhmdrv: get channel from pathmgr failed: %d\n", rc);
         goto unlock_out;
     }
 
     if (memcpy_s(op_info->name, MAX_DRV_NAME_LEN, name, strlen(name)) != EOK) {
-        hm_error("libhmdrv: %s memcpy name failed\n", name);
+        tloge("libhmdrv: %s memcpy name failed\n", name);
         (void)memset_s(op_info->name, MAX_DRV_NAME_LEN, 0, MAX_DRV_NAME_LEN);
         rc = -1;
         goto unlock_out;
@@ -155,7 +155,7 @@ int32_t hm_drv_init(const char *name)
         goto unlock_out;
 
     g_drv_frame_count++;
-    hm_debug("libhmdrv: init ok for pid %d with s_rslot=0x%llx\n", getpid(), op_info->channel);
+    tlogd("libhmdrv: init ok for pid %d with s_rslot=0x%llx\n", getpid(), op_info->channel);
 
 unlock_out:
     mutex_unlock_ops(&g_framp_op_mutex);
@@ -169,13 +169,13 @@ static int32_t try_get_info_idex(const char *name)
     idex = get_info_idex_by_name(name);
     if (idex < 0) {
         if (hm_drv_init(name) != 0) {
-            hm_error("%s init failed\n", name);
+            tloge("%s init failed\n", name);
             return -1;
         }
 
         idex = get_info_idex_by_name(name);
         if (idex < 0) {
-            hm_error("%s failed to find info\n", name);
+            tloge("%s failed to find info\n", name);
             return -1;
         }
     }
@@ -185,29 +185,29 @@ static int32_t try_get_info_idex(const char *name)
 static int32_t param_check(const char *name, struct drv_call_params *params, int32_t *idex)
 {
     if (params == NULL || !is_valid_name(name)) {
-        hm_error("invalid arguments\n");
+        tloge("invalid arguments\n");
         return -1;
     }
 
     if ((params->nr < 0) || (params->nr > ARGS_NUM)) {
-        hm_error("drv_call: invalid arguments\n");
+        tloge("drv_call: invalid arguments\n");
         return -1;
     }
 
     if ((params->nr != 0) && (params->args == NULL)) {
-        hm_error("drv call nr and args not match\n");
+        tloge("drv call nr and args not match\n");
         return -1;
     }
 
     if ((params->rdata == NULL && params->rdata_len != 0) ||
         (params->rdata != NULL && params->rdata_len == 0)) {
-        hm_error("drv_call: bad rdata or rdata_len\n");
+        tloge("drv_call: bad rdata or rdata_len\n");
         return -1;
     }
 
     *idex = try_get_info_idex(name);
     if (*idex < 0) {
-        hm_error("invalid idex, please check\n");
+        tloge("invalid idex, please check\n");
         return -1;
     }
 
@@ -234,7 +234,7 @@ static int32_t calc_ext_data_len(const struct drv_call_params *params, uint32_t 
         for (int32_t i = 0; i < params->nr; i++) {
             /* data is 8-bytes aligned */
             if (*ext_data_len + params->lens[i] < *ext_data_len) {
-                hm_error("lens is overflow! lens[%d]=0x%x\n", i, params->lens[i]);
+                tloge("lens is overflow! lens[%d]=0x%x\n", i, params->lens[i]);
                 return -1;
             }
             *ext_data_len += params->lens[i];
@@ -242,7 +242,7 @@ static int32_t calc_ext_data_len(const struct drv_call_params *params, uint32_t 
     }
 
     if (length_invalid(*ext_data_len, params->rdata_len, buf_size) != 0) {
-        hm_error("Oops, ext_data or rdata too long len=0x%x rlen=0x%x\n", *ext_data_len, params->rdata_len);
+        tloge("Oops, ext_data or rdata too long len=0x%x rlen=0x%x\n", *ext_data_len, params->rdata_len);
         return -1;
     }
 
@@ -261,12 +261,12 @@ static int32_t calc_ext_data_offset(struct hm_drv_req_msg_t *msg, const struct d
             msg->args[i] = params->args[i];
         } else {
             if ((void *)((uintptr_t)params->args[i]) == NULL) {
-                hm_error("hmdrv args %d is NULL, please check\n", i);
+                tloge("hmdrv args %d is NULL, please check\n", i);
                 return -1;
             }
 
             if (memcpy_s(ext_ptr, ext_remained, (void *)((uintptr_t)params->args[i]), params->lens[i]) != EOK) {
-                hm_error("hmdrv copy failed\n");
+                tloge("hmdrv copy failed\n");
                 return -1;
             }
             msg->args[i] = (uintptr_t)(ext_ptr - msg->data);
@@ -300,7 +300,7 @@ static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call
     if (g_drv_op_info[idex].is_tbac_hooked) {
         msg->job_handler = g_drv_op_info[idex].job.cref;
         if (ac_job_enable(&(g_drv_op_info[idex].job)) != 0) {
-            hm_error("hmdrv acjob_enable failed\n");
+            tloge("hmdrv acjob_enable failed\n");
             return -1;
         }
     }
@@ -316,13 +316,13 @@ static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call
     ret = ipc_msg_call(g_drv_op_info[idex].channel, msg, msg->header.send.msg_size, rmsg,
                       sizeof(struct hm_drv_req_msg_t) + params->rdata_len, -1);
     if (ret != 0) {
-        hm_error("drv_call: hm msg call 0x%llx failed: %d\n", (unsigned long long)g_drv_op_info[idex].channel, ret);
+        tloge("drv_call: hm msg call 0x%llx failed: %d\n", (unsigned long long)g_drv_op_info[idex].channel, ret);
         goto err_msg_call;
     }
 
     if (params->rdata != NULL) {
         if (memcpy_s(params->rdata, params->rdata_len, rmsg->rdata, params->rdata_len) != EOK) {
-            hm_error("memcpy rdata failed\n");
+            tloge("memcpy rdata failed\n");
             goto err_msg_call;
         }
     }

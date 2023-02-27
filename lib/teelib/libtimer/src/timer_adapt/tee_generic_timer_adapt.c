@@ -12,7 +12,7 @@
 #include <securec.h>
 #include <pthread.h>
 #include <sys_timer.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <sys/usrsyscall_ext.h>
 #include <tamgr_ext.h>
 #include <timemgr_api.h>
@@ -74,18 +74,18 @@ static int64_t timer_value_add(const timeval_t *time_val_1, const timeval_t *tim
     timeval_t time_val_sum;
 
     if (time_val_1 == NULL || time_val_2 == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return TIMEVAL_MAX;
     }
 
     if ((time_val_1->tval64 > 0 && time_val_2->tval64 > 0 && INT64_MAX - time_val_1->tval64 < time_val_2->tval64) ||
         (time_val_1->tval64 < 0 && time_val_2->tval64 < 0 && INT64_MIN - time_val_1->tval64 > time_val_2->tval64)) {
-        hm_error("Time value add result overflow\n");
+        tloge("Time value add result overflow\n");
         return TIMEVAL_MAX;
     }
 
     if ((time_val_1->tval.nsec >= NS_PER_SECONDS) || (time_val_2->tval.nsec >= NS_PER_SECONDS)) {
-        hm_warn("timer value add:invalid nsec value\n");
+        tlogw("timer value add:invalid nsec value\n");
         time_val_sum.tval.sec = time_val_1->tval.sec + time_val_2->tval.sec;
         time_val_sum.tval.nsec = 0;
     } else {
@@ -108,12 +108,12 @@ static int64_t timer_value_sub(const timeval_t *time_val_1, const timeval_t *tim
 
     if ((time_val_1->tval64 > 0 && time_val_2->tval64 < 0 && INT64_MAX + time_val_2->tval64 < time_val_1->tval64) ||
         (time_val_1->tval64 < 0 && time_val_2->tval64 > 0 && INT64_MIN + time_val_2->tval64 > time_val_1->tval64)) {
-        hm_error("Time value sub result overflow\n");
+        tloge("Time value sub result overflow\n");
         return TIMER_INV_VALUE;
     }
 
     if ((time_val_1->tval.nsec >= NS_PER_SECONDS) || (time_val_2->tval.nsec >= NS_PER_SECONDS)) {
-        hm_warn("timer value sub:invalid nsec value\n");
+        tlogw("timer value sub:invalid nsec value\n");
         time_val_sub.tval.sec = time_val_1->tval.sec - time_val_2->tval.sec;
         time_val_sub.tval.nsec = 0;
     } else {
@@ -158,7 +158,7 @@ static void classic_thread_reply(int32_t status, const timer_event *t_event, cre
 
     ret = ipc_msg_reply(msg_hdl, &rsp_msg, sizeof(rsp_msg));
     if (ret != TMR_OK)
-        hm_error("classic timer reply fail\n");
+        tloge("classic timer reply fail\n");
 }
 
 static int32_t get_time_event_status(uint32_t state)
@@ -185,13 +185,13 @@ static void *classic_thread(void *arg)
     struct timer_event_msg req_msg = {{{ 0 }}};
 
     if (t_event == NULL) {
-        hm_error("invalid timer event\n");
+        tloge("invalid timer event\n");
         return NULL;
     }
 
     cref_t msg_hdl = hmapi_create_message();
     if (is_ref_err(msg_hdl)) {
-        hm_error("create message failed\n");
+        tloge("create message failed\n");
         return NULL;
     }
 
@@ -226,7 +226,7 @@ static void *classic_thread(void *arg)
 
     ret = hmapi_delete_obj(msg_hdl);
     if (ret != TMR_OK)
-        hm_error("delete obj failed!\n");
+        tloge("delete obj failed!\n");
     return NULL;
 }
 
@@ -238,20 +238,20 @@ static uint32_t classic_thread_create(timer_event *t_event)
 
     ret = pthread_attr_init(&thread_attr);
     if (ret != TMR_OK) {
-        hm_error("init failed %d\n", ret);
+        tloge("init failed %d\n", ret);
         return ret;
     }
 
     ret = pthread_create(&thread_id, &thread_attr, classic_thread, t_event);
     if (ret != TMR_OK) {
         (void)pthread_attr_destroy(&thread_attr);
-        hm_error("create failed %d\n", ret);
+        tloge("create failed %d\n", ret);
         return ret;
     }
 
     ret = pthread_attr_destroy(&thread_attr);
     if (ret != TMR_OK) {
-        hm_error("destroy failed: err=%d\n", ret);
+        tloge("destroy failed: err=%d\n", ret);
         return ret;
     }
 
@@ -266,13 +266,13 @@ static timer_event *tee_classic_timer_event_create(sw_timer_event_handler handle
     cref_t timer_channel;
 
     if (handler == NULL) {
-        hm_error("bad parameters\n");
+        tloge("bad parameters\n");
         return NULL;
     }
 
     t_event = TEE_Malloc(sizeof(*t_event), 0);
     if (t_event == NULL) {
-        hm_error("no enough memory\n");
+        tloge("no enough memory\n");
         return NULL;
     }
 
@@ -293,7 +293,7 @@ static timer_event *tee_classic_timer_event_create(sw_timer_event_handler handle
     if (ret != TMR_OK) {
         (void)hm_msg_channel_remove(t_event->timer_channel);
         TEE_Free(t_event);
-        hm_error("create classic thread fail\n");
+        tloge("create classic thread fail\n");
         return NULL;
     }
 
@@ -303,7 +303,7 @@ static timer_event *tee_classic_timer_event_create(sw_timer_event_handler handle
 static timer_event *tee_time_event_create(sw_timer_event_handler handler, int32_t timer_class, void *priv_data)
 {
     if (handler == NULL || timer_class != TIMER_CLASSIC) {
-        hm_error("bad param\n");
+        tloge("bad param\n");
         return NULL;
     }
 
@@ -338,7 +338,7 @@ static uint32_t tee_classic_timer_event_start(timer_event *t_event, timeval_t *t
     ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
-        hm_error("start timer event fail\n");
+        tloge("start timer event fail\n");
     }
 
     return ret;
@@ -347,7 +347,7 @@ static uint32_t tee_classic_timer_event_start(timer_event *t_event, timeval_t *t
 static uint32_t tee_time_event_start(timer_event *t_event, timeval_t *time)
 {
     if (t_event == NULL || time == NULL) {
-        hm_error("bad parameters\n");
+        tloge("bad parameters\n");
         return TMR_ERR;
     }
 
@@ -371,7 +371,7 @@ static uint32_t tee_classic_timer_event_stop(timer_event *t_event)
     ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
-        hm_error("stop timer event fail\n");
+        tloge("stop timer event fail\n");
     }
 
     return ret;
@@ -380,7 +380,7 @@ static uint32_t tee_classic_timer_event_stop(timer_event *t_event)
 static uint32_t tee_time_event_stop(timer_event *t_event)
 {
     if (t_event == NULL) {
-        hm_error("bad parameters\n");
+        tloge("bad parameters\n");
         return TMR_ERR;
     }
 
@@ -395,7 +395,7 @@ static uint32_t tee_classic_timer_event_destroy(timer_event *t_event)
     req_msg.hdr.send.msg_id = DESTORY_TIMER;
 
     if (t_event->state != TIMER_STATE_INACTIVE && t_event->state != TIMER_STATE_EXECUTING) {
-        hm_error("invalid timer event state %d\n", t_event->state);
+        tloge("invalid timer event state %d\n", t_event->state);
         return TMR_ERR;
     }
 
@@ -405,11 +405,11 @@ static uint32_t tee_classic_timer_event_destroy(timer_event *t_event)
         ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg),
                           &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
         if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS)
-            hm_error("stop timer event fail\n");
+            tloge("stop timer event fail\n");
     }
 
     if (hm_msg_channel_remove(t_event->timer_channel))
-        hm_error("channel remove failed\n");
+        tloge("channel remove failed\n");
 
     (void)memset_s(t_event, sizeof(*t_event), 0, sizeof(*t_event));
     TEE_Free(t_event);
@@ -419,7 +419,7 @@ static uint32_t tee_classic_timer_event_destroy(timer_event *t_event)
 static uint32_t tee_time_event_destroy(timer_event *t_event)
 {
     if (t_event == NULL) {
-        hm_error("bad parameters\n");
+        tloge("bad parameters\n");
         return TMR_ERR;
     }
 
@@ -429,7 +429,7 @@ static uint32_t tee_time_event_destroy(timer_event *t_event)
 static uint64_t tee_time_event_get_expire(timer_event *t_event)
 {
     if (t_event == NULL) {
-        hm_error("bad parameters\n");
+        tloge("bad parameters\n");
         return TIMER_INV_VALUE;
     }
 
@@ -439,7 +439,7 @@ static uint64_t tee_time_event_get_expire(timer_event *t_event)
 static uint32_t tee_time_event_check(timer_notify_data_kernel *timer_data)
 {
     if (timer_data == NULL) {
-        hm_error("bad parameters\n");
+        tloge("bad parameters\n");
         return TMR_ERR;
     }
 
@@ -469,7 +469,7 @@ static int32_t tee_set_ta_timer_permission(const TEE_UUID *uuid, uint64_t permis
 static uint32_t tee_adjust_sys_time(const struct tee_time_t *time)
 {
     if (time == NULL) {
-        hm_error("time is NULL\n");
+        tloge("time is NULL\n");
         return TMR_ERR;
     }
 
@@ -481,13 +481,13 @@ static void tee_get_system_time(TEE_Time *time)
     uint64_t time_value;
 
     if (time == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return;
     }
 
     time_value = tee_read_time_stamp();
     if (time_value == 0) {
-        hm_error("time value is zero\n");
+        tloge("time value is zero\n");
         return;
     }
 
@@ -499,7 +499,7 @@ static void tee_get_sys_rtc_time(TEE_Time *time)
 {
     TEE_Time cur_time;
     if (time == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return;
     }
 

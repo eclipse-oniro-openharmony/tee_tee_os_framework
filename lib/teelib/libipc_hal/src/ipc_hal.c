@@ -11,7 +11,7 @@
  */
 #include <ipclib.h>
 #include <ipclib_hal.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <securec.h>
 
 #define MSG_MAX_LEN     512 /* same as GT_MSG_REV_SIZE */
@@ -101,16 +101,16 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_h
         struct notify_st *hm_ntf_p = (struct notify_st *)&hm_msg;
         rc                         = ipc_msg_notification(msgsent.dst_ch, hm_ntf_p, sizeof(struct notify_st));
         if (rc != 0) {
-            hm_error("Notify failed to 0x%x size = %u\n", msgsent.uw_dst_pid, msgsent.size);
+            tloge("Notify failed to 0x%x size = %u\n", msgsent.uw_dst_pid, msgsent.size);
             rc = E_EX_AGAIN; /* notify failed, force to do ipc_msg_call */
         }
     } else {
-        hm_error("msg_call failed, not support big msg in ipc_msg_snd/ipc_msg_qsnd, size = %u\n", msgsent.size);
+        tloge("msg_call failed, not support big msg in ipc_msg_snd/ipc_msg_qsnd, size = %u\n", msgsent.size);
         return SRE_IPC_ERR;
     }
 
     if (rc != 0) {
-        hm_error("notify failed to 0x%x, size=%u, ret=%d\n", hm_msg.msg_id, msgsent.size, rc);
+        tloge("notify failed to 0x%x, size=%u, ret=%d\n", hm_msg.msg_id, msgsent.size, rc);
         return SRE_IPC_ERR;
     }
 
@@ -137,7 +137,7 @@ static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_
 
     rc = ipc_msg_call(msgsent.dst_ch, &hm_msg, sizeof(hm_msg), &rmsg, sizeof(rmsg), -1);
     if (rc != 0) {
-        hm_error("msg_call to 0x%x failed, rc = %d\n", msgsent.uw_dst_pid, rc);
+        tloge("msg_call to 0x%x failed, rc = %d\n", msgsent.uw_dst_pid, rc);
         return SRE_IPC_ERR;
     }
 
@@ -149,20 +149,20 @@ uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp,
     cref_t dst_ch;
     struct msgsent_st msgsent;
     int32_t rc;
-    hm_debug("MsgSend Start to 0x%x msgid = 0x%lx size = %u\n", uw_dst_pid, uw_msg_id, size);
+    tlogd("MsgSend Start to 0x%x msgid = 0x%lx size = %u\n", uw_dst_pid, uw_msg_id, size);
 
     if (size > MSG_MAX_LEN) {
-        hm_error("msg too long!\n");
+        tloge("msg too long!\n");
         return SRE_IPC_ERR;
     }
 
     if (global_handle_check(&uw_dst_pid) != 0) {
-        hm_error("check uwDstPID against global handle failed\n");
+        tloge("check uwDstPID against global handle failed\n");
     }
 
     rc =  ipc_get_ch_from_taskid(uw_dst_pid, 0, &dst_ch);
     if (rc != 0) {
-        hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
+        tloge("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
         return SRE_IPC_ERR;
     }
 
@@ -181,12 +181,12 @@ uint32_t ipc_send_msg_sync(uint32_t msg_id, msg_pid_t dest_pid, const void *msgp
     int32_t rc;
 
     if (global_handle_check(&dest_pid) != 0) {
-        hm_error("check uwDstPID against global handle failed\n");
+        tloge("check uwDstPID against global handle failed\n");
     }
 
     rc = ipc_get_ch_from_taskid(dest_pid, 0, &dst_ch);
     if (rc != 0) {
-        hm_error("Cannot get dest channel of pid(0x%x)\n", dest_pid);
+        tloge("Cannot get dest channel of pid(0x%x)\n", dest_pid);
         return SRE_IPC_ERR;
     }
 
@@ -212,12 +212,12 @@ uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp,
     while (wait_sender != sender) {
         ret = ipc_msg_rcv_a(uw_timeout, puw_msg_id, msgp, (uint16_t)(size), &sender);
         if (ret != 0) {
-            hm_error("ipc msg Rcv failed, ret = 0x%x\n", ret);
+            tloge("ipc msg Rcv failed, ret = 0x%x\n", ret);
             return ret;
         }
 
         if (wait_sender != sender)
-            hm_error("recv msg from wrong sender %u/%u\n", sender, wait_sender);
+            tloge("recv msg from wrong sender %u/%u\n", sender, wait_sender);
     }
 
     return ret;
@@ -236,7 +236,7 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
     msg_ret = ipc_msg_receive(msgrcv.ch, &msg, sizeof(msg), msg_hdl, &info, msgrcv.timeout);
     if (msg_ret < 0) {
         if (msg_ret != E_EX_TIMER_TIMEOUT || msg_ret == E_EX_CNODE_INVOKE_NOCAP)
-            hm_error("receive msg failed: %x\n", msg_ret);
+            tloge("receive msg failed: %x\n", msg_ret);
         return msg_ret == E_EX_TIMER_TIMEOUT ? SRE_IPC_TIMEOUT_ERR : SRE_IPC_ERR;
     }
 
@@ -251,7 +251,7 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
     if (msgrcv.msgp != NULL) {
         if (memcpy_s(msgrcv.msgp, msgrcv.size, msg.payload,
                      msgrcv.size < MSG_MAX_LEN ? msgrcv.size : MSG_MAX_LEN) != EOK) {
-            hm_error("memcpy_s failed\n");
+            tloge("memcpy_s failed\n");
             return SRE_IPC_ERR;
         }
     }
@@ -262,13 +262,13 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
         rmsg.status = HM_IPC_OK; /* unused field */
         int32_t rc  = ipc_msg_reply(msg_hdl, &rmsg, sizeof(rmsg));
         if (rc < 0) {
-            hm_error("reply msg error %d\n", rc);
+            tloge("reply msg error %d\n", rc);
             return SRE_IPC_ERR;
         }
     } else if (info.msg_type == MSG_TYPE_NOTIF) {
-        hm_debug("Notification received, DONOT need to reply ch = 0x%llx\n", msg_hdl);
+        tlogd("Notification received, DONOT need to reply ch = 0x%llx\n", msg_hdl);
     } else {
-        hm_error("Unexpected msg_recv %u\n", info.msg_type);
+        tloge("Unexpected msg_recv %u\n", info.msg_type);
         return SRE_IPC_ERR;
     }
 
@@ -281,13 +281,13 @@ uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, ui
     uint32_t ret;
     struct msgrcv_st msgrcv;
     if (size > MSG_MAX_LEN) {
-        hm_error(" msg too long!\n");
+        tloge(" msg too long!\n");
         return SRE_IPC_ERR;
     }
 
     ret = ipc_get_my_channel(0, &ch);
     if (ret != 0) {
-        hm_error("Cannot recv, channel haven't been created yet\n");
+        tloge("Cannot recv, channel haven't been created yet\n");
         return SRE_IPC_NO_CHANNEL_ERR;
     }
 
@@ -299,7 +299,7 @@ uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, ui
     msgrcv.puw_sender_pid = puw_sender_pid;
     ret = ipc_msgrcv_core(msgrcv, NULL);
 
-    hm_debug("MsgRcv OK: 0x%x <- 0x%x msgid = 0x%x, size = %u\n", get_self_taskid(), puw_sender_pid ? *puw_sender_pid : 0,
+    tlogd("MsgRcv OK: 0x%x <- 0x%x msgid = 0x%x, size = %u\n", get_self_taskid(), puw_sender_pid ? *puw_sender_pid : 0,
              puw_msg_id ? *puw_msg_id : DEAD_MSG_ID, (uint32_t)size);
 
     return ret;
@@ -310,20 +310,20 @@ uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t
     cref_t dst_ch;
     struct msgsent_st msgsent;
     int32_t rc;
-    hm_debug("MsgQSend to 0x%x ch = %u\n", uw_dst_pid, uc_dst_qid);
+    tlogd("MsgQSend to 0x%x ch = %u\n", uw_dst_pid, uc_dst_qid);
 
     if (uc_dst_qid >= CH_CNT_MAX) {
-        hm_error("Send channel Number overflow: %u\n", uc_dst_qid);
+        tloge("Send channel Number overflow: %u\n", uc_dst_qid);
         return SRE_IPC_ERR;
     }
 
     if (global_handle_check(&uw_dst_pid) != 0) {
-        hm_error("check uwDstPID against global handle failed\n");
+        tloge("check uwDstPID against global handle failed\n");
     }
 
     rc = ipc_get_ch_from_taskid(uw_dst_pid, uc_dst_qid, &dst_ch);
     if (rc != 0) {
-        hm_error("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
+        tloge("Cannot get dest channel, MsgSnd abort to 0x%x\n", uw_dst_pid);
         return SRE_IPC_ERR;
     }
     msgsent.dst_ch     = dst_ch;
@@ -341,13 +341,13 @@ uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, msg_
     uint32_t ret;
     struct msgrcv_st msgrcv;
     if (uc_recv_qid >= CH_CNT_MAX) {
-        hm_error("Recv channel Number overflow: %d\n", uc_recv_qid);
+        tloge("Recv channel Number overflow: %d\n", uc_recv_qid);
         return SRE_IPC_ERR;
     }
 
     ret = ipc_get_my_channel(uc_recv_qid, &ch);
     if (ret != 0) {
-        hm_error("Cannot recv, channel haven't been created yet\n");
+        tloge("Cannot recv, channel haven't been created yet\n");
         return SRE_IPC_NO_CHANNEL_ERR;
     }
 
@@ -359,7 +359,7 @@ uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, msg_
     msgrcv.puw_sender_pid = puw_sender_pid;
     ret = ipc_msgrcv_core(msgrcv, puw_msg_handle);
 
-    hm_debug("MsgQRcv OK: 0x%x <- 0x%x msgid = 0x%x\n", get_self_taskid(), puw_sender_pid ? *puw_sender_pid : 0,
+    tlogd("MsgQRcv OK: 0x%x <- 0x%x msgid = 0x%x\n", get_self_taskid(), puw_sender_pid ? *puw_sender_pid : 0,
              puw_msg_id ? *puw_msg_id : DEAD_MSG_ID);
 
     return ret;

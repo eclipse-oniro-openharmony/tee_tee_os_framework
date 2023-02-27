@@ -10,7 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 #include <sys_timer.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <tee_time_adapt.h>
 #include <time.h>
 #include <tee_time_event.h>
@@ -25,7 +25,7 @@ void delay_us(uint32_t microseconds)
     uint64_t cur_time;
 
     if (microseconds > US_PER_SECONDS) {
-        hm_error("The value of microseconds is extend the range\n");
+        tloge("The value of microseconds is extend the range\n");
         return;
     }
 
@@ -51,7 +51,7 @@ void delay_ms(uint32_t msec)
 uint32_t tee_msleep(uint32_t msec)
 {
     if (msec > MS_PER_SECONDS) {
-        hm_error("The value of microseconds is extend the range\n");
+        tloge("The value of microseconds is extend the range\n");
         return TMR_ERR;
     }
 

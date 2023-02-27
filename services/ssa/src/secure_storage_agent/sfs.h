@@ -16,8 +16,6 @@
 #include <crypto_driver_adaptor.h>
 #include "sfs_internal.h"
 
-#define ssa_logt(fmt, args...) uart_printf_func("%s %d: " fmt "", "[SSA]", __LINE__, ##args)
-
 /* Macros for access() */
 #define R_OK 4 /* Read */
 #define W_OK 2 /* Write */

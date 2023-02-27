@@ -12,7 +12,7 @@
 #include "crypto_syscall_random.h"
 #include <securec.h>
 #include "tee_driver_module.h"
-#include <hmlog.h>
+#include <tee_log.h>
 #include "drv_param_ops.h"
 
 static uint8_t g_cached_random[CACHED_RANDOM_SIZE] = {0};
@@ -21,7 +21,7 @@ static uint32_t g_used_block_count = TOTAL_RANDOM_BLOCK;
 static int32_t hm_do_generate_random(const struct crypto_drv_ops_t *ops, void *buffer, size_t size)
 {
     if (ops->generate_random == NULL) {
-        hm_error("generate is not support\n");
+        tloge("generate is not support\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -31,7 +31,7 @@ static int32_t hm_do_generate_random(const struct crypto_drv_ops_t *ops, void *b
 
     ret = ops->generate_random(buffer, size);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("generate random failed\n");
+        tloge("generate random failed\n");
 
     do_power_off(ops);
     return ret;
@@ -40,7 +40,7 @@ static int32_t hm_do_generate_random(const struct crypto_drv_ops_t *ops, void *b
 static int32_t generate_random_from_cached(const struct crypto_drv_ops_t *ops, void *buffer, size_t size)
 {
     if (g_used_block_count > TOTAL_RANDOM_BLOCK) {
-        hm_error("Invalid cache block size\n");
+        tloge("Invalid cache block size\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -57,14 +57,14 @@ static int32_t generate_random_from_cached(const struct crypto_drv_ops_t *ops, v
     uint32_t need_block_count = (size % ONE_BLOCK_SIZE == 0) ? (size / ONE_BLOCK_SIZE) : (size / ONE_BLOCK_SIZE + 1);
     errno_t rc = memcpy_s(buffer, size, g_cached_random + g_used_block_count * ONE_BLOCK_SIZE, size);
     if (rc != EOK) {
-        hm_error("memory copy failed, rc=0x%x\n", rc);
+        tloge("memory copy failed, rc=0x%x\n", rc);
         return CRYPTO_ERROR_SECURITY;
     }
 
     rc = memset_s(g_cached_random + g_used_block_count * ONE_BLOCK_SIZE,
         sizeof(g_cached_random) - g_used_block_count * ONE_BLOCK_SIZE, 0, size);
     if (rc != EOK)
-        hm_error("memory set failed, rc=0x%x\n", rc);
+        tloge("memory set failed, rc=0x%x\n", rc);
 
     g_used_block_count += need_block_count;
 
@@ -74,7 +74,7 @@ static int32_t generate_random_from_cached(const struct crypto_drv_ops_t *ops, v
 int32_t hw_generate_random_ops(const void *ops, void *buf, uint32_t size)
 {
     if (buf == NULL || size == 0 || ops == NULL) {
-        hm_error("generate random params fail\n");
+        tloge("generate random params fail\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -117,7 +117,7 @@ int32_t generate_random_call(const struct drv_data *drv, unsigned long args,
     ret = copy_to_client((uintptr_t)generate_random_share_buf, ioctl_args->buf_len, ioctl_args->buf,
         ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(generate_random_share_buf, ioctl_args->buf_len, buf_arg,
@@ -128,7 +128,7 @@ end:
 static int32_t get_entropy_ops(const struct crypto_drv_ops_t *ops, struct memref_t *buf_arg)
 {
     if (ops->get_entropy == NULL) {
-        hm_error("hardware engine get entropy fun is null\n");
+        tloge("hardware engine get entropy fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -141,7 +141,7 @@ static int32_t get_entropy_ops(const struct crypto_drv_ops_t *ops, struct memref
 
     ret = ops->get_entropy(buffer, size);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("generate random failed\n");
+        tloge("generate random failed\n");
 
     do_power_off(ops);
 
@@ -169,7 +169,7 @@ int32_t get_entropy_call(const struct drv_data *drv, unsigned long args,
 
     ret = copy_to_client((uintptr_t)get_entropy_share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(get_entropy_share_buf, ioctl_args->buf_len, buf_arg,

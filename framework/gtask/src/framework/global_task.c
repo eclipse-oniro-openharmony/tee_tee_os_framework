@@ -26,7 +26,6 @@
 #include "tee_property_api.h"
 #include "timer_export.h"
 #include <sys/teecall.h>
-#include <hmlog.h>
 #include "tee_init.h"
 #include <string.h>
 #include <ipclib.h>
@@ -74,7 +73,7 @@ static void acquire_smc_buf_lock(uint32_t *lock)
     int rc;
     rc = disable_local_irq();
     if (rc != 0)
-        hm_panic("disable_local_irq failed: %x\n", rc);
+        tee_abort("disable_local_irq failed: %x\n", rc);
     do
         rc = __sync_bool_compare_and_swap(lock, 0, 1);
     while (!rc);
@@ -89,7 +88,7 @@ static void release_smc_buf_lock(uint32_t *lock)
     asm volatile("dmb sy");
     rc = enable_local_irq();
     if (rc != 0)
-        hm_panic("enable_local_irq failed: %x\n", rc);
+        tee_abort("enable_local_irq failed: %x\n", rc);
 }
 
 /*

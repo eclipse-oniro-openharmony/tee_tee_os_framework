@@ -10,7 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 #include <sys_timer.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <tee_time_adapt.h>
 #include <tee_misc.h>
 #include <time.h>
@@ -38,7 +38,7 @@ int hm_timer_init(void)
 static uint32_t increment_overflow(uint32_t *year, uint32_t carry)
 {
     if (carry > (UINT_MAX - *year)) {
-        hm_error("overflow, year=%u, carry=%u\n", *year, carry);
+        tloge("overflow, year=%u, carry=%u\n", *year, carry);
         return TMR_ERR;
     }
 
@@ -85,7 +85,7 @@ void gen_sys_date_time(const uint32_t rtc_time, struct tee_date_t *time)
     uint32_t ret;
 
     if (time == NULL) {
-        hm_error("Error:time is null\n");
+        tloge("Error:time is null\n");
         return;
     }
 
@@ -96,7 +96,7 @@ void gen_sys_date_time(const uint32_t rtc_time, struct tee_date_t *time)
 
     ret = get_days_and_year(&tdays, &year);
     if (ret != TMR_OK) {
-        hm_error("failed to get the day and year\n");
+        tloge("failed to get the day and year\n");
         return;
     }
 
@@ -136,7 +136,7 @@ struct tm *hm_localtime_r(const time_t *restrict t, struct tm *restrict value)
      * tm_yday: Days in the year, has not implemented yet(could not get from date_time).
      */
     if (date_time.year == 0 || date_time.month == 0) {
-        hm_error("invalid parameters, please check\n");
+        tloge("invalid parameters, please check\n");
         return NULL;
     }
 
@@ -172,7 +172,7 @@ struct tm *__localtime_r(const time_t *restrict t, struct tm *restrict value)
 
     tmp = hm_localtime_r(t, value);
     if (tmp == NULL) {
-        hm_error("localtime: get value is NULL\n");
+        tloge("localtime: get value is NULL\n");
         return NULL;
     }
     return value;
@@ -188,7 +188,7 @@ void get_sys_rtc_time(TEE_Time *time)
 {
     struct timer_ops_t *time_ops = NULL;
     if (time == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return;
     }
 
@@ -214,7 +214,7 @@ uint32_t adjust_sys_time(const struct tee_time_t *time)
 {
     struct timer_ops_t *time_ops = NULL;
     if (time == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return TMR_ERR;
     }
 
@@ -229,7 +229,7 @@ void release_timer_event(const TEE_UUID *uuid)
 {
     struct timer_ops_t *time_ops = NULL;
     if (uuid == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return;
     }
 
@@ -244,7 +244,7 @@ int32_t set_ta_timer_permission(const TEE_UUID *uuid, uint64_t permission)
 {
     struct timer_ops_t *time_ops = NULL;
     if (uuid == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return TMR_ERR;
     }
 
@@ -260,13 +260,13 @@ void get_ree_time_str(char *time_str, uint32_t time_str_len)
     int32_t ret;
 
     if ((time_str == NULL) || (time_str_len == 0)) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return;
     }
 
     ret = get_time_of_data(NULL, NULL, time_str, time_str_len);
     if (ret != TMR_OK)
-        hm_error("get time of data failed\n");
+        tloge("get time of data failed\n");
 }
 
 uint64_t tee_read_time_stamp(void)

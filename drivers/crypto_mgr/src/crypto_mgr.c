@@ -45,16 +45,16 @@ static int32_t crypto_ioctl_alloc_ctx_buf(struct drv_data *drv, uint32_t cmd, un
     uint32_t ctx_size = crypto_ioctl_func(drv, IOCTRL_CRYPTO_GET_CTX_SIZE, args, args_len);
     bool check = ((ctx_size <= 0) || (ctx_size > MAX_CRYPTO_CTX_SIZE));
     if (check) {
-        hm_error("Get ctx size failed, ctx size=%d\n", ctx_size);
+        tloge("Get ctx size failed, ctx size=%d\n", ctx_size);
         return CRYPTO_BAD_PARAMETERS;
     }
     uint8_t *ctx_buffer = (uint8_t *)malloc_coherent((size_t)ctx_size);
     if (ctx_buffer == NULL) {
-        hm_error("Malloc ctx buffer failed, ctx size=%d\n", ctx_size);
+        tloge("Malloc ctx buffer failed, ctx size=%d\n", ctx_size);
         return CRYPTO_OVERFLOW;
     }
     if (memset_s(ctx_buffer, (size_t)ctx_size, 0, (size_t)ctx_size) != EOK) {
-        hm_error("memset ctx buffer failed\n");
+        tloge("memset ctx buffer failed\n");
         free(ctx_buffer);
         return CRYPTO_ERROR_SECURITY;
     }
@@ -74,20 +74,20 @@ static int32_t crypto_ioctl_alloc_ctx_buf(struct drv_data *drv, uint32_t cmd, un
 int64_t crypto_mgr_ioctl(struct drv_data *drv, uint32_t cmd, unsigned long args, uint32_t args_len)
 {
     if (drv == NULL) {
-        hm_error("ioctl invalid drv\n");
+        tloge("ioctl invalid drv\n");
         return -1;
     }
     int32_t ret;
     if (cmd == IOCTRL_CRYPTO_CTX_COPY) {
         ret = crypto_ioctl_alloc_ctx_buf(drv, cmd, args, args_len);
         if (ret != CRYPTO_SUCCESS) {
-            hm_error("crypto_ioctl_alloc_ctx_buf fail\n");
+            tloge("crypto_ioctl_alloc_ctx_buf fail\n");
             return -1;
         }
     }
     ret = crypto_ioctl_func(drv, cmd, args, args_len);
 
-    hm_info("mgr ioctl load 0x%x ret 0x%x\n", cmd, ret);
+    tlogi("mgr ioctl load 0x%x ret 0x%x\n", cmd, ret);
 
     return ret;
 }
@@ -95,7 +95,7 @@ int64_t crypto_mgr_ioctl(struct drv_data *drv, uint32_t cmd, unsigned long args,
 int64_t crypto_mgr_open(struct drv_data *drv, unsigned long args, uint32_t args_len)
 {
     if (drv == NULL) {
-        hm_error("open invalid drv\n");
+        tloge("open invalid drv\n");
         return -1;
     }
 
@@ -103,7 +103,7 @@ int64_t crypto_mgr_open(struct drv_data *drv, unsigned long args, uint32_t args_
         return 0;
 
     if (args_len < sizeof(uint32_t) || args == 0) {
-        hm_error("open invalid drv\n");
+        tloge("open invalid drv\n");
         return -1;
     }
 
@@ -120,7 +120,7 @@ int64_t crypto_mgr_open(struct drv_data *drv, unsigned long args, uint32_t args_
 int64_t crypto_mgr_close(struct drv_data *drv)
 {
     if (drv == NULL) {
-        hm_error("close invalid drv\n");
+        tloge("close invalid drv\n");
         return -1;
     }
 
@@ -145,13 +145,13 @@ int64_t crypto_mgr_close(struct drv_data *drv)
 
 int32_t crypto_mgr_suspend(void)
 {
-    hm_debug("crypto_mgr_suspend\n");
+    tlogd("crypto_mgr_suspend\n");
     return crypto_ioctl_suspend();
 }
 
 int32_t crypto_mgr_resume(void)
 {
-    hm_debug("crypto_mgr_resume\n");
+    tlogd("crypto_mgr_resume\n");
     return crypto_ioctl_resume();
 }
 

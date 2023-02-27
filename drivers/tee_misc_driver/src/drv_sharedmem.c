@@ -142,7 +142,7 @@ int32_t get_caller_uuid(spawn_uuid_t *uuid)
 
     int32_t ret = hm_gettid(&tid);
     if (ret != 0) {
-        hm_error("failed to get tid\n");
+        tloge("failed to get tid\n");
         return TLV_SHAREDMEM_ERROR_GENERIC;
     }
 

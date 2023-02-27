@@ -12,7 +12,7 @@
 #include "crypto_syscall_common.h"
 #include <securec.h>
 #include "tee_driver_module.h"
-#include <hmlog.h>
+#include <tee_log.h>
 #include "drv_param_ops.h"
 
 static int32_t ae_init_ops(const struct drv_data *drv, const struct crypto_drv_ops_t *ops,
@@ -23,7 +23,7 @@ static int32_t ae_init_ops(const struct drv_data *drv, const struct crypto_drv_o
     uint32_t direction = ioctl->arg2;
 
     if (ops->ae_init == NULL || drv->private_data == NULL) {
-        hm_error("hardware engine ae init fun is null\n");
+        tloge("hardware engine ae init fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -46,7 +46,7 @@ static int32_t ae_init_ops(const struct drv_data *drv, const struct crypto_drv_o
     ret = ops->ae_init(alg_type, drv->private_data, direction, &key, &ae_init_param);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do ae init failed. ret = %d\n", ret);
+        tloge("hardware engine do ae init failed. ret = %d\n", ret);
         return ret;
     }
 
@@ -63,7 +63,7 @@ int32_t ae_init_call(const struct drv_data *drv, unsigned long args, uint32_t ar
 
     int32_t ret = ae_init_ops(drv, ops, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("ae init ops fail\n");
+        tloge("ae init ops fail\n");
 
     return ret;
 }
@@ -73,7 +73,7 @@ static int32_t ae_update_aad_ops(const struct drv_data *drv, const struct crypto
 {
     int32_t ret;
     if (ops->ae_update_aad == NULL || drv->private_data == NULL) {
-        hm_error("hardware engine ae update aad fun is null\n");
+        tloge("hardware engine ae update aad fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -88,7 +88,7 @@ static int32_t ae_update_aad_ops(const struct drv_data *drv, const struct crypto
     ret = ops->ae_update_aad(drv->private_data, &aad);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do ae update aad failed. ret = %d\n", ret);
+        tloge("hardware engine do ae update aad failed. ret = %d\n", ret);
         return ret;
     }
 
@@ -105,7 +105,7 @@ int32_t ae_update_aad_call(const struct drv_data *drv, unsigned long args, uint3
 
     int32_t ret = ae_update_aad_ops(drv, ops, ioctl_args);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("ae update fail\n");
+        tloge("ae update fail\n");
 
     return ret;
 }
@@ -115,7 +115,7 @@ static int32_t ae_update_ops(const struct drv_data *drv, const struct crypto_drv
 {
     int32_t ret;
     if (ops->ae_update == NULL || drv->private_data == NULL) {
-        hm_error("hardware engine ae update fun is null\n");
+        tloge("hardware engine ae update fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -135,13 +135,13 @@ static int32_t ae_update_ops(const struct drv_data *drv, const struct crypto_drv
     ret = ops->ae_update(drv->private_data, &data_in, &data_out);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do ae update failed. ret = %d\n", ret);
+        tloge("hardware engine do ae update failed. ret = %d\n", ret);
         return ret;
     }
 
     crypto_arg--;
     if (data_out.size > crypto_arg->size) {
-        hm_error("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
+        tloge("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = data_out.size;
@@ -173,7 +173,7 @@ int32_t ae_update_call(const struct drv_data *drv, unsigned long args, uint32_t 
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
@@ -200,7 +200,7 @@ static int32_t ae_enc_final_ops(const struct drv_data *drv,
     const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg)
 {
     if (ops->ae_enc_final == NULL || drv->private_data == NULL) {
-        hm_error("hardware engine ae enc final fun is null\n");
+        tloge("hardware engine ae enc final fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -217,19 +217,19 @@ static int32_t ae_enc_final_ops(const struct drv_data *drv,
     ret = ops->ae_enc_final(drv->private_data, &data_in, &data_out, &tag_out);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do ae enc final failed. ret = %d\n", ret);
+        tloge("hardware engine do ae enc final failed. ret = %d\n", ret);
         return ret;
     }
 
     if (data_out.size > crypto_arg->size) {
-        hm_error("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
+        tloge("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = data_out.size;
 
     crypto_arg++;
     if (tag_out.size > crypto_arg->size) {
-        hm_error("new tag out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, tag_out.size);
+        tloge("new tag out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, tag_out.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = tag_out.size;
@@ -262,7 +262,7 @@ int32_t ae_enc_final_call(const struct drv_data *drv, unsigned long args, uint32
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,
@@ -275,7 +275,7 @@ static int32_t ae_dec_final_ops(const struct drv_data *drv,
 {
     int32_t ret;
     if (ops->ae_dec_final == NULL || drv->private_data == NULL) {
-        hm_error("hardware engine ae dec final fun is null\n");
+        tloge("hardware engine ae dec final fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 
@@ -302,12 +302,12 @@ static int32_t ae_dec_final_ops(const struct drv_data *drv,
     ret = ops->ae_dec_final(drv->private_data, &data_in, &tag_in, &data_out);
     do_power_off(ops);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("hardware engine do ae dec final failed. ret = %d\n", ret);
+        tloge("hardware engine do ae dec final failed. ret = %d\n", ret);
         return ret;
     }
 
     if (data_out.size > crypto_arg->size) {
-        hm_error("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
+        tloge("new data out size > origin size. origin size = %u, new size = %u\n", crypto_arg->size, data_out.size);
         return CRYPTO_ERROR_OUT_OF_MEMORY;
     }
     crypto_arg->size = data_out.size;
@@ -340,7 +340,7 @@ int32_t ae_dec_final_call(const struct drv_data *drv, unsigned long args, uint32
 
     ret = copy_to_client((uintptr_t)share_buf, ioctl_args->buf_len, ioctl_args->buf, ioctl_args->buf_len);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("copy to client failed. ret = %d\n", ret);
+        tloge("copy to client failed. ret = %d\n", ret);
 
 end:
     driver_free_share_mem_and_buf_arg(share_buf, ioctl_args->buf_len, buf_arg,

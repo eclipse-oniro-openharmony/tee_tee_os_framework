@@ -17,6 +17,7 @@
 #include "ta_framework.h"
 #include "target_type.h"
 #include "tee_config.h"
+#include "tee_log.h"
 
 const struct base_driver_node g_product_base_drv[] = {
 #ifdef CRYPTO_MGR_SERVER_ENABLE
@@ -52,21 +53,21 @@ static int32_t set_tlv_node(struct drv_tlv *tlv, const struct base_driver_node *
     errno_t ret;
     ret = memcpy_s(&tlv->uuid, sizeof(tlv->uuid), &drv_service_property->uuid, sizeof(drv_service_property->uuid));
     if (ret != EOK) {
-        hm_error("copy uuid failed\n");
+        tloge("copy uuid failed\n");
         return -1;
     }
 
     ret = memcpy_s(&tlv->drv_conf.mani, sizeof(tlv->drv_conf.mani),
                    &drv_service_property->mani, sizeof(drv_service_property->mani));
     if (ret != EOK) {
-        hm_error("copy mani failed\n");
+        tloge("copy mani failed\n");
         return -1;
     }
 
     ret = memcpy_s(&tlv->drv_conf.drv_basic_info, sizeof(tlv->drv_conf.drv_basic_info),
                    &(drv_service_property->drv_basic_info), sizeof(drv_service_property->drv_basic_info));
     if (ret != EOK) {
-        hm_error("copy drv basic info failed\n");
+        tloge("copy drv basic info failed\n");
         return -1;
     }
 
@@ -77,33 +78,33 @@ static void init_base_drv_node(const struct base_driver_node *drv_service_proper
 {
     struct drv_tlv *tlv = malloc(sizeof(struct drv_tlv));
     if (tlv == NULL) {
-        hm_error("malloc tlv node failed\n");
+        tloge("malloc tlv node failed\n");
         return;
     }
 
     errno_t rc = memset_s(tlv, sizeof(*tlv), 0, sizeof(*tlv));
     if (rc != EOK) {
-        hm_error("memset failed\n");
+        tloge("memset failed\n");
         free(tlv);
         return;
     }
 
     int32_t ret = set_tlv_node(tlv, drv_service_property);
     if (ret != 0) {
-        hm_error("set tlv node value failed\n");
+        tloge("set tlv node value failed\n");
         free(tlv);
         return;
     }
 
     struct task_node *node = alloc_and_init_drv_node(tlv);
     if (node == NULL) {
-        hm_error("alloc node failed\n");
+        tloge("alloc node failed\n");
         free(tlv);
         return;
     }
 
     if (receive_task_conf(node) != 0) {
-        hm_error("task conf node get failed\n");
+        tloge("task conf node get failed\n");
         free(tlv);
         free_task_node(node);
         return;
