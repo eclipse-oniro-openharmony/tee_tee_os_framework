@@ -121,7 +121,6 @@ TEE_Panic;
 TEE_OpenTASession;
 TEE_CloseTASession;
 TEE_InvokeTACommand;
-tee_get_session_type;
 
 TEE_GetPropertyAsString;
 TEE_GetPropertyAsBool;
@@ -411,7 +410,6 @@ RSA_get0_crt_params;
 
 /* may not be exported on OH platform */
 hm_drv_call_new;
-get_die_id_size;
 tee_print;
 get_global_handle;
 set_global_handle;

@@ -169,17 +169,6 @@ void set_current_session_type(uint32_t session_type)
         info->session_type = session_type;
 }
 
-uint32_t get_current_session_type(void)
-{
-    caller_info caller_info_data  = {0};
-    caller_info_data.session_type = SESSION_FROM_UNKNOWN;
-
-    TEE_Result ret = tee_ext_get_caller_info(&caller_info_data, sizeof(caller_info_data));
-    if (ret != TEE_SUCCESS)
-        tloge("get caller info failed\n");
-    return caller_info_data.session_type;
-}
-
 struct running_info *get_tls_running_info(void)
 {
     if (!g_info_key_state)
