@@ -60,12 +60,12 @@ static uint32_t tee_sleep(msec)
     TEE_Result ret;
     cref_t timer_ref;
 
-    timer_ref = hm_create_timer();
+    timer_ref = create_timer();
     if (is_ref_err(timer_ref))
         return ref_to_err(timer_ref);
 
-    ret = hm_timer_start(timer_ref, msec);
-    hm_delete_timer(timer_ref);
+    ret = timer_start(timer_ref, msec);
+    delete_timer(timer_ref);
     return ret;
 }
 
@@ -503,7 +503,7 @@ static void tee_get_sys_rtc_time(TEE_Time *time)
         return;
     }
 
-    hm_timer_get_offset(&g_rtc_offset.seconds, &g_rtc_offset.millis);
+    timer_get_offset(&g_rtc_offset.seconds, &g_rtc_offset.millis);
     tee_get_system_time(&cur_time);
 
     if (cur_time.millis + (uint32_t)g_rtc_offset.millis > MS_PER_SECONDS) {
