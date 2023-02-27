@@ -14,7 +14,6 @@
 #include <sys/teecall.h>
 #include <msg_ops.h>
 #include <mem_ops.h>
-#include <root_status_ops.h> /* tee_read_root_status */
 #include <tee_sharemem.h>
 #include <dyn_conf_dispatch_inf.h>
 #include "tee_log.h"
@@ -32,7 +31,6 @@
 static bool g_rdr_mem_registered = false;
 
 #define KERNEL_IMG_IS_ENG 1
-#define ROOTBIT           0x1
 
 TEE_Result map_rdr_mem(const smc_cmd_t *cmd)
 {
