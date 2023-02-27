@@ -14,7 +14,6 @@
 #define TEE_EXT_API_H
 
 #include "tee_defines.h"
-#include "tee_hw_ext_api_legacy.h"
 
 #ifdef __cplusplus
 #if __cplusplus

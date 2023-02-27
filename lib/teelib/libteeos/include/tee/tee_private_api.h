@@ -14,7 +14,6 @@
 
 #include "tee_defines.h"
 #include "tee_crypto_api.h"
-#include "tee_hw_ext_api_legacy.h"
 
 TEE_Result tee_ext_get_se_capability(const TEE_UUID *uuid, uint64_t *result);
 
