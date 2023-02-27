@@ -19,7 +19,6 @@
 #include <ipclib.h>
 #include <tamgr_ext.h>
 #include <hm_exit.h>
-#include <tee_private_api.h>
 #include <ta_framework.h>
 #include <chip_info.h>
 #include <tee_ext_api.h>
