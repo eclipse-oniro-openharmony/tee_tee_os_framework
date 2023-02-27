@@ -16,7 +16,7 @@
 #include <securec.h>
 #include <tee_log.h>
 #include <tee_ext_api.h>
-#include <tee_private_api.h>
+#include <tee_mem_mgmt_api.h>
 #include <tee_property_inner.h>
 #include <tee_trusted_storage_api.h>
 #include "crypto_inner_interface.h"
