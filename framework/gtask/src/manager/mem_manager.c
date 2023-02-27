@@ -13,7 +13,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <mem_ops.h>
-#include <hm_mman.h>
+#include <sys/mman.h>
 #include <dlist.h>
 #include "tee_log.h"
 #include "tee_mem_mgmt_api.h"
