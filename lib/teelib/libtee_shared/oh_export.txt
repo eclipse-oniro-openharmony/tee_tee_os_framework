@@ -422,7 +422,6 @@ tee_init;
 tee_task_entry;
 set_log_use_tid_flag;
 ac_init_simple;
-tee_init;
 get_tlv_sharedmem;
 
 sleep;
