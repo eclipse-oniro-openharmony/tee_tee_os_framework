@@ -14,7 +14,6 @@
 #define TEE_MEM_MGMT_API_H
 
 #include "tee_defines.h"
-#include "tee_mem_monitoring_api.h"
 
 /*
  * below definitions are defined by Global Platform or Platform SDK released previously

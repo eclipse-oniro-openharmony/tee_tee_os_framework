@@ -106,7 +106,7 @@ static void msg_rcv_elf(uint32_t timeout, uint32_t *msg_id, void *msgp, uint16_t
     }
 }
 
-static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti, struct hmapi_thread_local_storage *tls)
+static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti)
 {
     int32_t i;
     int32_t rc;
@@ -122,9 +122,6 @@ static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti, 
         rc = ipc_remove_channel((msg_pid_t)pid_to_taskid(tid, pid), NULL, i, pti->t_channel[i]);
         if (rc != 0)
             hm_error("remove ipc channel #%d failed: rc=%d\n", i, rc);
-
-        if (tls != NULL)
-            tls->ch_cref[i] = 0;
     }
 }
 
@@ -149,7 +146,7 @@ static TEE_Result ta_recycle_thread(uint32_t tid)
     if (rc != 0)
         hm_error("pthread join failed: rc=%d\n", rc);
 
-    remove_all_ipc_channel(tid, pti, NULL);
+    remove_all_ipc_channel(tid, pti);
     ipc_msg_delete_hdl(pti->t_msghdl);
     /* clear thread info struct */
     release_thread_info(pti);
@@ -199,7 +196,6 @@ static void *tee_task_entry_thread(void *data)
     int32_t tid;
     cref_t msghdl;
     cref_t *ch[THREAD_CHNL_MAX];
-    struct hmapi_thread_local_storage *tls = NULL;
     int32_t i;
     const char *name = pti->args.name;
 
@@ -229,7 +225,7 @@ static void *tee_task_entry_thread(void *data)
         ch[i] = &pti->t_channel[i];
 
     if (create_ipc_channel(name, ch) != 0)
-        goto err_create_ipc_chnl;
+        goto err_save_hdl;
 
     /* send tid reply to gtask, just pass msg id as 0 */
     if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, pti->tid, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK) {
@@ -240,10 +236,7 @@ static void *tee_task_entry_thread(void *data)
     call_task_entry(pti);
 
 err_reply_tid:
-    remove_all_ipc_channel(tid, pti, tls);
-
-err_create_ipc_chnl:
-    tls->msghdl = 0;
+    remove_all_ipc_channel(tid, pti);
 
 err_save_hdl:
     ipc_msg_delete_hdl(pti->t_msghdl);

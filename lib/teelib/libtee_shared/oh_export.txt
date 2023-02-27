@@ -149,7 +149,6 @@ AddCaller_CA_exec;
 tee_drv_open;
 tee_drv_ioctl;
 tee_drv_close;
-get_heap_usage;
 tee_ext_root_uuid_derive_key;
 tee_hal_get_provision_key;
 g_debug_prefix;
