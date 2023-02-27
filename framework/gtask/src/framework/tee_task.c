@@ -35,8 +35,6 @@
 
 #include <string.h>
 #include "ipclib.h"
-#include <ac.h>
-#include <ac_map.h>
 #include "securec.h"
 #include "uuid2path.h"
 #include "timer.h"

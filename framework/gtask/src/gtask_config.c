@@ -11,7 +11,6 @@
  */
 #include "gtask_config.h"
 #include "tee_config.h"
-#include <ac.h>
 #include <security_ops.h>
 #include <sys/hm_priorities.h> /* for HM_PRIO_TEE_* */
 

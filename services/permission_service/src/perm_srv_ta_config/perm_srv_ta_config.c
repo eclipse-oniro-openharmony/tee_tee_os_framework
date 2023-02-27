@@ -14,8 +14,6 @@
 #include <securec.h>
 #include <tee_ext_api.h>
 #include <tee_log.h>
-#include <ac.h>
-#include <ac_dynamic.h>
 #include <timer_export.h>
 #include <openssl/asn1.h>
 #include "target_type.h"

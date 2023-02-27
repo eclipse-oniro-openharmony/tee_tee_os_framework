@@ -20,7 +20,6 @@
 #include <tamgr_ext.h>
 #include <procmgr.h>
 #include <hm_exit.h>
-#include <ac.h>
 #include <ac_dynamic.h>
 #include <tee_defines.h>
 #include <tee_init.h>

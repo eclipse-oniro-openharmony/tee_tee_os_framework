@@ -16,7 +16,6 @@
 #include <sys/hm_priorities.h>
 #include <sys/fileio.h>
 #include <sys/usrsyscall_ext.h>
-#include <ac.h>
 #include "tee_driver_module.h"
 #include "crypto_mgr_syscall.h"
 #include <tee_log.h>

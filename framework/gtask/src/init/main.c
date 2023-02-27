@@ -20,7 +20,6 @@
 #include <inttypes.h>
 #include <hmlog.h>
 #include <pathmgr_api.h>
-#include <ac.h>
 #include <ac_dynamic.h>
 #include <sys/usrsyscall_smc.h>
 #include "teesmcmgr.h"

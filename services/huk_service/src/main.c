@@ -14,7 +14,6 @@
 #include <tee_log.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_defines.h>
-#include <ac.h>
 #include <ac_dynamic.h>
 #include <ipclib.h>
 #include <tamgr_ext.h>
