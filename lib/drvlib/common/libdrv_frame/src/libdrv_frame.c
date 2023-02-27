@@ -26,7 +26,6 @@
 #include <irqmgr_api_ext.h>
 #include <tamgr_ext.h>
 #include <ac.h>
-#include <ta_permission.h>
 #include <tee_tag.h>
 #include <tee_drv_internal.h>
 #include <ipclib_hal.h>
