@@ -22,7 +22,6 @@
 #include <ipclib.h>
 #include <cs.h>
 #include <hm_getpid.h>
-#include <hm_exit.h>
 #include <ta_framework.h>
 #include <tee_log.h>
 #include <asm/hmapi.h>
@@ -395,7 +394,7 @@ static void tee_task_entry_handle(ta_entry_type ta_entry, int32_t priority, cons
             break;
         case CALL_TA_STHREAD_EXIT: /* no need to break, cos this proc exit directly */
             hm_debug("++ CALL TA STHREAD EXIT\n");
-            hm_exit(0);
+            exit(0);
         default:
             hm_error("invalid cmdid 0x%x\n", cmd);
             break;

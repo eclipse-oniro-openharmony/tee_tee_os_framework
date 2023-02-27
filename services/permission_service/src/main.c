@@ -19,7 +19,7 @@
 #include <pthread.h>            /* for thread */
 #include <tamgr_ext.h>
 #include <procmgr.h>
-#include <hm_exit.h>
+#include <stdlib.h>
 #include <ac_dynamic.h>
 #include <tee_defines.h>
 #include <tee_init.h>
@@ -529,7 +529,7 @@ static void create_subthreads(void)
      */
     if (perm_srv_create_rw_thread(perm_thread_init_file, NULL, NULL, 0) != TEE_SUCCESS) {
         tloge("file opt thread created fail\n");
-        hm_exit(HM_TASK_EXIT);
+        exit(HM_TASK_EXIT);
     }
 
     /*
@@ -538,7 +538,7 @@ static void create_subthreads(void)
      */
     if (perm_srv_create_rw_thread(perm_thread_init_async_file, NULL, NULL, 0) != TEE_SUCCESS) {
         tloge("async file opt thread created fail\n");
-        hm_exit(HM_TASK_EXIT);
+        exit(HM_TASK_EXIT);
     }
 }
 
@@ -560,17 +560,17 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
     msghdl = ipc_get_my_msghdl();
     if (is_ref_err(msghdl)) {
         tloge("Cannot create msg_hdl, %s\n", hmapi_strerror((int32_t)msghdl));
-        hm_exit((int32_t)msghdl);
+        exit((int32_t)msghdl);
     }
 
     if (ipc_create_channel_native(CERT_PATH, &native_channel) != 0) {
         tloge("create main thread native channel failed\n");
-        hm_exit(HM_TASK_EXIT);
+        exit(HM_TASK_EXIT);
     }
 
     if (ac_init_simple() != 0) {
         tloge("ac init error\n");
-        hm_exit(HM_TASK_EXIT);
+        exit(HM_TASK_EXIT);
     }
 
     create_subthreads();

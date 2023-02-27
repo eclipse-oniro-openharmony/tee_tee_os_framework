@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <cs.h>
-#include <hm_exit.h>
+#include <stdlib.h>
 #include <sys/hmapi_ext.h>
 #include <sys/hm_priorities.h>
 #include <sys/fileio.h>
@@ -48,25 +48,25 @@ int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((u
     int32_t ret = hm_register_drv_framework(&drv_frame, &ch, true);
     if (ret != 0) {
         hm_error("failed to register drv framework: 0x%x\n", ret);
-        hm_exit(ret);
+        exit(ret);
     }
 
     ret = fileio_init();
     if (ret != 0) {
         hm_error("file io init failed:0x%x\n", ret);
-        hm_exit(ret);
+        exit(ret);
     }
 
     ret = hmapi_set_priority(HM_PRIO_TEE_DRV);
     if (ret < 0) {
         hm_error("failed to set drv server priority\n");
-        hm_exit(ret);
+        exit(ret);
     }
 
     ret = create_spawn_sync_msg_info();
     if (ret < 0) {
         hm_error("create spawn channel fail\n");
-        hm_exit(ret);
+        exit(ret);
     }
 
     (void)register_base_drv_node();
@@ -75,7 +75,7 @@ int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((u
     ret = drv_thread_init("drvmgr_multi", 0, DRV_THREAD_MAX);
     if (ret != 0) {
         hm_error("drv thread init fail\n");
-        hm_exit(ret);
+        exit(ret);
     }
     hm_info("%s: start server loop\n", drv_frame.name);
     cs_server_loop(ch, dispatch_fns, ARRAY_SIZE(dispatch_fns), NULL, NULL);

@@ -10,7 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 #include <procmgr.h>
-#include <hm_exit.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <securec.h>
@@ -63,22 +63,22 @@ static void create_smc_thread(pthread_t *smc_thread)
     ret = pthread_attr_init(&attr);
     if (ret != 0) {
         error("fail to init smc thread\n");
-        hm_exit(1);
+        exit(1);
     }
     void *stackaddr = malloc(SMCMGR_STACK_SIZE);
     if (stackaddr == NULL) {
         error("malloc stack space failed\n");
-        hm_exit(1);
+        exit(1);
     }
     ret = pthread_attr_setstack(&attr, stackaddr, SMCMGR_STACK_SIZE);
     if (ret != 0) {
         error("smc thread set stack failed\n");
-        hm_exit(1);
+        exit(1);
     }
 
     if (pthread_create(smc_thread, &attr, tee_smc_thread, NULL) != 0) {
         error("fail to create smc thread\n");
-        hm_exit(1);
+        exit(1);
     }
 }
 static void create_idle_thread(pthread_t *idle_thread)
@@ -89,22 +89,22 @@ static void create_idle_thread(pthread_t *idle_thread)
     ret = pthread_attr_init(&attr);
     if (ret != 0) {
         error("fail to init idle thread\n");
-        hm_exit(1);
+        exit(1);
     }
     void *stackaddr = malloc(SMCMGR_STACK_SIZE);
     if (stackaddr == NULL) {
         error("malloc stack space failed\n");
-        hm_exit(1);
+        exit(1);
     }
     ret = pthread_attr_setstack(&attr, stackaddr, SMCMGR_STACK_SIZE);
     if (ret != 0) {
         error("idle thread set stack failed\n");
-        hm_exit(1);
+        exit(1);
     }
 
     if (pthread_create(idle_thread, &attr, tee_idle_thread, NULL) != 0) {
         error("fail to create idle thread\n");
-        hm_exit(1);
+        exit(1);
     }
 }
 
@@ -125,13 +125,13 @@ int main(void)
     rc = pthread_join(idle_thread, NULL);
     if (rc != 0) {
         error("idle thread join failed\n");
-        hm_exit(1);
+        exit(1);
     }
 
     rc = pthread_join(smc_thread, NULL);
     if (rc != 0) {
         error("smc thread join failed\n");
-        hm_exit(1);
+        exit(1);
     }
     fatal("teesmcmgr exited unexpectedly\n");
 
