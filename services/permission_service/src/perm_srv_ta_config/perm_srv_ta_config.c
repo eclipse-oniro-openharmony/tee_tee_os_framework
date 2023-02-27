@@ -16,7 +16,6 @@
 #include <tee_log.h>
 #include <ac.h>
 #include <ac_dynamic.h>
-#include <sre_access_control.h>
 #include <timer_export.h>
 #include <openssl/asn1.h>
 #include "target_type.h"
@@ -557,10 +556,6 @@ static int32_t config_tlv_parser_info(const uint8_t *buff, uint32_t len, struct 
         }
 
         switch (tag) {
-        case TLV_TAG_SE_OPEN_SESSION:
-            if ((*(buff + offset + child_offset)) != 0)
-                config->control_info.se_info.permissions |= SE_OPEN_SESSION_PERMISSION;
-            break;
         case TLV_TAG_DEBUG_DEVICE_ID:
             check_device_id(config, buff + offset + child_offset, value_len);
             break;
@@ -688,30 +683,6 @@ static int32_t parser_jar_tlv_to_config(const uint8_t *buff, uint32_t len, struc
 
     ret = config_tlv_parser_child_sequences(buff + offset, value_len, config);
     return ret;
-}
-
-static TEE_Result add_timer_perm_by_config(const struct config_info *config)
-{
-    if (config == NULL)
-        return TEE_ERROR_GENERIC;
-
-    TEE_UUID uuid = config->uuid;
-
-    if (ac_generate_dyn_uuid_data(&uuid) != 0) {
-        tloge("ac_generate_dyn_uuid_data failed\n");
-        return TEE_ERROR_GENERIC;
-    }
-
-    uint64_t permission = TIMER_GROUP_PERMISSION;
-    if ((config->control_info.se_info.permissions & SE_OPEN_SESSION_PERMISSION) != 0) {
-        if (set_ta_timer_permission(&uuid, permission) != 0) {
-            tloge("fail to add timer group permission\n");
-            return TEE_ERROR_GENERIC;
-        }
-    }
-
-    tlogd("add timer permission success\n");
-    return TEE_SUCCESS;
 }
 
 static void release_callee_info(struct callee_ta_info *info)
@@ -922,12 +893,6 @@ TEE_Result perm_srv_parse_config_body(const TEE_UUID *uuid, struct perm_config *
 
     config->version = perm_config->policy_version;
 
-    if (config->manifest_info.target_type == TA_TARGET_TYPE || config->manifest_info.target_type == SRV_TARGET_TYPE) {
-        ret = add_timer_perm_by_config(config);
-        if (ret != TEE_SUCCESS)
-            goto error;
-    }
-
     ret = parse_dyntlv_buf(uuid, perm_config, config, dynconf_len);
     if (ret != TEE_SUCCESS)
         goto error;
@@ -1038,12 +1003,6 @@ TEE_Result perm_srv_get_config_by_taskid(uint32_t taskid, struct config_info *co
     return ret;
 }
 
-static void check_perm_whitelist(struct config_info *entry)
-{
-    if (check_sem_permission(&entry->uuid))
-        entry->control_info.se_info.permissions |= SE_OPEN_SESSION_PERMISSION;
-}
-
 static TEE_Result get_register_config_entry(struct config_info **entry, const TEE_UUID *tmp_uuid,
                                             bool *new_config_entry)
 {
@@ -1059,7 +1018,6 @@ static TEE_Result get_register_config_entry(struct config_info **entry, const TE
         (*entry)->version = 0;
         dlist_init(&(*entry)->task_config_list);
 
-        check_perm_whitelist(*entry);
         *new_config_entry = true;
     }
 
@@ -1158,24 +1116,6 @@ TEE_Result perm_srv_unregister_ta_taskid(const TEE_UUID *uuid, uint32_t taskid)
     return TEE_ERROR_ITEM_NOT_FOUND;
 }
 
-static void del_timer_perm_by_config(const struct config_info *config)
-{
-    if (config == NULL)
-        return;
-
-    /* there is no dynamic policy for Configs of version 0 */
-    if (config->version == 0)
-        return;
-
-    TEE_UUID uuid = config->uuid;
-
-    uint64_t permission = GENERAL_GROUP_PERMISSION;
-    if ((config->control_info.se_info.permissions & SE_OPEN_SESSION_PERMISSION) != 0) {
-        if (set_ta_timer_permission(&uuid, permission) != 0)
-            tloge("fail to delete timer group permission\n");
-    }
-}
-
 void perm_srv_clear_ta_permissions(const TEE_UUID *uuid)
 {
     if (uuid == NULL)
@@ -1193,7 +1133,6 @@ void perm_srv_clear_ta_permissions(const TEE_UUID *uuid)
     dlist_for_each_safe(pos, tmp, &g_config_list) {
         config_entry = dlist_entry(pos, struct config_info, head);
         if (TEE_MemCompare(&config_entry->uuid, uuid, sizeof(*uuid)) == 0) {
-            del_timer_perm_by_config(config_entry);
             dlist_delete(&config_entry->head);
             ta_clear_list(&config_entry->task_config_list);
             release_callee_info(config_entry->control_info.callee_info);
