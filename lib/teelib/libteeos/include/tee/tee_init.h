@@ -38,7 +38,6 @@ void set_global_handle(uint32_t handle);
 uint32_t get_global_handle(void);
 void set_running_uuid(void);
 void set_current_session_type(uint32_t session_type);
-uint32_t get_current_session_type(void);
 struct running_info *get_tls_running_info(void);
 TEE_UUID *get_running_uuid(void);
 #endif

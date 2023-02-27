@@ -92,45 +92,6 @@ TEE_Result map_rdr_mem(const smc_cmd_t *cmd)
     return TEE_SUCCESS;
 }
 
-static TEE_Result process_get_callerinfo(uint32_t task_id, struct session_struct *cur_session)
-{
-    caller_info buffer_msg = {0};
-    struct service_struct *caller_service = NULL;
-    struct session_struct *caller_session = NULL;
-
-    uint32_t caller_id = cur_session->ta2ta_from_taskid;
-    if (caller_id != REET_TSK_ID) {
-        buffer_msg.session_type = SESSION_FROM_TA;
-        // caller id is TA
-        if (find_task(caller_id, &caller_service, &caller_session)) {
-            tlogd("succeed to find caller TA info\n");
-            if (memmove_s(&buffer_msg.caller_identity.caller_uuid, sizeof(TEE_UUID), &caller_service->property.uuid,
-                          sizeof(TEE_UUID))) {
-                tloge("memmove_s caller uuid failed\n");
-                buffer_msg.session_type = SESSION_FROM_UNKNOWN;
-            }
-        } else {
-            tloge("failed to find caller session, task id is %u\n", caller_id);
-            buffer_msg.session_type = SESSION_FROM_UNKNOWN;
-        }
-    } else {
-        buffer_msg.session_type = SESSION_FROM_CA;
-        if (memset_s(&buffer_msg.caller_identity.caller_uuid, sizeof(TEE_UUID), 0, sizeof(TEE_UUID))) {
-            tloge("memset_s caller uuid failed\n");
-            buffer_msg.session_type = SESSION_FROM_UNKNOWN;
-        }
-        if (cur_session->login_method == TEEK_LOGIN_IDENTIFY)
-            buffer_msg.smc_from_kernel_mode = TEE_SMC_FROM_KERNEL;
-    }
-
-    uint32_t ret = ipc_msg_snd(0x0, task_id, &buffer_msg, sizeof(buffer_msg));
-    if (ret) {
-        tloge("get callerinfo msg send to ta failed:0x%x\n", ret);
-        return TEE_ERROR_GENERIC;
-    }
-    return TEE_SUCCESS;
-}
-
 static TEE_Result process_get_reeinfo(uint32_t task_id, struct session_struct *session)
 {
     struct global_to_ta_for_uid buffer_msg = {0};
@@ -170,9 +131,6 @@ int32_t handle_info_query(uint32_t cmd_id, uint32_t task_id, const uint8_t *msg_
     switch (cmd_id) {
     case TA_GET_REEINFO:
         ret = process_get_reeinfo(task_id, session);
-        break;
-    case TA_GET_CALLERINFO:
-        ret = process_get_callerinfo(task_id, session);
         break;
     default:
         ret = TEE_ERROR_BAD_PARAMETERS;

@@ -21,7 +21,6 @@ extern "C" {
 #endif /* __cpluscplus */
 #endif /* __cpluscplus */
 
-#ifndef CONFIG_OH_PLATFORM
 /*
  * below definitions are defined by Platform SDK released previously
  * for compatibility:
@@ -37,29 +36,6 @@ extern "C" {
 #define TEE_SMC_FROM_USR    0
 #define TEE_SMC_FROM_KERNEL 1
 
-#define RESERVED_BUF_SIZE 32
-typedef struct ta_caller_info {
-    uint32_t session_type;
-    union {
-        TEE_UUID caller_uuid;
-        uint8_t ca_info[RESERVED_BUF_SIZE];
-    } caller_identity;
-    uint8_t smc_from_kernel_mode;
-    uint8_t reserved[RESERVED_BUF_SIZE - 1];
-} caller_info;
-
-/*
- * Get caller info of current session, refer caller_info struct for more details
- *
- * @param caller_info_data [OUT] caller info to be returned
- * @param length           [IN] sizeof struct caller_info
- *
- * return TEE_SUCCESS operation success
- * return others failed to get caller info
- */
-TEE_Result tee_ext_get_caller_info(caller_info *caller_info_data, uint32_t length);
-#endif
-
 /*
  * TA can call this API to add caller's info,
  * which is allowed to call this TA.
@@ -73,7 +49,6 @@ TEE_Result tee_ext_get_caller_info(caller_info *caller_info_data, uint32_t lengt
  */
 TEE_Result AddCaller_CA_exec(const char *ca_name, uint32_t ca_uid);
 
-#ifndef CONFIG_OH_PLATFORM
 /*
  * TA call this API allow others TA open session with itself
  *
@@ -85,13 +60,6 @@ TEE_Result AddCaller_TA_all(void);
 #define SESSION_FROM_CA      0
 #define SESSION_FROM_TA      1
 #define SESSION_FROM_UNKNOWN 0xFF
-/*
- * get cruurent session type
- *
- * @return session type of current session
- */
-uint32_t tee_get_session_type(void);
-#endif
 #ifdef __cplusplus
 #if __cplusplus
 }
