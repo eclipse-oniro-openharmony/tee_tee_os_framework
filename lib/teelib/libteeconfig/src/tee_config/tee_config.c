@@ -13,7 +13,6 @@
 #include <ac.h>
 #include <security_ops.h>
 #include <sys/hm_priorities.h> /* for HM_PRIO_TEE_* */
-#include "sre_access_control.h"
 
 static struct drv_frame_info g_drv_frame_configs[] = {
 #if defined(TEE_SUPPORT_DRV_SERVER_64BIT) || defined(TEE_SUPPORT_DRV_SERVER_32BIT)
