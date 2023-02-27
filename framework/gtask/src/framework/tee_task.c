@@ -14,7 +14,7 @@
 #include "procmgr.h"
 #include "spawn_ext.h"
 #include "hm_wait.h"
-#include "hm_kill.h"
+#include <signal.h>
 #include <autoconf.h>
 #include <inttypes.h>
 
@@ -454,7 +454,7 @@ static int32_t create_service_thread(const char *elf_path, char **argv, char **e
     wait_srvc_thread_message(&msg_recv_p, &task_id, service_thread);
     /* create thread fail, kill service thread and return error */
     if (msg_recv_p.msg_id == CREATE_THREAD_FAIL) {
-        if (hm_kill((int)taskid_to_pid(service_thread)) == 0)
+        if (kill((int)taskid_to_pid(service_thread), 0) == 0)
             gt_wait_process(service_thread);
         else
             tloge("kill BAD service thread failed\n");
