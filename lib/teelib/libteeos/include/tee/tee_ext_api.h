@@ -72,19 +72,6 @@ TEE_Result tee_ext_get_caller_info(caller_info *caller_info_data, uint32_t lengt
  * return others failed to add caller info for target CA
  */
 TEE_Result AddCaller_CA_exec(const char *ca_name, uint32_t ca_uid);
-/*
- * TA can call this API to add caller's info,
- * which is allowed to call this TA.
- * this API is for CA in form of APK.
- *
- * @param ca_name       [IN]        CA caller's packagename
- * @param modulus       [IN]        CA caller's modulus
- * @param pub_exponent  [IN]        CA caller's pub_exponent
- *
- * return TEE_SUCCESS operation
- * return others failed to add caller info for target CA
- */
-TEE_Result AddCaller_CA_apk(const char *ca_name, const char *modulus, const char *pub_exponent);
 
 #ifndef CONFIG_OH_PLATFORM
 /*
@@ -104,16 +91,6 @@ TEE_Result AddCaller_TA_all(void);
  * @return session type of current session
  */
 uint32_t tee_get_session_type(void);
-
-/*
- * Check CA params during CA Authentication
- *
- * @param param_types             [IN] CA caller's param types
- * @param params[TEE_PARAMS_NUM]  [IN] CA caller's params
- *
- * return TEE_SUCCESS
- */
-TEE_Result TEE_EXT_CheckClientPerm(uint32_t param_types, const TEE_Param params[TEE_PARAMS_NUM]);
 #endif
 #ifdef __cplusplus
 #if __cplusplus
