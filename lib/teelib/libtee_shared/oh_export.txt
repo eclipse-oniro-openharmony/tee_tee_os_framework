@@ -417,15 +417,11 @@ get_global_handle;
 set_global_handle;
 tee_secure_img_release_verify;
 ac_generate_dyn_uuid_data;
-ac_add_dynamic_policy;
-ac_del_dynamic_policy;
 cinit00;
 tee_init;
-renew_hmdrv_job_handler;
 tee_task_entry;
 set_log_use_tid_flag;
 ac_init_simple;
-tee_init;
 get_tlv_sharedmem;
 
 sleep;
@@ -445,7 +441,6 @@ tee_read_time_stamp;
 tee_msleep;
 
 tee_internal_derive_key;
-__tee_hal_get_dieid;
 tee_ext_get_dieid;
 tee_crypto_derive_root_key;
 derive_ecc_private_key_from_huk;

@@ -44,7 +44,6 @@ struct drv_call_params {
 };
 
 int32_t hm_drv_init(const char *path);
-int32_t renew_hmdrv_job_handler(void);
 
 int64_t hm_drv_call_new(const char *name, uint16_t id, uint64_t *args, uint32_t *lens, int32_t nr);
 
