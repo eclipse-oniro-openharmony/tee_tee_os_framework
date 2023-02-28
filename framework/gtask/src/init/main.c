@@ -88,9 +88,9 @@ static void gtask_init_timer_irqmgr(void)
 static void gtask_set_priority(void)
 {
     int32_t ret;
-    ret = hmapi_set_priority(HM_PRIO_TEE_GT);
+    ret = set_priority(HM_PRIO_TEE_GT);
     if (ret < 0) {
-        hm_fatal("GTASK: failed to set priority to HM_PRIO_TEE_GT: %s\n", hmapi_strerror(ret));
+        hm_fatal("GTASK: failed to set priority to HM_PRIO_TEE_GT: %x\n", ret);
         wait_for_kill();
     }
 }
@@ -101,7 +101,7 @@ static void gtask_extend_utable(void)
 
     ret = hmapi_extend_utable();
     if (ret < 0) {
-        hm_fatal("GTASK: failed to extend utable: %s\n", hmapi_strerror(ret));
+        hm_fatal("GTASK: failed to extend utable: %x\n", ret);
         wait_for_kill();
     }
 }

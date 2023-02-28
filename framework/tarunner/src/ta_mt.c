@@ -180,7 +180,7 @@ static void call_task_entry(const struct thread_info *pti)
 {
     int32_t rc = set_thread_priority(thread_get_cref(), pti->args.priority);
     if (rc != 0)
-        hm_error("set priority failed: %s\n", hmapi_strerror(rc));
+        hm_error("set priority failed: %x\n", rc);
 
     /* call real TA entry */
     if (pti->args.append_args != NULL)

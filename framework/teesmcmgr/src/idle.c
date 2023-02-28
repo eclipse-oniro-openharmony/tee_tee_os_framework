@@ -48,7 +48,7 @@ static void send_to_gtask()
      */
     err = hmex_channel_call(get_gtask_channel_hdlr(), &gtask_msg, sizeof(struct gtask_msg), recv_buf, sizeof(recv_buf));
     if (err < 0)
-        panic("failed to send magic to gtask: %s\n", hmapi_strerror(err));
+        panic("failed to send magic to gtask: %x\n", err);
     debug("GT return %d\n", err);
 
     g_send_to_gtask = true;
@@ -59,7 +59,7 @@ static void starttz_core(void)
     g_tz_started = true;
     int32_t err = smc_switch_req(CAP_TEESMC_REQ_STARTTZ);
     if (err < 0)
-        fatal("starttz failed: %s\n", hmapi_strerror(err));
+        fatal("starttz failed: %x\n", err);
 
     send_to_gtask();
 }
@@ -68,9 +68,9 @@ __attribute__((noreturn)) void *tee_idle_thread(void *arg)
 {
     (void)arg;
 
-    int32_t err = hmapi_set_priority(HM_PRIO_TEE_SMCMGR_IDLE);
+    int32_t err = set_priority(HM_PRIO_TEE_SMCMGR_IDLE);
     if (err < 0)
-        fatal("hmapi set priority failed: %s\n", hmapi_strerror(err));
+        fatal("hmapi set priority failed: %x\n", err);
     hmapi_yield();
 
     starttz_core();
@@ -79,7 +79,7 @@ __attribute__((noreturn)) void *tee_idle_thread(void *arg)
     while (1) {
         debug("calling smc_switch_req\n");
         err = smc_switch_req(CAP_TEESMC_REQ_IDLE);
-        debug("smc_switch_req return err=%d %s\n", err, hmapi_strerror(err));
+        debug("smc_switch_req return err=%x\n", err);
         if (err != 0)
             fatal("something wrong");
     }

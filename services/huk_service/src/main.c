@@ -101,7 +101,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
     cref_t msghdl = ipc_get_my_msghdl();
     if (is_ref_err(msghdl) != 0) {
-        tloge("Cannot create msg hdl, %s\n", hmapi_strerror((int)msghdl));
+        tloge("Cannot create msg hdl, %x\n", (int)msghdl);
         exit((int)msghdl);
     }
 
@@ -118,7 +118,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     while (1) {
         ret_hm = ipc_msg_receive(ch, &msg, sizeof(msg), msghdl, &info, -1);
         if (ret_hm < 0) {
-            tloge("huk service: message receive failed, %llx, %s\n", ret_hm, hmapi_strerror(ret_hm));
+            tloge("huk service: message receive failed, %llx\n", ret_hm);
             continue;
         }
 

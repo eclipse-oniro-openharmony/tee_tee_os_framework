@@ -51,7 +51,7 @@ static void acquire_hdlr(void)
     init_sysctrl_hdlr();
     set_gtask_channel_hdlr(acquire_gtask_channel());
     if (is_ref_err(g_gtask_channel_hdlr))
-        fatal("acquire gtask channel returns %s\n", hmapi_strerror(ref_to_err(g_gtask_channel_hdlr)));
+        fatal("acquire gtask channel returns %x\n", ref_to_err(g_gtask_channel_hdlr));
     set_is_gtask_alive(true);
 }
 
