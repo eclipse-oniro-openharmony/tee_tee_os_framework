@@ -16,8 +16,8 @@
 #include <pthread.h>
 #include <ipclib.h>
 #include <spawn_ext.h>
-#include <hm_wait.h>
-#include <hm_kill.h>
+#include <sys/wait.h>
+#include <signal.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/hmapi_ext.h>
 #include <sys/fileio.h>
@@ -288,11 +288,11 @@ wait_retry:
 #define DRV_KILL_WAIT_MAX_COUNT 5
 void drv_kill_task(uint32_t taskid)
 {
-    if (hm_kill((pid_t)taskid_to_pid(taskid)) == 0) {
+    if (kill((pid_t)taskid_to_pid(taskid), 0) == 0) {
         int32_t i;
         int32_t status;
         for (i = 0; i < DRV_KILL_WAIT_MAX_COUNT; i++) {
-            if (hm_wait(&status) == (pid_t)taskid_to_pid(taskid)) {
+            if (wait(&status) == (pid_t)taskid_to_pid(taskid)) {
                 tloge("wait drv:0x%x exit succ\n", taskid);
                 break;
             }

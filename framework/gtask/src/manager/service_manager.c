@@ -32,7 +32,7 @@
 #include "mem_manager.h"
 #include "agent_manager.h"
 #include "procmgr.h"
-#include "hm_kill.h"
+#include <signal.h>
 #include "ipclib.h"
 #include "tee_task.h"
 #include "tee_time_api.h"
@@ -531,7 +531,7 @@ void recycle_srvc_thread(struct service_struct *service)
          * gtask directly set TA process as zombie,
          * in case of service thread of TA is blocked and won't exit by itself
          */
-        if (hm_kill((int)taskid_to_pid(service->service_thread)) == 0)
+        if (kill((int)taskid_to_pid(service->service_thread), 0) == 0)
             gt_wait_process(service->service_thread);
         service->service_thread = 0;
         /* send msg to internal service */

@@ -13,8 +13,8 @@
 #include "tee_task.h"
 #include "procmgr.h"
 #include "spawn_ext.h"
-#include "hm_wait.h"
-#include "hm_kill.h"
+#include <sys/wait.h>
+#include <signal.h>
 #include <autoconf.h>
 #include <inttypes.h>
 
@@ -102,7 +102,7 @@ void gt_wait_process(uint32_t task_id)
 
     hm_ipc_remove_cached_ch(task_id, 1, NULL);
     for (i = 0; i < WAIT_MAX; i++) {
-        if (hm_wait(&wstatus) == (pid_t)taskid_to_pid(task_id)) {
+        if (wait(&wstatus) == (pid_t)taskid_to_pid(task_id)) {
             tlogd("wait %" PRIu32 " exit succeeded\n", task_id);
             break;
         }
@@ -454,7 +454,7 @@ static int32_t create_service_thread(const char *elf_path, char **argv, char **e
     wait_srvc_thread_message(&msg_recv_p, &task_id, service_thread);
     /* create thread fail, kill service thread and return error */
     if (msg_recv_p.msg_id == CREATE_THREAD_FAIL) {
-        if (hm_kill((int)taskid_to_pid(service_thread)) == 0)
+        if (kill((int)taskid_to_pid(service_thread), 0) == 0)
             gt_wait_process(service_thread);
         else
             tloge("kill BAD service thread failed\n");

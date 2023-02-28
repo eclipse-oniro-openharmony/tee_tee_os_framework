@@ -17,7 +17,7 @@
 #include <ac_dynamic.h>
 #include <ipclib.h>
 #include <tamgr_ext.h>
-#include <hm_exit.h>
+#include <stdlib.h>
 #include <ta_framework.h>
 #include <chip_info.h>
 #include <tee_ext_api.h>
@@ -102,17 +102,17 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
     cref_t msghdl = ipc_get_my_msghdl();
     if (is_ref_err(msghdl) != 0) {
         tloge("Cannot create msg hdl, %s\n", hmapi_strerror((int)msghdl));
-        hm_exit((int)msghdl);
+        exit((int)msghdl);
     }
 
     if (ipc_create_channel_native(HUK_PATH, &ch) != 0) {
         tloge("create main thread native channel failed!\n");
-        hm_exit(-1);
+        exit(-1);
     }
 
     if (ac_init_simple() != 0) {
         tloge("ac init error\n");
-        hm_exit(-1);
+        exit(-1);
     }
 
     while (1) {

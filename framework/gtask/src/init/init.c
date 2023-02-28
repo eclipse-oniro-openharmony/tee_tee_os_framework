@@ -19,7 +19,7 @@
 #include <sys/hm_types.h>
 #include <procmgr.h>
 #include <spawn_ext.h>
-#include <hm_exit.h>
+#include <stdlib.h>
 #include <ipclib.h>
 #include <tee_config.h>
 
@@ -201,7 +201,7 @@ int init_main(void)
 void init_shell(void)
 {
     hm_error("gtask: *ERROR* GTask exit unexpectedly\n");
-    hm_exit(0);
+    exit(0);
     while (true)
         hm_yield();
 }
