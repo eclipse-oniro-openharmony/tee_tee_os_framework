@@ -32,6 +32,7 @@
 #include "check_ta_version.h"
 #include "tee_load_key_ops.h"
 #include "tee_elf_verify_openssl.h"
+#include "ipclib.h"
 #ifdef OPENSSL_ENABLE
 #include <openssl/obj_mac.h>
 #endif

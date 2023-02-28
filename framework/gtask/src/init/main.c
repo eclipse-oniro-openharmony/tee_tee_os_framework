@@ -19,7 +19,6 @@
 #include <timer.h>
 #include <inttypes.h>
 #include <hmlog.h>
-#include <pathmgr_api.h>
 #include <ac_dynamic.h>
 #include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"

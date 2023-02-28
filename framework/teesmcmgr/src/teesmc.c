@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <securec.h>
-#include <pathmgr_api.h>
 #include <ipclib.h>
 #include <sys/usrsyscall_smc.h>
 #include <sys/usrsyscall_irq.h>
