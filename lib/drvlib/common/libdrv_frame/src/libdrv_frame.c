@@ -119,7 +119,7 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
 
     ret = hmapi_extend_utable();
     if (ret < 0) {
-        hm_error("%s: failed to extend utable: %s\n", drv_frame->name, hmapi_strerror(ret));
+        hm_error("%s: failed to extend utable: %x\n", drv_frame->name, ret);
         return ret;
     }
 

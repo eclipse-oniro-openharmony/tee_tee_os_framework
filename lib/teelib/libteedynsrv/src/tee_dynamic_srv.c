@@ -180,7 +180,7 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
     while (1) {
         ret = hmapi_recv_timeout(&ipc_args, &msghdl, 0, HM_NO_TIMEOUT, &info);
         if (ret < 0) {
-            tloge("message receive failed, ret=0x%x, reason:%s\n", ret, hmapi_strerror(ret));
+            tloge("message receive failed, ret=0x%x\n", ret);
             continue;
         }
 
@@ -195,7 +195,7 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
         if (info.msg_type == MSG_TYPE_CALL) {
             ret = ipc_msg_reply(msghdl, &rsp_msg, sizeof(rsp_msg));
             if (ret != 0) {
-                tloge("message reply failed, ret=0x%x, reason:%s\n", ret, hmapi_strerror(ret));
+                tloge("message reply failed, ret=0x%x\n", ret, ret);
                 continue;
             }
         }

@@ -57,7 +57,7 @@ int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((u
         exit(ret);
     }
 
-    ret = hmapi_set_priority(HM_PRIO_TEE_DRV);
+    ret = set_priority(HM_PRIO_TEE_DRV);
     if (ret < 0) {
         hm_error("failed to set drv server priority\n");
         exit(ret);

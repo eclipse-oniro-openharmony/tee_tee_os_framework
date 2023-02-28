@@ -183,7 +183,7 @@ void tee_drv_entry(const struct tee_driver_module *drv_func, const char *drv_nam
     if (ret != 0)
         return;
 
-    ret = hmapi_set_priority(param->priority);
+    ret = set_priority(param->priority);
     if (ret < 0) {
         hm_error("failed to set drv server priority\n");
         return;

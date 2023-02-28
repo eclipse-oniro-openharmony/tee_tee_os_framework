@@ -73,7 +73,7 @@ static void acquire_smc_buf_lock(uint32_t *lock)
     int rc;
     rc = disable_local_irq();
     if (rc != 0)
-        hm_panic("disable_local_irq failed: %s\n", hmapi_strerror(rc));
+        hm_panic("disable_local_irq failed: %x\n", rc);
     do
         rc = __sync_bool_compare_and_swap(lock, 0, 1);
     while (!rc);
@@ -88,7 +88,7 @@ static void release_smc_buf_lock(uint32_t *lock)
     asm volatile("dmb sy");
     rc = enable_local_irq();
     if (rc != 0)
-        hm_panic("enable_local_irq failed: %s\n", hmapi_strerror(rc));
+        hm_panic("enable_local_irq failed: %x\n", rc);
 }
 
 /*

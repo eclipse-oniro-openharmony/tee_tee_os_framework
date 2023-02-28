@@ -131,13 +131,13 @@ static void hmapi_configure(void)
 {
     int32_t err;
 
-    err = hmapi_set_priority(HM_PRIO_TEE_SMCMGR);
+    err = set_priority(HM_PRIO_TEE_SMCMGR);
     if (err < 0)
-        fatal("hmapi set priority failed: %s\n", hmapi_strerror(err));
+        fatal("hmapi set priority failed: %x\n", err);
 
     err = disable_local_irq();
     if (err < 0)
-        fatal("hmex disable local irq failed: %s\n", hmapi_strerror(err));
+        fatal("hmex disable local irq failed: %x\n", err);
 }
 
 __attribute__((noreturn)) void *tee_smc_thread(void *arg)

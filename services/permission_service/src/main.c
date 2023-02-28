@@ -248,7 +248,7 @@ void *perm_thread_init_file(void *data)
     while (true) {
         rc = ipc_msg_receive(native_channel, &req_msg, (unsigned long)sizeof(req_msg), msghdl, &info, -1);
 		if (rc < 0) {
-            tloge("%s: message receive failed, %llx, %s\n", LOG_TAG, rc, hmapi_strerror(rc));
+            tloge("%s: message receive failed, %llx\n", LOG_TAG, rc);
             continue;
         }
 
@@ -363,7 +363,7 @@ void *perm_thread_init_async_file(void *data)
     while (true) {
         rc = ipc_msg_receive(async_native_channel, &req_msg, (unsigned long)sizeof(req_msg), msghdl, &info, -1);
         if (rc < 0) {
-            tloge("%s: async msg receive failed, %llx, %s\n", LOG_TAG, rc, hmapi_strerror(rc));
+            tloge("%s: async msg receive failed, %llx\n", LOG_TAG, rc);
             continue;
         }
 
@@ -559,7 +559,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
 
     msghdl = ipc_get_my_msghdl();
     if (is_ref_err(msghdl)) {
-        tloge("Cannot create msg_hdl, %s\n", hmapi_strerror((int32_t)msghdl));
+        tloge("Cannot create msg_hdl, %x\n", (int32_t)msghdl);
         exit((int32_t)msghdl);
     }
 
@@ -578,7 +578,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
     while (true) {
         ret = ipc_msg_receive(native_channel, &req_msg, sizeof(req_msg), msghdl, &info, -1);
         if (ret < 0) {
-            tloge("%s: message receive failed, %llx, %s\n", LOG_TAG, ret, hmapi_strerror(ret));
+            tloge("%s: message receive failed, %llx\n", LOG_TAG, ret);
             continue;
         }
 

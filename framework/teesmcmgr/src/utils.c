@@ -21,6 +21,6 @@ rref_t acquire_gtask_channel(void)
 
     rc = pathmgr_acquire(PATH_NAME, &rref);
     if (rc != 0)
-        return err_to_ref(rc);
+        return ((uint64_t)(((unsigned int)rc) & 0xffffffff));
     return rref;
 }

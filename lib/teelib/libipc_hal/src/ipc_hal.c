@@ -236,7 +236,7 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
     msg_ret = ipc_msg_receive(msgrcv.ch, &msg, sizeof(msg), msg_hdl, &info, msgrcv.timeout);
     if (msg_ret < 0) {
         if (msg_ret != E_EX_TIMER_TIMEOUT || msg_ret == E_EX_CNODE_INVOKE_NOCAP)
-            hm_error("receive msg failed: %s\n", hmapi_strerror(msg_ret));
+            hm_error("receive msg failed: %x\n", msg_ret);
         return msg_ret == E_EX_TIMER_TIMEOUT ? SRE_IPC_TIMEOUT_ERR : SRE_IPC_ERR;
     }
 
