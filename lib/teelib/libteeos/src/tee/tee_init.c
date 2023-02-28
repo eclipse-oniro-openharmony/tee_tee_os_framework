@@ -13,7 +13,7 @@
 
 #include <securec.h>
 
-#include "hm_getpid.h"
+#include <unistd.h>
 #include "spawn_ext.h"
 #include "tee_defines.h"
 #include "tee_obj.h"
@@ -183,7 +183,7 @@ void set_running_uuid(void)
     spawn_uuid_t uuid = {0};
     pid_t pid;
 
-    pid = hm_getpid();
+    pid = getpid();
     if (pid < 0) {
         tloge("get pid is error\n");
         return;

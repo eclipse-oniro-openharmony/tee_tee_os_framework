@@ -19,7 +19,7 @@
 #include <sys/hm_priorities.h> /* for `HM_PRIO_TEE_*` */
 #include <sys/fileio.h>
 #include <procmgr.h>
-#include <hm_getpid.h>
+#include <unistd.h>
 #include <ipclib.h>
 #include <cs.h>
 #include <teecall_cap.h>
@@ -110,9 +110,9 @@ static void load_info_print(const char *task_name, const struct env_param *param
 
     /* Always print, but not an error */
 #ifdef __aarch64__
-    std_log("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d\n", type, task_name, hm_getpid());
+    std_log("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d\n", type, task_name, getpid());
 #else
-    std_log("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d\n", type, task_name, hm_getpid());
+    std_log("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d\n", type, task_name, getpid());
 #endif
 }
 

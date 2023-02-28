@@ -21,7 +21,7 @@
 #include <mm_kcall.h> /* hm get mycnode */
 #include <ipclib.h>
 #include <cs.h>
-#include <hm_getpid.h>
+#include <unistd.h>
 #include <ta_framework.h>
 #include <tee_log.h>
 #include <asm/hmapi.h>
@@ -115,7 +115,7 @@ static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti)
     pid_t pid;
 
     for (i = 0; i < THREAD_CHNL_MAX; i++) {
-        pid = hm_getpid();
+        pid = getpid();
         if (pid == -1) {
             hm_error("get pid failed\n");
             continue;

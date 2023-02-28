@@ -17,6 +17,7 @@
 #include <sys/usrsyscall_smc.h>
 #include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
+#include <sched.h>
 
 #define NORMAL_MSG_ID 0xDEADBEEF
 #define SMC_BUF_OPS (-1ULL)
@@ -156,7 +157,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
 
     info("Start teesmc\n");
     hmapi_configure();
-    hmapi_yield();
+    (void)sched_yield();
 
     while (1) {
         debug("tee smc thread: wait for switch req\n");
