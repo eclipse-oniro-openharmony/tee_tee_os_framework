@@ -17,7 +17,6 @@
 #include <mmgrapi.h>
 #include <ipclib.h>
 #include <sys/kuapi.h>
-#include <sys/hmapi_ext.h>
 #include <sys/usrsyscall_ext.h>
 #include <sys/fileio.h>
 #include <timer.h>
@@ -114,12 +113,6 @@ int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *c
         ret = drv_framework_init(drv_frame);
         if (ret != 0)
             return ret;
-    }
-
-    ret = hmapi_extend_utable();
-    if (ret < 0) {
-        tloge("%s: failed to extend utable: %x\n", drv_frame->name, ret);
-        return ret;
     }
 
     return 0;
