@@ -18,7 +18,6 @@
 #include <tee_log.h>
 #include <sys/kuapi.h>
 #include <sys/hm_priorities.h>
-#include <sys/hmapi_ext.h>
 #include <tee_secfile_load_agent.h>
 
 static void *g_libtee = NULL;
@@ -45,17 +44,7 @@ int32_t get_priority(void)
 
 int32_t extend_utables(void)
 {
-    int32_t i;
-    int32_t cnt = 1;
-
-    for (i = 0; i < cnt; i++) {
-        if (hmapi_extend_utable() != 0) {
-            tloge("extend utable failed %d\n", i);
-            return -1;
-        }
-    }
-
-    return HM_OK;
+    return 0;
 }
 
 void clear_libtee(void)

@@ -16,7 +16,6 @@
 #include <mem_ops.h>
 #include <spawn_ext.h>
 #include <sys/usrsyscall_ext.h>
-#include <sys/hmapi_ext.h>
 #include <sys/time.h>
 #include "timer_export.h"
 #include <pthread.h>
@@ -140,51 +139,35 @@ static void do_deal_with_msg(const struct srv_dispatch_t *dispatch, uint32_t n_d
     rsp_msg->ret = TEE_ERROR_BAD_PARAMETERS;
 }
 
-static int32_t get_ipc_native_args(const char *task_name, struct tee_service_ipc_msg_req *req_msg,
-    struct channel_ipc_args *ipc_args)
-{
-    cref_t ch = 0;
-
-    int32_t ret = ipc_create_channel_native(task_name, &ch);
-    if (ret != 0) {
-        tloge("create ipc channel failed, ret=%d\n", ret);
-        return ret;
-    }
-
-    ipc_args->channel = ch;
-    ipc_args->recv_buf = req_msg;
-    ipc_args->recv_len = (unsigned long)sizeof(*req_msg);
-    return 0;
-}
-
 static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t *dispatch, uint32_t n_dispatch)
 {
     cref_t msghdl;
     uint32_t task_id;
-    struct hmcap_message_info info = { 0 };
-    struct tee_service_ipc_msg_req req_msg;
+    cref_t ch;
+    struct tee_service_ipc_msg_req req_msg = {0};
     tee_service_ipc_msg_rsp rsp_msg;
-    struct channel_ipc_args ipc_args = { 0 };
+    struct src_msginfo info = { 0 };
 
-    msghdl = hmapi_create_message();
+    msghdl = ipc_msg_create_hdl();
     if (is_ref_err(msghdl)) {
         tloge("create msg hdl failed\n");
         return;
     }
 
-    int32_t ret = get_ipc_native_args(task_name, &req_msg, &ipc_args);
-    if (ret != 0)
-        return;
+    int32_t ret = ipc_create_channel_native(task_name, &ch);
+    if (ret != 0) {
+        tloge("create ipc channel failed, ret=%d\n", ret);
+    }
 
     while (1) {
-        ret = hmapi_recv_timeout(&ipc_args, &msghdl, 0, HM_NO_TIMEOUT, &info);
+        ret = ipc_msg_receive(ch, &req_msg, (unsigned long)sizeof(req_msg), msghdl, &info, -1);
         if (ret < 0) {
             tloge("message receive failed, ret=0x%x\n", ret);
             continue;
         }
 
-        task_id = (uint32_t)pid_to_taskid(TCBCREF2TID(info.src_tcb_cref), info.src_cred.pid);
-        if (info.src_cred.pid != get_global_handle()) {
+        task_id = (uint32_t)pid_to_taskid(info.src_tid, info.src_pid);
+        if (info.src_pid != get_global_handle()) {
             if (set_service_caller_info(task_id, req_msg.cmd) != TEE_SUCCESS)
                 tloge("failed to set caller info, task id 0x%x, cmd 0x%x\n", task_id, req_msg.cmd);
         }

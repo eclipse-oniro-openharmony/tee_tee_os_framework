@@ -95,22 +95,10 @@ static void gtask_set_priority(void)
     }
 }
 
-static void gtask_extend_utable(void)
-{
-    int32_t ret;
-
-    ret = hmapi_extend_utable();
-    if (ret < 0) {
-        tee_abort("GTASK: failed to extend utable: %x\n", ret);
-        wait_for_kill();
-    }
-}
-
 static void gtask_run_and_destory(void)
 {
     /* smcmgr threads must be created after setting stack guard */
     gtask_set_priority();
-    gtask_extend_utable();
 
     gtask_main();
 

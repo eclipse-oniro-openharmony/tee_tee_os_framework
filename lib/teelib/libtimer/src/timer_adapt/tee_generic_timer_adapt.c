@@ -181,7 +181,6 @@ static void *classic_thread(void *arg)
     uint32_t mills = HM_NO_TIMEOUT;
     int32_t status = CREATE_TIMER;
     timer_event *t_event = (timer_event*)arg;
-    struct channel_ipc_args ipc_args = { 0 };
     struct timer_event_msg req_msg = {{{ 0 }}};
 
     if (t_event == NULL) {
@@ -189,18 +188,15 @@ static void *classic_thread(void *arg)
         return NULL;
     }
 
-    cref_t msg_hdl = hmapi_create_message();
+    cref_t msg_hdl = ipc_msg_create_hdl();
     if (is_ref_err(msg_hdl)) {
         tloge("create message failed\n");
         return NULL;
     }
 
     t_event->pid = (int32_t)get_self_taskid();
-    ipc_args.channel = t_event->timer_channel;
-    ipc_args.recv_buf = &req_msg;
-    ipc_args.recv_len = sizeof(req_msg);
     while (status != DESTORY_TIMER) {
-        ret = hmapi_recv_timeout(&ipc_args, &msg_hdl, CREF_NULL, mills, NULL);
+        ret = ipc_msg_receive(t_event->timer_channel, &req_msg, sizeof(req_msg), msg_hdl, NULL, mills);
         if (ret != TMR_OK && ret != E_EX_TIMER_TIMEOUT) {
             (void)hmapi_delete_obj(msg_hdl);
             return NULL;
