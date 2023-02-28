@@ -28,11 +28,11 @@
 #include <rnd_seed.h>
 #endif
 
-static msg_pid_t g_drv_mgr_pid;
+static taskid_t g_drv_mgr_pid;
 static const struct tee_driver_module *g_drv_func = NULL;
 static uint32_t g_drv_index;
 
-static int32_t hunt_drv_mgr_pid(msg_pid_t *pid)
+static int32_t hunt_drv_mgr_pid(taskid_t *pid)
 {
     uint32_t ret = ipc_hunt_by_name("drvmgr", pid);
     if (ret != 0) {
@@ -43,7 +43,7 @@ static int32_t hunt_drv_mgr_pid(msg_pid_t *pid)
     return 0;
 }
 
-msg_pid_t get_drv_mgr_pid(void)
+taskid_t get_drv_mgr_pid(void)
 {
     return g_drv_mgr_pid;
 }

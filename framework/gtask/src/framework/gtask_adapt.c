@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "gtask_adapt.h"
-#include <msg_ops.h>
 #include <mem_ops.h>
 #include <ipclib_hal.h>
 #include "securec.h"

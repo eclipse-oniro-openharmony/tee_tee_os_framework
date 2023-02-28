@@ -1076,7 +1076,7 @@ int32_t driver_register_cmd_perm(const struct tee_drv_param *params, int64_t *re
         return -1;
     }
 
-    msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
+    taskid_t drv_mgr_pid = get_drv_mgr_pid();
     if (taskid_to_pid(drv_mgr_pid) != (taskid_to_pid(params->caller_pid))) {
         tloge("caller pid:0x%x cannot register drv cmd perm\n", params->caller_pid);
         return -1;

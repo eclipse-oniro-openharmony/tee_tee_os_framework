@@ -13,9 +13,9 @@
 
 #include <securec.h>
 #include <pthread.h>
-#include <msg_ops.h>
 #include "tee_mem_mgmt_api.h"
 #include "tee_init.h"
+#include <ipclib.h>
 
 #define DRIVER_TAG_MAX_LEN      25
 #define DRIVER_TAGS_NUM         40

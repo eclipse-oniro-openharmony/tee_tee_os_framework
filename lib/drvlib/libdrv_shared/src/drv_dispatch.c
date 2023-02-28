@@ -55,7 +55,7 @@ static int64_t driver_open_func(const struct tee_drv_param *params)
         return -1;
     }
 
-    msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
+    taskid_t drv_mgr_pid = get_drv_mgr_pid();
     if (taskid_to_pid(drv_mgr_pid) != (taskid_to_pid(params->caller_pid))) {
         tloge("caller pid:0x%x cannot call open\n", params->caller_pid);
         return -1;
@@ -75,7 +75,7 @@ static int64_t driver_close_func(const struct tee_drv_param *params)
 {
     uint64_t *args = (uint64_t *)(uintptr_t)params->args;
 
-    msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
+    taskid_t drv_mgr_pid = get_drv_mgr_pid();
     if (taskid_to_pid(drv_mgr_pid) != (taskid_to_pid(params->caller_pid))) {
         tloge("caller pid:0x%x cannot call close\n", params->caller_pid);
         return -1;
@@ -118,7 +118,7 @@ static int32_t driver_general_handle(struct tee_drv_param *params, int64_t *ret_
 #ifdef TEE_SUPPORT_DRV_FD_DUMP
 static int32_t driver_dump_handle(int64_t *ret_val, const struct tee_drv_param *params)
 {
-    msg_pid_t drv_mgr_pid = get_drv_mgr_pid();
+    taskid_t drv_mgr_pid = get_drv_mgr_pid();
     if (taskid_to_pid(drv_mgr_pid) != (taskid_to_pid(params->caller_pid))) {
         tloge("this task not support dump fd\n");
         return -1;

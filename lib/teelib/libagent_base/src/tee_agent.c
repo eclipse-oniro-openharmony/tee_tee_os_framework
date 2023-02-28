@@ -11,7 +11,6 @@
  */
 #include "tee_agent.h"
 #include <ipclib.h>
-#include <msg_ops.h>
 #include <tee_defines.h>
 #include <ta_framework.h>
 #include <tee_ext_api.h>

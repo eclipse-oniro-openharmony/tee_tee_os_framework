@@ -12,7 +12,6 @@
 #include "perm_srv_elf_verify_cmd.h"
 #include <securec.h>
 #include <tee_log.h>
-#include <msg_ops.h>
 #include <ta_framework.h>
 #include "tee_elf_verify.h"
 #include "permission_service.h"

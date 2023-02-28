@@ -12,7 +12,6 @@
 
 #include "tee_dynamic_srv.h"
 #include <sys/mman.h>
-#include <msg_ops.h>
 #include <mem_ops.h>
 #include <spawn_ext.h>
 #include <sys/usrsyscall_ext.h>

@@ -13,7 +13,6 @@
 #include "tee_core_api.h"
 #include <pthread.h>
 #include <securec.h>
-#include <msg_ops.h>
 #include <dlist.h>
 #include <mem_ops.h>
 #include <ipclib.h>

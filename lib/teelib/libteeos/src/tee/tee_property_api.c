@@ -342,7 +342,7 @@ void init_non_std_property(char *buff, uint32_t len)
     uint32_t i;
     uint32_t end_flag = 0;
 
-    if (buff == NULL || len > MAX_HM_NOTI_MSG_SIZE) {
+    if (buff == NULL || len > NOTIFY_MAX_LEN) {
         tloge("invalid parameter\n");
         return;
     }

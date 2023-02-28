@@ -14,7 +14,6 @@
 #define GTASK_TASK_ADAPTOR_H
 
 #include <dlist.h>
-#include "msg_ops.h"
 #include "tee_internal_api.h"
 #include "tee_internal_task_pub.h"
 

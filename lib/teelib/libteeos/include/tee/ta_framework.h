@@ -15,12 +15,12 @@
 
 #include <mem_page_ops.h>
 #include <uidgid.h>
-#include <msg_ops.h>
 
 #include "tee_defines.h"
 #include "tee_common.h"
 #include "tee_time_api.h"
 #include "tee_core_api.h"
+#include "ipclib.h"
 
 #define TA_SESSION_MAX 8 /* concurrent opened session count */
 #define TA_STACK_MAX 5   /* we limit ta memory to heap_size + stack_size * 5 to compatible with the old version */

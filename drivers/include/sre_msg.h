@@ -11,7 +11,7 @@
  */
 #ifndef DRIVER_SRE_MSG_H
 #define DRIVER_SRE_MSG_H
-#include <msg_ops.h>
+#include <ipclib.h>
 
 #ifdef __cplusplus
 #if __cplusplus

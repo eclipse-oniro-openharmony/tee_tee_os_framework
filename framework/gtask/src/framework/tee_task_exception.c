@@ -14,7 +14,6 @@
 #include <dlist.h>
 #include "securec.h"
 #include "tee_log.h"
-#include "msg_ops.h"
 #include "ta_framework.h"
 #include "init.h"
 #include "initlib.h"

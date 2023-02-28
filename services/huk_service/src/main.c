@@ -26,7 +26,6 @@
 #include "huk_derive_takey.h"
 #include "huk_get_deviceid.h"
 #include "huk_service_msg.h"
-#include "msg_ops.h"
 #include <ipclib_hal.h>
 #include <spawn_ext.h>
 
