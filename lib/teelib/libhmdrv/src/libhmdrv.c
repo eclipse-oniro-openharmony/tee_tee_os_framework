@@ -90,31 +90,6 @@ static int32_t get_info_idex_by_name(const char *name)
     return -1;
 }
 
-static int32_t tbac_init(struct drv_op_info *op_info)
-{
-    uint64_t sid;
-    uint64_t job_type;
-    int32_t rc;
-
-    rc = get_tbac_info_by_name(op_info->name, &sid, &job_type);
-    if (rc != 0) {
-        tloge("libhmdrv: get tbac info failed\n");
-        return rc;
-    }
-
-    if (job_type == 0) {
-        op_info->is_tbac_hooked = false;
-        return rc;
-    }
-
-    op_info->is_tbac_hooked = true;
-    rc = ac_job_init(&op_info->job, sid, job_type);
-    if (rc != 0)
-        tloge("libhmdrv: create ac job error: %d\n", rc);
-
-    return rc;
-}
-
 int32_t hm_drv_init(const char *name)
 {
     int32_t rc = -1;
@@ -149,10 +124,6 @@ int32_t hm_drv_init(const char *name)
         rc = -1;
         goto unlock_out;
     }
-
-    rc = tbac_init(op_info);
-    if (rc != 0)
-        goto unlock_out;
 
     g_drv_frame_count++;
     tlogd("libhmdrv: init ok for pid %d with s_rslot=0x%llx\n", getpid(), op_info->channel);
