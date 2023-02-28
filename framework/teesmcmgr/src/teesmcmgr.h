@@ -15,7 +15,8 @@
 #include <stdint.h>
 #include <tee_log.h>
 #include <stdbool.h>
-#include <sys/hmapi.h>
+#include <sys/hm_syscall.h>
+#include <sys/hm_priorities.h>
 #define SMCMGR_STACK_SIZE  0x2000
 
 #define PAY_LOAD_SIZE 24
