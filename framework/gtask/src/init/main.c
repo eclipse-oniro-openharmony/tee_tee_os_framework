@@ -18,7 +18,7 @@
 #include <sys/fileio.h>
 #include <timer.h>
 #include <inttypes.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <ac_dynamic.h>
 #include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
@@ -43,13 +43,13 @@ static void gtask_init(void)
 
     ret = ipc_create_channel("TEEGlobalTask", GT_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
-        hm_error("GTASK: create ipc chnl failed: %d\n", ret);
+        tloge("GTASK: create ipc chnl failed: %d\n", ret);
         wait_for_kill();
     }
 
     ret = init_main();
     if (ret != 0) {
-        hm_error("GTASK: init failed: %d\n", ret);
+        tloge("GTASK: init failed: %d\n", ret);
         wait_for_kill();
     }
 }
@@ -60,13 +60,13 @@ static void gtask_init_fileio_ac(void)
 
     ret = fileio_init();
     if (ret != 0) {
-        hm_error("GTASK: fileio_init failed: %d\n", ret);
+        tloge("GTASK: fileio_init failed: %d\n", ret);
         wait_for_kill();
     }
 
     ret = ac_init_simple();
     if (ret != 0) {
-        hm_error("GTASK: ac_init_simple failed: %d\n", ret);
+        tloge("GTASK: ac_init_simple failed: %d\n", ret);
         wait_for_kill();
     }
 }
@@ -79,7 +79,7 @@ static void gtask_init_timer_irqmgr(void)
 
     ret = hm_timer_init();
     if (ret != 0) {
-        hm_error("GTASK: hm_timer_init failed: %d\n", ret);
+        tloge("GTASK: hm_timer_init failed: %d\n", ret);
         wait_for_kill();
     }
 #endif
@@ -90,7 +90,7 @@ static void gtask_set_priority(void)
     int32_t ret;
     ret = set_priority(HM_PRIO_TEE_GT);
     if (ret < 0) {
-        hm_fatal("GTASK: failed to set priority to HM_PRIO_TEE_GT: %x\n", ret);
+        tee_abort("GTASK: failed to set priority to HM_PRIO_TEE_GT: %x\n", ret);
         wait_for_kill();
     }
 }
@@ -101,7 +101,7 @@ static void gtask_extend_utable(void)
 
     ret = hmapi_extend_utable();
     if (ret < 0) {
-        hm_fatal("GTASK: failed to extend utable: %x\n", ret);
+        tee_abort("GTASK: failed to extend utable: %x\n", ret);
         wait_for_kill();
     }
 }
@@ -114,13 +114,13 @@ static void gtask_run_and_destory(void)
 
     gtask_main();
 
-    hm_error("Gtask error. teesmcmgr error is expected\n");
+    tloge("Gtask error. teesmcmgr error is expected\n");
     init_shell();
 }
 
 int main(void)
 {
-    hm_info("GTASK: Starting up...\n");
+    tlogi("GTASK: Starting up...\n");
 
     /*
      * gtask will init something :

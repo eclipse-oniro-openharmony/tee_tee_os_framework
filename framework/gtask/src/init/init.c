@@ -26,7 +26,7 @@
 #include <cs.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include "tee_inner_uuid.h"
 #include <sched.h>
 
@@ -70,9 +70,9 @@ static int run_init_task(char *name, char *envp[], const struct proc_mem_info *i
     int ret;
 
     for (p = subargv; *p != NULL; p++)
-        hm_debug("init: subargv %d: %s\n", (int)(p - subargv), *p);
+        tlogd("init: subargv %d: %s\n", (int)(p - subargv), *p);
     for (p = envp; *p != NULL; p++)
-        hm_debug("init: envp %d: %s\n", (int)(p - envp), *p);
+        tlogd("init: envp %d: %s\n", (int)(p - envp), *p);
 
     (void)memset_s(&spawnattr, sizeof(spawnattr), 0, sizeof(spawnattr));
     (void)memset_s(&suuid, sizeof(suuid), 0, sizeof(suuid));
@@ -90,11 +90,11 @@ static int run_init_task(char *name, char *envp[], const struct proc_mem_info *i
     }
     ret = posix_spawn_ex(&pid, subargv[0], NULL, &spawnattr, subargv, envp, NULL);
     if (ret < 0) {
-        hm_error("spawn %s failed: %d.\n", name, ret);
+        tloge("spawn %s failed: %d.\n", name, ret);
         return ret;
     }
 
-    hm_info("init: \"%s\" started with pid %d.\n", name, pid);
+    tlogi("init: \"%s\" started with pid %d.\n", name, pid);
 
     if (pid_ptr != NULL)
         *pid_ptr = (uint32_t)pid;
@@ -112,7 +112,7 @@ uint32_t get_timer_pid(void)
 int32_t get_drvmgr_pid(uint32_t *task_id)
 {
     if (task_id == NULL) {
-        hm_error("invalid task id\n");
+        tloge("invalid task id\n");
         return -1;
     }
 
@@ -128,7 +128,7 @@ int32_t get_drvmgr_pid(uint32_t *task_id)
         }
     }
 
-    hm_error("drvmgr not found\n");
+    tloge("drvmgr not found\n");
     return -1;
 }
 
@@ -163,7 +163,7 @@ static int run_drv_frame_tasks(void)
         if (!drv_info_list[i].is_elf)
             continue;
         if (snprintf_s(path, HM_PATHNAME_MAX, HM_PATHNAME_MAX - 1, "/%s.elf", drv_info_list[i].drv_name) < 0) {
-            hm_error("pack path failed\n");
+            tloge("pack path failed\n");
             return -1;
         }
 
@@ -174,7 +174,7 @@ static int run_drv_frame_tasks(void)
 
         (void)memset_s(path, HM_PATHNAME_MAX, 0, HM_PATHNAME_MAX);
         if (ret != 0)
-            hm_error("run drv: %s failed\n", drv_info_list[i].drv_name);
+            tloge("run drv: %s failed\n", drv_info_list[i].drv_name);
     }
 
     return 0;
@@ -201,7 +201,7 @@ int init_main(void)
 
 void init_shell(void)
 {
-    hm_error("gtask: *ERROR* GTask exit unexpectedly\n");
+    tloge("gtask: *ERROR* GTask exit unexpectedly\n");
     exit(0);
     while (true)
         (void)sched_yield();

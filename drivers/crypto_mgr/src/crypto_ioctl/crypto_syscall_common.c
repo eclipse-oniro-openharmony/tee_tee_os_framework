@@ -11,7 +11,7 @@
  */
 #include "crypto_syscall_common.h"
 #include <securec.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include "drv_param_ops.h"
 #include <sys/mman.h>
 #include "crypto_mgr_syscall.h"
@@ -21,12 +21,12 @@ bool check_hal_params_is_invalid(const struct drv_data *drv, unsigned long args,
     const struct crypto_drv_ops_t *ops)
 {
     if (drv == NULL || ops == NULL) {
-        hm_error("drv or ops is NULL\n");
+        tloge("drv or ops is NULL\n");
         return true;
     }
 
     if (args == 0 || args_len != (uint32_t)sizeof(struct crypto_ioctl)) {
-        hm_error("invalid input arg or args_len:%u\n", args_len);
+        tloge("invalid input arg or args_len:%u\n", args_len);
         return true;
     }
 
@@ -36,7 +36,7 @@ bool check_hal_params_is_invalid(const struct drv_data *drv, unsigned long args,
 int32_t do_power_on(const struct crypto_drv_ops_t *ops)
 {
     if (ops == NULL) {
-        hm_error("ops is null\n");
+        tloge("ops is null\n");
         return CRYPTO_BAD_PARAMETERS;
     }
     if (ops->power_on == NULL)
@@ -44,7 +44,7 @@ int32_t do_power_on(const struct crypto_drv_ops_t *ops)
 
     int32_t ret = ops->power_on();
     if (ret != CRYPTO_SUCCESS)
-        hm_error("hardware engine do power on failed. ret = %d\n", ret);
+        tloge("hardware engine do power on failed. ret = %d\n", ret);
 
     return ret;
 }
@@ -57,7 +57,7 @@ void do_power_off(const struct crypto_drv_ops_t *ops)
 
     ret = ops->power_off();
     if (ret != CRYPTO_SUCCESS)
-        hm_error("hardware engine do power off failed, ret = %d\n", ret);
+        tloge("hardware engine do power off failed, ret = %d\n", ret);
 }
 
 uint32_t change_pkcs5_to_nopad(uint32_t alg_type)
@@ -79,7 +79,7 @@ uint32_t change_pkcs5_to_nopad(uint32_t alg_type)
 static int32_t copy_to_shared_buf(const void *buf, uint32_t buf_size, uint8_t **shared_buf)
 {
     if (memmove_s(*shared_buf, sizeof(uint32_t), &buf_size, sizeof(uint32_t)) != EOK) {
-        hm_error("copy buf size failed\n");
+        tloge("copy buf size failed\n");
         return CRYPTO_ERROR_SECURITY;
     }
 
@@ -89,7 +89,7 @@ static int32_t copy_to_shared_buf(const void *buf, uint32_t buf_size, uint8_t **
         return CRYPTO_SUCCESS;
 
     if (memmove_s(*shared_buf, buf_size, buf, buf_size) != EOK) {
-        hm_error("copy buf failed\n");
+        tloge("copy buf failed\n");
         return CRYPTO_ERROR_SECURITY;
     }
 
@@ -101,14 +101,14 @@ static int32_t copy_to_shared_buf(const void *buf, uint32_t buf_size, uint8_t **
 int32_t fill_share_mem(uint8_t *shared_buf, const struct memref_t *fill_data, uint32_t fill_data_count)
 {
     if (shared_buf == NULL || fill_data == NULL) {
-        hm_error("shared buf or fill data is null\n");
+        tloge("shared buf or fill data is null\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
     for (uint32_t i = 0; i < fill_data_count; i++) {
         int32_t ret = copy_to_shared_buf((void *)(uintptr_t)fill_data[i].buffer, fill_data[i].size, &shared_buf);
         if (ret != CRYPTO_SUCCESS) {
-            hm_error("fill share memory failed! fill data No. = %d\n", i);
+            tloge("fill share memory failed! fill data No. = %d\n", i);
             return ret;
         }
     }
@@ -122,19 +122,19 @@ static bool check_share_mem_size(const uint8_t *share_mem, uint32_t total_nums, 
 
     for (uint32_t i = 0; i < total_nums; i++) {
         if (memcpy_s(&temp_size, sizeof(uint32_t), share_mem, sizeof(uint32_t)) != EOK) {
-            hm_error("get buf size failed\n");
+            tloge("get buf size failed\n");
             return false;
         }
 
         if (temp_size > buf_len) {
-            hm_error("the %d size is too big\n", i);
+            tloge("the %d size is too big\n", i);
             return false;
         }
 
         share_mem_size += sizeof(uint32_t) + temp_size;
         share_mem += sizeof(uint32_t) + temp_size;
         if (share_mem_size > buf_len) {
-            hm_error("share mem size is too big\n");
+            tloge("share mem size is too big\n");
             return false;
         }
     }
@@ -142,7 +142,7 @@ static bool check_share_mem_size(const uint8_t *share_mem, uint32_t total_nums, 
     if (share_mem_size == buf_len) {
         return true;
     } else {
-        hm_error("share memory size = %u is not equal to get share memory size = %u\n", buf_len, share_mem_size);
+        tloge("share memory size = %u is not equal to get share memory size = %u\n", buf_len, share_mem_size);
         return false;
     }
 }
@@ -150,7 +150,7 @@ static bool check_share_mem_size(const uint8_t *share_mem, uint32_t total_nums, 
 static int32_t copy_from_shared_buf(uint64_t *buf_ptr, uint32_t *buf_size, uint8_t **shared_buf)
 {
     if (memcpy_s(buf_size, sizeof(uint32_t), *shared_buf, sizeof(uint32_t)) != EOK) {
-        hm_error("copy buf size fail\n");
+        tloge("copy buf size fail\n");
         return CRYPTO_ERROR_SECURITY;
     }
 
@@ -171,14 +171,14 @@ static int32_t get_share_mem(uint8_t *shared_buf, struct memref_t *get_data, str
 
     bool check = check_share_mem_size(shared_buf, ioctl_args->total_nums, ioctl_args->buf_len);
     if (!check) {
-        hm_error("invalid params. arg count = %u\n", ioctl_args->total_nums);
+        tloge("invalid params. arg count = %u\n", ioctl_args->total_nums);
         return ret;
     }
 
     for (uint32_t i = 0; i < ioctl_args->total_nums; i++) {
         ret = copy_from_shared_buf(&(get_data[i].buffer), &(get_data[i].size), &shared_buf);
         if (ret != CRYPTO_SUCCESS) {
-            hm_error("get share memory failed! get data No. = %u\n", i);
+            tloge("get share memory failed! get data No. = %u\n", i);
             return ret;
         }
     }
@@ -189,20 +189,20 @@ static int32_t get_share_mem(uint8_t *shared_buf, struct memref_t *get_data, str
 static int32_t map_hal_share_mem(uint32_t taskid, uint8_t **drv_share_buf, struct crypto_ioctl *ioctl)
 {
     if (ioctl->buf_len == 0 || ioctl->buf_len > SHARE_MEMORY_MAX_SIZE) {
-        hm_error("ioctl share memory size is invalid. size = %u\n", ioctl->buf_len);
+        tloge("ioctl share memory size is invalid. size = %u\n", ioctl->buf_len);
         return CRYPTO_OVERFLOW;
     }
 
     (void)taskid;
     *drv_share_buf = (uint8_t *)malloc(ioctl->buf_len);
     if (*drv_share_buf == NULL) {
-        hm_error("malloc map buf failed\n");
+        tloge("malloc map buf failed\n");
         return CRYPTO_OVERFLOW;
     }
 
     int32_t ret = copy_from_client(ioctl->buf, ioctl->buf_len, (uintptr_t)*drv_share_buf, ioctl->buf_len);
     if (ret != CRYPTO_SUCCESS) {
-        hm_error("copy from share buf failed. ret = %d\n", ret);
+        tloge("copy from share buf failed. ret = %d\n", ret);
         (void)memset_s(*drv_share_buf, ioctl->buf_len, 0, ioctl->buf_len);
         free(*drv_share_buf);
         *drv_share_buf = NULL;
@@ -214,7 +214,7 @@ static int32_t map_hal_share_mem(uint32_t taskid, uint8_t **drv_share_buf, struc
 static int32_t malloc_memref_array(struct memref_t **memref_addr, uint32_t memref_count)
 {
     if (memref_count == 0 || memref_count > CRYPTO_PARAM_COUNT_MAX) {
-        hm_error("memref count error. memref count = %u\n", memref_count);
+        tloge("memref count error. memref count = %u\n", memref_count);
         *memref_addr = NULL;
         return CRYPTO_BAD_PARAMETERS;
     }
@@ -222,7 +222,7 @@ static int32_t malloc_memref_array(struct memref_t **memref_addr, uint32_t memre
     uint32_t memref_len = memref_count * sizeof(struct memref_t);
     *memref_addr = (struct memref_t *)malloc(memref_len);
     if (*memref_addr == NULL) {
-        hm_error("malloc memref array fail\n");
+        tloge("malloc memref array fail\n");
         return CRYPTO_OVERFLOW;
     }
 
@@ -248,7 +248,7 @@ int32_t prepare_hard_engine_params(uint32_t taskid, uint8_t **share_buf,
     struct memref_t **buf_arg, struct crypto_ioctl *ioctl_args)
 {
     if (share_buf == NULL || buf_arg == NULL || ioctl_args == NULL) {
-        hm_error("share buf or arg or ioctl is null\n");
+        tloge("share buf or arg or ioctl is null\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -285,39 +285,39 @@ static bool check_attrs_size(const void *share_mem, uint32_t attr_total_len)
 
     share_mem_size += sizeof(uint32_t);
     if (share_mem_size > attr_total_len) {
-        hm_error("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
+        tloge("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
         return false;
     }
     share_mem += sizeof(uint32_t);
 
     for (uint32_t i = 0; i < *attr_count; i++) {
         if (memcpy_s(&attr_id, sizeof(uint32_t), share_mem, sizeof(uint32_t)) != EOK) {
-            hm_error("get attr id failed\n");
+            tloge("get attr id failed\n");
             return false;
         }
 
         share_mem_size += sizeof(uint32_t);
         if (share_mem_size > attr_total_len) {
-            hm_error("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
+            tloge("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
             return false;
         }
         share_mem += sizeof(uint32_t);
 
         if (ATTR_IS_BUFFER(attr_id)) {
             if (memcpy_s(&temp_size, sizeof(uint32_t), share_mem, sizeof(uint32_t)) != EOK) {
-                hm_error("get buf size failed\n");
+                tloge("get buf size failed\n");
                 return false;
             }
             share_mem_size += sizeof(uint32_t) + temp_size;
             if (share_mem_size > attr_total_len) {
-                hm_error("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
+                tloge("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
                 return false;
             }
             share_mem += sizeof(uint32_t) + temp_size;
         } else {
             share_mem_size += DOUBLE_SIZE * sizeof(uint32_t);
             if (share_mem_size > attr_total_len) {
-                hm_error("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
+                tloge("over size. total size = %u, get size = %u\n", attr_total_len, share_mem_size);
                 return false;
             }
             share_mem += DOUBLE_SIZE * sizeof(uint32_t);
@@ -327,7 +327,7 @@ static bool check_attrs_size(const void *share_mem, uint32_t attr_total_len)
     if (share_mem_size == attr_total_len) {
         return true;
     } else {
-        hm_error("share memory size = %u is not equal to get share memory size = %u\n", attr_total_len, share_mem_size);
+        tloge("share memory size = %u is not equal to get share memory size = %u\n", attr_total_len, share_mem_size);
         return false;
     }
 }
@@ -348,7 +348,7 @@ static bool check_attrs_size(const void *share_mem, uint32_t attr_total_len)
 int32_t restore_attrs(struct asymmetric_params_t *asymmetric_params, const struct memref_t *crypto_arg)
 {
     if (asymmetric_params == NULL || crypto_arg == NULL) {
-        hm_error("asymmetric params or crypto arg is NULL\n");
+        tloge("asymmetric params or crypto arg is NULL\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -368,7 +368,7 @@ int32_t restore_attrs(struct asymmetric_params_t *asymmetric_params, const struc
     struct crypto_attribute_t *attr = (struct crypto_attribute_t *)malloc(*attr_count *
         sizeof(struct crypto_attribute_t));
     if (attr == NULL) {
-        hm_error("Failed to allocate memory for attribute\n");
+        tloge("Failed to allocate memory for attribute\n");
         return CRYPTO_OVERFLOW;
     }
 
@@ -406,7 +406,7 @@ static uint32_t get_ctx_size_ops(uint32_t alg_type, const struct crypto_drv_ops_
     uint32_t driver_ability;
 
     if (ops->get_ctx_size == NULL) {
-        hm_error("hardware engine get ctx size fun is null\n");
+        tloge("hardware engine get ctx size fun is null\n");
         return 0;
     }
 
@@ -432,12 +432,12 @@ int32_t get_ctx_size_call(const struct drv_data *drv, unsigned long args,
 {
     (void)drv;
     if (ops == NULL) {
-        hm_error("ops is NULL\n");
+        tloge("ops is NULL\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
     if (args == 0 || args_len != (uint32_t)sizeof(uint32_t)) {
-        hm_error("invalid input arg or args_len:%u\n", args_len);
+        tloge("invalid input arg or args_len:%u\n", args_len);
         return true;
     }
 
@@ -451,7 +451,7 @@ static int32_t ctx_copy_ops(const struct drv_data *drv,
 {
     if (ops->ctx_copy == NULL || drv->private_data == NULL ||
         ops->get_ctx_size == NULL) {
-        hm_error("hardware engine ctx copy fun is null\n");
+        tloge("hardware engine ctx copy fun is null\n");
         return CRYPTO_NOT_SUPPORTED;
     }
     uint8_t *src_buffer = get_ctx_ctx_buf();
@@ -461,13 +461,13 @@ static int32_t ctx_copy_ops(const struct drv_data *drv,
     int32_t ctx_size = ops->get_ctx_size(alg_type);
     bool check = ((ctx_size <= 0) || (ctx_size > MAX_CRYPTO_CTX_SIZE));
     if (check) {
-        hm_error("Get ctx size failed, ctx size=%d\n", ctx_size);
+        tloge("Get ctx size failed, ctx size=%d\n", ctx_size);
         return CRYPTO_BAD_PARAMETERS;
     }
 
     int32_t ret = ops->ctx_copy(alg_type, src_buffer, ctx_size, drv->private_data, ctx_size);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("hardware engine do ctx copy failed. ret = %d\n", ret);
+        tloge("hardware engine do ctx copy failed. ret = %d\n", ret);
 
     return ret;
 }
@@ -476,12 +476,12 @@ int32_t ctx_copy_call(const struct drv_data *drv, unsigned long args,
     uint32_t args_len, const struct crypto_drv_ops_t *ops)
 {
     if (drv == NULL || ops == NULL) {
-        hm_error("drv or ops is NULL\n");
+        tloge("drv or ops is NULL\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
     if (args == 0 || args_len < sizeof(uint32_t)) {
-        hm_error("invalid input arg or args_len:%u\n", args_len);
+        tloge("invalid input arg or args_len:%u\n", args_len);
         return CRYPTO_BAD_PARAMETERS;
     }
 
@@ -489,7 +489,7 @@ int32_t ctx_copy_call(const struct drv_data *drv, unsigned long args,
 
     int32_t ret = ctx_copy_ops(drv, ops, *alg_type);
     if (ret != CRYPTO_SUCCESS)
-        hm_error("ctx copy fail\n");
+        tloge("ctx copy fail\n");
 
     return ret;
 }
@@ -499,17 +499,17 @@ int32_t get_driver_ability_call(const struct drv_data *drv, unsigned long args,
 {
     (void)drv;
     if (ops == NULL) {
-        hm_error("get driver ability ops is NULL\n");
+        tloge("get driver ability ops is NULL\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
     if (args == 0 || args_len != (uint32_t)sizeof(uint32_t)) {
-        hm_error("invalid input arg or args_len:%u\n", args_len);
+        tloge("invalid input arg or args_len:%u\n", args_len);
         return CRYPTO_BAD_PARAMETERS;
     }
 
     if (ops->get_driver_ability == NULL) {
-        hm_error("ops get driver ability is invalid\n");
+        tloge("ops get driver ability is invalid\n");
         return 0;
     }
     int32_t ret = do_power_on(ops);
@@ -526,19 +526,19 @@ int32_t check_alg_support_call(const struct drv_data *drv, unsigned long args,
 {
     (void)drv;
     if (ops == NULL) {
-        hm_error("check alg support ops is NULL\n");
+        tloge("check alg support ops is NULL\n");
         return CRYPTO_BAD_PARAMETERS;
     }
 
     if (args == 0 || args_len != (uint32_t)sizeof(uint32_t)) {
-        hm_error("invalid input arg or args_len:%u\n", args_len);
+        tloge("invalid input arg or args_len:%u\n", args_len);
         return CRYPTO_BAD_PARAMETERS;
     }
 
     uint32_t *alg_type = (uint32_t *)(uintptr_t)args;
 
     if (ops->is_alg_support == NULL) {
-        hm_error("generate is not support\n");
+        tloge("generate is not support\n");
         return CRYPTO_NOT_SUPPORTED;
     }
 

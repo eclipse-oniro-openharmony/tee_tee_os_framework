@@ -25,6 +25,7 @@ struct gtask_msg {
     char payload[PAY_LOAD_SIZE];
 } __attribute__((packed));
 
+const char *g_debug_prefix = "teesmcmgr";
 static bool g_tz_started;
 static bool g_send_to_gtask = false;
 
@@ -40,7 +41,7 @@ static void send_to_gtask()
     gtask_msg.msg_id = GTASK_MSG_ID;
     errno_t ret_s = memcpy_s(gtask_msg.payload, sizeof(gtask_msg.payload), magic_msg, sizeof(magic_msg));
     if (ret_s != EOK)
-        fatal("memory copy failed\n");
+        panic("memory copy failed\n");
 
     /*
      * Why we need this ipc_msg_call?
@@ -61,7 +62,7 @@ static void starttz_core(void)
     g_tz_started = true;
     int32_t err = smc_switch_req(CAP_TEESMC_REQ_STARTTZ);
     if (err < 0)
-        fatal("starttz failed: %x\n", err);
+        panic("starttz failed: %x\n", err);
 
     send_to_gtask();
 }
@@ -72,7 +73,7 @@ __attribute__((noreturn)) void *tee_idle_thread(void *arg)
 
     int32_t err = set_priority(HM_PRIO_TEE_SMCMGR_IDLE);
     if (err < 0)
-        fatal("hmapi set priority failed: %x\n", err);
+        panic("hmapi set priority failed: %x\n", err);
     (void)sched_yield();
 
     starttz_core();
@@ -83,6 +84,6 @@ __attribute__((noreturn)) void *tee_idle_thread(void *arg)
         err = smc_switch_req(CAP_TEESMC_REQ_IDLE);
         debug("smc_switch_req return err=%x\n", err);
         if (err != 0)
-            fatal("something wrong");
+            panic("something wrong");
     }
 }

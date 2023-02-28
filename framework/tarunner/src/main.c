@@ -23,6 +23,7 @@
 #include <ipclib.h>
 #include <cs.h>
 #include <teecall_cap.h>
+#include <tee_log.h>
 #include <ta_framework.h>
 #include <tee_task.h>
 #include <tee_drv_internal.h>
@@ -46,30 +47,31 @@ static const char *g_tarunner_path = "/tarunner_a32.elf";
 static const char *g_drv_so_path = "libdrv_shared_a32.so";
 static const char *g_tee_share_so_path = "libtee_shared_a32.so";
 #endif
+const char *g_debug_prefix = "tarunner";
 
 static int32_t param_check(int32_t argc, const char * const * argv)
 {
     size_t length;
 
     if (argc < (ARGV_TERMINATE_INDEX - 1)) {
-        hm_error("invalid argc %d\n", argc);
+        tloge("invalid argc %d\n", argc);
         return -1;
     }
 
     length = strnlen(argv[ARGV_TASK_NAME_INDEX], ARGV0_SIZE);
     if (length == 0 || length >= ARGV0_SIZE) {
-        hm_error("invalid service name\n");
+        tloge("invalid service name\n");
         return -1;
     }
 
     if (strncmp(argv[ARGV_TASK_NAME_INDEX], g_tarunner_path, (strlen(g_tarunner_path) + 1)) == 0) {
-        hm_error("load TA in buffer not implemented\n");
+        tloge("load TA in buffer not implemented\n");
         return -1;
     }
 
     length = strnlen(argv[ARGV_TASK_PATH_INDEX], ARGV_SIZE);
     if (length == 0 || length >= ARGV_SIZE) {
-        hm_error("invalid path name\n");
+        tloge("invalid path name\n");
         return -1;
     }
 
@@ -125,23 +127,23 @@ static int32_t create_task_channel(const char *task_name, const struct env_param
         /* used for cs_server_loop */
         ret = ipc_create_channel_native(task_name, drv_channel);
         if (ret != 0) {
-            hm_error("create drv:%s channel failed\n", task_name);
+            tloge("create drv:%s channel failed\n", task_name);
             return -1;
         }
 
-        hm_debug("create drv:%s channel:0x%llx\n", task_name, (unsigned long long)(*drv_channel));
+        tlogd("create drv:%s channel:0x%llx\n", task_name, (unsigned long long)(*drv_channel));
 
         /* used for irq thread */
         ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
         if (ret != 0) {
-            hm_error("create drv irq channel failed\n");
+            tloge("create drv irq channel failed\n");
             return -1;
         }
     } else {
         /* Create 2 IPC channels */
         ret = ipc_create_channel(task_name, IPC_CHANNEL_NUM, NULL, reg_items);
         if (ret != 0) {
-            hm_error("create multi ipc channel failed: %d\n", ret);
+            tloge("create multi ipc channel failed: %d\n", ret);
             return -1;
         }
     }
@@ -159,7 +161,7 @@ static int32_t init1(const char *task_name, const struct env_param *param, cref_
     if ((param->target_type == DRV_TARGET_TYPE) || extend_one_more_utable(task_name)) {
         ret = extend_utables();
         if (ret != 0) {
-            hm_error("extend utable for \"%s\" failed: %d\n", task_name, ret);
+            tloge("extend utable for \"%s\" failed: %d\n", task_name, ret);
             return -1;
         }
     }
@@ -170,7 +172,7 @@ static int32_t init1(const char *task_name, const struct env_param *param, cref_
 
     ret = fileio_init();
     if (ret != 0) {
-        hm_error("file io init failed: %d\n", ret);
+        tloge("file io init failed: %d\n", ret);
         return -1;
     }
 
@@ -198,19 +200,19 @@ static int32_t init3(const struct env_param *param)
 
     ret = hm_setuid(param->uid);
     if (ret != 0) {
-        hm_error("failed to setuid: %d\n", ret);
+        tloge("failed to setuid: %d\n", ret);
         return -1;
     }
 
     /* Reject taldr cap, and grant TA cap */
     if (delete_rref_and_grant() != 0) {
-        hm_error("delete rref grant failed\n");
+        tloge("delete rref grant failed\n");
         return -1;
     }
 
     ret = mprotect(&__tcb_cref, PAGE_SIZE, PROT_READ);
     if (ret != 0) {
-        hm_error("protect tcb cref failed: %d\n", ret);
+        tloge("protect tcb cref failed: %d\n", ret);
         return -1;
     }
     return 0;
@@ -238,7 +240,7 @@ static void send_fail_msg_to_drvmgr(void)
     cref_t ch = 0;
     int32_t ret = ipc_get_ch_from_path(DRV_SPAWN_SYNC_NAME, &ch);
     if (ret != 0) {
-        hm_error("something wrong, spawn fail get drvmgr sync channel fail\n");
+        tloge("something wrong, spawn fail get drvmgr sync channel fail\n");
         return;
     }
 
@@ -247,12 +249,12 @@ static void send_fail_msg_to_drvmgr(void)
 
     ret = ipc_msg_notification(ch, &msg, sizeof(msg));
     if (ret != 0) {
-        hm_error("spawn fail notify to drvmgr fail\n");
+        tloge("spawn fail notify to drvmgr fail\n");
         return;
     }
 
     if (ipc_release_path(DRV_SPAWN_SYNC_NAME, ch) != 0)
-        hm_error("release drvmgr sync channel fail\n");
+        tloge("release drvmgr sync channel fail\n");
 }
 
 static void send_load_fail_msg(uint32_t target_type)
@@ -267,7 +269,7 @@ static void send_load_fail_msg(uint32_t target_type)
          * ucDstID is 1 means the recevier's channel ID is 1
          */
         if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != 0)
-            hm_error("failed to reply GTASK for MT ta\n");
+            tloge("failed to reply GTASK for MT ta\n");
     }
 }
 
@@ -291,7 +293,7 @@ static int32_t get_routine_info(void *handle, uint32_t size, struct ta_routine_i
     routine->addcaller_flag = true;
 
     if (mprotect(routine, size, PROT_READ) != 0) {
-        hm_error("change routine attribute failed\n");
+        tloge("change routine attribute failed\n");
         return -1;
     }
 
@@ -306,7 +308,7 @@ static void lib_tee_task_entry(void *handle, int32_t priority, const char *task_
 
     ta_entry.ta_entry = dlsym(libtee, "tee_task_entry");
     if (ta_entry.ta_entry == NULL) {
-        hm_error("get task entry failed: %s\n", dlerror());
+        tloge("get task entry failed: %s\n", dlerror());
         return;
     }
 
@@ -315,12 +317,12 @@ static void lib_tee_task_entry(void *handle, int32_t priority, const char *task_
     /* first param set as 0 means no specific address, set fd as -1 means no specific fd */
     routine = mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (routine == MAP_FAILED) {
-        hm_error("map for routine failed\n");
+        tloge("map for routine failed\n");
         return;
     }
 
     if (memset_s(routine, size, 0, size) != EOK) {
-        hm_error("clear routine failed\n");
+        tloge("clear routine failed\n");
         goto err_out;
     }
 
@@ -330,21 +332,21 @@ static void lib_tee_task_entry(void *handle, int32_t priority, const char *task_
     tee_task_entry_mt(ta_entry, priority, task_name, routine);
 
     /* tee_task_entry should never return */
-    hm_panic("tee task entry returns\n");
+    tee_abort("tee task entry returns\n");
 
 err_out:
     if (munmap(routine, size) != 0)
-        hm_error("free routine failed\n");
+        tloge("free routine failed\n");
 }
 
 static void ta_tee_task_entry(ta_entry_type ta_entry, int32_t priority, const char *task_name)
 {
-    hm_info("ta link elf_main_entry\n");
+    tlogi("ta link elf_main_entry\n");
 
     tee_task_entry_mt(ta_entry, priority, task_name, NULL);
 
     /* tee_task_entry should never return */
-    hm_panic("tee task entry returns\n");
+    tee_abort("tee task entry returns\n");
 }
 
 static void load_dyn_client(char *client)
@@ -367,7 +369,7 @@ static void load_dyn_client(char *client)
         if (strlen(per_client_name) == 0)
             continue;
 
-        hm_info("load_dyn_client client_name:%s\n", per_client_name);
+        tlogi("load_dyn_client client_name:%s\n", per_client_name);
         (void)dlopen(per_client_name, RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
         (void)memset_s(per_client_name, sizeof(per_client_name), 0, sizeof(per_client_name));
     }
@@ -382,7 +384,7 @@ static void tee_task_handle(const char * const *argv, const struct env_param *pa
     /* Load TA in dlopen, will call init_array func */
     void *handle = dlopen(argv[ARGV_TASK_PATH_INDEX], RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
     if (handle == NULL) {
-        hm_error("dlopen %s failed: %s\n", argv[ARGV_TASK_PATH_INDEX], dlerror());
+        tloge("dlopen %s failed: %s\n", argv[ARGV_TASK_PATH_INDEX], dlerror());
         return;
     }
 
@@ -402,13 +404,13 @@ static struct tee_driver_module *dlsym_drv_func(void *drv_handle, const char *dr
 {
     char symbol_name[DRV_NAME_MAX_LEN + DRV_FUNC_SYMBOL_APPEND] = {0};
     if (snprintf_s(symbol_name, sizeof(symbol_name), sizeof(symbol_name) - 1, "%s%s", "g_driver_", drv_name) <= 0) {
-        hm_error("get symbol_name failed\n");
+        tloge("get symbol_name failed\n");
         return NULL;
     }
 
     struct tee_driver_module *drv_func = dlsym(drv_handle, symbol_name);
     if (drv_func == NULL) {
-        hm_error("cannot get drv func:%s\n", symbol_name);
+        tloge("cannot get drv func:%s\n", symbol_name);
         return NULL;
     }
 
@@ -425,28 +427,28 @@ static void drv_task_handle(const char * const * argv, const struct env_param *p
     if (use_tid_flag != NULL) {
         use_tid_flag();
     } else {
-        hm_error("cannot set use tid log flag\n");
+        tloge("cannot set use tid log flag\n");
         goto drv_err;
     }
 
-    hm_debug("target_type is %u elf_path:%s task_name:%s\n", param->target_type, argv[ARGV_TASK_PATH_INDEX],
+    tlogd("target_type is %u elf_path:%s task_name:%s\n", param->target_type, argv[ARGV_TASK_PATH_INDEX],
         argv[ARGV_TASK_NAME_INDEX]);
 
     drv_so_handle = dlopen(g_drv_so_path, RTLD_NOW | RTLD_GLOBAL);
     if (drv_so_handle == NULL) {
-        hm_error("load %s failed %s\n", g_drv_so_path, dlerror());
+        tloge("load %s failed %s\n", g_drv_so_path, dlerror());
         goto drv_err;
     }
 
     drv_entry_func drv_entry = dlsym(drv_so_handle, "tee_drv_entry");
     if (drv_entry == NULL) {
-        hm_error("cannot get tee drv entry\n");
+        tloge("cannot get tee drv entry\n");
         goto drv_err;
     }
 
     drv_handle = dlopen(argv[ARGV_TASK_PATH_INDEX], RTLD_NOW | RTLD_GLOBAL | RTLD_TA);
     if (drv_handle == NULL) {
-        hm_error("dlopen drv:%s failed %s\n", argv[ARGV_TASK_PATH_INDEX], dlerror());
+        tloge("dlopen drv:%s failed %s\n", argv[ARGV_TASK_PATH_INDEX], dlerror());
         goto drv_err;
     }
 
@@ -457,7 +459,7 @@ static void drv_task_handle(const char * const * argv, const struct env_param *p
 
     drv_entry(drv_func, argv[ARGV_TASK_NAME_INDEX], drv_channel, param);
 
-    hm_panic("drv entry return, something wrong\n");
+    tee_abort("drv entry return, something wrong\n");
 
 drv_err:
     if (drv_so_handle != NULL)
@@ -474,7 +476,7 @@ __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * c
     cref_t drv_channel = 0;
 
     if (param_check(argc, argv) != 0) {
-        hm_error("param check failed\n");
+        tloge("param check failed\n");
         goto err_out;
     }
 
@@ -494,7 +496,7 @@ __attribute__((visibility("default"))) int32_t main(int32_t argc, const char * c
     } else {
         /* A parameter is added for transferring the client name during dynamic service loading */
         if (argc < ARGV_MAX - 1) {
-            hm_error("invalid argc %d", argc);
+            tloge("invalid argc %d", argc);
             goto err_out;
         }
 

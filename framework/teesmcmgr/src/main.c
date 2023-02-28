@@ -52,7 +52,7 @@ static void acquire_hdlr(void)
     init_sysctrl_hdlr();
     set_gtask_channel_hdlr(acquire_gtask_channel());
     if (is_ref_err(g_gtask_channel_hdlr))
-        fatal("acquire gtask channel returns %x\n", ref_to_err(g_gtask_channel_hdlr));
+        panic("acquire gtask channel returns %x\n", ref_to_err(g_gtask_channel_hdlr));
     set_is_gtask_alive(true);
 }
 
@@ -134,7 +134,7 @@ int main(void)
         error("smc thread join failed\n");
         exit(1);
     }
-    fatal("teesmcmgr exited unexpectedly\n");
+    panic("teesmcmgr exited unexpectedly\n");
 
     return 0;
 }

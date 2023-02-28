@@ -16,7 +16,6 @@
 #include <string.h>
 #include <errno.h>
 #include <tee_log.h>
-#include <hmlog.h>
 #include <sys/kuapi.h>
 #include <sys/hm_priorities.h>
 #include <sys/hmapi_ext.h>
@@ -33,11 +32,11 @@ int32_t get_priority(void)
         errno = 0;
         priority = strtol(prio_var, NULL, 10); /* Convert priority to decimal */
         if ((errno != 0) || (priority < HM_PRIO_TEE_MIN) || (priority > HM_PRIO_TEE_MAX)) {
-            hm_warning("bad priority set, use default HM_PRIO_TEE_TA\n");
+            tlogw("bad priority set, use default HM_PRIO_TEE_TA\n");
             priority = HM_PRIO_TEE_TA;
         }
     } else {
-        hm_warning("no priority set, use default HM_PRIO_TEE_TA\n");
+        tlogw("no priority set, use default HM_PRIO_TEE_TA\n");
         priority = HM_PRIO_TEE_TA;
     }
 
@@ -51,7 +50,7 @@ int32_t extend_utables(void)
 
     for (i = 0; i < cnt; i++) {
         if (hmapi_extend_utable() != 0) {
-            hm_error("extend utable failed %d\n", i);
+            tloge("extend utable failed %d\n", i);
             return -1;
         }
     }
@@ -62,7 +61,7 @@ int32_t extend_utables(void)
 void clear_libtee(void)
 {
     if (g_libtee == NULL) {
-        hm_error("libtee handle is NULL\n");
+        tloge("libtee handle is NULL\n");
         return;
     }
 
@@ -73,7 +72,7 @@ void clear_libtee(void)
 void *get_libtee_handle(void)
 {
     if (g_libtee == NULL) {
-        hm_error("libtee handle is NULL\n");
+        tloge("libtee handle is NULL\n");
         return NULL;
     }
 
@@ -83,19 +82,19 @@ void *get_libtee_handle(void)
 void *ta_mt_dlopen(const char *name, int32_t flag)
 {
     if (name == NULL) {
-        hm_error("dlopen name is invalied\n");
+        tloge("dlopen name is invalied\n");
         return NULL;
     }
 
     size_t length = strnlen(name, LIB_NAME_MAX);
     if (length == 0 || length >= LIB_NAME_MAX) {
-        hm_error("dlopen name length is invalied\n");
+        tloge("dlopen name length is invalied\n");
         return NULL;
     }
 
     g_libtee = dlopen(name, flag);
     if (g_libtee == NULL) {
-        hm_error("load library failed: %s\n", dlerror());
+        tloge("load library failed: %s\n", dlerror());
         return NULL;
     }
 

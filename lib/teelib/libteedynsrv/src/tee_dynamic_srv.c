@@ -28,7 +28,6 @@
 #include "tee_internal_task_pub.h"
 #include "sys_timer.h"
 #include "lib_timer.h"
-#include "hmlog.h"
 #include <ipclib_hal.h>
 
 TEE_Result tee_srv_get_uuid_by_sender(uint32_t sender, TEE_UUID *uuid)

@@ -40,13 +40,13 @@ static int32_t load_drv_hardware(void)
 {
     void *drv_so_handle = dlopen(DRV_NAME, RTLD_LAZY | RTLD_GLOBAL);
     if (drv_so_handle == NULL) {
-        hm_error("load failed %s\n", dlerror());
+        tloge("load failed %s\n", dlerror());
         return CRYPTO_OVERFLOW;
     }
 
     g_drv_entry = (struct crypto_drv_ops_t *)dlsym(drv_so_handle, "g_crypto_drv_ops");
     if (g_drv_entry == NULL) {
-        hm_error("cannot get tee drv entry\n");
+        tloge("cannot get tee drv entry\n");
         return CRYPTO_OVERFLOW;
     }
 

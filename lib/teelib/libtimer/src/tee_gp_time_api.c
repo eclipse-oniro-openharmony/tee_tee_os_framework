@@ -11,7 +11,7 @@
  */
 #include <securec.h>
 #include <sys_timer.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <tee_trusted_storage_api.h>
 #include <tee_time_adapt.h>
 #include <tee_misc.h>
@@ -46,13 +46,13 @@ void TEE_GetREETime(TEE_Time *time)
 {
     int32_t ret;
     if (time == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return;
     }
 
     ret = get_time_of_data(&time->seconds, &time->millis, NULL, 0);
     if (ret != TMR_OK) {
-        hm_error("get time of data failed\n");
+        tloge("get time of data failed\n");
         return;
     }
 }
@@ -85,7 +85,7 @@ TEE_Result TEE_SetTAPersistentTime(TEE_Time *time)
     TEE_ObjectHandle object = NULL;
 
     if (time == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -96,7 +96,7 @@ TEE_Result TEE_SetTAPersistentTime(TEE_Time *time)
      */
     seconds = get_rtc_time();
     if (seconds == TIMER_INV_VALUE) {
-        hm_error("Failed to get rtc time\n");
+        tloge("Failed to get rtc time\n");
         return TEE_ERROR_TIME_NEEDS_RESET;
     }
 
@@ -113,7 +113,7 @@ TEE_Result TEE_SetTAPersistentTime(TEE_Time *time)
                                      strlen(PERSISTENT_TIME_BASE_FILE), TEE_DATA_FLAG_ACCESS_WRITE, TEE_HANDLE_NULL,
                                      &offset_val, sizeof(offset_val), &object);
     if (ret != TEE_SUCCESS) {
-        hm_error("set TA persistent time error: ret is 0x%x\n", ret);
+        tloge("set TA persistent time error: ret is 0x%x\n", ret);
         return ret;
     }
 
@@ -126,12 +126,12 @@ static TEE_Result persistent_time_check(TEE_Time *time, const struct time_offset
     uint32_t seconds;
     seconds = get_rtc_time();
     if (seconds == TIMER_INV_VALUE) {
-        hm_error("failed to get rtc time\n");
+        tloge("failed to get rtc time\n");
         return TEE_ERROR_TIME_NEEDS_RESET;
     }
 
     if (seconds < offset_val->base_sys_time) {
-        hm_error("time rollback\n");
+        tloge("time rollback\n");
         return TEE_ERROR_TIME_NEEDS_RESET;
     }
 
@@ -143,13 +143,13 @@ static TEE_Result persistent_time_check(TEE_Time *time, const struct time_offset
     if (offset_val->dir == NEGATIVE_DIR) {
         time->seconds = seconds - offset_val->offset;
         if (time->seconds > seconds) {
-            hm_error("persistent time overflow\n");
+            tloge("persistent time overflow\n");
             return TEE_ERROR_OVERFLOW;
         }
     } else {
         time->seconds = seconds + offset_val->offset;
         if (time->seconds < seconds) {
-            hm_error("persistent time overflow\n");
+            tloge("persistent time overflow\n");
             return TEE_ERROR_OVERFLOW;
         }
     }
@@ -165,7 +165,7 @@ TEE_Result TEE_GetTAPersistentTime(TEE_Time *time)
     TEE_Result ret;
 
     if (time == NULL) {
-        hm_error("invalid param\n");
+        tloge("invalid param\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -178,20 +178,20 @@ TEE_Result TEE_GetTAPersistentTime(TEE_Time *time)
     ret = TEE_OpenPersistentObject(TEE_OBJECT_STORAGE_PRIVATE, PERSISTENT_TIME_BASE_FILE,
                                    strlen(PERSISTENT_TIME_BASE_FILE), TEE_DATA_FLAG_ACCESS_READ, &object);
     if (ret != TEE_SUCCESS) {
-        hm_error("failed to open persistent object\n");
+        tloge("failed to open persistent object\n");
         return TEE_ERROR_TIME_NOT_SET;
     }
 
     ret = TEE_ReadObjectData(object, &offset_val, sizeof(offset_val), &count);
     TEE_CloseObject(object);
     if ((ret != TEE_SUCCESS) || (count != sizeof(offset_val))) {
-        hm_error("read failed\n");
+        tloge("read failed\n");
         return TEE_ERROR_TIME_NOT_SET;
     }
 
     ret = persistent_time_check(time, &offset_val);
     if (ret != TEE_SUCCESS) {
-        hm_error("failed to check\n");
+        tloge("failed to check\n");
         return ret;
     }
 

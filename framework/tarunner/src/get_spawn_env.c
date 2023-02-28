@@ -14,8 +14,7 @@
 #include <alltypes.h>
 #include <errno.h>
 #include <api/errno.h>
-#include <uidgid.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <target_type.h>
 #include "load_init.h"
 
@@ -25,18 +24,18 @@ static uint32_t get_u32_env(const char *env_name)
     char *env_var = getenv(env_name);
 
     if (env_var == NULL) {
-        hm_error("get %s env fail\n", env_name);
+        tloge("get %s env fail\n", env_name);
     } else {
         errno = 0;
         unsigned long temp = strtoul(env_var, NULL, DECIMAL_BASE);
         if (errno != 0) {
-            hm_error("%s invalid env:%s\n", env_name, env_var);
+            tloge("%s invalid env:%s\n", env_name, env_var);
             return UINT32_MAX;
         }
 
 #ifdef __aarch64__
         if (temp > UINT32_MAX) {
-            hm_error("%s value is invalid\n", env_name);
+            tloge("%s value is invalid\n", env_name);
             return UINT32_MAX;
         }
 #endif
@@ -67,7 +66,7 @@ static int32_t get_drv_env_param(struct env_param *param)
 int32_t get_env_param(struct env_param *param)
 {
     if (param == NULL) {
-        hm_error("invalid env param\n");
+        tloge("invalid env param\n");
         return -1;
     }
 
@@ -79,7 +78,7 @@ int32_t get_env_param(struct env_param *param)
 
     param->target_type = get_u32_env("target_type");
     if (param->target_type >= MAX_TARGET_TYPE) {
-        hm_error("invalid target_type:0x%x\n", param->target_type);
+        tloge("invalid target_type:0x%x\n", param->target_type);
         return -1;
     }
 

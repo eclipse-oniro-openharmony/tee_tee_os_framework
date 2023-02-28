@@ -448,7 +448,7 @@ static int32_t driver_exception_handle(const struct tee_drv_param *params, int64
 
     tloge("receive drv crash taskid:0x%x\n", (uint32_t)exit_pid);
     if (find_drv_node_by_taskid(exit_pid) != NULL)
-        hm_panic("drv taskid:0x%x abort\n", (uint32_t)exit_pid);
+        tee_abort("drv taskid:0x%x abort\n", (uint32_t)exit_pid);
 
     *ret_val = 0;
     return 0;

@@ -12,7 +12,7 @@
 #include "drvcall_dyn_conf_builder.h"
 #include <stdint.h>
 #include <securec.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <tee_defines.h>
 #include <hmdrv.h>
 #include <tee_drv_internal.h>
@@ -25,7 +25,7 @@
 void free_drvcall_perm(struct drvcall_perm_apply_t *drvcall_perm)
 {
     if (drvcall_perm == NULL) {
-        hm_error("invalid drvcall perm\n");
+        tloge("invalid drvcall perm\n");
         return;
     }
 
@@ -49,7 +49,7 @@ int32_t init_drvcall_conf(struct drvcall_perm_apply_t *drvcall_perm_apply,
     struct tee_uuid drv_server_uuid = DRVMGR;
 
     if (drvcall_perm_apply == NULL || conf_queue == NULL) {
-        hm_error("invalid drvcall perm or conf queue\n");
+        tloge("invalid drvcall perm or conf queue\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -62,7 +62,7 @@ int32_t init_drvcall_conf(struct drvcall_perm_apply_t *drvcall_perm_apply,
     drvcall_perm_apply->drvcall_perm_apply_list_size = 0;
     drvcall_perm_apply->drvcall_perm_apply_list = alloc_sharemem_aux(&drv_server_uuid, size);
     if (drvcall_perm_apply->drvcall_perm_apply_list == NULL) {
-        hm_error("malloc share mem for drvcall perm apply list failed\n");
+        tloge("malloc share mem for drvcall perm apply list failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -73,12 +73,12 @@ static int32_t handle_perm_apply_item_name(struct drvcall_perm_apply_item_t *drv
                                            uint32_t size, const char *value)
 {
     if (size == 0 || size >= DRV_NAME_MAX_LEN) {
-        hm_error("the drv name in drvcall's perm apply list is invalied\n");
+        tloge("the drv name in drvcall's perm apply list is invalied\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (memcpy_s(drvcall_perm_apply_item->name, DRV_NAME_MAX_LEN, value, size) != 0) {
-        hm_error("memcpy for drvcall perm apply item failed\n");
+        tloge("memcpy for drvcall perm apply item failed\n");
         return TEE_ERROR_GENERIC;
     }
     drvcall_perm_apply_item->name[size] = '\0';
@@ -90,19 +90,19 @@ static int32_t handle_perm_apply_item_name(struct drvcall_perm_apply_item_t *drv
 int32_t combine_perms(uint64_t *perm, uint32_t size, const char *value)
 {
     if (perm == NULL || value == NULL || size == 0 || size >= MAX_IMAGE_LEN) {
-        hm_error("invalied params\n");
+        tloge("invalied params\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     char *buff = malloc(size + 1);
     if (buff == NULL) {
-        hm_error("malloc for buff failed\n");
+        tloge("malloc for buff failed\n");
         return TEE_ERROR_GENERIC;
     }
 
     int32_t ret = memcpy_s(buff, size + 1, value, size);
     if (ret != 0) {
-        hm_error("memcpy for buff failed\n");
+        tloge("memcpy for buff failed\n");
         goto out;
     }
     buff[size] = '\0';
@@ -117,20 +117,20 @@ int32_t combine_perms(uint64_t *perm, uint32_t size, const char *value)
 
         uint64_t target_size = strlen(target);
         if (target_size > MAX_UINT32_LEN) {
-            hm_error("target size cannot larger than MAX_UINT32_LEN\n");
+            tloge("target size cannot larger than MAX_UINT32_LEN\n");
             ret = TEE_ERROR_BAD_PARAMETERS;
             goto out;
         }
 
         uint64_t off = 0;
         if (trans_str_to_int(target, (uint32_t)target_size, BASE_OF_TEN, &off) != TEE_SUCCESS) {
-            hm_error("get perms failed while combine perms\n");
+            tloge("get perms failed while combine perms\n");
             ret = TEE_ERROR_BAD_PARAMETERS;
             goto out;
         }
 
         if (off == 0 || off > BIT_NUM_OF_UINT64) {
-            hm_error("cmd permission must in range of [1, 64]\n");
+            tloge("cmd permission must in range of [1, 64]\n");
             ret = TEE_ERROR_BAD_PARAMETERS;
             goto out;
         }
@@ -157,7 +157,7 @@ static int32_t build_drvcall_perm_apply_item(struct dlist_node **pos, const stru
     (void)pos;
 
     if (obj_size != sizeof(*drvcall_perm_apply_item)) {
-        hm_error("invalied params while build drvcall perm apply item\n");
+        tloge("invalied params while build drvcall perm apply item\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -166,18 +166,18 @@ static int32_t build_drvcall_perm_apply_item(struct dlist_node **pos, const stru
     switch (node->tag) {
     case DRV_PERM_DRVCALL_PERM_APPLY_ITEM_NAME:
         if (handle_perm_apply_item_name(drvcall_perm_apply_item, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle perm apply item name failed\n");
+            tloge("handle perm apply item name failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     case DRV_PERM_DRVCALL_PERM_APPLY_ITEM_PERMISSION:
         if (handle_perm_apply_item_perm(&drvcall_perm_apply_item->perm, node->size, node->value) != TEE_SUCCESS) {
-            hm_error("handle perm apply item perm failed\n");
+            tloge("handle perm apply item perm failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build drvcall perm apply item\n");
+        tlogd("skip in build drvcall perm apply item\n");
         if (handle_conf_node_to_obj(pos, NULL, drvcall_perm_apply_item,
                                     sizeof(*drvcall_perm_apply_item)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
@@ -190,7 +190,7 @@ static int32_t build_drvcall_perm_apply_item(struct dlist_node **pos, const stru
 static int32_t check_perm_apply_list(struct drvcall_perm_apply_item_t drvcall_perm_apply_item)
 {
     if (drvcall_perm_apply_item.name_size == 0 || drvcall_perm_apply_item.name_size >= DRV_NAME_MAX_LEN) {
-        hm_error("drv's name size is invalied in perm apply list\n");
+        tloge("drv's name size is invalied in perm apply list\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -203,7 +203,7 @@ int32_t build_drvcall_perm_apply(struct dlist_node **pos, const struct conf_node
     struct drvcall_perm_apply_t *drvcall_perm_apply = NULL;
 
     if (pos == NULL || node == NULL || obj == NULL || obj_size != sizeof(*drvcall_perm_apply)) {
-        hm_error("invalied params while build drvcall perm apply\n");
+        tloge("invalied params while build drvcall perm apply\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -219,7 +219,7 @@ int32_t build_drvcall_perm_apply(struct dlist_node **pos, const struct conf_node
         if (handle_conf_node_to_obj(pos, build_drvcall_perm_apply_item,
                                     &drvcall_perm_apply->drvcall_perm_apply_list[index],
                                     sizeof(drvcall_perm_apply->drvcall_perm_apply_list[index])) != TEE_SUCCESS) {
-            hm_error("build drvcall perm apply failed\n");
+            tloge("build drvcall perm apply failed\n");
             return TEE_ERROR_GENERIC;
         }
 
@@ -242,7 +242,7 @@ int32_t build_drvcall_conf(struct dlist_node **pos, const struct conf_node_t *no
     struct drvcall_perm_apply_t *drvcall_perm = NULL;
 
     if (pos == NULL || node == NULL || obj == NULL || obj_size != sizeof(*drvcall_perm)) {
-        hm_error("invalied params while build drvcall conf\n");
+        tloge("invalied params while build drvcall conf\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -252,12 +252,12 @@ int32_t build_drvcall_conf(struct dlist_node **pos, const struct conf_node_t *no
     case DRV_PERM_DRVCALL_PERM_APPLY:
         if (handle_conf_node_to_obj(pos, build_drvcall_perm_apply, drvcall_perm,
                                     sizeof(*drvcall_perm)) != TEE_SUCCESS) {
-            hm_error("build drvcall perm apply failed\n");
+            tloge("build drvcall perm apply failed\n");
             return TEE_ERROR_GENERIC;
         }
         break;
     default:
-        hm_debug("skip in build drvcall conf\n");
+        tlogd("skip in build drvcall conf\n");
         if (handle_conf_node_to_obj(pos, NULL, drvcall_perm, sizeof(*drvcall_perm)) != TEE_SUCCESS)
             return TEE_ERROR_GENERIC;
         break;
@@ -308,30 +308,30 @@ void dump_drvcall_conf(void)
 void uninstall_drvcall_permission(const void *obj, uint32_t obj_size)
 {
     if (obj == NULL) {
-        hm_error("obj is NULL while uninstall drvcall permission\n");
+        tloge("obj is NULL while uninstall drvcall permission\n");
         return;
     }
 
     if (obj_size != sizeof(struct tee_uuid)) {
-        hm_error("obj size is invalied while uninstall drvcall permission\n");
+        tloge("obj size is invalied while uninstall drvcall permission\n");
         return;
     }
 
     const struct tee_uuid *uuid = (const struct tee_uuid *)obj;
     if (send_drvcall_uuid(uuid, obj_size) != 0)
-        hm_error("uninstall drvcall permission failed\n");
+        tloge("uninstall drvcall permission failed\n");
 }
 
 int32_t install_drvcall_permission(void *obj, uint32_t obj_size, const struct conf_queue_t *conf_queue)
 {
     /* 1. check the params */
     if (obj == NULL || conf_queue == NULL || dlist_empty(&conf_queue->queue)) {
-        hm_error("params is NULL while install drvcall permission\n");
+        tloge("params is NULL while install drvcall permission\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     if (obj_size != sizeof(struct tee_uuid)) {
-        hm_error("obj size is invalied while install drvcall permission\n");
+        tloge("obj size is invalied while install drvcall permission\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
@@ -341,7 +341,7 @@ int32_t install_drvcall_permission(void *obj, uint32_t obj_size, const struct co
     /* 3.create new obj */
     struct drvcall_conf_t *drvcall_conf = (struct drvcall_conf_t *)malloc(sizeof(struct drvcall_conf_t));
     if (drvcall_conf == NULL) {
-        hm_error("drvcall_conf malloc failed\n");
+        tloge("drvcall_conf malloc failed\n");
         return TEE_ERROR_GENERIC;
     }
 
@@ -349,7 +349,7 @@ int32_t install_drvcall_permission(void *obj, uint32_t obj_size, const struct co
     (void)memset_s(drvcall_conf, sizeof(*drvcall_conf), 0, sizeof(*drvcall_conf));
     int32_t ret = -1;
     if (memcpy_s(&drvcall_conf->uuid, sizeof(drvcall_conf->uuid), uuid, sizeof(*uuid)) != 0) {
-        hm_error("set uuid to drv conf fail\n");
+        tloge("set uuid to drv conf fail\n");
         goto out;
     }
 
@@ -362,7 +362,7 @@ int32_t install_drvcall_permission(void *obj, uint32_t obj_size, const struct co
     ret = handle_conf_node_to_obj(&pos, build_drvcall_conf, &drvcall_conf->drvcall_perm_apply,
                                   sizeof(drvcall_conf->drvcall_perm_apply));
     if (ret != TEE_SUCCESS) {
-        hm_error("handle drvcall conf failed\n");
+        tloge("handle drvcall conf failed\n");
         goto out;
     }
 

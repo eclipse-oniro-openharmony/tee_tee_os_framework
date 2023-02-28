@@ -13,7 +13,7 @@
 #include <cs.h>
 #include <errno.h>
 #include <ipclib.h>
-#include <hmlog.h>
+#include <tee_log.h>
 #include <sys/usrsyscall_ext.h>
 #include <mem_page_ops.h>
 #include <tee_drv_internal.h>
@@ -32,7 +32,7 @@ static int32_t thread_syscaller_init(uint32_t thread_num)
 
     g_syscaller_info = malloc(size);
     if (g_syscaller_info == NULL) {
-        hm_error("cannot alloc for syscaller thread_num:%u\n", g_thread_num);
+        tloge("cannot alloc for syscaller thread_num:%u\n", g_thread_num);
         return -1;
     }
 
@@ -64,7 +64,7 @@ int32_t get_callerpid_and_job_handler_by_tid(tid_t tid, pid_t *caller_pid, uint6
         }
     }
 
-    hm_error("get caller pid and job_handler failed\n");
+    tloge("get caller pid and job_handler failed\n");
 
     return DRV_CALL_ERROR;
 }
@@ -80,7 +80,7 @@ void update_callerpid_by_tid(tid_t tid, pid_t caller_pid)
 {
     uint32_t i;
     if (pthread_mutex_lock(&g_drv_caller_info_mutex) != 0) {
-        hm_error("mutex lock failed\n");
+        tloge("mutex lock failed\n");
         return;
     }
 
@@ -88,7 +88,7 @@ void update_callerpid_by_tid(tid_t tid, pid_t caller_pid)
         if (g_syscaller_info[i].current_thread == tid) {
             g_syscaller_info[i].caller_pid = caller_pid;
             if (pthread_mutex_unlock(&g_drv_caller_info_mutex) != 0)
-                hm_error("mutex unlock failed\n");
+                tloge("mutex unlock failed\n");
             return;
         }
     }
@@ -98,20 +98,20 @@ void update_callerpid_by_tid(tid_t tid, pid_t caller_pid)
             g_syscaller_info[i].current_thread = tid;
             g_syscaller_info[i].caller_pid = caller_pid;
             if (pthread_mutex_unlock(&g_drv_caller_info_mutex) != 0)
-                hm_error("mutex unlock failed\n");
+                tloge("mutex unlock failed\n");
             return;
         }
     }
 
     if (pthread_mutex_unlock(&g_drv_caller_info_mutex) != 0)
-        hm_error("mutex unlock failed\n");
+        tloge("mutex unlock failed\n");
 }
 
 void update_caller_info_by_tid(tid_t tid, pid_t caller_pid, uint64_t job_handler)
 {
     uint32_t i;
     if (pthread_mutex_lock(&g_drv_caller_info_mutex) != 0) {
-        hm_error("get mutex lock failed\n");
+        tloge("get mutex lock failed\n");
         return;
     }
 
@@ -120,7 +120,7 @@ void update_caller_info_by_tid(tid_t tid, pid_t caller_pid, uint64_t job_handler
             g_syscaller_info[i].caller_pid = caller_pid;
             g_syscaller_info[i].job_handler = job_handler;
             if (pthread_mutex_unlock(&g_drv_caller_info_mutex) != 0)
-                hm_error("mutex unlock failed\n");
+                tloge("mutex unlock failed\n");
             return;
         }
     }
@@ -131,13 +131,13 @@ void update_caller_info_by_tid(tid_t tid, pid_t caller_pid, uint64_t job_handler
             g_syscaller_info[i].caller_pid = caller_pid;
             g_syscaller_info[i].job_handler = job_handler;
             if (pthread_mutex_unlock(&g_drv_caller_info_mutex) != 0)
-                hm_error("mutex unlock failed\n");
+                tloge("mutex unlock failed\n");
             return;
         }
     }
 
     if (pthread_mutex_unlock(&g_drv_caller_info_mutex) != 0)
-        hm_error("mutex unlock failed\n");
+        tloge("mutex unlock failed\n");
 }
 
 static void *tee_driver_thread(void *args)
@@ -152,7 +152,7 @@ static void *tee_driver_thread(void *args)
 
     int32_t ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
-        hm_error("fail to create channel ret: 0x%x\n", ret);
+        tloge("fail to create channel ret: 0x%x\n", ret);
         return NULL;
     }
 
@@ -184,12 +184,12 @@ static void creat_server_thread(cref_t channel, size_t stack_size, uint32_t thre
     /* create thread, thread0 is common thread. */
     info = malloc(sizeof(*info));
     if (info == NULL)
-        hm_panic("malloc thread info mem error\n");
+        tee_abort("malloc thread info mem error\n");
 
     ret = pthread_attr_init(&attr);
     if (ret != 0) {
         free(info);
-        hm_panic("init pthread attr failed\n");
+        tee_abort("init pthread attr failed\n");
     }
 
     if (stack_size != 0) {
@@ -197,20 +197,20 @@ static void creat_server_thread(cref_t channel, size_t stack_size, uint32_t thre
         if (ret != 0) {
             free(info);
             (void)pthread_attr_destroy(&attr);
-            hm_panic("set attr stack size fail\n");
+            tee_abort("set attr stack size fail\n");
         }
     }
 
     ret = init_pthread_info(info, channel, stack_size, thread_limit);
     if (ret != DRV_CALL_OK) {
         free(info);
-        hm_panic("init thread info error\n");
+        tee_abort("init thread info error\n");
     }
 
     ret = pthread_create(&thread_id, &attr, tee_driver_thread, info);
     if (ret != 0) {
         free(info);
-        hm_panic("create pthread failed\n");
+        tee_abort("create pthread failed\n");
     }
     (void)pthread_attr_destroy(&attr);
 }
@@ -219,14 +219,14 @@ static int32_t thread_init_param_check(uint32_t thread_limit, uint32_t *stack_si
 {
     /* thread_limit is 0 means only have main thread */
     if (thread_limit > DRV_THREAD_MAX) {
-        hm_error("thread limit:%u invalid\n", thread_limit);
+        tloge("thread limit:%u invalid\n", thread_limit);
         return -1;
     }
 
     uint32_t stack = *stack_size;
     uint32_t temp_stack = PAGE_ALIGN_UP(stack);
     if (temp_stack < stack) {
-        hm_error("invalid stack size:0x%x\n", stack);
+        tloge("invalid stack size:0x%x\n", stack);
         return -1;
     }
 
@@ -241,13 +241,13 @@ int32_t drv_thread_init(const char *thread_name, uint32_t stack_size, uint32_t t
 
     if ((thread_name == NULL) || (strnlen(thread_name, DRV_NAME_MAX_LEN) == 0) ||
         (strnlen(thread_name, DRV_NAME_MAX_LEN) >= DRV_NAME_MAX_LEN)) {
-        hm_error("thread init invalid name\n");
+        tloge("thread init invalid name\n");
         return -1;
     }
 
     int32_t ret = ipc_create_channel_native(thread_name, &channel);
     if (ret != 0)
-        hm_panic("%s: failed to create channel :%d\n", thread_name, ret);
+        tee_abort("%s: failed to create channel :%d\n", thread_name, ret);
 
     return multi_drv_framwork_init(thread_limit, stack_size, channel);
 }
@@ -261,7 +261,7 @@ int32_t multi_drv_framwork_init(uint32_t thread_limit, uint32_t stack_size, cref
     if (g_syscaller_info != NULL)
         return 0;
 
-    hm_debug("thread_limit:%u stack_size:0x%x\n", thread_limit, stack_size);
+    tlogd("thread_limit:%u stack_size:0x%x\n", thread_limit, stack_size);
 
     int32_t ret = thread_syscaller_init(thread_limit);
     if (ret != 0)
@@ -271,7 +271,7 @@ int32_t multi_drv_framwork_init(uint32_t thread_limit, uint32_t stack_size, cref
         (void)sem_init(&g_thread_sem, 0, 0);
         creat_server_thread(channel, stack, thread_limit);
         if (sem_wait(&g_thread_sem) != 0)
-            hm_panic("sem wait failed\n");
+            tee_abort("sem wait failed\n");
     }
 
     return 0;

@@ -16,7 +16,6 @@ include $(BUILD_CONFIG)/var.mk
 
 tarunner_c_files := $(wildcard src/*.c)
 
-
 # Libraries
 LIBS := c_shared${TARG}
 

@@ -99,12 +99,12 @@ static void msg_rcv_elf(uint32_t timeout, uint32_t *msg_id, void *msgp, uint16_t
     while (sender != GLOBAL_HANDLE) {
         ret = ipc_msg_rcv_a(timeout, msg_id, msgp, size, &sender);
         if (ret != SRE_OK) {
-            hm_error("Msg rcv failed, ret = %u\n", ret);
+            tloge("Msg rcv failed, ret = %u\n", ret);
             return;
         }
 
         if (sender != GLOBAL_HANDLE)
-            hm_warn("Msg recv from sender = %u\n", sender);
+            tlogw("Msg recv from sender = %u\n", sender);
     }
 }
 
@@ -117,13 +117,13 @@ static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti)
     for (i = 0; i < THREAD_CHNL_MAX; i++) {
         pid = getpid();
         if (pid == -1) {
-            hm_error("get pid failed\n");
+            tloge("get pid failed\n");
             continue;
         }
 
         rc = ipc_remove_channel((msg_pid_t)pid_to_taskid(tid, pid), NULL, i, pti->t_channel[i]);
         if (rc != 0)
-            hm_error("remove ipc channel #%d failed: rc=%d\n", i, rc);
+            tloge("remove ipc channel #%d failed: rc=%d\n", i, rc);
     }
 }
 
@@ -134,19 +134,19 @@ static TEE_Result ta_recycle_thread(uint32_t tid)
 
     pti = find_thread_by_tid(tid);
     if ((pti == NULL) || (pti->thread == NULL)) {
-        hm_error("Cannot find dest thread to recycle, tid = 0x%x\n", tid);
+        tloge("Cannot find dest thread to recycle, tid = 0x%x\n", tid);
         return TEE_ERROR_GENERIC;
     }
-    hm_info("Suspend thread, tid=0x%x\n", tid);
+    tlogi("Suspend thread, tid=0x%x\n", tid);
 
     /* cleanup thread resources, ignore any failed cleanup */
     rc = thread_terminate(pti->thread);
     if (rc != 0)
-        hm_error("terminate thread failed tid=0x%" PRIx32 " rc=%d\n", tid, rc);
+        tloge("terminate thread failed tid=0x%" PRIx32 " rc=%d\n", tid, rc);
 
     rc = pthread_join(pti->thread, NULL);
     if (rc != 0)
-        hm_error("pthread join failed: rc=%d\n", rc);
+        tloge("pthread join failed: rc=%d\n", rc);
 
     remove_all_ipc_channel(tid, pti);
     ipc_msg_delete_hdl(pti->t_msghdl);
@@ -169,7 +169,7 @@ static int32_t create_ipc_channel(const char *task_name, cref_t *ch[])
     reg_items.reg_name = false;
     reg_items.reg_tamgr = reg_tamgr;
     if (ipc_create_channel(task_name, CREATE_IPC_CHANNEL_NUM, ch, reg_items) != 0) {
-        hm_error("Cannot create thread channel\n");
+        tloge("Cannot create thread channel\n");
         return -1;
     }
 
@@ -180,7 +180,7 @@ static void call_task_entry(const struct thread_info *pti)
 {
     int32_t rc = set_thread_priority(thread_get_cref(), pti->args.priority);
     if (rc != 0)
-        hm_error("set priority failed: %x\n", rc);
+        tloge("set priority failed: %x\n", rc);
 
     /* call real TA entry */
     if (pti->args.append_args != NULL)
@@ -189,7 +189,7 @@ static void call_task_entry(const struct thread_info *pti)
         (*pti->args.ta_entry.ta_entry_orig)(pti->args.inited);
 
     /* should never get here, crash myself */
-    hm_panic("tee task entry exit!\n");
+    tee_abort("tee task entry exit!\n");
 }
 
 static void *tee_task_entry_thread(void *data)
@@ -204,7 +204,7 @@ static void *tee_task_entry_thread(void *data)
     /* get self tid */
     tid = thread_self();
     if (tid < 0) {
-        hm_error("thread self failed: ret=%d\n", tid);
+        tloge("thread self failed: ret=%d\n", tid);
         goto err_get_tid;
     }
     pti->tid = (uint32_t)tid;
@@ -212,14 +212,14 @@ static void *tee_task_entry_thread(void *data)
     /* prepare message handle */
     msghdl = ipc_msg_create_hdl();
     if (is_ref_err(msghdl)) {
-        hm_error("Cannot create msg_hdl\n");
+        tloge("Cannot create msg_hdl\n");
         goto err_get_tid;
     }
     pti->t_msghdl = msghdl;
 
     /* store msghdl in self tls */
 	if(ipc_save_my_msghdl(msghdl) != 0) {
-        hm_error("save hdl error");
+        tloge("save hdl error");
         goto err_save_hdl;
     }
     /* create IPC channel, and save to tls */
@@ -231,7 +231,7 @@ static void *tee_task_entry_thread(void *data)
 
     /* send tid reply to gtask, just pass msg id as 0 */
     if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, pti->tid, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK) {
-        hm_error("Msg send failed\n");
+        tloge("Msg send failed\n");
         goto err_reply_tid;
     }
 
@@ -246,7 +246,7 @@ err_save_hdl:
 err_get_tid:
     /* reply error for TaskCreate */
     if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
-        hm_error("Msg send 1 failed\n");
+        tloge("Msg send 1 failed\n");
     release_thread_info(pti);
     return NULL;
 }
@@ -260,18 +260,18 @@ static TEE_Result ta_create_thread(ta_entry_type entry, uint32_t inited, const s
 
     pti = get_free_thread_info_slot();
     if (pti == NULL) {
-        hm_error("out of thread\n");
+        tloge("out of thread\n");
         return TEE_ERROR_SESSION_MAXIMUM;
     }
 
     if (pthread_attr_init(&attr) != 0) {
-        hm_error("pthread attr init failed\n");
+        tloge("pthread attr init failed\n");
         goto err_out;
     }
 
     /* set stack size for new thread */
     if (pthread_attr_setstacksize(&attr, info->stack_size) != 0) {
-        hm_error("pthread attr set stack size failed, size=0x%zx\n", info->stack_size);
+        tloge("pthread attr set stack size failed, size=0x%zx\n", info->stack_size);
         goto err_out;
     }
 
@@ -285,7 +285,7 @@ static TEE_Result ta_create_thread(ta_entry_type entry, uint32_t inited, const s
     /* create working thread, and get its thread ref */
     rc = pthread_create(&pti->thread, &attr, tee_task_entry_thread, pti);
     if (rc) {
-        hm_error("pthread create failed: %d\n", rc);
+        tloge("pthread create failed: %d\n", rc);
         goto err_out;
     }
 
@@ -303,13 +303,13 @@ static void close_ta2ta_session(uint32_t tid)
 
     libtee_handle = get_libtee_handle();
     if (libtee_handle == NULL) {
-        hm_error("libtee has not open\n");
+        tloge("libtee has not open\n");
         return;
     }
 
     delete_ta2ta_session = dlsym(libtee_handle, "delete_all_ta2ta_session");
     if (delete_ta2ta_session == NULL) {
-        hm_error("cannot get delete ta2ta session symbol\n");
+        tloge("cannot get delete ta2ta session symbol\n");
         return;
     }
     delete_ta2ta_session(tid);
@@ -322,13 +322,13 @@ static void clear_session(uint32_t session_id)
 
     libtee_handle = get_libtee_handle();
     if (libtee_handle == NULL) {
-        hm_error("libtee has not open\n");
+        tloge("libtee has not open\n");
         return;
     }
 
     clear_session_ops = dlsym(libtee_handle, "clear_session_exception");
     if (clear_session_ops == NULL) {
-        hm_error("cannot get clear session symbol\n");
+        tloge("cannot get clear session symbol\n");
         return;
     }
     clear_session_ops(session_id);
@@ -346,9 +346,9 @@ static void handle_thread_create(ta_entry_type entry, const struct create_thread
 
     ret = ta_create_thread(entry, NON_INIT_BUILD, info, name, append_args);
     if (ret != TEE_SUCCESS) {
-        hm_error("ta create thread error!!! %x\n", ret);
+        tloge("ta create thread error!!! %x\n", ret);
         if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
-            hm_error("Msg send failed\n");
+            tloge("Msg send failed\n");
     }
 }
 
@@ -357,13 +357,13 @@ static void handle_thread_remove(uint32_t tid, uint32_t session_id)
     TEE_Result ret;
     ret = ta_recycle_thread(tid);
     if (ret != TEE_SUCCESS)
-        hm_error("ta recycle thread stack error!!! %x\n", ret);
+        tloge("ta recycle thread stack error!!! %x\n", ret);
     /* close all ta2ta session opened by this thread */
     close_ta2ta_session(tid);
     close_session_exception(session_id);
     /* send reply to gtask, just pass msg id as 0, ret as TEE_SUCCESS for success */
     if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, (uint32_t)ret, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
-        hm_error("Msg send failed\n");
+        tloge("Msg send failed\n");
 }
 
 static void tee_task_entry_handle(ta_entry_type ta_entry, int32_t priority, const char *name,
@@ -376,27 +376,27 @@ static void tee_task_entry_handle(ta_entry_type ta_entry, int32_t priority, cons
     while (1) {
         struct global_to_service_thread_msg entry_msg = { { { 0 } } };
         cmd = 0;
-        hm_debug("++ Service TA task enter suspend\n");
+        tlogd("++ Service TA task enter suspend\n");
         msg_rcv_elf(OS_WAIT_FOREVER, (uint32_t *)(&cmd), &entry_msg, sizeof(entry_msg));
-        hm_debug("-- Service TA rsv cmd : 0x%x\n", cmd);
+        tlogd("-- Service TA rsv cmd : 0x%x\n", cmd);
         switch (cmd) {
         case CALL_TA_CREATE_THREAD:
-            hm_debug("++ CALL TA CREATE THREAD\n");
+            tlogd("++ CALL TA CREATE THREAD\n");
             info.stack_size = entry_msg.create_msg.stack_size;
             info.priority = priority;
             handle_thread_create(ta_entry, &info, name, append_args);
             break;
         case CALL_TA_REMOVE_THREAD:
-            hm_debug("++ CALL TA REMOVE THREAD\n");
+            tlogd("++ CALL TA REMOVE THREAD\n");
             tid = entry_msg.remove_msg.tid;
             session_id = entry_msg.remove_msg.session_id;
             handle_thread_remove(tid, session_id);
             break;
         case CALL_TA_STHREAD_EXIT: /* no need to break, cos this proc exit directly */
-            hm_debug("++ CALL TA STHREAD EXIT\n");
+            tlogd("++ CALL TA STHREAD EXIT\n");
             exit(0);
         default:
-            hm_error("invalid cmdid 0x%x\n", cmd);
+            tloge("invalid cmdid 0x%x\n", cmd);
             break;
         }
     }
@@ -412,13 +412,13 @@ void tee_task_entry_mt(ta_entry_type ta_entry, int32_t priority, const char *nam
 
     /* no need check ta_entry_orig since ta_entry_type is a union */
     if (ta_entry.ta_entry == NULL || name == NULL) {
-        hm_error("bad TA entry\n");
+        tloge("bad TA entry\n");
         return;
     }
 
     stack_size = getstacksize();
     if (stack_size == 0) {
-        hm_error("get stack size failed, use default stack size 0x%x\n", THREAD_STACK_SIZE);
+        tloge("get stack size failed, use default stack size 0x%x\n", THREAD_STACK_SIZE);
         stack_size = THREAD_STACK_SIZE;
     }
 
@@ -427,10 +427,10 @@ void tee_task_entry_mt(ta_entry_type ta_entry, int32_t priority, const char *nam
     /* Create a working thread at startup */
     ret = ta_create_thread(ta_entry, INIT_BUILD, &info, name, append_args);
     if (ret != TEE_SUCCESS) {
-        hm_error("ta create thread error!!! %x\n", ret);
+        tloge("ta create thread error!!! %x\n", ret);
         /* notify gtask that thread creating fails */
         if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
-            hm_error("Msg send failed\n");
+            tloge("Msg send failed\n");
         return;
     }
 
