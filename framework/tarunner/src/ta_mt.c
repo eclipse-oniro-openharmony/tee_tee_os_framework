@@ -24,7 +24,6 @@
 #include <unistd.h>
 #include <ta_framework.h>
 #include <tee_log.h>
-#include <asm/hmapi.h>
 #include "load_init.h"
 #include <ipclib_hal.h>
 #include <spawn_ext.h>
@@ -46,7 +45,7 @@ struct thread_info {
     pthread_t thread;  /* pthread handler */
     cref_t thread_ref; /* thread cref, used to terminated it. */
     uint32_t tid;
-    cref_t t_channel[THREAD_CHNL_MAX];
+    cref_t t_channel[CH_CNT_MAX];
     cref_t t_msghdl;
 };
 static struct thread_info g_tinfos[TA_SESSION_MAX];
@@ -114,7 +113,7 @@ static void remove_all_ipc_channel(uint32_t tid, const struct thread_info *pti)
     int32_t rc;
     pid_t pid;
 
-    for (i = 0; i < THREAD_CHNL_MAX; i++) {
+    for (i = 0; i < CH_CNT_MAX; i++) {
         pid = getpid();
         if (pid == -1) {
             tloge("get pid failed\n");
@@ -197,7 +196,7 @@ static void *tee_task_entry_thread(void *data)
     struct thread_info *pti = data;
     int32_t tid;
     cref_t msghdl;
-    cref_t *ch[THREAD_CHNL_MAX];
+    cref_t *ch[CH_CNT_MAX];
     int32_t i;
     const char *name = pti->args.name;
 
@@ -223,7 +222,7 @@ static void *tee_task_entry_thread(void *data)
         goto err_save_hdl;
     }
     /* create IPC channel, and save to tls */
-    for (i = 0; i < THREAD_CHNL_MAX; i++)
+    for (i = 0; i < CH_CNT_MAX; i++)
         ch[i] = &pti->t_channel[i];
 
     if (create_ipc_channel(name, ch) != 0)
