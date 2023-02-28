@@ -15,7 +15,6 @@
 #include <dlfcn.h>
 #include <unistd.h>
 #include <mmgrapi.h>
-#include <pathmgr_api.h>
 #include <ipclib.h>
 #include <sys/kuapi.h>
 #include <sys/hmapi_ext.h>
@@ -23,7 +22,6 @@
 #include <sys/fileio.h>
 #include <timer.h>
 #include <irqmgr.h>
-#include <irqmgr_api_ext.h>
 #include <tamgr_ext.h>
 #include <ac.h>
 #include <tee_tag.h>
