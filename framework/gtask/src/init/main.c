@@ -21,7 +21,7 @@
 #include <hmlog.h>
 #include <pathmgr_api.h>
 #include <ac_dynamic.h>
-#include <sys/usrsyscall_smc.h>
+#include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
 #include "tee_crypto_api.h"
 #include "global_task.h"

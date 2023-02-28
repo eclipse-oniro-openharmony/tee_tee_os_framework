@@ -9,8 +9,7 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include <sys/hmapi.h>
-#include <pathmgr_api.h>
+#include <ipclib.h>
 
 #define PATH_NAME "TEEGlobalTask"
 
@@ -19,7 +18,7 @@ rref_t acquire_gtask_channel(void)
     int32_t rc;
     rref_t rref;
 
-    rc = pathmgr_acquire(PATH_NAME, &rref);
+    rc = ipc_get_ch_from_path(PATH_NAME, &rref);
     if (rc != 0)
         return ((uint64_t)(((unsigned int)rc) & 0xffffffff));
     return rref;

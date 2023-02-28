@@ -14,6 +14,7 @@
 #include <securec.h>
 #include "teesmcmgr.h"
 #include <sys/usrsyscall_smc.h>
+#include <ipclib.h>
 
 #define GTASK_MSG_ID 0xDEADBEEF
 #define RECV_BUF_SIZE 32
@@ -41,12 +42,12 @@ static void send_to_gtask()
         fatal("memory copy failed\n");
 
     /*
-     * Why we need this hmex_channel_call?
+     * Why we need this ipc_msg_call?
      * As smcmgr send notification to gtask after check smc.ops is valid,
      * but the first normal request 'set smc buffer' is send by raw_smc_send
      * that smc.ops is set to be smc buffer's physical addr.
      */
-    err = hmex_channel_call(get_gtask_channel_hdlr(), &gtask_msg, sizeof(struct gtask_msg), recv_buf, sizeof(recv_buf));
+    err = ipc_msg_call(get_gtask_channel_hdlr(), &gtask_msg, sizeof(struct gtask_msg), recv_buf, sizeof(recv_buf), -1);
     if (err < 0)
         panic("failed to send magic to gtask: %x\n", err);
     debug("GT return %d\n", err);

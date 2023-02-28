@@ -11,6 +11,7 @@
  */
 #include "tee_log.h"
 #include <stdio.h>
+#include <io.h>
 #include <stdarg.h>
 #include <securec.h>
 #include <sys/usrsyscall.h>
@@ -169,9 +170,8 @@ static void fill_logitem(log_item_t *m_logitem, size_t m_logmaxlen, int count, i
     m_logitem->magic = LOG_ITEM_MAGIC;
 
     /* append in the rdr memory */
-    if (debug_call(0, KCALL_DEBUG_APPEND_RDR_LOGITEM, ptr_to_uint64(m_logitem),
-                   sizeof(log_item_t) + m_logitem->log_buffer_len) != 0)
-        printf("append rdr logitem debug_call ret is not successful\n");
+    if (debug_rdr_logitem((char *)m_logitem, sizeof(log_item_t) + m_logitem->log_buffer_len) != 0)
+        printf("append rdr logitem debug_rdr_logitem ret is not successful\n");
 }
 #define LOG_RESERVED_SIZE 1
 static void tee_print_helper(const char *log_tag, enum log_source_type source_type, LOG_LEVEL log_level,
