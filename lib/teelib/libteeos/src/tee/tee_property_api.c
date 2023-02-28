@@ -17,6 +17,7 @@
 #include <sys/usrsyscall.h>
 #include <securec.h>
 #include <dlist.h>
+#include <ipclib.h>
 
 #include "tee_mem_mgmt_api.h"
 #include "tee_bitmap.h"

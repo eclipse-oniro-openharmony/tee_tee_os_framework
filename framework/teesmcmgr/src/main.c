@@ -20,6 +20,7 @@
 #include <mmgrapi.h>
 #include <sys/kuapi.h>
 #include <sys/usrsyscall_smc.h>
+#include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
 
 static rref_t g_gtask_channel_hdlr;
