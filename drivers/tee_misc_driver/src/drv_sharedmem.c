@@ -16,7 +16,6 @@
 #include "shared_mem_api.h"
 #include "tee_inner_uuid.h"
 #ifndef CONFIG_MISC_DRIVER
-#include <hm_mman_ext.h>
 #include "drv_thread.h"
 #endif
 #include "drv_module.h"

@@ -18,7 +18,7 @@
 #include <sys/syscalls.h>
 #include <sys/usrsyscall.h>
 #include <ipclib.h>
-#include <hm_getpid.h>
+#include <unistd.h>
 #include <hmlog.h>
 #include <ac.h>
 #include <ac_job.h>
@@ -155,7 +155,7 @@ int32_t hm_drv_init(const char *name)
         goto unlock_out;
 
     g_drv_frame_count++;
-    hm_debug("libhmdrv: init ok for pid %d with s_rslot=0x%llx\n", hm_getpid(), op_info->channel);
+    hm_debug("libhmdrv: init ok for pid %d with s_rslot=0x%llx\n", getpid(), op_info->channel);
 
 unlock_out:
     mutex_unlock_ops(&g_framp_op_mutex);

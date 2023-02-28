@@ -15,6 +15,7 @@
 #include "teesmcmgr.h"
 #include <sys/usrsyscall_smc.h>
 #include <ipclib.h>
+#include <sched.h>
 
 #define GTASK_MSG_ID 0xDEADBEEF
 #define RECV_BUF_SIZE 32
@@ -72,7 +73,7 @@ __attribute__((noreturn)) void *tee_idle_thread(void *arg)
     int32_t err = set_priority(HM_PRIO_TEE_SMCMGR_IDLE);
     if (err < 0)
         fatal("hmapi set priority failed: %x\n", err);
-    hmapi_yield();
+    (void)sched_yield();
 
     starttz_core();
     error("StartTZ done\n");

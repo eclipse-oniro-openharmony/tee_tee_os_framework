@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <dlfcn.h>
-#include <hm_getpid.h>
+#include <unistd.h>
 #include <mmgrapi.h>
 #include <pathmgr_api.h>
 #include <ipclib.h>
@@ -39,7 +39,7 @@ static int32_t ipc_init(const char *name, cref_t *ch)
 
     ret = ipc_create_channel(NULL, IPC_CHANNEL_NUM, NULL, reg_items);
     if (ret != 0) {
-        hm_error("%s: failed to create SRE channel with pid %d: %d\n", name, hm_getpid(), ret);
+        hm_error("%s: failed to create SRE channel with pid %d: %d\n", name, getpid(), ret);
         return -1;
     }
 
@@ -65,7 +65,7 @@ static void print_drv_info(const char *name)
     printf(" _______________________________________________________\n");
     printf("|  _____________________________________________________\n");
     printf("| |\n");
-    printf("| |  %s init - pid %d\n", name, hm_getpid());
+    printf("| |  %s init - pid %d\n", name, getpid());
     printf("| |_____________________________________________________\n");
     printf("|_______________________________________________________\n");
 }

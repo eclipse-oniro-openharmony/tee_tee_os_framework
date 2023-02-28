@@ -26,13 +26,14 @@
 #include "tee_crypto_api.h"
 #include "global_task.h"
 #include "init.h"
+#include <sched.h>
 
 #define GT_CHANNEL_NUM 2
 
 static void wait_for_kill(void)
 {
     while (true)
-        hm_yield();
+        (void)sched_yield();
 }
 
 static void gtask_init(void)

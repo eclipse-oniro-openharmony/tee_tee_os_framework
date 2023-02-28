@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <hmlog.h>
 #include "tee_inner_uuid.h"
+#include <sched.h>
 
 #define CASAN_DEFAULT_STACK_SIZE 0x20000
 
@@ -203,5 +204,5 @@ void init_shell(void)
     hm_error("gtask: *ERROR* GTask exit unexpectedly\n");
     exit(0);
     while (true)
-        hm_yield();
+        (void)sched_yield();
 }

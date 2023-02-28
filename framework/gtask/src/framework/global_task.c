@@ -46,6 +46,7 @@
 #include "tee_load_lib.h"
 #include <ipclib_hal.h>
 #include <sys/usrsyscall_irq.h>
+#include <sched.h>
 
 #define GT_MSG_REV_SIZE 512
 
@@ -537,7 +538,7 @@ static int32_t gtask_main_init(void)
     if (ta_framework_init()) {
         tloge("ta_framework init failed\n");
         while (1)
-            hm_yield();
+            (void)sched_yield();
     }
     init_internal_tasks();
 #ifdef __aarch64__
