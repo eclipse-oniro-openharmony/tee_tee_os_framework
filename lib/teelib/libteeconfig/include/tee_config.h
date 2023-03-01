@@ -69,11 +69,6 @@ struct drv_frame_info {
     const char *drv_name;
     uint64_t sid;
     uint32_t pid;
-    /*
-     * tbac job type, checked in every ipc call from TA to drv
-     * now we only handle taskmap2tak
-     */
-    uint64_t job_type;
     size_t stack_size;
     size_t heap_size;
     struct tee_uuid uuid;
@@ -88,6 +83,5 @@ const struct ta_permission *get_product_ta_permission_config(void);
 
 uint32_t get_drv_frame_nums(void);
 struct drv_frame_info *get_drv_frame_infos(void);
-int32_t get_tbac_info_by_name(const char *name, uint64_t *sid, uint64_t *job_type);
 
 #endif
