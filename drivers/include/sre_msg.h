@@ -23,13 +23,13 @@ extern "C" {
  * legacy msg function, not support anymore
  * should use "__SRE_MsgQSend" instead
  */
-uint32_t ipc_msg_qsend(uint32_t uw_msg_handle, uint32_t uw_msg_id, uint32_t uw_dst_pid, uint8_t uc_dst_qid);
+uint32_t ipc_msg_qsend(uint32_t uw_msg_id, uint32_t uw_dst_pid, uint8_t uc_dst_qid);
 
 /*
  * legacy msg function, not support anymore
  * should use "__SRE_MsgQRecv" instead
  */
-uint32_t ipc_msg_q_recv(uint32_t *puw_msg_handle, uint32_t *puw_msg_id, uint32_t *puw_sender_pid, uint8_t uc_recv_qid,
+uint32_t ipc_msg_q_recv(uint32_t *puw_msg_id, uint32_t *puw_sender_pid, uint8_t uc_recv_qid,
                         uint32_t uw_timeout);
 
 /*

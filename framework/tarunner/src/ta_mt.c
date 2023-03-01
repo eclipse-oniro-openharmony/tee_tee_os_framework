@@ -177,7 +177,7 @@ static int32_t create_ipc_channel(const char *task_name, cref_t *ch[])
 
 static void call_task_entry(const struct thread_info *pti)
 {
-    int32_t rc = set_thread_priority(thread_get_cref(), pti->args.priority);
+    int32_t rc = set_priority(pti->args.priority);
     if (rc != 0)
         tloge("set priority failed: %x\n", rc);
 
@@ -229,7 +229,7 @@ static void *tee_task_entry_thread(void *data)
         goto err_save_hdl;
 
     /* send tid reply to gtask, just pass msg id as 0 */
-    if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, pti->tid, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK) {
+    if (ipc_msg_qsend(pti->tid, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK) {
         tloge("Msg send failed\n");
         goto err_reply_tid;
     }
@@ -244,7 +244,7 @@ err_save_hdl:
 
 err_get_tid:
     /* reply error for TaskCreate */
-    if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
+    if (ipc_msg_qsend(CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
         tloge("Msg send 1 failed\n");
     release_thread_info(pti);
     return NULL;
@@ -346,7 +346,7 @@ static void handle_thread_create(ta_entry_type entry, const struct create_thread
     ret = ta_create_thread(entry, NON_INIT_BUILD, info, name, append_args);
     if (ret != TEE_SUCCESS) {
         tloge("ta create thread error!!! %x\n", ret);
-        if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
+        if (ipc_msg_qsend(CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
             tloge("Msg send failed\n");
     }
 }
@@ -361,7 +361,7 @@ static void handle_thread_remove(uint32_t tid, uint32_t session_id)
     close_ta2ta_session(tid);
     close_session_exception(session_id);
     /* send reply to gtask, just pass msg id as 0, ret as TEE_SUCCESS for success */
-    if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, (uint32_t)ret, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
+    if (ipc_msg_qsend((uint32_t)ret, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
         tloge("Msg send failed\n");
 }
 
@@ -428,7 +428,7 @@ void tee_task_entry_mt(ta_entry_type ta_entry, int32_t priority, const char *nam
     if (ret != TEE_SUCCESS) {
         tloge("ta create thread error!!! %x\n", ret);
         /* notify gtask that thread creating fails */
-        if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
+        if (ipc_msg_qsend(CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != SRE_OK)
             tloge("Msg send failed\n");
         return;
     }

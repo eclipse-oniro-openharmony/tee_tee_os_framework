@@ -27,7 +27,7 @@ int32_t ipc_create_channel_native(const char *name, cref_t *pch);
 uint32_t ipc_send_msg_sync(uint32_t msg_id, uint32_t dest_pid, const void *msgp, uint32_t size);
 
 /* send uw_msg_id use uc_dst_qid channel */
-uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, taskid_t uw_dst_pid, uint8_t uc_dst_qid);
+uint32_t ipc_msg_qsend(uint32_t uw_msg_id, taskid_t uw_dst_pid, uint8_t uc_dst_qid);
 
 /* send msgp use 0 channel */
 uint32_t ipc_msg_snd(uint32_t uw_msg_id, uint32_t uw_dst_pid, const void *msgp, uint16_t size);
@@ -38,7 +38,7 @@ uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp,
 
 uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, taskid_t *puw_sender_pid);
 
-uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, taskid_t *puw_sender_pid,
+uint32_t ipc_msg_q_recv(uint32_t *puw_msg_id, taskid_t *puw_sender_pid,
                         uint8_t uc_recv_qid, uint32_t uw_timeout);
 
 #endif
