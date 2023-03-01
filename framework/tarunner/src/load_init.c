@@ -16,7 +16,6 @@
 #include <string.h>
 #include <errno.h>
 #include <tee_log.h>
-#include <sys/kuapi.h>
 #include <sys/hm_priorities.h>
 #include <tee_secfile_load_agent.h>
 

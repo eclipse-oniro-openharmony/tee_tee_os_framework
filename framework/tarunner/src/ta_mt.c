@@ -16,7 +16,6 @@
 #include <dlfcn.h>
 #include <pthread.h>
 #include <hm_thread.h>
-#include <mm_kcall.h> /* hm get mycnode */
 #include <ipclib.h>
 #include <cs.h>
 #include <unistd.h>

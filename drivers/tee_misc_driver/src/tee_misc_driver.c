@@ -16,7 +16,6 @@
 #include "drv_sharedmem.h"
 #include "drv_param_type.h"
 #include "drv_param_ops.h"
-#include <plat_features.h>
 #include "tee_driver_module.h"
 #include "boot_sharedmem.h"
 #include "tee_oemkey_driver.h"
