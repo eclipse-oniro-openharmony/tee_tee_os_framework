@@ -9,7 +9,6 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include <msg_ops.h>
 #include "ta_framework.h"
 #include "tee_log.h"
 #include "tee_init.h"

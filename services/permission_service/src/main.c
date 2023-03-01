@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <sys/mman.h>
 #include <tee_log.h>
-#include <msg_ops.h>
 #include <ipclib.h>             /* for channel */
 #include <hm_thread.h>
 #include <sys/hm_priorities.h>  /* for `HM_PRIO_TEE_*' */
@@ -216,7 +215,7 @@ static TEE_Result perm_thread_file_create_ipc_channel(cref_t *msghdl, cref_t *na
 
 static void perm_thread_remove_channel(const char *name, cref_t channel)
 {
-    msg_pid_t pid;
+    taskid_t pid;
 
     pid = get_self_taskid();
     if (pid == SRE_PID_ERR) {

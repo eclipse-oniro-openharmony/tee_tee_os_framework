@@ -11,7 +11,6 @@
  */
 
 #include <stddef.h>
-#include <msg_ops.h>
 #include <tee_config.h>
 #include "securec.h"
 #include "ta_framework.h"

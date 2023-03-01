@@ -12,7 +12,6 @@
 
 #include <stddef.h>
 #include <sys/teecall.h>
-#include <msg_ops.h>
 #include <mem_ops.h>
 #include <tee_sharemem.h>
 #include <dyn_conf_dispatch_inf.h>

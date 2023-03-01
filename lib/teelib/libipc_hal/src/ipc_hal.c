@@ -26,7 +26,7 @@ struct msg_st {
 struct msgsent_st {
     cref_t dst_ch;
     uint32_t uw_msg_id;
-    msg_pid_t uw_dst_pid;
+    taskid_t uw_dst_pid;
     const void *msgp;
     uint16_t size;
 } __attribute__((__packed__));
@@ -38,7 +38,7 @@ struct msgrcv_st {
     uint32_t *puw_msg_id;
     void *msgp;
     uint16_t size;
-    msg_pid_t *puw_sender_pid;
+    taskid_t *puw_sender_pid;
 } __attribute__((__packed__));
 
 struct notify_st {
@@ -50,8 +50,8 @@ struct reply_msg_st {
     uint32_t status;
 } __attribute__((__packed__));
 
-static msg_pid_t g_handle = SRE_PID_ERR;
-static int32_t global_handle_check(msg_pid_t *puw_dst_pid)
+static taskid_t g_handle = SRE_PID_ERR;
+static int32_t global_handle_check(taskid_t *puw_dst_pid)
 {
     if (puw_dst_pid == NULL)
         return -EINVAL;
@@ -144,7 +144,7 @@ static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_
     return 0;
 }
 
-uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp, uint16_t size)
+uint32_t ipc_msg_snd(uint32_t uw_msg_id, taskid_t uw_dst_pid, const void *msgp, uint16_t size)
 {
     cref_t dst_ch;
     struct msgsent_st msgsent;
@@ -174,7 +174,7 @@ uint32_t ipc_msg_snd(uint32_t uw_msg_id, msg_pid_t uw_dst_pid, const void *msgp,
     return ipc_msgsnd_core(msgsent, 0);
 }
 
-uint32_t ipc_send_msg_sync(uint32_t msg_id, msg_pid_t dest_pid, const void *msgp, uint32_t size)
+uint32_t ipc_send_msg_sync(uint32_t msg_id, taskid_t dest_pid, const void *msgp, uint32_t size)
 {
     cref_t dst_ch;
     struct msgsent_st msgsent;
@@ -200,13 +200,13 @@ uint32_t ipc_send_msg_sync(uint32_t msg_id, msg_pid_t dest_pid, const void *msgp
 
 uint32_t ipc_msg_rcv(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size)
 {
-    msg_pid_t sender_pid;
+    taskid_t sender_pid;
     return ipc_msg_rcv_a(uw_timeout, puw_msg_id, msgp, size, &sender_pid);
 }
 
-uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t wait_sender)
+uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, taskid_t wait_sender)
 {
-    msg_pid_t sender = SRE_PID_ERR;
+    taskid_t sender = SRE_PID_ERR;
     uint32_t ret     = 0;
 
     while (wait_sender != sender) {
@@ -275,7 +275,7 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
     return 0;
 }
 
-uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, msg_pid_t *puw_sender_pid)
+uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size, taskid_t *puw_sender_pid)
 {
     cref_t ch;
     uint32_t ret;
@@ -305,7 +305,7 @@ uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, ui
     return ret;
 }
 
-uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t uw_dst_pid, uint8_t uc_dst_qid)
+uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, taskid_t uw_dst_pid, uint8_t uc_dst_qid)
 {
     cref_t dst_ch;
     struct msgsent_st msgsent;
@@ -334,7 +334,7 @@ uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, msg_pid_t
     return ipc_msgsnd_core(msgsent, uw_msg_handle);
 }
 
-uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, msg_pid_t *puw_sender_pid,
+uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, taskid_t *puw_sender_pid,
                         uint8_t uc_recv_qid, uint32_t uw_timeout)
 {
     cref_t ch;

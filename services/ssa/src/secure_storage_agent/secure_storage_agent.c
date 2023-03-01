@@ -12,7 +12,6 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <mem_ops.h>
-#include <msg_ops.h>
 #include "ta_framework.h"
 #include "tee_log.h"
 #include "tee_init.h"

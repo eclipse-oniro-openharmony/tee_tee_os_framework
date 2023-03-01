@@ -15,7 +15,6 @@
 #include <pthread.h>
 #include <securec.h>
 #include <inttypes.h>
-#include <msg_ops.h>
 #include <tee_defines.h>
 #include <tee_init.h>
 #include <tee_property_inner.h>
@@ -200,7 +199,7 @@ static void msg_rcv_elf(uint32_t timeout, uint32_t *msg_id, void *msgp, uint32_t
  * consider add while(1) or TEE_Panic(must success)
  * when ipc_msg_snd return is NOT SRE_OK.
  */
-static void msg_send_elf(uint32_t msg_id, msg_pid_t dst_pid, const void *msgp, uint32_t size)
+static void msg_send_elf(uint32_t msg_id, taskid_t dst_pid, const void *msgp, uint32_t size)
 {
     uint32_t ret;
 

@@ -23,7 +23,6 @@
 #include <sys/fileio.h>
 #include <sys/hm_priorities.h> // for `HM_PRIO_TEE_*`
 #include <hmdrv.h>
-#include <msg_ops.h>
 #include <spawn_init.h>
 #include <get_elf_info.h>
 #include <target_type.h>
@@ -156,7 +155,7 @@ static int gt_create_thread(pid_t *pid)
     struct global_to_service_thread_msg entry_msg = { { { 0 } } };
     uint32_t msg_id;
     uint32_t msghandle;
-    msg_pid_t sender_pid;
+    taskid_t sender_pid;
     uint32_t rc;
     uint64_t stack_size;
 
@@ -212,7 +211,7 @@ static int gt_recycle_thread(uint32_t task_id, uint32_t session_id)
 {
     struct global_to_service_thread_msg entry_msg = { { { 0 } } };
     uint32_t msg_id;
-    msg_pid_t pid = 0;
+    taskid_t pid = 0;
     uint32_t rc;
 
     if (get_cur_service() == NULL || get_cur_service()->service_thread == 0)
@@ -419,7 +418,7 @@ static int32_t get_elf_path(int32_t bin_type, char *loader_path, uint32_t loader
     return 0;
 }
 
-static void wait_srvc_thread_message(struct msg_recv_param *msg_recv_p, uint32_t *task_id, msg_pid_t service_thread)
+static void wait_srvc_thread_message(struct msg_recv_param *msg_recv_p, uint32_t *task_id, taskid_t service_thread)
 {
     /*
      * wait at Q#1 for ACK message from "worker_thread" created by
@@ -442,7 +441,7 @@ static void wait_srvc_thread_message(struct msg_recv_param *msg_recv_p, uint32_t
 static int32_t create_service_thread(const char *elf_path, char **argv, char **env,
                                      const spawn_uuid_t *uuid, uint32_t *puw_pid)
 {
-    msg_pid_t service_thread = 0;
+    taskid_t service_thread = 0;
     uint32_t task_id         = 0;
     struct msg_recv_param msg_recv_p;
     int32_t ret;

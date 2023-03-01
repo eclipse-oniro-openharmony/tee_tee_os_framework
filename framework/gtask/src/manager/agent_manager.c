@@ -12,7 +12,6 @@
 
 #include <stddef.h>
 #include <mem_ops.h>
-#include <msg_ops.h>
 #include <dlist.h>
 #include "tee_log.h"
 #include "tee_mem_mgmt_api.h"

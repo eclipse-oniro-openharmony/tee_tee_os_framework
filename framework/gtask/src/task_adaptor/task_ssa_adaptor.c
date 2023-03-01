@@ -12,7 +12,6 @@
 
 #include "task_ssa_adaptor.h"
 #include <securec.h>
-#include "msg_ops.h"
 #include "task_adaptor.h"
 #include "tee_task_config.h"
 #include "tee_ss_agent_api.h"
