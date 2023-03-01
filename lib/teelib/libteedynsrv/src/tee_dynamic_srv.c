@@ -14,7 +14,6 @@
 #include <sys/mman.h>
 #include <mem_ops.h>
 #include <spawn_ext.h>
-#include <sys/usrsyscall_ext.h>
 #include <sys/time.h>
 #include "timer_export.h"
 #include <pthread.h>

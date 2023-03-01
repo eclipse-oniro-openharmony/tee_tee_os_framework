@@ -11,10 +11,8 @@
  */
 #include "tee_log.h"
 #include <stdio.h>
-#include <io.h>
 #include <stdarg.h>
 #include <securec.h>
-#include <sys/usrsyscall.h>
 #include "tee_mem_mgmt_api.h"
 #include "tee_init.h"
 #include "timer_export.h"

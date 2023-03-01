@@ -9,7 +9,6 @@
  * PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-#include <procmgr.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>

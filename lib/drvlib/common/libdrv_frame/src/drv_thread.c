@@ -14,7 +14,6 @@
 #include <errno.h>
 #include <ipclib.h>
 #include <tee_log.h>
-#include <sys/usrsyscall_ext.h>
 #include <mem_page_ops.h>
 #include <tee_drv_internal.h>
 #include <ipclib_hal.h>

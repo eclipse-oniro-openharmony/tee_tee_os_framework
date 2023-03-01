@@ -17,7 +17,6 @@
 #include "tee_defines.h"
 #include "ipclib.h"
 #include "tee_log.h"
-#include "sys/usrsyscall_ext.h"
 #include "se_service.h"
 #include "tee_ext_se_api.h"
 #include "tee_inner_uuid.h"

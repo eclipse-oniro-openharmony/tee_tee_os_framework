@@ -17,7 +17,6 @@
 #include <sys/hm_priorities.h>  /* for `HM_PRIO_TEE_*' */
 #include <pthread.h>            /* for thread */
 #include <tamgr_ext.h>
-#include <procmgr.h>
 #include <stdlib.h>
 #include <ac_dynamic.h>
 #include <tee_defines.h>
@@ -36,6 +35,8 @@
 #include "perm_srv_ta_config.h"
 #include "perm_srv_ta_ctrl.h"
 #include <ipclib_hal.h>
+#include <spawn_ext.h>
+#include <securec.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG

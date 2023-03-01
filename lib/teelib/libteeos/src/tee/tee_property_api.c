@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-#include <sys/usrsyscall.h>
 #include <securec.h>
 #include <dlist.h>
 #include <ipclib.h>

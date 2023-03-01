@@ -19,7 +19,6 @@
 #include "crypto_manager.h"
 #include "soft_common_api.h"
 #include "crypto_mgr_syscall.h"
-#include "sys/usrsyscall_ext.h"
 #include "tee_drv_client.h"
 
 struct ctx_handle_t *alloc_ctx_handle(uint32_t alg_type, uint32_t engine)

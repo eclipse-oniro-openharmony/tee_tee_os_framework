@@ -11,7 +11,6 @@
  */
 
 #include "tee_task.h"
-#include "procmgr.h"
 #include "spawn_ext.h"
 #include <sys/wait.h>
 #include <signal.h>

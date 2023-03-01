@@ -11,7 +11,6 @@
  */
 #include <sys_timer.h>
 #include <tee_time_adapt.h>
-#include <sys/usrsyscall_ext.h>
 
 timer_event *tee_time_event_create(sw_timer_event_handler handler, int32_t timer_class, void *priv_data)
 {

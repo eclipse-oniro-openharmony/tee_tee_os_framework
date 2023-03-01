@@ -14,7 +14,6 @@
 #include <inttypes.h>
 #include <sys/hm_priorities.h>
 #include <sys/kuapi.h>
-#include <sys/usrsyscall_ext.h>
 #include <ipclib.h>
 #include <irqmgr.h>
 #include <spawn_init.h>

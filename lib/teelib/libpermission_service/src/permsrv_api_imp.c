@@ -15,8 +15,6 @@
 #include "ta_framework.h"
 #include "tee_log.h"
 #include "securec.h"
-#include <sys/usrsyscall_new.h>
-#include <sys/syscalls.h>
 #include "ipclib.h"
 #include "permsrv_api_imp.h"
 #include "tee_internal_task_pub.h"

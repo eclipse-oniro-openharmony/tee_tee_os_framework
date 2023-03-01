@@ -56,5 +56,8 @@ struct timer_event_private_data {
     uint32_t expire_time;
 };
 
-struct timer_ops_t *get_time_ops(void);
+static inline struct timer_ops_t *get_time_ops(void)
+{
+    return NULL;
+}
 #endif

@@ -13,8 +13,9 @@
 #ifndef GTASK_INIT_H
 #define GTASK_INIT_H
 
+#include <stdint.h>
 #include <stdbool.h>
-#include <sys/usrsyscall.h>
+#include <stddef.h>
 
 #define SHELL_ENVP_LEN 2
 #define MAX_RESPAWNS 3

@@ -13,7 +13,7 @@
 #ifndef TARUNNER_MAIN_H
 #define TARUNNER_MAIN_H
 
-#include <sys/usrsyscall_ext.h>
+#include <spawn_ext.h>
 
 /* __tcb_cref and __sysmgrch are from assembly, cannot remove extern */
 extern cref_t __tcb_cref;

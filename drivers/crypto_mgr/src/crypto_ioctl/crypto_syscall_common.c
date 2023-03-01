@@ -15,7 +15,6 @@
 #include "drv_param_ops.h"
 #include <sys/mman.h>
 #include "crypto_mgr_syscall.h"
-#include <sys/usrsyscall_ext.h>
 
 bool check_hal_params_is_invalid(const struct drv_data *drv, unsigned long args, uint32_t args_len,
     const struct crypto_drv_ops_t *ops)
