@@ -103,16 +103,15 @@ tees: setup_links libs $(drivers) $(frameworks) $(service)
 $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
-package: $(STAGE_DIR)/bootfs.img
-	rm -rf $(BUILD_TOOLS)/ramfsmkimg_host/ramfsmkimg
+package: $(product_apps)
 	cp -a $(PLAT_AUTOCONF_FILE) $(TOPDIR)/../tee_os_kernel/include/generated/.
-	cp -a $(PLAT_CFG_DIR)/plat_cfg.c $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
-	cp -a $(PLAT_CFG_DIR)/plat_cfg.h $(TOPDIR)/../tee_os_kernel/build/tools/generate_img
 	@mkdir $(FILEMGR_BOOT_ELF)
-	cp -a $(STAGE_DIR)/bootfs.img $(FILEMGR_BOOT_ELF)/.
+	@mkdir $(FILEMGR_BOOT_ELF)/check_syms_y
+	@mkdir $(FILEMGR_BOOT_ELF)/apps
+	cp -a $(check-syms-y) $(FILEMGR_BOOT_ELF)/check_syms_y
+	cp -a $(product_apps) $(FILEMGR_BOOT_ELF)/apps
 
-PHONY += $(STAGE_DIR)/bootfs.img
-PHONY += link_libs link_arm_libs link_aarch64_libs
+PHONY += link_libs link_arm_libs link_aarch64_libs $(product_apps)
 link_libs: link_arm_libs link_aarch64_libs
 
 link_arm_libs: libs

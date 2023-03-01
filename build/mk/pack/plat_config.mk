@@ -109,3 +109,9 @@ product_apps += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 check-syms-y += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 endif
 
+product_apps += $(OUTPUTDIR)/arm/apps/teesmcmgr.elf
+
+ifneq ($(CONFIG_NOT_CHECK_SYM_A32), y)
+check-syms-y += $(filter-out $(OUTPUTDIR)/arm/drivers/%.elf $(OUTPUTDIR)/aarch64/drivers/%.elf, $(product_apps))
+endif
+
