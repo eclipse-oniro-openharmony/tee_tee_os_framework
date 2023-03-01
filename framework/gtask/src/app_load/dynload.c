@@ -15,7 +15,6 @@
 #include <string.h>
 #include <securec.h>
 #include <sys/fileio.h>
-#include <sys/hm_fcntl.h>
 #include <ta_framework.h>
 #include <tee_common.h>
 #include <tee_log.h>

@@ -13,7 +13,6 @@
 #include <autoconf.h>
 #include <stdio.h>
 #include <ipclib.h>
-#include <mmgrapi.h>
 #include <hmdrv.h>
 #include <sys/fileio.h>
 #include <timer.h>

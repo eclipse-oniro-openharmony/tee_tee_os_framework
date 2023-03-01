@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <sys/hm_priorities.h>
-#include <sys/kuapi.h>
 #include <ipclib.h>
 #include <irqmgr.h>
 #include <spawn_init.h>
