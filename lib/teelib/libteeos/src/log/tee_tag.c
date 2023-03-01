@@ -16,6 +16,7 @@
 #include "tee_mem_mgmt_api.h"
 #include "tee_init.h"
 #include <ipclib.h>
+#include <unistd.h>
 
 #define DRIVER_TAG_MAX_LEN      25
 #define DRIVER_TAGS_NUM         40
@@ -175,8 +176,8 @@ uint32_t get_log_thread_tag(void)
 {
     if (g_use_tid_flag) {
         tid_t tid;
-        int32_t ret = hm_gettid(&tid);
-        if (ret != 0)
+        tid = gettid();
+        if (tid < 0)
             return 0;
         return tid;
     } else {

@@ -199,7 +199,7 @@ static void *tee_task_entry_thread(void *data)
     const char *name = pti->args.name;
 
     /* get self tid */
-    tid = thread_self();
+    tid = gettid();
     if (tid < 0) {
         tloge("thread self failed: ret=%d\n", tid);
         goto err_get_tid;
