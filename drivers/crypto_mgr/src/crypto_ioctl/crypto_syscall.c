@@ -16,7 +16,6 @@
 #include <inttypes.h>
 #include <cs.h>
 #include <sys/fileio.h>
-#include <sys/usrsyscall_ext.h>
 #include <fcntl.h>
 #include <dlfcn.h>
 #include <tee_log.h>

@@ -13,7 +13,6 @@
 #include "task_dynamic_adaptor.h"
 #include <securec.h>
 #include <ipclib.h>
-#include <sys/usrsyscall_ext.h>
 #include <tee_service_public.h>
 #include "task_adaptor.h"
 #include "gtask_inner.h"

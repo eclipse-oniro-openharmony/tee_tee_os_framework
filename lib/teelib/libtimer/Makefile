@@ -28,7 +28,6 @@ endif
 # Source files required to build the target
 ifeq ($(CONFIG_OFF_DRV_TIMER), y)
 libtimer_c_files := $(wildcard src/*.c)
-libtimer_c_files += $(wildcard src/*/*.c)
 endif
 
 include $(BUILD_LIB)/lib-common.mk

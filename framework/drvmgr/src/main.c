@@ -15,7 +15,6 @@
 #include <stdlib.h>
 #include <sys/hm_priorities.h>
 #include <sys/fileio.h>
-#include <sys/usrsyscall_ext.h>
 #include <ac.h>
 #include <ipclib.h>
 #include <libdrv_frame.h>

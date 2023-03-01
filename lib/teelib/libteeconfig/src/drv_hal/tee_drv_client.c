@@ -19,7 +19,6 @@
 #include <tee_log.h>
 #include <hmdrv.h>
 #include <ipclib.h>
-#include <sys/usrsyscall_ext.h>
 #include "tee_drv_internal.h"
 #include "tee_drv_errno.h"
 

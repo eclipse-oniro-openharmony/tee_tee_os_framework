@@ -13,7 +13,6 @@
 #include <pthread.h>
 #include <sys_timer.h>
 #include <tee_log.h>
-#include <sys/usrsyscall_ext.h>
 #include <tamgr_ext.h>
 #include <timemgr_api.h>
 #include <generic_timer.h>
@@ -127,7 +126,7 @@ static int64_t timer_value_sub(const timeval_t *time_val_1, const timeval_t *tim
 
 static int32_t get_timeout_value(int32_t status, timer_event *t_event)
 {
-    int32_t mills = HM_NO_TIMEOUT;
+    int32_t mills = OS_WAIT_FOREVER;
     timeval_t current_time;
     timeval_t expire_time;
     timeval_t diff_time;
@@ -141,7 +140,7 @@ static int32_t get_timeout_value(int32_t status, timer_event *t_event)
             mills = 1;
         } else {
             mills = diff_time.tval.sec * MS_PER_SECONDS + diff_time.tval.nsec / NS_PER_MSEC;
-            mills = mills > 0 ? mills : HM_NO_TIMEOUT;
+            mills = mills > 0 ? mills : OS_WAIT_FOREVER;
         }
     }
     return mills;
@@ -178,7 +177,7 @@ static int32_t get_time_event_status(uint32_t state)
 static void *classic_thread(void *arg)
 {
     int32_t ret;
-    uint32_t mills = HM_NO_TIMEOUT;
+    uint32_t mills = OS_WAIT_FOREVER;
     int32_t status = CREATE_TIMER;
     timer_event *t_event = (timer_event*)arg;
     struct timer_event_msg req_msg = {{{ 0 }}};
@@ -198,7 +197,7 @@ static void *classic_thread(void *arg)
     while (status != DESTORY_TIMER) {
         ret = ipc_msg_receive(t_event->timer_channel, &req_msg, sizeof(req_msg), msg_hdl, NULL, mills);
         if (ret != TMR_OK && ret != E_EX_TIMER_TIMEOUT) {
-            (void)hmapi_delete_obj(msg_hdl);
+            (void)ipc_msg_delete_hdl(msg_hdl);
             return NULL;
         }
 
@@ -220,7 +219,7 @@ static void *classic_thread(void *arg)
             classic_thread_reply(status, t_event, msg_hdl);
     }
 
-    ret = hmapi_delete_obj(msg_hdl);
+    ret = ipc_msg_delete_hdl(msg_hdl);
     if (ret != TMR_OK)
         tloge("delete obj failed!\n");
     return NULL;
@@ -331,7 +330,7 @@ static uint32_t tee_classic_timer_event_start(timer_event *t_event, timeval_t *t
     if (t_event->pid == (int32_t)get_self_taskid())
         return TMR_OK;
 
-    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
+    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), OS_WAIT_FOREVER);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
         tloge("start timer event fail\n");
@@ -364,7 +363,7 @@ static uint32_t tee_classic_timer_event_stop(timer_event *t_event)
     if (t_event->pid == (int32_t)get_self_taskid())
         return TMR_OK;
 
-    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
+    ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg), &rsp_msg, sizeof(rsp_msg), OS_WAIT_FOREVER);
     if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS) {
         ret = TMR_ERR;
         tloge("stop timer event fail\n");
@@ -399,7 +398,7 @@ static uint32_t tee_classic_timer_event_destroy(timer_event *t_event)
         ret = TMR_OK;
     } else {
         ret = ipc_msg_call(t_event->timer_channel, &req_msg, sizeof(req_msg),
-                          &rsp_msg, sizeof(rsp_msg), HM_NO_TIMEOUT);
+                          &rsp_msg, sizeof(rsp_msg), OS_WAIT_FOREVER);
         if (ret != TMR_OK || rsp_msg.hdr.send.msg_id != TIMER_OPS_SUCCESS)
             tloge("stop timer event fail\n");
     }

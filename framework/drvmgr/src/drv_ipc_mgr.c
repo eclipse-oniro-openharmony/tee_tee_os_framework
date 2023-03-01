@@ -11,7 +11,6 @@
  */
 #include "drv_ipc_mgr.h"
 #include <securec.h>
-#include <sys/usrsyscall_ext.h>
 #include <tee_log.h>
 #include <hmdrv.h>
 #include <tee_drv_internal.h>

@@ -18,7 +18,6 @@
 #include <spawn_ext.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <sys/usrsyscall_ext.h>
 #include <sys/fileio.h>
 #include <sys/hm_priorities.h>
 #include <tee_log.h>

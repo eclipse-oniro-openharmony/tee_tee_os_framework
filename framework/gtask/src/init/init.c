@@ -15,12 +15,11 @@
 #include <autoconf.h>
 #include <securec.h>
 
-#include <sys/syscalls.h>
 #include <sys/hm_types.h>
-#include <procmgr.h>
 #include <spawn_ext.h>
 #include <stdlib.h>
 #include <ipclib.h>
+#include <mem_ops.h>
 #include <tee_config.h>
 
 #include <cs.h>
@@ -156,13 +155,13 @@ static int run_drv_frame_tasks(void)
     const uint32_t nr = get_drv_frame_nums();
     int ret;
     char *envp[] = { NULL };
-    char path[HM_PATHNAME_MAX] = { 0 };
+    char path[PATHNAME_MAX] = { 0 };
     struct proc_mem_info info = { 0 };
 
     for (i = 0; i < nr; i++) {
         if (!drv_info_list[i].is_elf)
             continue;
-        if (snprintf_s(path, HM_PATHNAME_MAX, HM_PATHNAME_MAX - 1, "/%s.elf", drv_info_list[i].drv_name) < 0) {
+        if (snprintf_s(path, PATHNAME_MAX, PATHNAME_MAX - 1, "/%s.elf", drv_info_list[i].drv_name) < 0) {
             tloge("pack path failed\n");
             return -1;
         }
@@ -172,7 +171,7 @@ static int run_drv_frame_tasks(void)
         struct tee_uuid *drv_uuid = &drv_info_list[i].uuid;
         ret = run_init_task(path, envp, &info, drv_uuid, &drv_info_list[i].pid);
 
-        (void)memset_s(path, HM_PATHNAME_MAX, 0, HM_PATHNAME_MAX);
+        (void)memset_s(path, PATHNAME_MAX, 0, PATHNAME_MAX);
         if (ret != 0)
             tloge("run drv: %s failed\n", drv_info_list[i].drv_name);
     }

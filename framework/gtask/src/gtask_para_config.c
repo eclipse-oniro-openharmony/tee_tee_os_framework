@@ -11,7 +11,6 @@
  */
 
 #include "gtask_para_config.h"
-#include "tee_para.h"
 
 uint32_t get_hashfile_max_size(void)
 {

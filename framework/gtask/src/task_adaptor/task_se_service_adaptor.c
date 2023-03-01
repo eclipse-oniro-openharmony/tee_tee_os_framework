@@ -16,7 +16,6 @@
 #include "ta_framework.h"
 #include "gtask_inner.h"
 #include "ipclib.h"
-#include "sys/usrsyscall_ext.h"
 #include "task_adaptor.h"
 #include <ipclib_hal.h>
 

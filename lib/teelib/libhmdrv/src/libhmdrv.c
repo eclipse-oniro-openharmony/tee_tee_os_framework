@@ -15,8 +15,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <securec.h>
-#include <sys/syscalls.h>
-#include <sys/usrsyscall.h>
 #include <ipclib.h>
 #include <unistd.h>
 #include <tee_log.h>

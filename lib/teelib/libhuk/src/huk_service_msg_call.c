@@ -12,7 +12,6 @@
 #include <errno.h>
 #include <ipclib.h>
 #include <securec.h>
-#include <sys/usrsyscall_ext.h>
 #include <pthread.h>
 #include <tee_log.h>
 #include <tee_ext_api.h>

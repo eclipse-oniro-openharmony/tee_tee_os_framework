@@ -11,7 +11,6 @@
  */
 #include "tee_load_lib.h"
 #include <stdlib.h>
-#include <procmgr.h>
 #include <sys/fileio.h>
 #include <sys/hm_fcntl.h>
 #include "securec.h"

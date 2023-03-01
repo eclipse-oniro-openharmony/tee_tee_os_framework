@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "tee_service_public.h"
-#include <sys/usrsyscall_ext.h>
 #include <securec.h>
 #include "ta_framework.h"
 #include "tee_log.h"
@@ -41,7 +40,7 @@ void tee_common_ipc_proc_cmd(const char *task_name,
         return;
     }
 
-    ret = ipc_msg_call(ch, &req_msg, sizeof(req_msg), rsp_msg, sizeof(*rsp_msg), HM_NO_TIMEOUT);
+    ret = ipc_msg_call(ch, &req_msg, sizeof(req_msg), rsp_msg, sizeof(*rsp_msg), OS_WAIT_FOREVER);
     if (ret != 0)
         tloge("msg send to 0x%llx failed: 0x%x\n", ch, ret);
 

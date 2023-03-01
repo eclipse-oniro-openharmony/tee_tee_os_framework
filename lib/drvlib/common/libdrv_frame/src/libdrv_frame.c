@@ -17,7 +17,6 @@
 #include <mmgrapi.h>
 #include <ipclib.h>
 #include <sys/kuapi.h>
-#include <sys/usrsyscall_ext.h>
 #include <sys/fileio.h>
 #include <timer.h>
 #include <irqmgr.h>

@@ -31,7 +31,6 @@
 #include "session_manager.h"
 #include "mem_manager.h"
 #include "agent_manager.h"
-#include "procmgr.h"
 #include <signal.h>
 #include "ipclib.h"
 #include "tee_task.h"

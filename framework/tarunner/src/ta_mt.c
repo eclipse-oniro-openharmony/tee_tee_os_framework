@@ -15,8 +15,6 @@
 #include <inttypes.h>
 #include <dlfcn.h>
 #include <pthread.h>
-#include <sys/usrsyscall_ext.h>
-#include <pthread_ext.h>
 #include <hm_thread.h>
 #include <mm_kcall.h> /* hm get mycnode */
 #include <ipclib.h>
