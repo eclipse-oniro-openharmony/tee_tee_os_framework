@@ -22,6 +22,7 @@
 #include "drv_param_type.h"
 #include <plat_features.h>
 #include "boot_sharedmem.h"
+#include <unistd.h>
 
 static uintptr_t g_sharedmem_vaddr = 0;
 static uint32_t g_sharedmem_size = 0;
@@ -140,8 +141,8 @@ int32_t get_caller_uuid(spawn_uuid_t *uuid)
     if (uuid == NULL)
         return TLV_SHAREDMEM_BAD_PARAMETERS;
 
-    int32_t ret = hm_gettid(&tid);
-    if (ret != 0) {
+    tid = gettid();
+    if (tid < 0) {
         tloge("failed to get tid\n");
         return TLV_SHAREDMEM_ERROR_GENERIC;
     }

@@ -34,7 +34,6 @@ struct syscaller_info {
 
 int32_t drv_thread_init(const char *name, uint32_t stack_size, uint32_t thread_limit);
 int32_t multi_drv_framwork_init(uint32_t thread_limit, uint32_t stack_size, cref_t channel);
-int32_t hm_gettid(tid_t *tid);
 void update_callerpid_by_tid(tid_t tid, pid_t caller_pid);
 int32_t get_callerpid_by_tid(tid_t tid, pid_t *caller_pid);
 void update_caller_info_by_tid(tid_t tid, pid_t caller_pid, uint64_t job_handler);

@@ -23,6 +23,7 @@
 #include "drv_thread.h"
 #include "drv_operations.h"
 #include "tee_drv_entry.h"
+#include <unistd.h>
 
 static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_req_msg_t *msg,
                               const struct hmcap_message_info *info)
@@ -167,8 +168,8 @@ static int32_t driver_syscall(const struct hm_drv_req_msg_t *msg, const struct h
         return -1;
     }
 
-    ret = hm_gettid(&tid);
-    if (ret != 0) {
+    tid = gettid();
+    if (tid < 0) {
         tloge("failed to get tid\n");
         return -1;
     }
