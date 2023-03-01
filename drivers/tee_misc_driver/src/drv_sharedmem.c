@@ -20,7 +20,6 @@
 #endif
 #include "drv_module.h"
 #include "drv_param_type.h"
-#include <plat_features.h>
 #include "boot_sharedmem.h"
 #include <unistd.h>
 

@@ -14,7 +14,6 @@
 #include <errno.h>
 #include <dlfcn.h>
 #include <unistd.h>
-#include <mmgrapi.h>
 #include <ipclib.h>
 #include <sys/kuapi.h>
 #include <sys/fileio.h>
