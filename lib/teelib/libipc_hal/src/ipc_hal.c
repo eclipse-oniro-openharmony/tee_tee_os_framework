@@ -18,6 +18,11 @@
 #define GLOBAL_HANDLE     0 /* defined in tee_init.h */
 #define GLOBAL_SERVICE_NAME "TEEGlobalTask"
 
+#define SRE_IPC_ERR            0xbeaf
+#define SRE_IPC_TIMEOUT_ERR    0xbeb0
+#define SRE_IPC_NO_CHANNEL_ERR 0xdeadbeaf
+#define SRE_PID_ERR            0xFFFFFFFFUL
+
 struct msg_st {
     uint32_t msg_id;
     char payload[MSG_MAX_LEN];
@@ -80,17 +85,12 @@ int32_t ipc_create_channel_native(const char *name, cref_t *pch)
     return ipc_create_single_channel(name, pch, false, true, false);
 }
 
-static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_handle)
+static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent)
 {
     int32_t rc    = 0;
     struct msg_st hm_msg = { 0 };
 
     hm_msg.msg_id = msgsent.uw_msg_id;
-
-    if (uw_msg_handle != 0) {
-        msg_handle_t *msg_handle = (msg_handle_t *)(&hm_msg.payload[0]);
-        *msg_handle              = uw_msg_handle;
-    }
 
     if (msgsent.msgp != NULL) {
         if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msgsent.msgp, msgsent.size) != 0)
@@ -100,10 +100,6 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_h
     if (msgsent.size <= NOTIFY_MAX_LEN) {
         struct notify_st *hm_ntf_p = (struct notify_st *)&hm_msg;
         rc                         = ipc_msg_notification(msgsent.dst_ch, hm_ntf_p, sizeof(struct notify_st));
-        if (rc != 0) {
-            tloge("Notify failed to 0x%x size = %u\n", msgsent.uw_dst_pid, msgsent.size);
-            rc = E_EX_AGAIN; /* notify failed, force to do ipc_msg_call */
-        }
     } else {
         tloge("msg_call failed, not support big msg in ipc_msg_snd/ipc_msg_qsnd, size = %u\n", msgsent.size);
         return SRE_IPC_ERR;
@@ -117,18 +113,13 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent, msg_handle_t uw_msg_h
     return 0;
 }
 
-static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent, msg_handle_t uw_msg_handle)
+static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent)
 {
     int32_t rc;
     struct msg_st hm_msg     = { 0 };
     struct reply_msg_st rmsg = { 0 };
 
     hm_msg.msg_id = msgsent.uw_msg_id;
-
-    if (uw_msg_handle != 0) {
-        msg_handle_t *msg_handle = (msg_handle_t *)(&hm_msg.payload[0]);
-        *msg_handle              = uw_msg_handle;
-    }
 
     if (msgsent.msgp != NULL) {
         if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msgsent.msgp, msgsent.size) != 0)
@@ -171,7 +162,7 @@ uint32_t ipc_msg_snd(uint32_t uw_msg_id, taskid_t uw_dst_pid, const void *msgp, 
     msgsent.uw_dst_pid = uw_dst_pid;
     msgsent.msgp       = msgp;
     msgsent.size       = size;
-    return ipc_msgsnd_core(msgsent, 0);
+    return ipc_msgsnd_core(msgsent);
 }
 
 uint32_t ipc_send_msg_sync(uint32_t msg_id, taskid_t dest_pid, const void *msgp, uint32_t size)
@@ -195,7 +186,7 @@ uint32_t ipc_send_msg_sync(uint32_t msg_id, taskid_t dest_pid, const void *msgp,
     msgsent.uw_dst_pid = dest_pid;
     msgsent.msgp       = msgp;
     msgsent.size       = size;
-    return ipc_msgsnd_core_sync(msgsent, 0);
+    return ipc_msgsnd_core_sync(msgsent);
 }
 
 uint32_t ipc_msg_rcv(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, uint16_t size)
@@ -223,7 +214,7 @@ uint32_t ipc_msg_rcv_safe(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp,
     return ret;
 }
 
-static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_handle)
+static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv)
 {
     struct msg_st msg;
     struct reply_msg_st rmsg;
@@ -255,11 +246,8 @@ static uint32_t ipc_msgrcv_core(struct msgrcv_st msgrcv, msg_handle_t *puw_msg_h
             return SRE_IPC_ERR;
         }
     }
-    if (puw_msg_handle != NULL)
-        *puw_msg_handle = 0;
 
     if (info.msg_type == MSG_TYPE_CALL) {
-        rmsg.status = HM_IPC_OK; /* unused field */
         int32_t rc  = ipc_msg_reply(msg_hdl, &rmsg, sizeof(rmsg));
         if (rc < 0) {
             tloge("reply msg error %d\n", rc);
@@ -297,7 +285,7 @@ uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, ui
     msgrcv.msgp           = msgp;
     msgrcv.size           = size;
     msgrcv.puw_sender_pid = puw_sender_pid;
-    ret = ipc_msgrcv_core(msgrcv, NULL);
+    ret = ipc_msgrcv_core(msgrcv);
 
     tlogd("MsgRcv OK: 0x%x <- 0x%x msgid = 0x%x, size = %u\n", get_self_taskid(), puw_sender_pid ? *puw_sender_pid : 0,
              puw_msg_id ? *puw_msg_id : DEAD_MSG_ID, (uint32_t)size);
@@ -305,7 +293,7 @@ uint32_t ipc_msg_rcv_a(uint32_t uw_timeout, uint32_t *puw_msg_id, void *msgp, ui
     return ret;
 }
 
-uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, taskid_t uw_dst_pid, uint8_t uc_dst_qid)
+uint32_t ipc_msg_qsend(uint32_t uw_msg_id, taskid_t uw_dst_pid, uint8_t uc_dst_qid)
 {
     cref_t dst_ch;
     struct msgsent_st msgsent;
@@ -331,10 +319,10 @@ uint32_t ipc_msg_qsend(msg_handle_t uw_msg_handle, uint32_t uw_msg_id, taskid_t 
     msgsent.uw_dst_pid = uw_dst_pid;
     msgsent.msgp       = NULL;
     msgsent.size       = 0;
-    return ipc_msgsnd_core(msgsent, uw_msg_handle);
+    return ipc_msgsnd_core(msgsent);
 }
 
-uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, taskid_t *puw_sender_pid,
+uint32_t ipc_msg_q_recv(uint32_t *puw_msg_id, taskid_t *puw_sender_pid,
                         uint8_t uc_recv_qid, uint32_t uw_timeout)
 {
     cref_t ch;
@@ -357,7 +345,7 @@ uint32_t ipc_msg_q_recv(msg_handle_t *puw_msg_handle, uint32_t *puw_msg_id, task
     msgrcv.msgp           = NULL;
     msgrcv.size           = 0;
     msgrcv.puw_sender_pid = puw_sender_pid;
-    ret = ipc_msgrcv_core(msgrcv, puw_msg_handle);
+    ret = ipc_msgrcv_core(msgrcv);
 
     tlogd("MsgQRcv OK: 0x%x <- 0x%x msgid = 0x%x\n", get_self_taskid(), puw_sender_pid ? *puw_sender_pid : 0,
              puw_msg_id ? *puw_msg_id : DEAD_MSG_ID);
