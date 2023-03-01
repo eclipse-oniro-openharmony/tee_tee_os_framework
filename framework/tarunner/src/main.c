@@ -18,7 +18,6 @@
 #include <sys/mman.h>
 #include <sys/hm_priorities.h> /* for `HM_PRIO_TEE_*` */
 #include <sys/fileio.h>
-#include <procmgr.h>
 #include <unistd.h>
 #include <ipclib.h>
 #include <cs.h>
@@ -197,12 +196,7 @@ static int32_t init2(void *libtee, const char *task_name, uint32_t target_type)
 static int32_t init3(const struct env_param *param)
 {
     int32_t ret;
-
-    ret = hm_setuid(param->uid);
-    if (ret != 0) {
-        tloge("failed to setuid: %d\n", ret);
-        return -1;
-    }
+    (void)param;
 
     /* Reject taldr cap, and grant TA cap */
     if (delete_rref_and_grant() != 0) {
