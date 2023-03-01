@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <drv_thread.h>
 #include <tee_log.h>
+#include <unistd.h>
 #include <tee_sharemem_ops.h>
 
 static int32_t get_drv_caller_taskid(uint32_t *taskid)
@@ -21,13 +22,13 @@ static int32_t get_drv_caller_taskid(uint32_t *taskid)
     tid_t tid;
     pid_t caller_pid;
 
-    int32_t ret = hm_gettid(&tid);
-    if (ret != 0) {
+    tid = gettid();
+    if (tid < 0) {
         tloge("get tid failed\n");
         return -1;
     }
 
-    ret = get_callerpid_by_tid(tid, &caller_pid);
+    int32_t ret = get_callerpid_by_tid(tid, &caller_pid);
     if (ret != 0) {
         tloge("get tid:0x%x caller pid failed\n", tid);
         return -1;

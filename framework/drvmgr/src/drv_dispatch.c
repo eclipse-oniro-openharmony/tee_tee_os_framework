@@ -36,6 +36,7 @@
 #include "base_drv_node.h"
 #include <ipclib_hal.h>
 #include <spawn_ext.h>
+#include <unistd.h>
 
 static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_req_msg_t *msg,
                               const struct hmcap_message_info *info)
@@ -760,9 +761,8 @@ static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const s
         return -1;
     }
 
-    tid_t tid;
-    ret = hm_gettid(&tid);
-    if (ret != 0) {
+    tid_t tid = gettid();
+    if (tid < 0) {
         tloge("failed to get tid\n");
         return -1;
     }
