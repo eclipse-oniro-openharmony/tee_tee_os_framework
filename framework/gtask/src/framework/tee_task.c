@@ -153,7 +153,6 @@ static int gt_create_thread(pid_t *pid)
 {
     struct global_to_service_thread_msg entry_msg = { { { 0 } } };
     uint32_t msg_id;
-    uint32_t msghandle;
     taskid_t sender_pid;
     uint32_t rc;
     uint64_t stack_size;
@@ -182,7 +181,7 @@ static int gt_create_thread(pid_t *pid)
     // drop messages from other sources.
     timer_event *event = start_timeout();
     do {
-        if (ipc_msg_q_recv(&msghandle, &msg_id, &sender_pid, 1, TASK_TIMEOUT) != 0) {
+        if (ipc_msg_q_recv(&msg_id, &sender_pid, 1, TASK_TIMEOUT) != 0) {
             stop_timeout(event);
             tloge("CALL_TA_CRTEATE_THREAD msg QRecv failed\n");
             return NORMAL_FAIL_RET;
@@ -233,7 +232,7 @@ static int gt_recycle_thread(uint32_t task_id, uint32_t session_id)
      */
     timer_event *event = start_timeout();
     do {
-        if (ipc_msg_q_recv(NULL, &msg_id, &pid, 1, TASK_TIMEOUT) != 0) {
+        if (ipc_msg_q_recv(&msg_id, &pid, 1, TASK_TIMEOUT) != 0) {
             stop_timeout(event);
             tloge("recycle msg QRecv failed\n");
             return NORMAL_FAIL_RET;
@@ -425,7 +424,7 @@ static void wait_srvc_thread_message(struct msg_recv_param *msg_recv_p, uint32_t
      */
     timer_event *event = start_timeout();
     do {
-        if (ipc_msg_q_recv(&(msg_recv_p->msghandle), &(msg_recv_p->msg_id), task_id, 1, TASK_TIMEOUT) != 0)
+        if (ipc_msg_q_recv(&(msg_recv_p->msg_id), task_id, 1, TASK_TIMEOUT) != 0)
             tloge("gtask get tid failed\n");
         if (taskid_to_pid(*task_id) == get_timer_pid() && msg_recv_p->msg_id == TIMER_CALLBACK_TIMEOUT) {
             tloge("spawn multi-session TA timeout\n");

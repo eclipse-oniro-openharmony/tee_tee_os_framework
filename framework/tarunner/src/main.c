@@ -268,7 +268,7 @@ static void send_load_fail_msg(uint32_t target_type)
          * uwMsgID is 0 means we don't care about the context
          * ucDstID is 1 means the recevier's channel ID is 1
          */
-        if (ipc_msg_qsend(DEFAULT_MSG_HANDLE, CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != 0)
+        if (ipc_msg_qsend(CREATE_THREAD_FAIL, GLOBAL_HANDLE, SECOND_CHANNEL) != 0)
             tloge("failed to reply GTASK for MT ta\n");
     }
 }
