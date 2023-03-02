@@ -28,16 +28,8 @@ teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libper
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
 drvlib := libdrv_frame
 
-libs: libtee_shared libdrv_shared ramfsmkimg_host $(syslib)
+libs: libtee_shared libdrv_shared $(syslib)
 	@echo "libsok"
-
-libhwsecurec_host:
-	@echo "building libhwsecurec_host"
-	$(VER) $(MAKE) -C $(THIRDPARTY_LIBS)/$@ -f $(PREBUILD_HEADER)/.config -f Makefile all
-
-ramfsmkimg_host: libhwsecurec_host
-	@echo "building ramfsmkimg_host"
-	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ -f $(PREBUILD_HEADER)/.config -f Makefile all
 
 $(teelib):
 	@echo "building teelibs=$@ target"
@@ -113,6 +105,3 @@ endif
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -fsigned-char -fno-strict-aliasing \
                    -pipe -fno-common
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
-
-# bootfs image
-include $(BUILD_PACK)/bootfs.mk
