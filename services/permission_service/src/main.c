@@ -15,7 +15,6 @@
 #include <ipclib.h>             /* for channel */
 #include <sys/hm_priorities.h>  /* for `HM_PRIO_TEE_*' */
 #include <pthread.h>            /* for thread */
-#include <tamgr_ext.h>
 #include <stdlib.h>
 #include <ac_dynamic.h>
 #include <tee_defines.h>
