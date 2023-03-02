@@ -19,25 +19,17 @@ include $(BUILD_CONFIG)/arch_config.mk
 libtee_shared_a32: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine $(crypto_lib) libteedynsrv
 libtee_shared: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libswcrypto_engine $(crypto_lib) libteedynsrv
 
-libdrv_shared_a32: libteeconfig_a32
-libdrv_shared: libteeconfig
+libdrv_shared_a32: #libteeconfig_a32
+libdrv_shared: #libteeconfig
 
 teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem \
 	libssa libhuk libteedynsrv libopenssl libse libipc_hal
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder
-drvlib := libdrv_frame
+drvlib := #libdrv_frame
 
-libs: libtee_shared libdrv_shared ramfsmkimg_host $(syslib)
+libs: libtee_shared $(syslib) #libdrv_shared
 	@echo "libsok"
-
-libhwsecurec_host:
-	@echo "building libhwsecurec_host"
-	$(VER) $(MAKE) -C $(THIRDPARTY_LIBS)/$@ -f $(PREBUILD_HEADER)/.config -f Makefile all
-
-ramfsmkimg_host: libhwsecurec_host
-	@echo "building ramfsmkimg_host"
-	$(VER) $(MAKE) -C $(BUILD_TOOLS)/$@ -f $(PREBUILD_HEADER)/.config -f Makefile all
 
 $(teelib):
 	@echo "building teelibs=$@ target"
@@ -66,7 +58,7 @@ libdrv_shared: $(drvlib)
 
 # compile drivers rules
 
-frameworks := gtask teesmcmgr drvmgr tarunner
+frameworks := gtask teesmcmgr tarunner #drvmgr
 service := huk_service
 
 ifdef CONFIG_SSA_64BIT
@@ -77,10 +69,10 @@ ifdef CONFIG_PERMSRV_64BIT
 service += permission_service
 endif
 
-drivers := crypto_mgr
+#drivers := crypto_mgr
 
 ifdef CONFIG_TEE_MISC_DRIVER_64BIT
-drivers += tee_misc_driver
+#drivers += tee_misc_driver
 endif
 
 $(drivers):
@@ -113,6 +105,3 @@ endif
 GENERAL_OPTIONS := -Wdate-time -Wfloat-equal -Wshadow -fsigned-char -fno-strict-aliasing \
                    -pipe -fno-common
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
-
-# bootfs image
-include $(BUILD_PACK)/bootfs.mk
