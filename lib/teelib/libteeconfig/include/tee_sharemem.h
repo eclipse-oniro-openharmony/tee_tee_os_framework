@@ -15,6 +15,7 @@
 #include <stdint.h>
 
 #define MAX_TAG_LEN 32
+#define CHIP_TYPE_LEN_MAX 32
 
 /*
  * when clear_flag is true, sharedmem buffer will be memset to zero

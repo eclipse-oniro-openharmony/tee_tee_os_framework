@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <securec.h>
-#include <api/tee_common.h>
 #include "tee_log.h"
 #include "boot_sharedmem.h"
 #include "tee_secfile_load_agent.h"
