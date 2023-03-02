@@ -23,7 +23,6 @@
 #include "tee_bitmap.h"
 #include "tee_init.h"
 #include "securec.h"
-#include "tamgr_ext.h"
 #include "tee_ta2ta.h"
 #include "tee_secfile_load_agent.h"
 #include "tee_inner_uuid.h"

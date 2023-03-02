@@ -16,7 +16,6 @@
 #include "ta_lib_img_unpack.h"
 #include "ta_framework.h"
 #include "mem_ops.h"
-#include "tamgr_ext.h"
 #include "tee_crypto_api.h"
 #include "dyn_conf_dispatch_inf.h"
 #include "tee_elf_verify_inner.h"

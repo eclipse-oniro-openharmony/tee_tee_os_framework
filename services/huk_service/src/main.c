@@ -16,7 +16,6 @@
 #include <tee_defines.h>
 #include <ac_dynamic.h>
 #include <ipclib.h>
-#include <tamgr_ext.h>
 #include <stdlib.h>
 #include <ta_framework.h>
 #include <chip_info.h>

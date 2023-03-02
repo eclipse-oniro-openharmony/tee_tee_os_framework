@@ -21,7 +21,6 @@
 #include <sys/fileio.h>
 #include <sys/hm_priorities.h>
 #include <tee_log.h>
-#include <tamgr_ext.h>
 #include <drv_thread.h>
 #include <spawn_init.h>
 #include <get_elf_info.h>

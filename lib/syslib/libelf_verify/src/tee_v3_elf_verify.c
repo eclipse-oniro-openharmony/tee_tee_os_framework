@@ -15,7 +15,6 @@
 #include "tee_perm_img.h"
 #include "mem_ops.h"
 #include "ta_load_config.h"
-#include "tamgr_ext.h"
 #include "ta_lib_img_unpack.h"
 #include "target_type.h"
 #include "ta_verify_key.h"

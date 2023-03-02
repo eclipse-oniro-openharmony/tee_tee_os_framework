@@ -13,7 +13,6 @@
 #include <sys/fileio.h>
 #include "tee_elf_verify.h"
 #include "tee_mem_mgmt_api.h"
-#include "tamgr_ext.h"
 #include "tee_inner_uuid.h"
 #include "tee_log.h"
 #include "tee_crypto_api.h"
