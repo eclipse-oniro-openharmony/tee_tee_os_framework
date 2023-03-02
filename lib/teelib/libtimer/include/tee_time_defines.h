@@ -15,7 +15,7 @@
 #include <dlist.h>
 #include <limits.h>
 #include <tee_defines.h>
-#include <hm_msg_type.h>
+#include <ipclib.h>
 
 #define TIMER_PATH    "hmtimer"
 

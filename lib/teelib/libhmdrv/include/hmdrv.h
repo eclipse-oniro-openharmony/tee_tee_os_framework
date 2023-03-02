@@ -13,7 +13,7 @@
 #ifndef LIBHMDRV_HMDRV_H
 #define LIBHMDRV_HMDRV_H
 
-#include <hm_msg_type.h>
+#include <ipclib.h>
 #include <sys/hm_types.h>
 #define MAX_ARGS 16
 

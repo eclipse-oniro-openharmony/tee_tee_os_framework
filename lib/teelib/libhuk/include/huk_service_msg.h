@@ -13,7 +13,7 @@
 #define HUK_SERVICE_HUK_SERVICE_MSG_H
 
 #include <tee_defines.h>
-#include <hm_msg_type.h>
+#include <ipclib.h>
 
 #define HUK_PATH "hukservice"
 

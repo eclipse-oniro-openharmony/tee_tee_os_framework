@@ -15,7 +15,6 @@
 #include <stdint.h>
 #include <dlist.h>
 #include <tee_defines.h>
-#include <api/tee_common.h>
 
 #define MAX_IMAGE_LEN 0x800000
 /* tag(DYN_CONF_TAG_LEN) | type(DYN_CONF_TYPE_LEN) | len(DYN_CONF_LEN_LEN) | value */
