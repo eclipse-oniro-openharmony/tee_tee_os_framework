@@ -15,7 +15,6 @@
 #include <inttypes.h>
 #include <dlfcn.h>
 #include <pthread.h>
-#include <hm_thread.h>
 #include <ipclib.h>
 #include <cs.h>
 #include <unistd.h>

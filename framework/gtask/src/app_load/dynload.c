@@ -22,7 +22,6 @@
 #include <ac.h>
 #include <ac_map.h>
 #include <tee_config.h>
-#include <sid2uid.h>
 #include "uuid2path.h"
 #include "tee_load_lib.h"
 #include "gtask_core.h" /* for find_service */
@@ -31,6 +30,7 @@
 #include "session_manager.h"
 #include "tee_app_load_srv.h"
 #include "spawn_init.h"
+#include <spawn_ext.h>
 
 #define ELFCLASS32     1
 #define ELFCLASS64     2
@@ -225,21 +225,6 @@ static bool is_ta_lib(const TEE_UUID *uuid)
     return true;
 }
 
-static int get_drv_uid(const char *name, uid_t *uid)
-{
-    const struct drv_frame_info *drv_info_list = get_drv_frame_infos();
-    const uint32_t nr = get_drv_frame_nums();
-    uint32_t i;
-
-    for (i = 0; i < nr; i++) {
-        if (!strncmp(name, drv_info_list[i].drv_name, strlen(drv_info_list[i].drv_name))) {
-            get_uid_by_sid(drv_info_list[i].sid, uid);
-            return 0;
-        }
-    }
-    return -1;
-}
-
 #define MAX_RECORD_LIST_NUM 10
 static struct dlist_node g_client_list;
 static uint32_t g_client_num = 0;
@@ -378,7 +363,6 @@ static int record_client_name(const char *file_buffer, uint32_t file_size,
 int dynamic_load_lib_elf(const load_elf_func_params *param, const struct service_struct *service,
                          const TEE_UUID *uuid, uint64_t memid, tee_img_type_t type)
 {
-    uid_t uid = 0xffffffff;
     const TEE_UUID crypto_uuid = CRYPTOMGR;
     bool is_talib = is_ta_lib(uuid);
     bool check_value = (param == NULL || uuid == NULL || service == NULL);
@@ -421,22 +405,5 @@ int dynamic_load_lib_elf(const load_elf_func_params *param, const struct service
     if (type == IMG_TYPE_CRYPTO_DRV)
         (void)memcpy_s((void *)uuid, sizeof(*uuid), &crypto_uuid, sizeof(*uuid));
 
-    if (is_talib || type == IMG_TYPE_CRYPTO_DRV)
-        ret = ac_uuid_to_uid_sync(uuid, &uid);
-    else
-        ret = get_drv_uid(param->lib_name, &uid);
-
-    check_value = (ret != 0 || uid == TA_DEFAULT_UID);
-    if (check_value == true) {
-        tloge("get uid ret = %d, this ta is not allowed to load lib\n", ret);
-        (void)unlink(param->fname);
-        return LOAD_FAIL;
-    }
-
-    if (set_uid(param->fname, uid) != 0) {
-        tloge("set_label failed\n");
-        (void)unlink(param->fname);
-        return LOAD_FAIL;
-    }
     return LOAD_SUCC;
 }
