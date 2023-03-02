@@ -13,7 +13,6 @@
 #include <pthread.h>
 #include <sys_timer.h>
 #include <tee_log.h>
-#include <tamgr_ext.h>
 #include <timemgr_api.h>
 #include <generic_timer.h>
 #include <tee_time_adapt.h>
