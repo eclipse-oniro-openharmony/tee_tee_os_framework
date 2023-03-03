@@ -13,7 +13,6 @@
 #define LIBDRV_SHARED_SRC_TEE_DRV_ENTRY_H
 
 #include <stdio.h>
-#include <posix_types.h>
 #include <spawn_init.h>
 #include <tee_driver_module.h>
 #include <ipclib.h>

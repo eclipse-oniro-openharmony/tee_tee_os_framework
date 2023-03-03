@@ -19,7 +19,6 @@
 #include <tee_common.h>
 #include <tee_log.h>
 #include <tee_config.h>
-#include <ac.h>
 #include <ac_map.h>
 #include <tee_config.h>
 #include "uuid2path.h"
@@ -348,7 +347,6 @@ static int record_client_name(const char *file_buffer, uint32_t file_size,
     if (file_buffer == NULL || fname == NULL)
         return LOAD_FAIL;
 
-    set_uid(fname, AC_UID_IDX_TEE_DYN_CLIENT);
     if (varify_elf_arch(file_buffer, file_size, &ta_64bit) != TEE_SUCCESS) {
         tloge("varify elf architecture failed\n");
         return LOAD_FAIL;

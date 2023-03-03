@@ -21,7 +21,6 @@
 #include <mem_ops.h>
 #include <tee_config.h>
 
-#include <cs.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <tee_log.h>

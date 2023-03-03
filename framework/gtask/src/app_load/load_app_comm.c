@@ -13,7 +13,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-#include <cs.h>
+#include <securec.h>
 #include <sys/mman.h>
 #include "gtask_inner.h"
 #include "service_manager.h"

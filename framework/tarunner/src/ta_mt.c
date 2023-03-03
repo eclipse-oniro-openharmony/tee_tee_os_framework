@@ -16,7 +16,6 @@
 #include <dlfcn.h>
 #include <pthread.h>
 #include <ipclib.h>
-#include <cs.h>
 #include <unistd.h>
 #include <ta_framework.h>
 #include <tee_log.h>

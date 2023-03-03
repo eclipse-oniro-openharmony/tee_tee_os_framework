@@ -13,7 +13,6 @@
 #define DRVMGR_SRC_DRV_DISPATCH_H
 
 #include <tee_defines.h>
-#include <cs.h>
 
 struct tee_drv_param {
     uint64_t args;

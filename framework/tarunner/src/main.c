@@ -20,7 +20,7 @@
 #include <sys/fileio.h>
 #include <unistd.h>
 #include <ipclib.h>
-#include <cs.h>
+#include <securec.h>
 #include <teecall_cap.h>
 #include <tee_log.h>
 #include <ta_framework.h>
@@ -111,9 +111,9 @@ static void load_info_print(const char *task_name, const struct env_param *param
 
     /* Always print, but not an error */
 #ifdef __aarch64__
-    std_log("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d\n", type, task_name, getpid());
+    tlogi("TRACE", "*", __LINE__, "Start dynlink 64bit %s %s: pid=%d\n", type, task_name, getpid());
 #else
-    std_log("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d\n", type, task_name, getpid());
+    tlogi("TRACE", "*", __LINE__, "Start dynlink %s %s: pid=%d\n", type, task_name, getpid());
 #endif
 }
 

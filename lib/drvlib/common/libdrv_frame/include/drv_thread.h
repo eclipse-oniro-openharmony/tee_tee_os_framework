@@ -12,8 +12,6 @@
 #ifndef PLATDRV_DRV_THREAD_H
 #define PLATDRV_DRV_THREAD_H
 #include <alltypes.h>
-#include <spawn_ext.h>
-#include <cs.h>
 #include <hmdrv.h>
 
 #define DRV_CALL_OK      0

@@ -195,12 +195,12 @@ static void *classic_thread(void *arg)
     t_event->pid = (int32_t)get_self_taskid();
     while (status != DESTORY_TIMER) {
         ret = ipc_msg_receive(t_event->timer_channel, &req_msg, sizeof(req_msg), msg_hdl, NULL, mills);
-        if (ret != TMR_OK && ret != E_EX_TIMER_TIMEOUT) {
+        if (ret != TMR_OK && ret != E_TIMER_TIMEOUT) {
             (void)ipc_msg_delete_hdl(msg_hdl);
             return NULL;
         }
 
-        if (ret == E_EX_TIMER_TIMEOUT && t_event->state == TIMER_STATE_ACTIVE && t_event->handler != NULL) {
+        if (ret == E_TIMER_TIMEOUT && t_event->state == TIMER_STATE_ACTIVE && t_event->handler != NULL) {
             t_event->state = TIMER_STATE_EXECUTING;
             t_event->handler(t_event->data);
             status = get_time_event_status(t_event->state);

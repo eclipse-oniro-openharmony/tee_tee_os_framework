@@ -12,7 +12,6 @@
 #ifndef LIBDRV_FRAME_DRV_FRAME_H
 #define LIBDRV_FRAME_DRV_FRAME_H
 
-#include <cs.h>
 #include <stdbool.h>
 
 typedef int32_t (*drv_frame_init_t)(void);
