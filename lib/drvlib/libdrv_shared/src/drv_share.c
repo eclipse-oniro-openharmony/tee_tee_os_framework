@@ -11,7 +11,7 @@
  */
 
 #include <mem_ops.h>
-#include <sys/hm_types.h>
+#include <stdint.h>
 #include "drv_io_share.h"
 #include "drv_addr_share.h"
 #include "iomgr_ext.h"

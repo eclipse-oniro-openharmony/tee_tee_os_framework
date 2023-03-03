@@ -14,7 +14,6 @@
 #include <inttypes.h>
 #include <pthread.h>
 #include <securec.h>
-#include <sys/hm_types.h>
 #include <ipclib.h>
 #include <tee_log.h>
 #include <ta_framework.h>

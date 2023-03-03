@@ -14,7 +14,6 @@
 
 #include <stdint.h>
 #include <pthread.h>
-#include <sys/hm_types.h>
 #include "drv_dispatch.h"
 #include "drvcall_dyn_conf_mgr.h"
 
