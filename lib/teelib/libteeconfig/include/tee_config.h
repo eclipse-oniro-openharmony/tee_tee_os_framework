@@ -79,7 +79,6 @@ uint32_t get_product_service_property_num(void);
 const struct ta_property *get_product_service_property_config(void);
 
 uint32_t get_product_dynamic_ta_num(void);
-const struct ta_permission *get_product_ta_permission_config(void);
 
 uint32_t get_drv_frame_nums(void);
 struct drv_frame_info *get_drv_frame_infos(void);

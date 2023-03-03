@@ -14,7 +14,6 @@
 #define __TA_FRAMWORK_H_
 
 #include <mem_page_ops.h>
-#include <uidgid.h>
 
 #include "tee_defines.h"
 #include "tee_common.h"
@@ -124,11 +123,6 @@ struct ta_property {
     uint32_t other_len; // non-std propery buff len
 };
 
-struct ta_permission {
-    TEE_UUID uuid;
-    uid_t uid;
-    uint64_t permissions;
-};
 
 // data for async call
 struct notify_context_timer {
