@@ -31,22 +31,6 @@ int32_t set_env_for_task(const struct env_param *param, const struct tee_uuid *u
         return -1;
     }
 
-    uid_t uid;
-    ret = ac_uuid_to_uid_sync(uuid, &uid);
-    if (ret != 0) {
-        if (ret != -ENOENT) {
-            tloge("set drv cred failed\n");
-            return -1;
-        }
-        uid = TA_DEFAULT_UID;
-    }
-
-    ret = snprintf_s(env->uid, sizeof(env->uid), sizeof(env->uid) - 1, "uid=%u", uid);
-    if (ret < 0) {
-        tloge("set uid:%u failed:0x%x\n", uid, ret);
-        return -1;
-    }
-
     ret = snprintf_s(env->target_type, sizeof(env->target_type), sizeof(env->target_type) - 1,
         "target_type=%u", param->target_type);
     if (ret < 0) {
