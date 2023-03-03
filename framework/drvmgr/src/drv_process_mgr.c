@@ -54,7 +54,7 @@ int32_t create_spawn_sync_msg_info(void)
     }
 
     g_drv_spawn_sync_msghdl = ipc_msg_create_hdl();
-    if (is_ref_err(g_drv_spawn_sync_msghdl)) {
+    if (!check_ref_valid(g_drv_spawn_sync_msghdl)) {
         tloge("create spawn sync hdl fail\n");
         return -1;
     }
@@ -568,7 +568,7 @@ void release_driver(struct task_node *node)
         node->drv_task.register_policy = false;
     }
 
-    if (is_ref_valid(node->drv_task.channel)) {
+    if (check_ref_valid(node->drv_task.channel)) {
         if (ipc_release_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
             tloge("release drv:%s channel:0x%llx failed\n",
                 node->tlv.drv_conf->mani.service_name, node->drv_task.channel);

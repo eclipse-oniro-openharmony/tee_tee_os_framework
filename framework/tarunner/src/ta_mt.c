@@ -206,7 +206,7 @@ static void *tee_task_entry_thread(void *data)
 
     /* prepare message handle */
     msghdl = ipc_msg_create_hdl();
-    if (is_ref_err(msghdl)) {
+    if (!check_ref_valid(msghdl)) {
         tloge("Cannot create msg_hdl\n");
         goto err_get_tid;
     }

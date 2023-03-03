@@ -18,6 +18,7 @@
 #include <sys/usrsyscall_smc.h>
 #include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
+#include <ipclib.h>
 
 static rref_t g_gtask_channel_hdlr;
 static bool   g_is_gtask_alive;
@@ -47,8 +48,8 @@ static void acquire_hdlr(void)
     init_teesmc_hdlr();
     init_sysctrl_hdlr();
     set_gtask_channel_hdlr(acquire_gtask_channel());
-    if (is_ref_err(g_gtask_channel_hdlr))
-        panic("acquire gtask channel returns %x\n", ref_to_err(g_gtask_channel_hdlr));
+    if (!check_ref_valid(g_gtask_channel_hdlr))
+        panic("acquire gtask channel failed\n");
     set_is_gtask_alive(true);
 }
 
