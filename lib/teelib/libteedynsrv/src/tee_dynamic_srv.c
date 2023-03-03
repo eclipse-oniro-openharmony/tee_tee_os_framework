@@ -147,7 +147,7 @@ static void tee_srv_dispatch(const char *task_name, const struct srv_dispatch_t 
     struct src_msginfo info = { 0 };
 
     msghdl = ipc_msg_create_hdl();
-    if (is_ref_err(msghdl)) {
+    if (!check_ref_valid(msghdl)) {
         tloge("create msg hdl failed\n");
         return;
     }

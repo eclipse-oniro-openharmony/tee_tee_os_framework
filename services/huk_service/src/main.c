@@ -98,7 +98,7 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
 
     (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
     cref_t msghdl = ipc_get_my_msghdl();
-    if (is_ref_err(msghdl) != 0) {
+    if (!check_ref_valid(msghdl)) {
         tloge("Cannot create msg hdl, %x\n", (int)msghdl);
         exit((int)msghdl);
     }

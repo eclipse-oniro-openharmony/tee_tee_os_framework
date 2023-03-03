@@ -187,7 +187,7 @@ static TEE_Result perm_thread_file_create_ipc_channel(cref_t *msghdl, cref_t *na
     TEE_Result ret;
 
     *msghdl = ipc_msg_create_hdl();
-    if (is_ref_err(*msghdl)) {
+    if (!check_ref_valid(*msghdl)) {
         tloge("thread file operation function create msg_hdl failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -322,7 +322,7 @@ static TEE_Result perm_thread_async_file_create_ipc_channel(cref_t *msghdl, cref
                                                             cref_t *file_channel)
 {
     *msghdl = ipc_msg_create_hdl();
-    if (is_ref_err(*msghdl)) {
+    if (!check_ref_valid(*msghdl)) {
         tloge("thread async file operation function create msg_hdl failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -556,7 +556,7 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
         clear_ta_bss();
 
     msghdl = ipc_get_my_msghdl();
-    if (is_ref_err(msghdl)) {
+    if (!check_ref_valid(msghdl)) {
         tloge("Cannot create msg_hdl, %x\n", (int32_t)msghdl);
         exit((int32_t)msghdl);
     }

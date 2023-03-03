@@ -87,7 +87,7 @@ static int32_t get_drv_cref(cref_t *drv_cref)
     cref_t drv = 0;
 
     int32_t err = ipc_get_ch_from_path("drvmgr", &drv);
-    if (!(err != EOK || is_ref_err(drv))) {
+    if (!(err != EOK || !check_ref_valid(drv))) {
         info("found tee driver server channel\n");
         *drv_cref = drv;
         return 0;
@@ -106,7 +106,7 @@ static void tee_smc_notify_drv(enum cap_teesmc_ret ret)
     hm_msg_header msg     = { { 0 } };
     int32_t err;
 
-    if (is_ref_err(drv)) {
+    if (!check_ref_valid(drv)) {
         err = get_drv_cref(&drv);
         if (err != 0) {
             error("can NOT found driver channel, error %d\n", err);

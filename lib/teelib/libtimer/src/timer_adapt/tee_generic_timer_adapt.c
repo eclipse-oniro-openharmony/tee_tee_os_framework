@@ -59,8 +59,8 @@ static uint32_t tee_sleep(msec)
     cref_t timer_ref;
 
     timer_ref = create_timer();
-    if (is_ref_err(timer_ref))
-        return ref_to_err(timer_ref);
+    if (!check_ref_valid(timer_ref))
+        return TMR_ERR;
 
     ret = timer_start(timer_ref, msec);
     delete_timer(timer_ref);
@@ -187,7 +187,7 @@ static void *classic_thread(void *arg)
     }
 
     cref_t msg_hdl = ipc_msg_create_hdl();
-    if (is_ref_err(msg_hdl)) {
+    if (!check_ref_valid(msg_hdl)) {
         tloge("create message failed\n");
         return NULL;
     }
@@ -271,7 +271,7 @@ static timer_event *tee_classic_timer_event_create(sw_timer_event_handler handle
     }
 
     timer_channel = hm_msg_channel_create();
-    if (is_ref_err(timer_channel) != TMR_OK) {
+    if (!check_ref_valid(timer_channel)) {
         TEE_Free(t_event);
         return NULL;
     }
