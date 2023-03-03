@@ -22,6 +22,7 @@
 #include "load_init.h"
 #include <ipclib_hal.h>
 #include <spawn_ext.h>
+#include <sys/priorities.h>
 
 #ifndef THREAD_STACK_SIZE
 #define THREAD_STACK_SIZE (4096 * 4 * 5)

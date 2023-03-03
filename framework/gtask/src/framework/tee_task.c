@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <elf.h>
 #include <sys/fileio.h>
-#include <sys/hm_priorities.h> // for `HM_PRIO_TEE_*`
+#include <sys/priorities.h> // for `HM_PRIO_TEE_*`
 #include <hmdrv.h>
 #include <spawn_init.h>
 #include <get_elf_info.h>
@@ -350,7 +350,7 @@ static int32_t get_mem_total_size(uint64_t *size)
     return 0;
 }
 
-static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[], char *env[],
+static int tee_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[], char *env[],
                               const spawn_uuid_t *uuid)
 {
     pid_t pid;
@@ -376,9 +376,6 @@ static int hm_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[],
 
     if (spawnattr_setheap(&spawnattr, heap_size) != 0)
         return -1;
-
-    if (ta_vsroot_flush(&((get_cur_service()->property).uuid)) == true)
-        spawnattr.flags |= (VSROOT_FLAGS_FLUSH_CACHE | VSROOT_FLAGS_FIXED_ASID);
 
     if (posix_spawn_ex(&pid, elf_path, NULL, &spawnattr, argv, env, &tid) != 0)
         return -1;
@@ -444,7 +441,7 @@ static int32_t create_service_thread(const char *elf_path, char **argv, char **e
     struct msg_recv_param msg_recv_p;
     int32_t ret;
 
-    ret = hm_spawn_with_attr((int *)&service_thread, elf_path, argv, env, uuid);
+    ret = tee_spawn_with_attr((int *)&service_thread, elf_path, argv, env, uuid);
     if (ret != 0)
         return -1;
 

@@ -16,7 +16,7 @@
 #include <string.h>
 #include <errno.h>
 #include <tee_log.h>
-#include <sys/hm_priorities.h>
+#include <sys/priorities.h>
 #include <tee_secfile_load_agent.h>
 
 static void *g_libtee = NULL;

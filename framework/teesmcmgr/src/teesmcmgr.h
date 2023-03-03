@@ -15,8 +15,8 @@
 #include <stdint.h>
 #include <tee_log.h>
 #include <stdbool.h>
-#include <sys/hm_syscall.h>
-#include <sys/hm_priorities.h>
+#include <ipclib.h>
+#include <sys/priorities.h>
 #define SMCMGR_STACK_SIZE  0x2000
 
 #define PAY_LOAD_SIZE 24
@@ -42,12 +42,12 @@
 void *tee_idle_thread(void *arg);
 void *tee_smc_thread(void *arg);
 
-rref_t acquire_gtask_channel(void);
+cref_t acquire_gtask_channel(void);
 
-void set_gtask_channel_hdlr(rref_t value);
+void set_gtask_channel_hdlr(cref_t value);
 void set_is_gtask_alive(bool value);
 
-rref_t get_gtask_channel_hdlr(void);
+cref_t get_gtask_channel_hdlr(void);
 bool   get_is_gtask_alive(void);
 
 #endif

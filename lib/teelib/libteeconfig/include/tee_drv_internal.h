@@ -13,7 +13,7 @@
 #define TEE_DRV_INTERNAL_H
 #include <stdint.h>
 #include <dlist.h>
-#include <sys/hm_syscall.h>
+#include <ipclib.h>
 
 #define FD_COUNT_MAX 1024U
 

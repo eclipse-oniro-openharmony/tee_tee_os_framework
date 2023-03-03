@@ -20,7 +20,7 @@
 #include "teesmcmgr.h"
 #include <ipclib.h>
 
-static rref_t g_gtask_channel_hdlr;
+static cref_t g_gtask_channel_hdlr;
 static bool   g_is_gtask_alive;
 
 void set_is_gtask_alive(bool value)
@@ -33,12 +33,12 @@ bool get_is_gtask_alive(void)
     return g_is_gtask_alive;
 }
 
-void set_gtask_channel_hdlr(rref_t value)
+void set_gtask_channel_hdlr(cref_t value)
 {
     g_gtask_channel_hdlr = value;
 }
 
-rref_t get_gtask_channel_hdlr(void)
+cref_t get_gtask_channel_hdlr(void)
 {
     return g_gtask_channel_hdlr;
 }

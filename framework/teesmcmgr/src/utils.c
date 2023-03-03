@@ -13,10 +13,10 @@
 
 #define PATH_NAME "TEEGlobalTask"
 
-rref_t acquire_gtask_channel(void)
+cref_t acquire_gtask_channel(void)
 {
     int32_t rc;
-    rref_t rref;
+    cref_t rref;
 
     rc = ipc_get_ch_from_path(PATH_NAME, &rref);
     if (rc != 0)

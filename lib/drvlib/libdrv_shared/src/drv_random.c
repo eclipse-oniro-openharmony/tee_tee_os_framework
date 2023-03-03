@@ -11,7 +11,7 @@
  */
 #include "drv_random.h"
 #include <rnd_seed.h>
-#include <sys/hm_priorities.h>
+#include <sys/priorities.h>
 #include <sys/fileio.h>
 #include "tee_log.h"
 

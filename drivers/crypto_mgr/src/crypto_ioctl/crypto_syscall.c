@@ -12,7 +12,7 @@
 #include "crypto_syscall_common.h"
 #include <securec.h>
 #include "tee_driver_module.h"
-#include <sys/hm_priorities.h>
+#include <sys/priorities.h>
 #include <inttypes.h>
 #include <sys/fileio.h>
 #include <fcntl.h>
