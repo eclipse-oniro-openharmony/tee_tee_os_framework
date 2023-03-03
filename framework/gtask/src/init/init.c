@@ -15,7 +15,6 @@
 #include <autoconf.h>
 #include <securec.h>
 
-#include <sys/hm_types.h>
 #include <spawn_ext.h>
 #include <stdlib.h>
 #include <ipclib.h>

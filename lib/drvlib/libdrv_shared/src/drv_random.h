@@ -16,7 +16,6 @@
 #include <tee_defines.h>
 #include "hm_msg_type.h"
 #include <errno.h>
-#include <sys/hm_types.h>
 
 typedef int32_t (*crypto_drv_init) (const void *ops, void *buf, uint32_t buf_len);
 void register_crypto_rand_driver(crypto_drv_init fun, void *ops);

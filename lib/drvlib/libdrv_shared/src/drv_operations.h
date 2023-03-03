@@ -15,7 +15,6 @@
 #include <dlist.h>
 #include <stdint.h>
 #include <pthread.h>
-#include <sys/hm_types.h>
 #include "tee_driver_module.h"
 #include "drv_dispatch.h"
 

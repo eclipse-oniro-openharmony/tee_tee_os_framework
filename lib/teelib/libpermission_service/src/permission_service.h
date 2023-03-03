@@ -12,7 +12,7 @@
 #ifndef __PERSRV_H__
 #define __PERSRV_H__
 
-#include <sys/hm_types.h>
+#include <stdint.h>
 #include "crypto_wrapper.h"
 #include "tee_internal_task_pub.h"
 #include "tee_elf_verify.h"

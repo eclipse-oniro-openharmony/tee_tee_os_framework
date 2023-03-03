@@ -12,7 +12,7 @@
 #ifndef PLATDRV_DRV_THREAD_H
 #define PLATDRV_DRV_THREAD_H
 #include <alltypes.h>
-#include <sys/hm_types.h>
+#include <spawn_ext.h>
 #include <cs.h>
 #include <hmdrv.h>
 
