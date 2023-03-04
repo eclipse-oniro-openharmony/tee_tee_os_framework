@@ -16,7 +16,7 @@
 #include <fcntl.h>
 #include <dlfcn.h>
 #include <sys/mman.h>
-#include <sys/hm_priorities.h> /* for `HM_PRIO_TEE_*` */
+#include <sys/priorities.h> /* for `HM_PRIO_TEE_*` */
 #include <sys/fileio.h>
 #include <unistd.h>
 #include <ipclib.h>

@@ -13,7 +13,7 @@
 #include <sys/mman.h>
 #include <tee_log.h>
 #include <ipclib.h>             /* for channel */
-#include <sys/hm_priorities.h>  /* for `HM_PRIO_TEE_*' */
+#include <sys/priorities.h>  /* for `HM_PRIO_TEE_*' */
 #include <pthread.h>            /* for thread */
 #include <stdlib.h>
 #include <ac_dynamic.h>

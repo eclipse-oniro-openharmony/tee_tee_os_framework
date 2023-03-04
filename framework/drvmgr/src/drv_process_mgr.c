@@ -19,7 +19,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <sys/fileio.h>
-#include <sys/hm_priorities.h>
+#include <sys/priorities.h>
 #include <tee_log.h>
 #include <drv_thread.h>
 #include <spawn_init.h>
