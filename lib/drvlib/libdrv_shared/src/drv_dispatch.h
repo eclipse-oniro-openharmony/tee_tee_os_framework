@@ -14,7 +14,6 @@
 
 #include <dlist.h>
 #include <tee_defines.h>
-#include <cs.h>
 
 struct fd_node {
     struct dlist_node data_list;

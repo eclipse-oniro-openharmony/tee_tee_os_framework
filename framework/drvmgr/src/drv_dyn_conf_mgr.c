@@ -12,7 +12,6 @@
 
 #include "drv_dyn_conf_mgr.h"
 #include <tee_log.h>
-#include <cs.h>
 #include <libdrv_frame.h>
 #include <ta_framework.h>
 #include <dyn_conf_dispatch_inf.h>

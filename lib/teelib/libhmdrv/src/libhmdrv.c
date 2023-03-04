@@ -18,7 +18,6 @@
 #include <ipclib.h>
 #include <unistd.h>
 #include <tee_log.h>
-#include <ac.h>
 #include <ac_job.h>
 #include <tee_config.h>
 

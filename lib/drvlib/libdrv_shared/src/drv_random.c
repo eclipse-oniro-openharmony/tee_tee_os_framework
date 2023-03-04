@@ -13,7 +13,6 @@
 #include <rnd_seed.h>
 #include <sys/hm_priorities.h>
 #include <sys/fileio.h>
-#include <ac.h>
 #include "tee_log.h"
 
 static crypto_drv_init g_rand = 0;

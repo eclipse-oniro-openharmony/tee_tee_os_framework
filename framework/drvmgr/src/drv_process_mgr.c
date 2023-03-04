@@ -256,7 +256,7 @@ wait_retry:
     retry_count++;
     ret = ipc_msg_receive(g_drv_spawn_sync_channel, &msg, sizeof(msg), g_drv_spawn_sync_msghdl, 
                           &info, WAIT_DRV_MSG_MAX_TIME);
-    if (ret == E_EX_TIMER_TIMEOUT) {
+    if (ret == E_TIMER_TIMEOUT) {
         tloge("wait drv:0x%x spawn msg timeout:%u\n", taskid, WAIT_DRV_MSG_MAX_TIME);
         return -1;
     }

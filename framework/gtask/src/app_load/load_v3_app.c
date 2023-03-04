@@ -13,7 +13,8 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-#include <cs.h>
+#include <errno.h>
+#include <securec.h>
 #include <sys/mman.h>
 #include <dyn_conf_dispatch_inf.h>
 #include "tee_log.h"

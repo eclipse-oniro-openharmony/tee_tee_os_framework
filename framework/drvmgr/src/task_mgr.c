@@ -12,7 +12,6 @@
 
 #include "task_mgr.h"
 #include <tee_log.h>
-#include <cs.h>
 #include <ipclib.h>
 #include <ac_const.h>
 #include <libdrv_frame.h>

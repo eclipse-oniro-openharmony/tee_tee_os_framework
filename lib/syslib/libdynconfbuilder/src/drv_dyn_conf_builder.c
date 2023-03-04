@@ -13,7 +13,6 @@
 #include "drv_dyn_conf_builder.h"
 #include <securec.h>
 #include <tee_log.h>
-#include <cs.h>
 #include <dlist.h>
 #include <hmdrv.h>
 #include <tee_drv_internal.h>

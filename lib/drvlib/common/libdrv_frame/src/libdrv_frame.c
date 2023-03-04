@@ -20,7 +20,6 @@
 #include <timer.h>
 #include <irqmgr.h>
 #include <tamgr_ext.h>
-#include <ac.h>
 #include <tee_tag.h>
 #include <tee_drv_internal.h>
 #include <ipclib_hal.h>

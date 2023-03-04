@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "drv_thread.h"
-#include <cs.h>
 #include <errno.h>
 #include <ipclib.h>
 #include <tee_log.h>
