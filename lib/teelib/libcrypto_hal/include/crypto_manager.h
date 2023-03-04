@@ -131,7 +131,6 @@ int32_t crypto_driver_pbkdf2(const struct memref_t *password, const struct memre
     uint32_t digest_type, struct memref_t *data_out, uint32_t engine);
 
 int32_t soft_random_get(uint8_t *trng_addr, uint32_t length);
-int32_t get_seed_from_sysmgr(void);
 int32_t tee_crypto_get_oemkey(void *buf, uint32_t size);
 int32_t tee_crypto_check_alg_support(uint32_t alg_type);
 #endif

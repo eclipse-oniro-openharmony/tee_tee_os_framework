@@ -13,7 +13,6 @@
 #include <securec.h>
 #include <tee_log.h>
 #include <tee_crypto_hal.h>
-#include <rnd_seed.h>
 #include <api/errno.h>
 #include <mem_ops.h>
 #include "crypto_manager.h"
@@ -352,11 +351,6 @@ int32_t soft_random_get(uint8_t *trng_addr, uint32_t length)
     }
 
     return 0;
-}
-
-int32_t get_seed_from_sysmgr(void)
-{
-    return get_seed(&g_seed);
 }
 
 int32_t tee_crypto_generate_random(void *buffer, uint32_t size, bool is_hw_rand)
