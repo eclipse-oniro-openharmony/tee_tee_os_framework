@@ -20,6 +20,7 @@
 #include <tee_log.h>
 #include <pthread.h>
 #include <tee_config.h>
+#include "tee_msg_type.h"
 
 #define DRIVER_FRAME_NR  10U
 #define MAX_DRV_NAME_LEN 32

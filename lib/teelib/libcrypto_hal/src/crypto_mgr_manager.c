@@ -24,6 +24,7 @@
 #include "crypto_mgr_syscall.h"
 #include "crypto_hal.h"
 #include "crypto_driver_adaptor_ops.h"
+#include "tee_msg_type.h"
 
 int64_t get_ctx_fd_handle(uint32_t alg_type, bool is_copy_ctx)
 {
@@ -1951,11 +1952,6 @@ int32_t crypto_driver_generate_random(void *buffer, uint32_t size, bool is_hw_ra
         return CRYPTO_OVERFLOW;
     }
     int32_t ret = crypto_get_buf_ops(IOCTRL_CRYPTO_GENERATE_RANDOM, fd, buffer, size);
-    if (ret != CRYPTO_SUCCESS) {
-        (void)tee_drv_close(fd);
-        get_seed_from_sysmgr();
-        return soft_random_get(buffer, size);
-    }
 
     (void)tee_drv_close(fd);
     return ret;

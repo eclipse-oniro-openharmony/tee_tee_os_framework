@@ -14,7 +14,7 @@
 
 #include <tee_defines.h>
 #include <ipclib.h>
-#include "tee_common.h"
+#include "tee_msg_type.h"
 
 #define HUK_PATH "hukservice"
 

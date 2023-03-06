@@ -18,7 +18,6 @@
 #include <tee_time_adapt.h>
 #include <tee_mem_mgmt_api.h>
 #include <ipclib.h>
-#include "tee_common.h"
 
 enum classic_timer_msg {
     CREATE_TIMER,

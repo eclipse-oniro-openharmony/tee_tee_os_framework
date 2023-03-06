@@ -16,7 +16,7 @@
 #include "crypto_wrapper.h"
 #include "tee_internal_task_pub.h"
 #include "tee_elf_verify.h"
-#include "tee_common.h"
+#include "tee_msg_type.h"
 
 #define TA_CERT_MAX_SERVICE_NAME_LEN 27
 
