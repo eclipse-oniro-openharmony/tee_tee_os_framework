@@ -18,8 +18,9 @@
 #include <ipclib.h>
 #include <unistd.h>
 #include <tee_log.h>
-#include <ac_job.h>
+#include <pthread.h>
 #include <tee_config.h>
+#include "tee_msg_type.h"
 
 #define DRIVER_FRAME_NR  10U
 #define MAX_DRV_NAME_LEN 32
@@ -28,7 +29,6 @@
 struct drv_op_info {
     char name[MAX_DRV_NAME_LEN];
     cref_t channel;
-    struct ac_job job;
     bool is_tbac_hooked;
 };
 
@@ -264,15 +264,6 @@ static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call
     if (ret != 0)
         return -1;
 
-    /* enable ac_job before calling driver */
-    if (g_drv_op_info[idex].is_tbac_hooked) {
-        msg->job_handler = g_drv_op_info[idex].job.cref;
-        if (ac_job_enable(&(g_drv_op_info[idex].job)) != 0) {
-            tloge("hmdrv acjob_enable failed\n");
-            return -1;
-        }
-    }
-
     msg->header.send.msg_class = 0;
     msg->header.send.msg_flags = 0;
     msg->header.send.msg_id    = id;
@@ -298,8 +289,6 @@ static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call
     func_ret = rmsg->header.reply.ret_val;
 
 err_msg_call:
-    if (g_drv_op_info[idex].is_tbac_hooked)
-        (void)ac_job_disable(&(g_drv_op_info[idex].job));
 
     return func_ret;
 }

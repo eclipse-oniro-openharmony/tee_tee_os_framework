@@ -24,6 +24,7 @@
 #include "crypto_mgr_syscall.h"
 #include "crypto_hal.h"
 #include "crypto_driver_adaptor_ops.h"
+#include "tee_msg_type.h"
 
 int64_t get_ctx_fd_handle(uint32_t alg_type, bool is_copy_ctx)
 {

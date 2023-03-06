@@ -14,7 +14,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <securec.h>
-#include <ac_map.h>
 #include <tee_log.h>
 
 int32_t set_env_for_task(const struct env_param *param, const struct tee_uuid *uuid, struct env_base_buffer *env)

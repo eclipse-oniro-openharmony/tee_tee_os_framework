@@ -72,10 +72,6 @@ int32_t get_env_param(struct env_param *param)
 
     param->priority = get_priority();
 
-    param->uid = get_u32_env("uid");
-    if (param->uid == UINT32_MAX)
-        return -1;
-
     param->target_type = get_u32_env("target_type");
     if (param->target_type >= MAX_TARGET_TYPE) {
         tloge("invalid target_type:0x%x\n", param->target_type);
