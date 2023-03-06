@@ -103,12 +103,10 @@ tees: setup_links libs $(drivers) $(frameworks) $(service)
 $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
-package: $(product_apps)
+package: check_sym
 	cp -a $(PLAT_AUTOCONF_FILE) $(TOPDIR)/../tee_os_kernel/include/generated/.
 	@mkdir $(FILEMGR_BOOT_ELF)
-	@mkdir $(FILEMGR_BOOT_ELF)/check_syms_y
 	@mkdir $(FILEMGR_BOOT_ELF)/apps
-	cp -a $(check-syms-y) $(FILEMGR_BOOT_ELF)/check_syms_y
 	cp -a $(product_apps) $(FILEMGR_BOOT_ELF)/apps
 
 PHONY += link_libs link_arm_libs link_aarch64_libs $(product_apps)
@@ -137,6 +135,23 @@ link_aarch64_libs: libs
 			echo "link prebuild library: $$link" ; \
 		fi \
 	done
+
+check_sym: $(product_apps)
+	@if [ "xy" = "xy" ] ; then \
+	set -e ;\
+	for i in $(check-syms-y) ; do \
+		echo " [ CHECK SYMS ]: $$i" ;\
+		$(BUILD_TOOLS)/generate_img/check-syms.sh $$i \
+			$(PREBUILD_LIBS)/arm/libc_shared_a32.so \
+			$(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so; \
+	done ;\
+	for i in $(check-a64-syms-y) ; do \
+		echo " [ CHECK a64 SYMS ]: $$i" ;\
+		$(BUILD_TOOLS)/generate_img/check-syms.sh $$i \
+			$(PREBUILD_LIBS)/aarch64/libc_shared.so \
+			$(OUTPUTDIR)/aarch64/obj/aarch64/libtee_shared/libtee_shared.so; \
+	done ; fi
+	$(BUILD_TOOLS)/generate_img/smart-strip.sh $(product_apps)
 
 ## setup & clean directory symbol-links, to compatible with CI circle-complexity
 setup_links:
