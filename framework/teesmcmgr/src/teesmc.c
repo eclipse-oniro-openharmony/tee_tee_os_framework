@@ -17,6 +17,7 @@
 #include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
 #include <sched.h>
+#include "tee_common.h"
 
 #define NORMAL_MSG_ID 0xDEADBEEF
 #define SMC_BUF_OPS (-1ULL)
@@ -34,19 +35,19 @@ static unsigned short tee_smc_pm_ret_to_msg_id(enum cap_teesmc_ret ret)
     unsigned short msg_id;
     switch (ret) {
     case CAP_TEESMC_RET_CPU_SUSPEND:
-        msg_id = HM_MSG_ID_DRV_PWRMGR_SUSPEND_CPU;
+        msg_id = MSG_ID_DRV_PWRMGR_SUSPEND_CPU;
         break;
     case CAP_TEESMC_RET_CPU_RESUME:
-        msg_id = HM_MSG_ID_DRV_PWRMGR_RESUME_CPU;
+        msg_id = MSG_ID_DRV_PWRMGR_RESUME_CPU;
         break;
     case CAP_TEESMC_RET_S4_SUSPEND:
-        msg_id = HM_MSG_ID_DRV_PWRMGR_SUSPEND_S4;
+        msg_id = MSG_ID_DRV_PWRMGR_SUSPEND_S4;
         break;
     case CAP_TEESMC_RET_S4_RESUME:
-        msg_id = HM_MSG_ID_DRV_PWRMGR_RESUME_S4;
+        msg_id = MSG_ID_DRV_PWRMGR_RESUME_S4;
         break;
     default:
-        msg_id = HM_MSG_ID_INVALID;
+        msg_id = MSG_ID_INVALID;
         break;
     }
     return msg_id;
@@ -116,7 +117,7 @@ static void tee_smc_notify_drv(enum cap_teesmc_ret ret)
     }
 
     debug("notify driver start id %u\n", ret);
-    msg.send.msg_class = HM_MSG_HEADER_CLASS_DRV_PWRMGR;
+    msg.send.msg_class = MSG_HEADER_CLASS_DRV_PWRMGR;
     msg.send.msg_id = tee_smc_pm_ret_to_msg_id(ret);
     msg.send.msg_size = sizeof(msg);
     err = ipc_msg_notification(drv, &msg, sizeof(msg));

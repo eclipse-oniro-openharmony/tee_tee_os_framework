@@ -21,7 +21,6 @@
 #include <tee_init.h>
 #include <tee_ext_api.h>
 #include <ta_framework.h>
-#include <mm_kcall_sysmgr.h>
 #include <tee_internal_task_pub.h>
 #include "permission_service.h"
 #include "perm_srv_common.h"

@@ -16,7 +16,7 @@
 #include <limits.h>
 #include <tee_defines.h>
 #include <ipclib.h>
-
+#include "tee_common.h"
 #define TIMER_PATH    "hmtimer"
 
 #define TMR_OK  0

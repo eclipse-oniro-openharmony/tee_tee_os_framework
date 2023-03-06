@@ -57,4 +57,43 @@ enum global_service_cmd_id {
     GLOBAL_CMD_ID_MAX                       = 0x7FFFFFFF  /* *< Global Task MAX ID not in use */
 };
 
+#ifndef ARRAY_SIZE
+#define ARRAY_SIZE(a)    (sizeof(a) / sizeof ((a)[0]))
+#endif
+typedef union {
+    struct {
+        uint8_t        msg_class;
+        uint8_t        msg_flags;
+        uint16_t    msg_id;
+        uint32_t    msg_size;
+    } __attribute__((packed)) send;
+
+    struct {
+        int64_t        ret_val;
+        uint32_t    msg_size;
+        uint32_t    reserve;
+    } __attribute__((packed)) reply;
+} hm_msg_header;
+
+enum msg_class {
+    MSG_HEADER_CLASS_PROCMGR,
+    MSG_HEADER_CLASS_PATHMGR,
+    MSG_HEADER_CLASS_MEMMGR,
+    MSG_HEADER_CLASS_TAMGR,
+    MSG_HEADER_CLASS_IRQMGR,
+    MSG_HEADER_CLASS_IOMGR,
+    MSG_HEADER_CLASS_ACMGR,
+    MSG_HEADER_CLASS_TMRMGR,
+    MSG_HEADER_CLASS_DRV_PWRMGR,
+    MSG_HEADER_CLASS_ACQUIRE_RND,
+    MSG_HEADER_CLASS_UPDATE_RND,
+    MSG_HEADER_CLASS_RECV_RND,
+};
+
+#define MSG_ID_DRV_PWRMGR_SUSPEND_CPU 0x0001
+#define MSG_ID_DRV_PWRMGR_RESUME_CPU 0x0002
+#define MSG_ID_DRV_PWRMGR_SUSPEND_S4 0x0003
+#define MSG_ID_DRV_PWRMGR_RESUME_S4 0x0004
+#define MSG_ID_INVALID 0xffff
+
 #endif

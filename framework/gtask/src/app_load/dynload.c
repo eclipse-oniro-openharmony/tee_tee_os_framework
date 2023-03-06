@@ -19,7 +19,6 @@
 #include <tee_common.h>
 #include <tee_log.h>
 #include <tee_config.h>
-#include <ac_map.h>
 #include <tee_config.h>
 #include "uuid2path.h"
 #include "tee_load_lib.h"

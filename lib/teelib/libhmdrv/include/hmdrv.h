@@ -14,6 +14,7 @@
 #define LIBHMDRV_HMDRV_H
 
 #include <ipclib.h>
+#include "tee_common.h"
 #define MAX_ARGS 16
 
 #ifndef SYSCALL_DATA_MAX
