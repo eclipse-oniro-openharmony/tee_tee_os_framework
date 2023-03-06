@@ -18,7 +18,6 @@
 #include <timer.h>
 #include <inttypes.h>
 #include <tee_log.h>
-#include <ac_dynamic.h>
 #include <sys/usrsyscall_irq.h>
 #include "teesmcmgr.h"
 #include "tee_crypto_api.h"
@@ -53,19 +52,13 @@ static void gtask_init(void)
     }
 }
 
-static void gtask_init_fileio_ac(void)
+static void gtask_init_fileio(void)
 {
     int32_t ret;
 
     ret = fileio_init();
     if (ret != 0) {
         tloge("GTASK: fileio_init failed: %d\n", ret);
-        wait_for_kill();
-    }
-
-    ret = ac_init_simple();
-    if (ret != 0) {
-        tloge("GTASK: ac_init_simple failed: %d\n", ret);
         wait_for_kill();
     }
 }
@@ -117,7 +110,7 @@ int main(void)
 
     gtask_init_timer_irqmgr();
 
-    gtask_init_fileio_ac();
+    gtask_init_fileio();
 
     /*
      * gtask will set affinity to use all cpus

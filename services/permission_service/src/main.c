@@ -16,7 +16,6 @@
 #include <sys/priorities.h>  /* for `HM_PRIO_TEE_*' */
 #include <pthread.h>            /* for thread */
 #include <stdlib.h>
-#include <ac_dynamic.h>
 #include <tee_defines.h>
 #include <tee_init.h>
 #include <tee_ext_api.h>
@@ -562,11 +561,6 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
 
     if (ipc_create_channel_native(CERT_PATH, &native_channel) != 0) {
         tloge("create main thread native channel failed\n");
-        exit(HM_TASK_EXIT);
-    }
-
-    if (ac_init_simple() != 0) {
-        tloge("ac init error\n");
         exit(HM_TASK_EXIT);
     }
 

@@ -14,7 +14,6 @@
 #include <tee_log.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_defines.h>
-#include <ac_dynamic.h>
 #include <ipclib.h>
 #include <stdlib.h>
 #include <ta_framework.h>
@@ -105,11 +104,6 @@ __attribute__((visibility ("default"))) void tee_task_entry(int init_build)
 
     if (ipc_create_channel_native(HUK_PATH, &ch) != 0) {
         tloge("create main thread native channel failed!\n");
-        exit(-1);
-    }
-
-    if (ac_init_simple() != 0) {
-        tloge("ac init error\n");
         exit(-1);
     }
 
