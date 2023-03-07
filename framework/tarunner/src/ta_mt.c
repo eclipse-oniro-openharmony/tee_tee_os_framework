@@ -174,7 +174,7 @@ static int32_t create_ipc_channel(const char *task_name, cref_t *ch[])
 static void call_task_entry(const struct thread_info *pti)
 {
     int32_t rc = set_priority(pti->args.priority);
-    if (rc != 0)
+    if (rc < 0)
         tloge("set priority failed: %x\n", rc);
 
     /* call real TA entry */
