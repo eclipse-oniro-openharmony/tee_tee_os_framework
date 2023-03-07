@@ -414,12 +414,10 @@ tee_print;
 get_global_handle;
 set_global_handle;
 tee_secure_img_release_verify;
-ac_generate_dyn_uuid_data;
 cinit00;
 tee_init;
 tee_task_entry;
 set_log_use_tid_flag;
-ac_init_simple;
 get_tlv_sharedmem;
 
 sleep;

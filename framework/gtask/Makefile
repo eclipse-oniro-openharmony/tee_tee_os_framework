@@ -98,9 +98,7 @@ LIBS := c_shared${TARG}        \
     permission_service${TARG} \
     teemem${TARG}          \
     hmdrv${TARG}           \
-    ac${TARG}              \
     teeconfig${TARG}       \
-    ac_policy${TARG}       \
     dynconfmgr${TARG}      \
     dynconfbuilder${TARG}  \
     spawn_common${TARG}

@@ -78,13 +78,12 @@ inc-flags += -I$(TEELIB)/libipc_hal/include
 inc-flags += -I$(SYSLIB)/libelf_verify/include
 
 LIBS += c_shared${TARG}
-LIBS += timer${TARG} ac${TARG}
+LIBS += timer${TARG}
 LIBS += teemem${TARG} teeos${TARG} spawn_common${TARG} ipc_hal${TARG}
 
 ENTRY_POINT := main
 LDFLAGS += -z text -z noexecstack --dynamic-linker=libc_shared${TARG}.so
 LIBS += drv_frame${TARG}
-LIBS += ac_policy${TARG}
 LIBS += drv_shared${TARG}
 
 include $(BUILD_DRIVER)/drv-common.mk
