@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 #include <sys/mman.h>
-#include <hm/hongmeng.h>
 #include <malloc.h>
 #include <securec.h>
 #include <mem_ops.h>
