@@ -66,13 +66,13 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
         err = smc_wait_switch_req(&smc_buf);
         debug("tee smc thread: return from REE, err=%d, ops=%" PRIx64 "\n", err, smc_buf.ops);
 
-        if (err == CAP_TEESMC_RET_NORMAL) {
+        if (err == 0) {
             if (get_is_gtask_alive() == 0)
                 continue;
 
             err = 0;
-            if (smc_buf.ops == HMCAP_TEESMC_OPS_NORMAL ||
-                smc_buf.ops == HMCAP_TEESMC_OPS_ABORT_TASK)
+            if (smc_buf.ops == CAP_TEESMC_OPS_NORMAL ||
+                smc_buf.ops == CAP_TEESMC_OPS_ABORT_TASK)
                 err = ipc_msg_notification(get_gtask_channel_hdlr(), NULL, 0);
 
             if (err < 0)
