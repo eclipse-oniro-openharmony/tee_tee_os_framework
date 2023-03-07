@@ -15,7 +15,6 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include <types.h>
 
 #ifndef array_size
 #define array_size(a) (sizeof(a) / sizeof((a)[0]))

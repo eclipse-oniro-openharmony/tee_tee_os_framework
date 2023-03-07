@@ -14,7 +14,6 @@
 
 #include <stdint.h>
 #include <tee_defines.h>
-#include "hm_msg_type.h"
 #include <errno.h>
 
 typedef int32_t (*crypto_drv_init) (const void *ops, void *buf, uint32_t buf_len);
