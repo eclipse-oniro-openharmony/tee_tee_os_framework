@@ -13,7 +13,6 @@
 #include <securec.h>
 #include <tee_log.h>
 #include <tee_crypto_hal.h>
-#include <api/errno.h>
 #include <mem_ops.h>
 #include "crypto_manager.h"
 #include "soft_common_api.h"

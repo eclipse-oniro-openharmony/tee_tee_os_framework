@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <alltypes.h>
 #include <errno.h>
-#include <api/errno.h>
 #include <tee_log.h>
 #include <target_type.h>
 #include "load_init.h"
