@@ -18,7 +18,7 @@
 static uint8_t g_cached_random[CACHED_RANDOM_SIZE] = {0};
 static uint32_t g_used_block_count = TOTAL_RANDOM_BLOCK;
 
-static int32_t hm_do_generate_random(const struct crypto_drv_ops_t *ops, void *buffer, size_t size)
+static int32_t do_generate_random(const struct crypto_drv_ops_t *ops, void *buffer, size_t size)
 {
     if (ops->generate_random == NULL) {
         tloge("generate is not support\n");
@@ -47,7 +47,7 @@ static int32_t generate_random_from_cached(const struct crypto_drv_ops_t *ops, v
     if (g_used_block_count == TOTAL_RANDOM_BLOCK ||
         size > (TOTAL_RANDOM_BLOCK - g_used_block_count) * ONE_BLOCK_SIZE) {
         (void)memset_s(g_cached_random, sizeof(g_cached_random), 0, sizeof(g_cached_random));
-        int32_t ret = hm_do_generate_random(ops, g_cached_random, sizeof(g_cached_random));
+        int32_t ret = do_generate_random(ops, g_cached_random, sizeof(g_cached_random));
         if (ret != CRYPTO_SUCCESS)
             return ret;
 
@@ -81,7 +81,7 @@ int32_t hw_generate_random_ops(const void *ops, void *buf, uint32_t size)
     if (size < CACHED_RANDOM_SIZE)
         return generate_random_from_cached(ops, buf, size);
 
-    return hm_do_generate_random(ops, buf, size);
+    return do_generate_random(ops, buf, size);
 }
 
 static int32_t generate_random(const struct crypto_drv_ops_t *ops, struct memref_t *crypto_arg)

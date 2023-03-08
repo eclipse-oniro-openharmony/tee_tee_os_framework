@@ -161,7 +161,7 @@ void tee_drv_entry(const struct tee_driver_module *drv_func, const char *drv_nam
 
 #ifdef CRYPTO_MGR_SERVER_ENABLE
     if (strcmp(drv_name, TEE_CRYPTO_DRIVER_NAME) == 0) {
-        ret = hm_ipc_register_ch_path(RAND_DRV_PATH, ch);
+        ret = ipc_register_ch_path(RAND_DRV_PATH, ch);
         if (ret != 0) {
             tloge("failed to register channel with name \"%s\":%d\n", RAND_DRV_PATH, ret);
             return;

@@ -69,9 +69,9 @@ static void gtask_init_timer_irqmgr(void)
 #if (!defined CONFIG_OFF_DRV_TIMER)
     int32_t ret;
 
-    ret = hm_timer_init();
+    ret = tee_timer_init();
     if (ret != 0) {
-        tloge("GTASK: hm_timer_init failed: %d\n", ret);
+        tloge("GTASK: tee_timer_init failed: %d\n", ret);
         wait_for_kill();
     }
 #endif

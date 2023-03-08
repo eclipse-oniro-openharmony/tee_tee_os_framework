@@ -27,7 +27,7 @@ typedef uint32_t (*timer_time_event_check)(timer_notify_data_kernel *timer_data)
 typedef void (*timer_release_timer_event)(const TEE_UUID *uuid);
 typedef int32_t (*timer_set_ta_timer_permission)(const TEE_UUID *uuid, uint64_t permission);
 typedef uint32_t (*timer_adjust_sys_time)(const struct tee_time_t *time);
-typedef int (*timer_hm_timer_init)(void);
+typedef int (*timer_tee_timer_init)(void);
 typedef int (*timer_renew_hmtimer_job_handler)(void);
 
 struct timer_ops_t {
@@ -44,7 +44,7 @@ struct timer_ops_t {
     timer_release_timer_event release_timer_event;
     timer_set_ta_timer_permission set_ta_timer_permission;
     timer_adjust_sys_time adjust_sys_time;
-    timer_hm_timer_init hm_timer_init;
+    timer_tee_timer_init tee_timer_init;
     timer_renew_hmtimer_job_handler renew_hmtimer_job_handler;
 };
 
