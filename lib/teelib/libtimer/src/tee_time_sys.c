@@ -25,14 +25,14 @@ static const uint32_t g_mon_lengths[][MONSPERYEAR] = {
 };
 static const uint32_t g_year_lengths[] = { DAYSPERNYEAR, DAYSPERLYEAR };
 
-int hm_timer_init(void)
+int tee_timer_init(void)
 {
     struct timer_ops_t *time_ops = NULL;
     time_ops = get_time_ops();
-    if (time_ops == NULL || time_ops->hm_timer_init == NULL)
+    if (time_ops == NULL || time_ops->tee_timer_init == NULL)
         return TMR_OK;
 
-    return time_ops->hm_timer_init();
+    return time_ops->tee_timer_init();
 }
 
 static uint32_t increment_overflow(uint32_t *year, uint32_t carry)

@@ -88,17 +88,17 @@ int32_t ipc_create_channel_native(const char *name, cref_t *pch)
 static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent)
 {
     int32_t rc    = 0;
-    struct msg_st hm_msg = { 0 };
+    struct msg_st msg = { 0 };
 
-    hm_msg.msg_id = msgsent.uw_msg_id;
+    msg.msg_id = msgsent.uw_msg_id;
 
     if (msgsent.msgp != NULL) {
-        if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msgsent.msgp, msgsent.size) != 0)
+        if (memcpy_s(msg.payload, sizeof(msg.payload), msgsent.msgp, msgsent.size) != 0)
             return SRE_IPC_ERR;
     }
 
     if (msgsent.size <= NOTIFY_MAX_LEN) {
-        struct notify_st *hm_ntf_p = (struct notify_st *)&hm_msg;
+        struct notify_st *hm_ntf_p = (struct notify_st *)&msg;
         rc                         = ipc_msg_notification(msgsent.dst_ch, hm_ntf_p, sizeof(struct notify_st));
     } else {
         tloge("msg_call failed, not support big msg in ipc_msg_snd/ipc_msg_qsnd, size = %u\n", msgsent.size);
@@ -106,7 +106,7 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent)
     }
 
     if (rc != 0) {
-        tloge("notify failed to 0x%x, size=%u, ret=%d\n", hm_msg.msg_id, msgsent.size, rc);
+        tloge("notify failed to 0x%x, size=%u, ret=%d\n", msg.msg_id, msgsent.size, rc);
         return SRE_IPC_ERR;
     }
 
@@ -116,17 +116,17 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent)
 static uint32_t ipc_msgsnd_core_sync(struct msgsent_st msgsent)
 {
     int32_t rc;
-    struct msg_st hm_msg     = { 0 };
+    struct msg_st msg     = { 0 };
     struct reply_msg_st rmsg = { 0 };
 
-    hm_msg.msg_id = msgsent.uw_msg_id;
+    msg.msg_id = msgsent.uw_msg_id;
 
     if (msgsent.msgp != NULL) {
-        if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msgsent.msgp, msgsent.size) != 0)
+        if (memcpy_s(msg.payload, sizeof(msg.payload), msgsent.msgp, msgsent.size) != 0)
             return SRE_IPC_ERR;
     }
 
-    rc = ipc_msg_call(msgsent.dst_ch, &hm_msg, sizeof(hm_msg), &rmsg, sizeof(rmsg), -1);
+    rc = ipc_msg_call(msgsent.dst_ch, &msg, sizeof(msg), &rmsg, sizeof(rmsg), -1);
     if (rc != 0) {
         tloge("msg_call to 0x%x failed, rc = %d\n", msgsent.uw_dst_pid, rc);
         return SRE_IPC_ERR;

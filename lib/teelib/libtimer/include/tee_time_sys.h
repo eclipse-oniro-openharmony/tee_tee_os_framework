@@ -20,5 +20,5 @@ struct tm *__localtime_r(const time_t *restrict, struct tm *restrict);
 uint32_t adjust_sys_time(const struct tee_time_t *time);
 int set_ta_timer_permission(const TEE_UUID *uuid, uint64_t permission);
 void release_timer_event(const TEE_UUID *uuid);
-int hm_timer_init(void);
+int tee_timer_init(void);
 #endif
