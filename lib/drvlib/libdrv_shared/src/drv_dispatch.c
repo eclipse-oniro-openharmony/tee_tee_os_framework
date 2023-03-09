@@ -25,7 +25,7 @@
 #include "tee_drv_entry.h"
 #include <unistd.h>
 
-static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_req_msg_t *msg,
+static int32_t get_drv_params(struct tee_drv_param *params, const struct drv_req_msg_t *msg,
                               const struct hmcap_message_info *info)
 {
     if (msg == NULL || info == NULL) {
@@ -34,7 +34,7 @@ static int32_t get_drv_params(struct tee_drv_param *params, const struct hm_drv_
     }
 
     uint32_t cnode_idx = info->src_cnode_idx;
-    if ((cnode_idx == 0) || (info->msg_size < sizeof(struct hm_drv_req_msg_t))) {
+    if ((cnode_idx == 0) || (info->msg_size < sizeof(struct drv_req_msg_t))) {
         tloge("invalid cnode or invalid msg size\n");
         return -1;
     }
@@ -156,7 +156,7 @@ static int32_t driver_syscall_dispatch(int32_t swi_id, struct tee_drv_param *par
     return ret;
 }
 
-static int32_t driver_syscall(const struct hm_drv_req_msg_t *msg, const struct hmcap_message_info *info,
+static int32_t driver_syscall(const struct drv_req_msg_t *msg, const struct hmcap_message_info *info,
                               struct tee_drv_param *params, int32_t swi_id, int64_t *ret_val)
 {
     int32_t ret;
@@ -204,8 +204,8 @@ static void driver_reply_error_handle(int32_t swi_id, const struct tee_drv_param
         tloge("close fd:%" PRIx64 " failed in reply error handle\n", ret_val);
 }
 
-static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const struct hmcap_message_info *info,
-                                     struct hm_drv_reply_msg_t *rmsg, const cref_t *msg_hdl)
+static int32_t driver_handle_message(const struct drv_req_msg_t *msg, const struct hmcap_message_info *info,
+                                     struct drv_reply_msg_t *rmsg, const cref_t *msg_hdl)
 {
     int64_t ret_val = -1;
     int32_t ret;
@@ -217,7 +217,7 @@ static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const s
         tloge("handle driver syscall failed ret:0x%x\n", ret);
 
     rmsg->header.reply.ret_val = (ret == 0) ? ret_val : (int64_t)ret;
-    ret = ipc_msg_reply(*msg_hdl, rmsg, sizeof(struct hm_drv_reply_msg_t));
+    ret = ipc_msg_reply(*msg_hdl, rmsg, sizeof(struct drv_reply_msg_t));
     if (ret != 0) {
         tloge("hm msg reply failed\n");
         /*
@@ -232,7 +232,7 @@ static int32_t driver_handle_message(const struct hm_drv_req_msg_t *msg, const s
 
 intptr_t driver_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *info)
 {
-    struct hm_drv_reply_msg_t reply_raw_buf;
+    struct drv_reply_msg_t reply_raw_buf;
     int32_t ret;
 
     if ((p_msg_hdl == NULL) || (info == NULL) || (msg == NULL)) {
@@ -242,7 +242,7 @@ intptr_t driver_dispatch(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info
 
     (void)memset_s(&reply_raw_buf, sizeof(reply_raw_buf), 0, sizeof(reply_raw_buf));
 
-    ret = driver_handle_message((struct hm_drv_req_msg_t *)msg, info,
+    ret = driver_handle_message((struct drv_req_msg_t *)msg, info,
         &reply_raw_buf, p_msg_hdl);
     if (ret != 0)
         tloge("driver handle message failed\n");

@@ -194,13 +194,13 @@ static int get_last_in_cmd(smc_cmd_t *cmd)
     do {
         if (i == MAX_SMC_CMD)
             i = 0;
-        if (hm_test_bit(i, g_nwd_cmd->in_bitmap) && !hm_test_bit(i, g_nwd_cmd->doing_bitmap)) {
-            if (hm_test_bit(i, cmd_doing_bitmap) && !is_abort_cmd(&g_nwd_cmd->in[i])) {
+        if (test_bit(i, g_nwd_cmd->in_bitmap) && !test_bit(i, g_nwd_cmd->doing_bitmap)) {
+            if (test_bit(i, cmd_doing_bitmap) && !is_abort_cmd(&g_nwd_cmd->in[i])) {
                 /* in this case, maybe the in_bitmap/doing_bitmap in g_nwd_cmd
                  * was modified by malicious, so we will skip this cmd. */
                 tloge("find a unreasonable in-cmd, cmd id=0x%x, cmd type=%u\n",
                     g_nwd_cmd->in[i].cmd_id, g_nwd_cmd->in[i].cmd_type);
-                hm_set_bit(i, g_nwd_cmd->doing_bitmap);
+                set_bit(i, g_nwd_cmd->doing_bitmap);
                 /* skip this cmd */
                 continue;
             }
@@ -213,16 +213,16 @@ static int get_last_in_cmd(smc_cmd_t *cmd)
             /* check if cmd->event_nr is compatible the index in bitmap */
             if (cmd->event_nr != i) {
                 tloge("it's a invalid cmd, event_nr/bitmap=%u/%u\n", cmd->event_nr, i);
-                hm_set_bit(i, g_nwd_cmd->doing_bitmap);
+                set_bit(i, g_nwd_cmd->doing_bitmap);
                 /* skip this cmd */
                 continue;
             }
 
             __asm__ volatile("isb");
             __asm__ volatile("dsb sy");
-            hm_set_bit(i, g_nwd_cmd->doing_bitmap);
+            set_bit(i, g_nwd_cmd->doing_bitmap);
             if (!is_abort_cmd(&g_nwd_cmd->in[i]))
-                hm_set_bit(i, cmd_doing_bitmap);
+                set_bit(i, cmd_doing_bitmap);
 
             last_index = i + 1;
             ret = GT_ERR_OK;
@@ -269,8 +269,8 @@ int put_last_out_cmd(const smc_cmd_t *cmd)
     }
     __asm__ volatile("isb");
     __asm__ volatile("dsb sy");
-    hm_set_bit(cmd->event_nr, g_nwd_cmd->out_bitmap);
-    hm_clear_bit(cmd->event_nr, cmd_doing_bitmap);
+    set_bit(cmd->event_nr, g_nwd_cmd->out_bitmap);
+    clear_bit(cmd->event_nr, cmd_doing_bitmap);
     release_smc_buf_lock(&g_nwd_cmd->smc_lock);
 
     return GT_ERR_OK;
@@ -521,7 +521,7 @@ static int is_cmd_in_unproceed(void)
 
     acquire_smc_buf_lock(&g_nwd_cmd->smc_lock);
     for (i = 0; i < MAX_SMC_CMD; i++) {
-        if (hm_test_bit(i, g_nwd_cmd->in_bitmap) && !hm_test_bit(i, g_nwd_cmd->doing_bitmap)) {
+        if (test_bit(i, g_nwd_cmd->in_bitmap) && !test_bit(i, g_nwd_cmd->doing_bitmap)) {
             ret = 1;
             break;
         }

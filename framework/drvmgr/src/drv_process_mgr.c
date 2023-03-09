@@ -450,14 +450,14 @@ static int32_t get_drv_channel(const char *drv_name, cref_t *ch)
 static int32_t send_cmd_perm_msg(uint64_t drv_vaddr, uint32_t drv_size, cref_t channel)
 {
     char buf[SYSCAL_MSG_BUFFER_SIZE] = { 0 };
-    struct hm_drv_req_msg_t *msg = (struct hm_drv_req_msg_t *)buf;
-    struct hm_drv_reply_msg_t *rmsg = (struct hm_drv_reply_msg_t *)buf;
+    struct drv_req_msg_t *msg = (struct drv_req_msg_t *)buf;
+    struct drv_reply_msg_t *rmsg = (struct drv_reply_msg_t *)buf;
 
     msg->args[DRV_REGISTER_CMD_ADDR_INDEX] = drv_vaddr;
     msg->args[DRV_REGISTER_CMD_SIZE_INDEX] = drv_size;
 
     msg->header.send.msg_id = REGISTER_DRV_CMD_PERM;
-    msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t);
+    msg->header.send.msg_size = sizeof(struct drv_req_msg_t);
 
     int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, -1);
     if (ret != 0) {

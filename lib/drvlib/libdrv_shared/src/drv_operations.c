@@ -657,7 +657,7 @@ static int32_t get_drv_param(const struct tee_drv_param *params, uint64_t **args
         return 0;
     }
 
-    if (param_len > (SYSCAL_MSG_BUFFER_SIZE - sizeof(struct hm_drv_req_msg_t))) {
+    if (param_len > (SYSCAL_MSG_BUFFER_SIZE - sizeof(struct drv_req_msg_t))) {
         tloge("param_len:0x%llx is invalid\n", param_len);
         return -1;
     }

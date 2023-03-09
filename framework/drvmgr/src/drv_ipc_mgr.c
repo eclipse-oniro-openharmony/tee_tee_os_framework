@@ -31,7 +31,7 @@ static int32_t get_drv_param(const struct tee_drv_param *params, char **param, u
         return 0;
     }
 
-    if (param_len > (SYSCAL_MSG_BUFFER_SIZE - sizeof(struct hm_drv_req_msg_t))) {
+    if (param_len > (SYSCAL_MSG_BUFFER_SIZE - sizeof(struct drv_req_msg_t))) {
         tloge("param_len:0x%llx is invalid\n", param_len);
         return -1;
     }
@@ -74,10 +74,10 @@ static void trans_uuid_to_ul(const struct tee_uuid *uuid, uint64_t *uuid_time, u
 static int64_t call_drv_open(const struct tee_drv_param *params, cref_t channel, uint64_t perm)
 {
     char buf[SYSCAL_MSG_BUFFER_SIZE] = { 0 };
-    struct hm_drv_req_msg_t *msg    = (struct hm_drv_req_msg_t *)buf;
-    struct hm_drv_reply_msg_t *rmsg = (struct hm_drv_reply_msg_t *)buf;
+    struct drv_req_msg_t *msg    = (struct drv_req_msg_t *)buf;
+    struct drv_reply_msg_t *rmsg = (struct drv_reply_msg_t *)buf;
 
-    uint32_t ext_data = SYSCAL_MSG_BUFFER_SIZE - sizeof(struct hm_drv_req_msg_t);
+    uint32_t ext_data = SYSCAL_MSG_BUFFER_SIZE - sizeof(struct drv_req_msg_t);
     char *param = NULL;
     uint32_t param_len;
 
@@ -98,7 +98,7 @@ static int64_t call_drv_open(const struct tee_drv_param *params, cref_t channel,
     }
 
     msg->header.send.msg_id = 0;
-    msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t) + param_len;
+    msg->header.send.msg_size = sizeof(struct drv_req_msg_t) + param_len;
 
     ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, DRV_IPC_MAX_TIMEOUT);
     if (ret == E_TIMER_TIMEOUT) {
@@ -143,8 +143,8 @@ int64_t call_drv_close(uint32_t taskid, const struct tee_uuid *caller_uuid, int6
     }
 
     char buf[SYSCAL_MSG_BUFFER_SIZE] = { 0 };
-    struct hm_drv_req_msg_t *msg    = (struct hm_drv_req_msg_t *)buf;
-    struct hm_drv_reply_msg_t *rmsg = (struct hm_drv_reply_msg_t *)buf;
+    struct drv_req_msg_t *msg    = (struct drv_req_msg_t *)buf;
+    struct drv_reply_msg_t *rmsg = (struct drv_reply_msg_t *)buf;
 
     msg->args[DRV_FRAM_CMD_INDEX] = CALL_DRV_CLOSE;
     msg->args[DRV_CLOSE_FD_INDEX] = (uint64_t)fd;
@@ -152,7 +152,7 @@ int64_t call_drv_close(uint32_t taskid, const struct tee_uuid *caller_uuid, int6
     trans_uuid_to_ul(caller_uuid, &msg->args[DRV_UUID_TIME_INDEX], &msg->args[DRV_UUID_CLOCK_INDEX]);
 
     msg->header.send.msg_id = 0;
-    msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t);
+    msg->header.send.msg_size = sizeof(struct drv_req_msg_t);
 
     int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg,
         SYSCAL_MSG_BUFFER_SIZE, DRV_IPC_MAX_TIMEOUT);
@@ -173,11 +173,11 @@ int64_t call_drv_close(uint32_t taskid, const struct tee_uuid *caller_uuid, int6
 void call_drv_dump(cref_t channel)
 {
     char buf[SYSCAL_MSG_BUFFER_SIZE] = { 0 };
-    struct hm_drv_req_msg_t *msg    = (struct hm_drv_req_msg_t *)buf;
-    struct hm_drv_reply_msg_t *rmsg = (struct hm_drv_reply_msg_t *)buf;
+    struct drv_req_msg_t *msg    = (struct drv_req_msg_t *)buf;
+    struct drv_reply_msg_t *rmsg = (struct drv_reply_msg_t *)buf;
 
     msg->header.send.msg_id = DRV_DUMP_CMD_ID;
-    msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t);
+    msg->header.send.msg_size = sizeof(struct drv_req_msg_t);
 
     int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg,
         SYSCAL_MSG_BUFFER_SIZE, -1);

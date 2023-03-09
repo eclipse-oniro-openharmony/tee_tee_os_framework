@@ -29,13 +29,13 @@ struct gtask_msg {
     };
 } __attribute__((packed));
 
-static void hmapi_configure(void)
+static void teeapi_configure(void)
 {
     int32_t err;
 
     err = set_priority(HM_PRIO_TEE_SMCMGR);
     if (err < 0)
-        panic("hmapi set priority failed: %x\n", err);
+        panic("api set priority failed: %x\n", err);
 
     err = disable_local_irq();
     if (err < 0)
@@ -57,7 +57,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
         panic("memory copy failed\n");
 
     info("Start teesmc\n");
-    hmapi_configure();
+    teeapi_configure();
     (void)sched_yield();
 
     while (1) {
@@ -71,8 +71,7 @@ __attribute__((noreturn)) void *tee_smc_thread(void *arg)
                 continue;
 
             err = 0;
-            if (smc_buf.ops == CAP_TEESMC_OPS_NORMAL ||
-                smc_buf.ops == CAP_TEESMC_OPS_ABORT_TASK)
+            if (smc_buf.ops == CAP_TEESMC_OPS_NORMAL)
                 err = ipc_msg_notification(get_gtask_channel_hdlr(), NULL, 0);
 
             if (err < 0)

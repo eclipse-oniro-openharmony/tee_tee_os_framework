@@ -184,10 +184,10 @@ static int32_t param_check(const char *name, struct drv_call_params *params, int
 
 static int32_t length_invalid(uint32_t ext_data_len, uint32_t rdata_len, uint32_t max_len)
 {
-    if ((ext_data_len + sizeof(struct hm_drv_req_msg_t) < ext_data_len) ||
-        (sizeof(struct hm_drv_req_msg_t) + ext_data_len > max_len) ||
-        (rdata_len + sizeof(struct hm_drv_reply_msg_t) < rdata_len) ||
-        (sizeof(struct hm_drv_reply_msg_t) + rdata_len > max_len))
+    if ((ext_data_len + sizeof(struct drv_req_msg_t) < ext_data_len) ||
+        (sizeof(struct drv_req_msg_t) + ext_data_len > max_len) ||
+        (rdata_len + sizeof(struct drv_reply_msg_t) < rdata_len) ||
+        (sizeof(struct drv_reply_msg_t) + rdata_len > max_len))
         return -1;
 
     return 0;
@@ -217,7 +217,7 @@ static int32_t calc_ext_data_len(const struct drv_call_params *params, uint32_t 
     return 0;
 }
 
-static int32_t calc_ext_data_offset(struct hm_drv_req_msg_t *msg, const struct drv_call_params *params,
+static int32_t calc_ext_data_offset(struct drv_req_msg_t *msg, const struct drv_call_params *params,
                                     uint32_t ext_data_len)
 {
     uint32_t ext_remained;
@@ -253,8 +253,8 @@ static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call
     uint32_t ext_data_len;
     int32_t idex;
     /* msg_xfer_send_has_recv could handle send_buf and recv_buf point to the same addr */
-    struct hm_drv_req_msg_t *msg    = (struct hm_drv_req_msg_t *)buf;
-    struct hm_drv_reply_msg_t *rmsg = (struct hm_drv_reply_msg_t *)buf;
+    struct drv_req_msg_t *msg    = (struct drv_req_msg_t *)buf;
+    struct drv_reply_msg_t *rmsg = (struct drv_reply_msg_t *)buf;
     int64_t func_ret = -1;
 
     if (param_check(name, params, &idex) != 0)
@@ -267,13 +267,13 @@ static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call
     msg->header.send.msg_class = 0;
     msg->header.send.msg_flags = 0;
     msg->header.send.msg_id    = id;
-    msg->header.send.msg_size  = sizeof(struct hm_drv_req_msg_t) + ext_data_len;
+    msg->header.send.msg_size  = sizeof(struct drv_req_msg_t) + ext_data_len;
 
     if (calc_ext_data_offset(msg, params, ext_data_len) != 0)
         goto err_msg_call;
 
     ret = ipc_msg_call(g_drv_op_info[idex].channel, msg, msg->header.send.msg_size, rmsg,
-                      sizeof(struct hm_drv_req_msg_t) + params->rdata_len, -1);
+                      sizeof(struct drv_req_msg_t) + params->rdata_len, -1);
     if (ret != 0) {
         tloge("drv_call: hm msg call 0x%llx failed: %d\n", (unsigned long long)g_drv_op_info[idex].channel, ret);
         goto err_msg_call;

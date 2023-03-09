@@ -42,7 +42,7 @@ int32_t main(int32_t argc __attribute__((unused)), char *argv[] __attribute__((u
 
     cref_t ch = 0;
 
-    int32_t ret = hm_register_drv_framework(&drv_frame, &ch, true);
+    int32_t ret = register_drv_framework(&drv_frame, &ch, true);
     if (ret != 0) {
         tloge("failed to register drv framework: 0x%x\n", ret);
         exit(ret);
