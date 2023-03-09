@@ -86,7 +86,7 @@ static int32_t system_init(const char *name)
     return 0;
 }
 
-int32_t hm_register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *ch, bool new_frame)
+int32_t register_drv_framework(const struct drv_frame_t *drv_frame, cref_t *ch, bool new_frame)
 {
     int32_t ret;
 

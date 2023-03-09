@@ -61,21 +61,21 @@
 #undef DECLEAR_BITMAP
 #define DECLEAR_BITMAP(name, bits) uint64_t name[BITS_TO_LONGS(bits)]
 
-static inline void hm_set_bit(int nr, volatile uint64_t *addr)
+static inline void set_bit(int nr, volatile uint64_t *addr)
 {
     uint64_t mask = BIT_MASK(nr);
     uint64_t *p   = ((uint64_t *)addr) + BIT_WORD(nr);
     *p |= mask;
 }
 
-static inline void hm_clear_bit(int nr, volatile uint64_t *addr)
+static inline void clear_bit(int nr, volatile uint64_t *addr)
 {
     uint64_t mask = BIT_MASK(nr);
     uint64_t *p   = ((uint64_t *)addr) + BIT_WORD(nr);
     *p &= ~mask;
 }
 
-static inline int hm_test_bit(int nr, const volatile uint64_t *addr)
+static inline int test_bit(int nr, const volatile uint64_t *addr)
 {
     return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG - 1)));
 }

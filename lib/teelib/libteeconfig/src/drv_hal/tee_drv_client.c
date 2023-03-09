@@ -243,9 +243,9 @@ int64_t tee_drv_open(const char *drv_name, const void *param, uint32_t param_len
 static int64_t send_ioctl_cmd(cref_t channel, int64_t fd, uint32_t cmd_id, const void *param, uint32_t param_len)
 {
     char buf[SYSCAL_MSG_BUFFER_SIZE] = { 0 };
-    struct hm_drv_req_msg_t *msg = (struct hm_drv_req_msg_t *)buf;
-    struct hm_drv_reply_msg_t *rmsg = (struct hm_drv_reply_msg_t *)buf;
-    uint32_t ext_data = SYSCAL_MSG_BUFFER_SIZE - sizeof(struct hm_drv_req_msg_t);
+    struct drv_req_msg_t *msg = (struct drv_req_msg_t *)buf;
+    struct drv_reply_msg_t *rmsg = (struct drv_reply_msg_t *)buf;
+    uint32_t ext_data = SYSCAL_MSG_BUFFER_SIZE - sizeof(struct drv_req_msg_t);
 
     msg->args[DRV_FRAM_CMD_INDEX] = CALL_DRV_IOCTL;
     msg->args[DRV_PARAM_INDEX] = 0; /* param offset */
@@ -271,7 +271,7 @@ static int64_t send_ioctl_cmd(cref_t channel, int64_t fd, uint32_t cmd_id, const
     }
 
     msg->header.send.msg_id = DRV_GENERAL_CMD_ID;
-    msg->header.send.msg_size = sizeof(struct hm_drv_req_msg_t) + param_len;
+    msg->header.send.msg_size = sizeof(struct drv_req_msg_t) + param_len;
 
     int32_t ret = ipc_msg_call(channel, msg, msg->header.send.msg_size, rmsg, SYSCAL_MSG_BUFFER_SIZE, -1);
     if (ret != 0) {

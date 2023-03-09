@@ -73,7 +73,7 @@ __attribute__((noreturn)) void *tee_idle_thread(void *arg)
 
     int32_t err = set_priority(HM_PRIO_TEE_SMCMGR_IDLE);
     if (err < 0)
-        panic("hmapi set priority failed: %x\n", err);
+        panic("api set priority failed: %x\n", err);
     (void)sched_yield();
 
     starttz_core();
