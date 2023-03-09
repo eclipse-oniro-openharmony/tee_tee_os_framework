@@ -51,7 +51,7 @@ intptr_t rand_update(void *msg, cref_t *p_msg_hdl, struct hmcap_message_info *in
         return -1;
 
     cref_t msg_hdl = *p_msg_hdl;
-    hm_msg_header *msg_hdr = (hm_msg_header *)msg;
+    msg_header *msg_hdr = (msg_header *)msg;
 
     switch (msg_hdr->send.msg_id) {
     case HM_MSG_ID_DRV_PUSHED_RANDOM:

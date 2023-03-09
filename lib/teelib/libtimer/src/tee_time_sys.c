@@ -119,7 +119,7 @@ void gen_sys_date_time(const uint32_t rtc_time, struct tee_date_t *time)
     time->day = (int32_t)(idays + 1);
 }
 
-struct tm *hm_localtime_r(const time_t *restrict t, struct tm *restrict value)
+struct tm *tee_localtime_r(const time_t *restrict t, struct tm *restrict value)
 {
     tee_date_time_kernel date_time;
 
@@ -170,7 +170,7 @@ struct tm *__localtime_r(const time_t *restrict t, struct tm *restrict value)
     if (t == NULL || value == NULL)
         return NULL;
 
-    tmp = hm_localtime_r(t, value);
+    tmp = tee_localtime_r(t, value);
     if (tmp == NULL) {
         tloge("localtime: get value is NULL\n");
         return NULL;

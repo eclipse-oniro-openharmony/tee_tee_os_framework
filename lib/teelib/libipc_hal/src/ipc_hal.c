@@ -98,8 +98,8 @@ static uint32_t ipc_msgsnd_core(struct msgsent_st msgsent)
     }
 
     if (msgsent.size <= NOTIFY_MAX_LEN) {
-        struct notify_st *hm_ntf_p = (struct notify_st *)&msg;
-        rc                         = ipc_msg_notification(msgsent.dst_ch, hm_ntf_p, sizeof(struct notify_st));
+        struct notify_st *ntf_p = (struct notify_st *)&msg;
+        rc                         = ipc_msg_notification(msgsent.dst_ch, ntf_p, sizeof(struct notify_st));
     } else {
         tloge("msg_call failed, not support big msg in ipc_msg_snd/ipc_msg_qsnd, size = %u\n", msgsent.size);
         return SRE_IPC_ERR;

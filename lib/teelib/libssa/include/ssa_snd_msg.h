@@ -21,5 +21,5 @@ struct msg_st {
     char payload[MSG_MAX_LEN];
 } __attribute__((__packed__));
 
-uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_szie);
+uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_size);
 #endif

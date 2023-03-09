@@ -14,9 +14,9 @@
 #include <tee_log.h>
 #include <securec.h>
 
-uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_szie)
+uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_size)
 {
-    struct msg_st hm_msg = { 0 };
+    struct msg_st msg_info = { 0 };
     cref_t rslot = 0;
     uint32_t ret;
 
@@ -26,13 +26,13 @@ uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_szie)
         return ret;
     }
 
-    hm_msg.msg_id = cmd_id;
-    if (memcpy_s(hm_msg.payload, sizeof(hm_msg.payload), msg, msg_szie) != 0) {
+    msg_info.msg_id = cmd_id;
+    if (memcpy_s(msg_info.payload, sizeof(msg_info.payload), msg, msg_size) != 0) {
         (void)ipc_release_path(SSA_SERVICE_PATH, rslot);
         return -1;
     }
 
-    ret = (uint32_t)ipc_msg_notification(rslot, &hm_msg, sizeof(hm_msg));
+    ret = (uint32_t)ipc_msg_notification(rslot, &msg_info, sizeof(msg_info));
     if (ret != 0)
         tloge("msg snd error %x\n", ret);
 

@@ -219,7 +219,7 @@ static int32_t driver_handle_message(const struct drv_req_msg_t *msg, const stru
     rmsg->header.reply.ret_val = (ret == 0) ? ret_val : (int64_t)ret;
     ret = ipc_msg_reply(*msg_hdl, rmsg, sizeof(struct drv_reply_msg_t));
     if (ret != 0) {
-        tloge("hm msg reply failed\n");
+        tloge("ipc msg reply failed\n");
         /*
          * should clear system resource information alloced by this cmd when reply failed,
          * otherwise it will cause memory leak

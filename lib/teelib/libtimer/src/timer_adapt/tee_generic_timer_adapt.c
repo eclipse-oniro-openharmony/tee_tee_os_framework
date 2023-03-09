@@ -29,7 +29,7 @@ enum classic_timer_msg {
 };
 
 struct timer_event_msg {
-    hm_msg_header hdr;
+    msg_header hdr;
 };
 
 static struct tee_time_t g_rtc_offset;

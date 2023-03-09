@@ -37,7 +37,7 @@ TEE_Result tee_srv_get_uuid_by_sender(uint32_t sender, TEE_UUID *uuid)
 
     int32_t ret = getuuid((pid_t)taskid_to_pid(sender), &sender_uuid);
     if (ret != 0) {
-        tloge("get uuid from hm failed, sender is 0x%x\n", sender);
+        tloge("get uuid failed, sender is 0x%x\n", sender);
         return TEE_ERROR_ITEM_NOT_FOUND;
     }
     errno_t rc = memcpy_s(uuid, sizeof(*uuid), &sender_uuid.uuid, sizeof(sender_uuid.uuid));
