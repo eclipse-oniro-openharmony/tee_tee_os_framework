@@ -10,6 +10,7 @@
 
 ifeq ($(CONFIG_TA_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/drivers/tarunner.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/tarunner.elf
 endif
 
 ifeq ($(CONFIG_HUK_SERVICE_64BIT), true)
@@ -40,8 +41,10 @@ endif
 ifdef CONFIG_PERMSRV_64BIT
 ifeq ($(CONFIG_PERMSRV_64BIT), true)
 product_apps += $(OUTPUTDIR)/aarch64/apps/permission_service.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/apps/permission_service.elf
 else
 product_apps += $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf
+check-syms-y += $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf
 $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf:
 	@mkdir $(OUTPUTDIR)/arm/apps/permission_service_a32
 	@cp $(OUTPUTDIR)/arm/apps/permission_service_a32.elf $(OUTPUTDIR)/arm/apps/permission_service_a32/permission_service.elf
@@ -57,6 +60,7 @@ ifeq ($(CONFIG_TA_32BIT), true)
 product_apps += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
 check-syms-y += $(OUTPUTDIR)/arm/obj/arm/libtee_shared/libtee_shared_a32.so
 product_apps += $(OUTPUTDIR)/arm/drivers/tarunner_a32.elf
+check-syms-y += $(OUTPUTDIR)/arm/drivers/tarunner_a32.elf
 endif
 
 ifeq ($(CONFIG_GTASK_64BIT), true)
@@ -85,10 +89,10 @@ endif
 
 ifeq ($(CONFIG_DRVMGR_64BIT), true)
 #product_apps += $(OUTPUTDIR)/aarch64/drivers/drvmgr.elf
-#check-syms-y += $(OUTPUTDIR)/aarch64/drivers/drvmgr.elf
+#check-a64-syms-y += $(OUTPUTDIR)/aarch64/drivers/drvmgr.elf
 ifeq ($(CONFIG_TEE_MISC_DRIVER_64BIT), true)
 #product_apps += $(OUTPUTDIR)/aarch64/drivers/tee_misc_driver.elf
-#check-syms-y += $(OUTPUTDIR)/aarch64/drivers/tee_misc_driver.elf
+#check-s64-syms-y += $(OUTPUTDIR)/aarch64/drivers/tee_misc_driver.elf
 endif
 endif
 ifeq ($(CONFIG_DRVMGR_64BIT), false)
@@ -109,8 +113,10 @@ ifeq ($(CONFIG_TEE_CRYPTO_MGR_SERVER_64BIT), false)
 #check-syms-y += $(OUTPUTDIR)/arm/drivers/crypto_mgr.elf
 endif
 
+ifeq ($(CONFIG_ARCH_AARCH64),y)
+product_apps += $(OUTPUTDIR)/aarch64/apps/teesmcmgr.elf
+check-a64-syms-y += $(OUTPUTDIR)/aarch64/apps/teesmcmgr.elf
+else
 product_apps += $(OUTPUTDIR)/arm/apps/teesmcmgr.elf
-
-ifneq ($(CONFIG_NOT_CHECK_SYM_A32), y)
-check-syms-y += $(filter-out $(OUTPUTDIR)/arm/drivers/%.elf $(OUTPUTDIR)/aarch64/drivers/%.elf, $(product_apps))
+check-syms-y += $(OUTPUTDIR)/arm/apps/teesmcmgr.elf
 endif
