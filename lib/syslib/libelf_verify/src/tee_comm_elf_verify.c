@@ -22,6 +22,7 @@
 #include "ta_load_key.h"
 #include "tee_load_key_ops.h"
 #include "tee_crypto_hal.h"
+#include <sys/mman.h>
 
 TEE_Result tee_secure_img_header_check(uint32_t img_version)
 {
@@ -383,7 +384,7 @@ void free_verify_v2(void)
     teec_image_head *image_hd = get_image_hd();
     /* do NOT free it, map from tafs */
     if (img_info->img_buf != NULL) {
-        (void)task_unmap(get_self_taskid(), (uintptr_t)img_info->img_buf, get_img_size());
+        (void)munmap((void *)(uintptr_t)img_info->img_buf, get_img_size());
         img_info->img_buf = NULL;
     }
 

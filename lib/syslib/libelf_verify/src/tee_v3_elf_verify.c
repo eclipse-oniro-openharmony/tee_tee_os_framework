@@ -32,6 +32,7 @@
 #include "tee_load_key_ops.h"
 #include "tee_elf_verify_openssl.h"
 #include "ipclib.h"
+#include <sys/mman.h>
 #ifdef OPENSSL_ENABLE
 #include <openssl/obj_mac.h>
 #endif
@@ -929,7 +930,7 @@ void free_verify_v3(void)
 
     /* do NOT free, map from tafs */
     if (img_info->img_buf != NULL) {
-        (void)task_unmap(get_self_taskid(), (uintptr_t)img_info->img_buf, get_img_size());
+        (void)munmap((void *)(uintptr_t)img_info->img_buf, get_img_size());
         img_info->img_buf = NULL;
     }
 
