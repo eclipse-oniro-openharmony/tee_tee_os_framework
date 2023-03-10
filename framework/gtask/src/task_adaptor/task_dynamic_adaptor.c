@@ -51,7 +51,7 @@ static void send_msg_to_srv(const char *cur_task_name, const struct reg_ta_info 
     }
 
     ret = ipc_msg_notification(ch, &req_msg, sizeof(req_msg));
-    (void)ipc_release_path(cur_task_name, ch);
+    (void)ipc_release_from_path(cur_task_name, ch);
     if (ret != 0)
         tloge("msg send to 0x%llx failed: 0x%x\n", ch, ret);
 }

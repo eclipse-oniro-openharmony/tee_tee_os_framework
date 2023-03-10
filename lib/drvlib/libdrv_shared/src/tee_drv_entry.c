@@ -100,7 +100,7 @@ static int32_t send_succ_msg_to_drvmgr(void)
         return -1;
     }
 
-    uint32_t ipc_ret = ipc_release_path(DRV_SPAWN_SYNC_NAME, ch);
+    uint32_t ipc_ret = ipc_release_from_path(DRV_SPAWN_SYNC_NAME, ch);
     if (ipc_ret != 0)
         tloge("spawn succ release sync channel fail:0x%x\n", ipc_ret);
 

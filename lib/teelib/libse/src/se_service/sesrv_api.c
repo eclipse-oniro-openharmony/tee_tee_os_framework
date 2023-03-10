@@ -41,7 +41,7 @@ bool se_srv_exist(void)
         return false;
     }
 
-    (void)ipc_release_path(SE_PATH, rslot);
+    (void)ipc_release_from_path(SE_PATH, rslot);
 
     return true;
 }
@@ -97,7 +97,7 @@ static int se_srv_msg_call(struct se_srv_msg_t *msg, struct se_srv_rsp_t *rsp)
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)ipc_release_path(SE_PATH, rslot);
+    (void)ipc_release_from_path(SE_PATH, rslot);
     if (pthread_mutex_unlock(&g_msg_call_mutex) != 0) {
         tloge("se msg call mutex unlock failed\n");
         return -1;

@@ -28,7 +28,7 @@ uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_size)
 
     msg_info.msg_id = cmd_id;
     if (memcpy_s(msg_info.payload, sizeof(msg_info.payload), msg, msg_size) != 0) {
-        (void)ipc_release_path(SSA_SERVICE_PATH, rslot);
+        (void)ipc_release_from_path(SSA_SERVICE_PATH, rslot);
         return -1;
     }
 
@@ -36,6 +36,6 @@ uint32_t send_msg_to_ssa(uint32_t cmd_id, const void *msg, uint32_t msg_size)
     if (ret != 0)
         tloge("msg snd error %x\n", ret);
 
-    (void)ipc_release_path(SSA_SERVICE_PATH, rslot);
+    (void)ipc_release_from_path(SSA_SERVICE_PATH, rslot);
     return ret;
 }

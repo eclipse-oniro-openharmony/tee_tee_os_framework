@@ -247,7 +247,7 @@ static void send_fail_msg_to_drvmgr(void)
         return;
     }
 
-    if (ipc_release_path(DRV_SPAWN_SYNC_NAME, ch) != 0)
+    if (ipc_release_from_path(DRV_SPAWN_SYNC_NAME, ch) != 0)
         tloge("release drvmgr sync channel fail\n");
 }
 
