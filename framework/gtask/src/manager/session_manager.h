@@ -43,8 +43,8 @@ struct service_struct *find_service_by_task_id(uint32_t task_id);
 int join_session_task_name(const char *service_name, struct session_struct *session);
 struct session_struct *find_session_with_dev_file_id(uint32_t session_id, uint32_t dev_file_id,
     const struct service_struct *srv);
-struct session_struct *get_cur_session();
-struct service_struct *get_cur_service();
+struct session_struct *get_cur_session(void);
+struct service_struct *get_cur_service(void);
 TEE_Result add_new_session_into_list(struct session_struct **session, uint32_t *session_id,
                                      uint32_t ta2ta_level);
 int32_t release_session(struct service_struct *service, struct session_struct *session);
