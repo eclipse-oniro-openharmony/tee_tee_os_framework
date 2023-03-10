@@ -38,6 +38,7 @@
 #include "global_task.h"
 #include "task_dynamic_adaptor.h"
 #include "load_app_comm.h"
+#include <sys/mman.h>
 
 typedef struct {
     smc_cmd_t smc_cmd;
@@ -107,7 +108,7 @@ void free_img_load_buf(void)
         return;
 
     /* do NOT free, map from tafs */
-    (void)task_unmap(0, (uintptr_t)img_info_ptr->img_buf, img_info_ptr->aligned_img_size);
+    (void)munmap((void *)(uintptr_t)img_info_ptr->img_buf, img_info_ptr->aligned_img_size);
     img_info_ptr->img_buf = NULL;
 
     do_remove_file();
