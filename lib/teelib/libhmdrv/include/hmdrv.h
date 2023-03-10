@@ -23,14 +23,14 @@
 #endif
 
 struct drv_req_msg_t {
-    hm_msg_header header;
+    msg_header header;
     uint64_t args[MAX_ARGS];
     cref_t job_handler;
     char data[];
 } __attribute__((__packed__));
 
 struct drv_reply_msg_t {
-    hm_msg_header header;
+    msg_header header;
     uint64_t __rsvd;
     char rdata[];
 } __attribute__((__packed__));

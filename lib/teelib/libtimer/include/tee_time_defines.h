@@ -79,13 +79,13 @@
 #define TIME_OUT_NEVER (-1)
 
 struct timer_req_msg_t {
-    hm_msg_header header;
+    msg_header header;
     uint64_t args[TIMER_MSG_NUM_MAX];
     cref_t job_handler;
 } __attribute__((__packed__));
 
 struct timer_reply_msg_t {
-    hm_msg_header header;
+    msg_header header;
     cref_t tcb_cref;
     uint64_t regs[TIMER_RMSG_MAX_NUM];
 } __attribute__((__packed__));

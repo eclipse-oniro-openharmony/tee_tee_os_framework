@@ -190,12 +190,12 @@ typedef struct perm_srv_rspbody_st {
 
 /* struct for req msg and reply msg */
 typedef struct perm_srv_req_msg_st {
-    hm_msg_header header;
+    msg_header header;
     perm_srv_msgbody_t req_msg;
 } __attribute__((__packed__)) perm_srv_req_msg_t;
 
 typedef struct perm_srv_reply_msg_st {
-    hm_msg_header header;
+    msg_header header;
     perm_srv_rspbody_t reply;
 } __attribute__((__packed__)) perm_srv_reply_msg_t;
 

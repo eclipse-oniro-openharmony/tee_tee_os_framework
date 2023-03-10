@@ -18,6 +18,6 @@ typedef union {
         uint32_t    msg_size;
         uint32_t    reserve;
     } __attribute__((packed)) reply;
-} hm_msg_header;
+} msg_header;
 
 #endif

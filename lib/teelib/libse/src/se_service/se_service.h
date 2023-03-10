@@ -378,12 +378,12 @@ struct se_srv_rsp_data_t {
 };
 
 struct se_srv_msg_t {
-    hm_msg_header header;
+    msg_header header;
     union se_srv_msg_data_t data;
 } __attribute__((__packed__));
 
 struct se_srv_rsp_t {
-    hm_msg_header header;
+    msg_header header;
     struct se_srv_rsp_data_t data;
 } __attribute__((__packed__));
 

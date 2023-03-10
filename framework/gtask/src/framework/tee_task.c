@@ -98,7 +98,7 @@ void gt_wait_process(uint32_t task_id)
     int i;
     int wstatus;
 
-    hm_ipc_remove_cached_ch(task_id, 1, NULL);
+    ipc_release_cached_ch(task_id, 1, NULL);
     for (i = 0; i < WAIT_MAX; i++) {
         if (wait(&wstatus) == (pid_t)taskid_to_pid(task_id)) {
             tlogd("wait %" PRIu32 " exit succeeded\n", task_id);
@@ -606,7 +606,7 @@ int32_t sre_task_delete_ex(uint32_t uw_task_pid, bool is_service_dead, uint32_t 
     int ret;
 
     /* Multi-thread task */
-    hm_ipc_remove_cached_ch(uw_task_pid, 1, NULL);
+    ipc_release_cached_ch(uw_task_pid, 1, NULL);
 
     /* service has exception, cannot send msg to it anymore */
     if (is_service_dead)

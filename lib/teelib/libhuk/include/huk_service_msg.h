@@ -87,12 +87,12 @@ struct huk_srv_rsp_data {
 };
 
 struct huk_srv_msg {
-    hm_msg_header header;
+    msg_header header;
     union huk_srv_msg_data data;
 } __attribute__((__packed__));
 
 struct huk_srv_rsp {
-    hm_msg_header header;
+    msg_header header;
     struct huk_srv_rsp_data data;
 } __attribute__((__packed__));
 
