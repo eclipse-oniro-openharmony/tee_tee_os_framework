@@ -14,7 +14,7 @@ include $(BUILD_CONFIG)/var.mk
 flags += -fno-builtin
 flags += -I$(DRVLIB)/common/libdrv_frame/include/
 flags += -I$(TEELIB)/libtimer/include/
-flags += -I$(TEELIB)/libhmdrv/include
+flags += -I$(TEELIB)/libdrv/include
 flags += -I$(TEELIB)/libteeos/include/legacy
 flags += -I$(TEELIB)/libteeos/include/tee
 flags += -I$(TEELIB)/libteeos/src/log/

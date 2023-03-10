@@ -17,7 +17,7 @@
 #include <malloc.h>
 #include <securec.h>
 #include <tee_log.h>
-#include <hmdrv.h>
+#include <drv.h>
 #include <ipclib.h>
 #include "tee_drv_internal.h"
 #include "tee_drv_errno.h"
@@ -224,7 +224,7 @@ int64_t tee_drv_open(const char *drv_name, const void *param, uint32_t param_len
         0,
     };
 
-    int64_t fd = hm_drv_call_new("drvmgr_multi", DRV_GENERAL_CMD_ID, args, lens, ARRAY_SIZE(args));
+    int64_t fd = drv_call_new("drvmgr_multi", DRV_GENERAL_CMD_ID, args, lens, ARRAY_SIZE(args));
     if (fd <= 0) {
         tloge("alloc fd failed\n");
         return fd;
@@ -302,7 +302,7 @@ static int64_t tee_drv_close_handle(int64_t fd)
         (uint64_t)fd,
     };
 
-    int64_t ret = hm_drv_call_new("drvmgr_multi", DRV_GENERAL_CMD_ID, args, NULL, ARRAY_SIZE(args));
+    int64_t ret = drv_call_new("drvmgr_multi", DRV_GENERAL_CMD_ID, args, NULL, ARRAY_SIZE(args));
     if (ret != 0)
         tloge("close fd:0x%llx fail\n", fd);
 
@@ -338,14 +338,14 @@ void tee_drv_task_exit(uint32_t exit_pid)
         exit_pid,
     };
 
-    int64_t ret = hm_drv_call_new("drvmgr_multi", DRV_EXCEPTION_CMD_ID, args, NULL, ARRAY_SIZE(args));
+    int64_t ret = drv_call_new("drvmgr_multi", DRV_EXCEPTION_CMD_ID, args, NULL, ARRAY_SIZE(args));
     if (ret != 0)
         tloge("call driver exception failed\n");
 }
 
 void tee_drv_task_dump(void)
 {
-    int64_t ret = hm_drv_call_new("drvmgr_multi", DRV_DUMP_CMD_ID, NULL, NULL, 0);
+    int64_t ret = drv_call_new("drvmgr_multi", DRV_DUMP_CMD_ID, NULL, NULL, 0);
     if (ret != 0)
         tloge("drv task dump drv call failed\n");
 }

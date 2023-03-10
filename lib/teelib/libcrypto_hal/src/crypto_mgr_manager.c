@@ -12,7 +12,7 @@
 #include "crypto_manager.h"
 #include <stdio.h>
 #include <securec.h>
-#include <hmdrv.h>
+#include <drv.h>
 #include <mem_ops.h>
 #include "tee_log.h"
 #include "crypto_default_engine.h"

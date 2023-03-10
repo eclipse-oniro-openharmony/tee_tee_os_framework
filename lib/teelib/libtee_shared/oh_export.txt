@@ -409,7 +409,7 @@ RSA_get0_factors;
 RSA_get0_crt_params;
 
 /* may not be exported on OH platform */
-hm_drv_call_new;
+drv_call_new;
 tee_print;
 get_global_handle;
 set_global_handle;

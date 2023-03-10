@@ -69,7 +69,7 @@ inc-flags += -I$(DRVLIB)/common/libdrv_frame/include/
 inc-flags += -I$(TEELIB)/libteeconfig/include/
 inc-flags += -I$(SYSLIB)/libdynconfmgr/include/
 inc-flags += -I$(SYSLIB)/libspawn_common/include/
-inc-flags += -I$(TEELIB)/libhmdrv/include/
+inc-flags += -I$(TEELIB)/libdrv/include/
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
@@ -90,7 +90,7 @@ include $(BUILD_DRIVER)/drv-common.mk
 
 flags += $(TRUSTEDCORE_LOCAL_CFLAGS)
 
-LIBS += hmdrv${TARG}
+LIBS += drv${TARG}
 drvmgr_LDFLAGS += --whole-archive -lteeconfig${TARG} --no-whole-archive
 
 install:

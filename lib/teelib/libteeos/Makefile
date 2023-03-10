@@ -14,7 +14,7 @@ MODULE := libteeos${TARG}.a
 # This library only provides 32-bit headers of libbteeos.
 # If we want 64-bit headers of libteeos, we should depend on libac temporarily.
 
-CPPFLAGS += -I$(TEELIB)/libhmdrv/include
+CPPFLAGS += -I$(TEELIB)/libdrv/include
 CPPFLAGS += -I$(TEELIB)/libswcrypto_engine/include
 CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
 CPPFLAGS += -I$(TEELIB)/libagent_base/include # tee_secfile_load_agent.h

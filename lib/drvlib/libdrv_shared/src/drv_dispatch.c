@@ -17,7 +17,7 @@
 #include <spawn_ext.h>
 #include <ipclib.h>
 #include <tee_log.h>
-#include <hmdrv.h>
+#include <drv.h>
 #include <tee_drv_internal.h>
 #include "tee_driver_module.h"
 #include "drv_thread.h"

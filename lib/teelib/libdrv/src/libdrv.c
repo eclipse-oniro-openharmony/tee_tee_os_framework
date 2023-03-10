@@ -10,7 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#include "hmdrv.h"
+#include "drv.h"
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -87,7 +87,7 @@ static int32_t get_info_idex_by_name(const char *name)
     return -1;
 }
 
-int32_t hm_drv_init(const char *name)
+int32_t drv_init(const char *name)
 {
     int32_t rc = -1;
     struct drv_op_info *op_info = NULL;
@@ -111,19 +111,19 @@ int32_t hm_drv_init(const char *name)
     /* get channel according to path */
     rc = ipc_get_ch_from_path(name, &op_info->channel);
     if (rc != 0) {
-        tloge("libhmdrv: get channel from pathmgr failed: %d\n", rc);
+        tloge("libdrv: get channel from pathmgr failed: %d\n", rc);
         goto unlock_out;
     }
 
     if (memcpy_s(op_info->name, MAX_DRV_NAME_LEN, name, strlen(name)) != EOK) {
-        tloge("libhmdrv: %s memcpy name failed\n", name);
+        tloge("libdrv: %s memcpy name failed\n", name);
         (void)memset_s(op_info->name, MAX_DRV_NAME_LEN, 0, MAX_DRV_NAME_LEN);
         rc = -1;
         goto unlock_out;
     }
 
     g_drv_frame_count++;
-    tlogd("libhmdrv: init ok for pid %d with s_rslot=0x%llx\n", getpid(), op_info->channel);
+    tlogd("libdrv: init ok for pid %d with s_rslot=0x%llx\n", getpid(), op_info->channel);
 
 unlock_out:
     mutex_unlock_ops(&g_framp_op_mutex);
@@ -136,7 +136,7 @@ static int32_t try_get_info_idex(const char *name)
 
     idex = get_info_idex_by_name(name);
     if (idex < 0) {
-        if (hm_drv_init(name) != 0) {
+        if (drv_init(name) != 0) {
             tloge("%s init failed\n", name);
             return -1;
         }
@@ -229,12 +229,12 @@ static int32_t calc_ext_data_offset(struct drv_req_msg_t *msg, const struct drv_
             msg->args[i] = params->args[i];
         } else {
             if ((void *)((uintptr_t)params->args[i]) == NULL) {
-                tloge("hmdrv args %d is NULL, please check\n", i);
+                tloge("drv args %d is NULL, please check\n", i);
                 return -1;
             }
 
             if (memcpy_s(ext_ptr, ext_remained, (void *)((uintptr_t)params->args[i]), params->lens[i]) != EOK) {
-                tloge("hmdrv copy failed\n");
+                tloge("drv copy failed\n");
                 return -1;
             }
             msg->args[i] = (uintptr_t)(ext_ptr - msg->data);
@@ -247,7 +247,7 @@ static int32_t calc_ext_data_offset(struct drv_req_msg_t *msg, const struct drv_
 }
 
 
-static int64_t hm_drv_call_ex_new(const char *name, uint16_t id, struct drv_call_params *params)
+static int64_t drv_call_ex_new(const char *name, uint16_t id, struct drv_call_params *params)
 {
     char buf[SYSCAL_MSG_BUFFER_SIZE] = { 0 };
     uint32_t ext_data_len;
@@ -293,11 +293,11 @@ err_msg_call:
     return func_ret;
 }
 
-int64_t hm_drv_call_new(const char *name, uint16_t id, uint64_t *args, uint32_t *lens, int32_t nr)
+int64_t drv_call_new(const char *name, uint16_t id, uint64_t *args, uint32_t *lens, int32_t nr)
 {
     struct drv_call_params params = {
         args, lens, nr, NULL, 0
     };
 
-    return hm_drv_call_ex_new(name, id, &params);
+    return drv_call_ex_new(name, id, &params);
 }
