@@ -727,11 +727,9 @@ RSA *get_private_key(int32_t img_version, enum ta_type type)
     switch (img_version) {
     case TA_SIGN_VERSION:
         return get_private_key_v1();
-        break;
     case TA_RSA2048_VERSION:
     case CIPHER_LAYER_VERSION:
         return get_private_key_v2(img_version, type);
-        break;
     default:
         tloge("Unsupported secure image version!\n");
         return NULL;

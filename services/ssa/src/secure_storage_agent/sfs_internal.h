@@ -164,7 +164,7 @@ client_t *get_sender_client(uint32_t sender);
 bool is_enum_enable(const TEE_UUID *uuid);
 bool check_shared_access(const struct sfd_t *sfd, uint32_t flags);
 uint32_t open_file(meta_data_t *meta, uint32_t sndr, uint32_t flags, struct sfd_t **sfd, TEE_Result *error);
-void init_global_param();
+void init_global_param(void);
 int32_t file_name_transfer(meta_data_t *meta, char *hash_name, uint32_t hash_name_len, bool is_file_hash);
 void reset_meta(meta_data_t *meta);
 #endif

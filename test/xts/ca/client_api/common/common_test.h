@@ -22,7 +22,7 @@
 
 #define TEST_STR_LEN 256
 #define TEST_SIZE512 512
-#define SIZE16k (16) * (1024)
+#define SIZE16k ((16) * (1024))
 // now not support 9999,so 9999 is invalid
 #define TEEC_MEM_INVALID 9999
 #define OFFSET100 100
