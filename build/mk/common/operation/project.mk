@@ -22,7 +22,7 @@ libtee_shared: libteeconfig libtimer libteeagentcommon_client libcrypto_hal libs
 libdrv_shared_a32: #libteeconfig_a32
 libdrv_shared: #libteeconfig
 
-teelib := libcrypto_hal libtimer libagent libagent_base libhmdrv libteeos libpermission_service \
+teelib := libcrypto_hal libtimer libagent libagent_base libdrv libteeos libpermission_service \
 	libswcrypto_engine libtaentry libteeagentcommon_client libcrypto libteeconfig libteemem \
 	libssa libhuk libteedynsrv libopenssl libse libipc_hal
 syslib := libelf_verify libspawn_common libelf_verify_key libdynconfmgr libdynconfbuilder

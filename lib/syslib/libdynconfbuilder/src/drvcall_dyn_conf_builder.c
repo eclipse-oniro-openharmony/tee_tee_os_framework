@@ -14,7 +14,7 @@
 #include <securec.h>
 #include <tee_log.h>
 #include <tee_defines.h>
-#include <hmdrv.h>
+#include <drv.h>
 #include <tee_drv_internal.h>
 #include <ta_framework.h>
 #include <drvcall_dyn_conf_mgr.h>
@@ -279,7 +279,7 @@ static int32_t send_drvcall_conf(const struct drvcall_conf_t *drvcall_conf, uint
     };
 
     /* the main thread just handle register cmd */
-    return hm_drv_call_new("drvmgr", REGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
+    return drv_call_new("drvmgr", REGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
 }
 
 static int32_t send_drvcall_uuid(const struct tee_uuid *uuid, uint32_t uuid_size)
@@ -294,7 +294,7 @@ static int32_t send_drvcall_uuid(const struct tee_uuid *uuid, uint32_t uuid_size
         0,
     };
 
-    return hm_drv_call_new("drvmgr_multi", UNREGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
+    return drv_call_new("drvmgr_multi", UNREGISTER_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
 }
 
 void dump_drvcall_conf(void)
@@ -302,7 +302,7 @@ void dump_drvcall_conf(void)
     uint64_t args[] = {};
     uint32_t lens[] = {};
 
-    (void)hm_drv_call_new("drvmgr_multi", DUMP_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
+    (void)drv_call_new("drvmgr_multi", DUMP_DRVCALL_CONF, args, lens, ARRAY_SIZE(args));
 }
 
 void uninstall_drvcall_permission(const void *obj, uint32_t obj_size)

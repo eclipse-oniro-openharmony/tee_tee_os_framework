@@ -12,7 +12,7 @@
 #ifndef PLATDRV_DRV_THREAD_H
 #define PLATDRV_DRV_THREAD_H
 #include <alltypes.h>
-#include <hmdrv.h>
+#include <drv.h>
 
 #define DRV_CALL_OK      0
 #define DRV_CALL_ERROR  (-1)

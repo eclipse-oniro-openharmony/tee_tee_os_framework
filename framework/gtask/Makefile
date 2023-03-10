@@ -55,7 +55,7 @@ inc-flags += -I$(PWD)/../drvmgr/src
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(SYSLIB)/libspawn_common/include/
 inc-flags += -I$(TEELIB)/libagent_base/include/
-inc-flags += -I$(TEELIB)/libhmdrv/include/
+inc-flags += -I$(TEELIB)/libdrv/include/
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include
@@ -97,7 +97,7 @@ LIBS := c_shared${TARG}        \
     tee_shared${TARG}      \
     permission_service${TARG} \
     teemem${TARG}          \
-    hmdrv${TARG}           \
+    drv${TARG}           \
     teeconfig${TARG}       \
     dynconfmgr${TARG}      \
     dynconfbuilder${TARG}  \

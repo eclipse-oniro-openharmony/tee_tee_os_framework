@@ -16,7 +16,7 @@
 #include <ipclib.h>
 #include <tee_log.h>
 #include <tee_bitmap.h>
-#include <hmdrv.h>
+#include <drv.h>
 #include <tee_drv_internal.h>
 #include <spawn_ext.h>
 #include "tee_driver_module.h"

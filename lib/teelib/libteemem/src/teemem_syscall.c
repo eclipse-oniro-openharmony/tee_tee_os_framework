@@ -16,7 +16,7 @@
 #include <tee_log.h>
 #include <ipclib.h>
 #include <mem_page_ops.h>
-#include <hmdrv.h>
+#include <drv.h>
 #include <tee_sharemem_ops.h>
 
 static int32_t copy_task_param_check(uint64_t src, uint32_t src_size, uint64_t dst, uint32_t dst_size)

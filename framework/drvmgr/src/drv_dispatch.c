@@ -17,7 +17,7 @@
 #include <ipclib.h>
 #include <tee_log.h>
 #include <ta_framework.h>
-#include <hmdrv.h>
+#include <drv.h>
 #include <tee_drv_internal.h>
 #include <tee_drv_errno.h>
 #include <target_type.h>

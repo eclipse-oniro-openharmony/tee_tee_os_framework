@@ -10,8 +10,8 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#ifndef LIBHMDRV_HMDRV_H
-#define LIBHMDRV_HMDRV_H
+#ifndef LIBDRV_DRV_H
+#define LIBDRV_DRV_H
 
 #include <ipclib.h>
 #include "tee_msg_type.h"
@@ -43,8 +43,8 @@ struct drv_call_params {
     uint32_t rdata_len;
 };
 
-int32_t hm_drv_init(const char *path);
+int32_t drv_init(const char *path);
 
-int64_t hm_drv_call_new(const char *name, uint16_t id, uint64_t *args, uint32_t *lens, int32_t nr);
+int64_t drv_call_new(const char *name, uint16_t id, uint64_t *args, uint32_t *lens, int32_t nr);
 
-#endif /* LIBHMDRV_HMDRV_H */
+#endif /* LIBDRV_DRV_H */
