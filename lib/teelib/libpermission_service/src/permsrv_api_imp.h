@@ -29,7 +29,7 @@ TEE_Result tee_cert_import(const uint8_t *cert_buf, uint32_t cert_size, const ui
 
 void permsrv_notify_unload_ta(const TEE_UUID *uuid);
 
-void permsrv_load_file();
+void permsrv_load_file(void);
 
 TEE_Result permsrv_elf_verify(const void *verify_req, uint32_t len);
 

@@ -174,7 +174,7 @@ clean:
     return ret;
 }
 
-void permsrv_load_file()
+void permsrv_load_file(void)
 {
     perm_srv_req_msg_t req_msg;
 

@@ -999,7 +999,7 @@ ssa_cmd_t *ssa_find_cmd(uint32_t cmd)
     return &g_ssa_cmd_tbl[i];
 }
 
-void init_global_param()
+void init_global_param(void)
 {
     (void)memset_s(g_clients, sizeof(g_clients), 0, sizeof(g_clients));
     (void)memset_s((void *)g_private_storage, sizeof(g_private_storage), 0, sizeof(g_private_storage));
