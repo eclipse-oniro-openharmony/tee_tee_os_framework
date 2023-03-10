@@ -43,12 +43,12 @@ void set_session_context(smc_cmd_t *cmd, uint32_t service_index, uint32_t sessio
 TEE_Result process_close_session_entry(struct service_struct **service, struct session_struct **session);
 void process_close_ta2ta_target_sessions(uint32_t from_taskid, uint32_t level);
 
-struct session_struct *get_cur_session()
+struct session_struct *get_cur_session(void)
 {
     return g_cur_session;
 }
 
-struct service_struct *get_cur_service()
+struct service_struct *get_cur_service(void)
 {
     return g_cur_service;
 }
@@ -635,7 +635,7 @@ static void create_task_fail_gc(bool handle_ref_cnt, int sre_ret)
     release_srvc_gc(handle_ref_cnt, sre_ret);
 }
 
-static int open_session_fail_gc()
+static int open_session_fail_gc(void)
 {
     if (g_cur_service->session_count > 0) {
         g_cur_service->session_count--;

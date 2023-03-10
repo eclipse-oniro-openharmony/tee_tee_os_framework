@@ -65,7 +65,7 @@ void TEE_BigIntInit(TEE_BigInt *bigInt, size_t len);
  */
 void TEE_BigIntInitFMMContext(TEE_BigIntFMMContext *context, size_t len, const TEE_BigInt *modulus);
 
-#if defined(API_LEVEL) && (API_LEVEL >= API_LEVEL1_1_1)
+#if defined(API_LEVEL) && defined(API_LEVEL1_1_1) && (API_LEVEL >= API_LEVEL1_1_1)
 
 /*
  * calculates the necessary prerequisites for the fast modular multiplication and stores them in a context.
@@ -437,7 +437,7 @@ void TEE_BigIntConvertFromFMM(TEE_BigInt *dest, const TEE_BigIntFMM *src, const 
 void TEE_BigIntComputeFMM(TEE_BigIntFMM *dest, const TEE_BigIntFMM *op1, const TEE_BigIntFMM *op2, const TEE_BigInt *n,
                           const TEE_BigIntFMMContext *context);
 
-#if defined(API_LEVEL) && (API_LEVEL >= API_LEVEL1_1_1)
+#if defined(API_LEVEL) && defined(API_LEVEL1_1_1) && (API_LEVEL >= API_LEVEL1_1_1)
 /*
  * computes dest = (op1 ^ op2) (mod n).
  *

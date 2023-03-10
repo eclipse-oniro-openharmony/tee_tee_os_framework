@@ -29,7 +29,7 @@ const char *g_debug_prefix = "teesmcmgr";
 static bool g_tz_started;
 static bool g_send_to_gtask = false;
 
-static void send_to_gtask()
+static void send_to_gtask(void)
 {
     if (g_send_to_gtask)
         return;
