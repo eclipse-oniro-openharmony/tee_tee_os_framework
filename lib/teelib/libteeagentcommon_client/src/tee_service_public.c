@@ -44,7 +44,7 @@ void tee_common_ipc_proc_cmd(const char *task_name,
     if (ret != 0)
         tloge("msg send to 0x%llx failed: 0x%x\n", ch, ret);
 
-    ret = (int32_t)ipc_release_path(task_name, ch);
+    ret = (int32_t)ipc_release_from_path(task_name, ch);
     if (ret != 0) {
         tloge("release path failed, task=%s, ret=0x%x\n", task_name, ret);
         return;

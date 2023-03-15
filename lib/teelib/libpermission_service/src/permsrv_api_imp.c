@@ -53,7 +53,7 @@ int perm_srv_msg_call(const char *path, perm_srv_req_msg_t *msg, perm_srv_reply_
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)ipc_release_path(path, rslot);
+    (void)ipc_release_from_path(path, rslot);
     (void)pthread_mutex_unlock(&g_msg_call_mutex);
     return rc;
 }

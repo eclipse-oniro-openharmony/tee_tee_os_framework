@@ -546,7 +546,7 @@ int32_t spawn_driver_handle(struct task_node *node)
     return 0;
 
 release_channel:
-    if (ipc_release_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
+    if (ipc_release_from_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
         tloge("release drv:%s channel:0x%llx failed\n", node->tlv.drv_conf->mani.service_name, node->drv_task.channel);
     node->drv_task.channel = -1;
 
@@ -569,7 +569,7 @@ void release_driver(struct task_node *node)
     }
 
     if (check_ref_valid(node->drv_task.channel)) {
-        if (ipc_release_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
+        if (ipc_release_from_path(node->tlv.drv_conf->mani.service_name, node->drv_task.channel) != 0)
             tloge("release drv:%s channel:0x%llx failed\n",
                 node->tlv.drv_conf->mani.service_name, node->drv_task.channel);
         node->drv_task.channel = -1;

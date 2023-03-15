@@ -65,7 +65,7 @@ static void send_unregister_ta_to_sesrv(const char *cur_task_name, const struct 
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)ipc_release_path(SE_PATH, rslot);
+    (void)ipc_release_from_path(SE_PATH, rslot);
 }
 
 static void task_se_serv_crash_callback(const TEE_UUID *uuid, const char *task_name,

@@ -118,7 +118,7 @@ static void pre_unregister_remove_hmipccachech(const union ssa_agent_msg *msg, u
 
     if (sender == g_global_handle) {
         tlogd("unregister task: %x\n", msg->reg.taskid);
-        ipc_release_cached_ch(msg->reg.taskid, 1, NULL);
+        (void)ipc_release_from_taskid(msg->reg.taskid, 0);
     } else {
         res_code = ipc_hunt_by_name(PERMSRV_SAVE_FILE, &g_permsrv_handle);
         if (res_code != 0) {
@@ -128,7 +128,8 @@ static void pre_unregister_remove_hmipccachech(const union ssa_agent_msg *msg, u
         }
         if (sender == g_permsrv_handle) {
             tlogd("unregister task: %x\n", msg->reg.taskid);
-            ipc_release_cached_ch(msg->reg.taskid, 1, PERMSRV_SAVE_FILE);
+            (void)ipc_release_from_taskid(msg->reg.taskid, 0);
+            (void)ipc_release_by_name(PERMSRV_SAVE_FILE);
         }
     }
 
@@ -195,8 +196,8 @@ void unregister_uuid(uint32_t sender, const char *name)
 
     client->dead = 1;
 
-    /* Hongmeng: optimization, clear channel cache */
-    ipc_release_cached_ch(sender, 1, name);
+    (void)ipc_release_from_taskid(sender, 0);
+	(void)ipc_release_by_name(name);
 
     for (i = 0; i < MAX_CLIENT_OPEN_FILES; i++) {
         if ((client->file_instance[i].file_link) == NULL) {

@@ -44,7 +44,7 @@ int32_t huk_srv_msg_call(struct huk_srv_msg *msg, struct huk_srv_rsp *rsp)
     if (rc < 0)
         tloge("msg send 0x%llx failed: 0x%x\n", rslot, rc);
 
-    (void)ipc_release_path(HUK_PATH, rslot);
+    (void)ipc_release_from_path(HUK_PATH, rslot);
     if (pthread_mutex_unlock(&g_msg_call_mutex) != 0) {
         tloge("huk msg call mutex unlock failed\n");
         return -1;

@@ -143,7 +143,7 @@ static void dec_drv_channel_ref(struct drv_channel **chp)
         ch->ref_cnt--;
         if (ch->ref_cnt == 0) {
             tlogd("release drv:%s channel\n", ch->drv_name);
-            if (ipc_release_path(ch->drv_name, ch->drv_channel) != 0)
+            if (ipc_release_from_path(ch->drv_name, ch->drv_channel) != 0)
                 tloge("release drv:%s channel:0x%llx failed\n", ch->drv_name, ch->drv_channel);
             dlist_delete(&ch->drv_list);
             free(ch);
