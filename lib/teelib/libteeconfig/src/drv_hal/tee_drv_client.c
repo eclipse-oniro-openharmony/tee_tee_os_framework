@@ -26,9 +26,9 @@
 static int64_t tee_drv_close_handle(int64_t fd);
 
 static struct dlist_node g_drv_channel = dlist_head_init(g_drv_channel);
-static pthread_mutex_t g_drv_channel_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_drv_channel_mtx = PTHREAD_MUTEX_INITIALIZER;
 
-static int32_t drv_robust_mutex_lock(pthread_mutex_t *channel_mtx)
+static int32_t drv_mutex_lock(pthread_mutex_t *channel_mtx)
 {
     int32_t ret = pthread_mutex_lock(channel_mtx);
     if (ret == EOWNERDEAD)
@@ -106,7 +106,7 @@ static int32_t inc_drv_channel_ref(struct drv_channel *drv_ch)
 
 static struct drv_channel *get_drv_channel(int64_t fd)
 {
-    int32_t ret = drv_robust_mutex_lock(&g_drv_channel_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_channel_mtx);
     if (ret != 0) {
         tloge("get drv channel mtx failed\n");
         return NULL;
@@ -154,7 +154,7 @@ static void dec_drv_channel_ref(struct drv_channel **chp)
 
 static void put_drv_channel(struct drv_channel **chp)
 {
-    int32_t ret = drv_robust_mutex_lock(&g_drv_channel_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_channel_mtx);
     if (ret != 0) {
         tloge("get drv channel mtx failed\n");
         return;
@@ -170,7 +170,7 @@ static void put_drv_channel(struct drv_channel **chp)
 static int32_t alloc_and_get_drv_channel(int64_t fd, const char *drv_name)
 {
     int32_t func_ret = -1;
-    int32_t ret = drv_robust_mutex_lock(&g_drv_channel_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_channel_mtx);
     if (ret != 0) {
         tloge("get drv channel mtx failed\n");
         return func_ret;

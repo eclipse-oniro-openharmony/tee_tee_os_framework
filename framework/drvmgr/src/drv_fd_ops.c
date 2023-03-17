@@ -17,51 +17,31 @@
 #include "drv_ipc_mgr.h"
 #include "task_mgr.h"
 
-int32_t drv_robust_mutex_lock(pthread_mutex_t *mtx)
+int32_t drv_mutex_lock(pthread_mutex_t *mtx)
 {
     if (mtx == NULL)
         return -1;
 
     int32_t ret = pthread_mutex_lock(mtx);
-    if (ret == EOWNERDEAD) /* owner died, use consistent to recover and lock the mutex */
-        return pthread_mutex_consistent(mtx);
 
     return ret;
 }
 
-int32_t robust_mutex_init(pthread_mutex_t *mtx)
+int32_t drv_mutex_init(pthread_mutex_t *mtx)
 {
     int32_t ret;
-    pthread_mutexattr_t attr;
 
     if (mtx == NULL) {
         tloge("invalid mtx\n");
         return -1;
     }
 
-    (void)pthread_mutexattr_init(&attr);
-    if (pthread_mutexattr_setrobust(&attr, 1) != 0) {
-        tloge("set robust failed\n");
-        goto err;
-    }
-
-    if (pthread_mutexattr_setpshared(&attr, 1) != 0) {
-        tloge("set pshared failed\n");
-        goto err;
-    }
-
-    ret = pthread_mutex_init(mtx, &attr);
+    ret = pthread_mutex_init(mtx, NULL);
     if (ret != 0) {
         tloge("pthread mutex init failed with ret:%d\n", ret);
-        goto err;
     }
 
-    (void)pthread_mutexattr_destroy(&attr);
-    return 0;
-
-err:
-    (void)pthread_mutexattr_destroy(&attr);
-    return -1;
+	return ret;
 }
 
 struct fd_node *alloc_and_init_fd_node(void)
@@ -89,7 +69,7 @@ int32_t add_fd_to_drvcall_node(struct fd_node *data, struct task_node *node)
         return -1;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&node->fd_mtx);
+    int32_t ret = drv_mutex_lock(&node->fd_mtx);
     if (ret != 0) {
         tloge("lock fd mtx fail\n");
         return -1;
@@ -113,7 +93,7 @@ struct fd_node *close_get_fd_node_with_lock(struct task_node *node, int64_t fd)
         return NULL;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&node->fd_mtx);
+    int32_t ret = drv_mutex_lock(&node->fd_mtx);
     if (ret != 0) {
         tloge("get lock fd mtx fail\n");
         return NULL;
@@ -151,7 +131,7 @@ int32_t del_fd_to_drvcall_node(struct fd_node **fnode, struct task_node *node)
 
     struct fd_node *data = *fnode;
 
-    int32_t ret = drv_robust_mutex_lock(&node->fd_mtx);
+    int32_t ret = drv_mutex_lock(&node->fd_mtx);
     if (ret != 0) {
         tloge("lock fd mtx fail\n");
         return -1;
@@ -198,7 +178,7 @@ int32_t get_fd_count(struct task_node *node)
     }
 
     int32_t func_ret = -1;
-    int32_t ret = drv_robust_mutex_lock(&node->fd_mtx);
+    int32_t ret = drv_mutex_lock(&node->fd_mtx);
     if (ret != 0) {
         tloge("get fd count lock fd mtx fail\n");
         return -1;
@@ -226,7 +206,7 @@ void put_fd_count(struct task_node *node)
         return;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&node->fd_mtx);
+    int32_t ret = drv_mutex_lock(&node->fd_mtx);
     if (ret != 0) {
         tloge("put fd count lock fd mtx fail\n");
         return;
@@ -254,7 +234,7 @@ uint32_t exception_close_handle(struct task_node *node)
         return close_fd_count;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&node->fd_mtx);
+    int32_t ret = drv_mutex_lock(&node->fd_mtx);
     if (ret != 0) {
         tloge("get fd mtx lock fail\n");
         return close_fd_count;
@@ -307,7 +287,7 @@ void dump_drvcall_fd(struct task_node *node)
         return;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&node->fd_mtx);
+    int32_t ret = drv_mutex_lock(&node->fd_mtx);
     if (ret != 0) {
         tloge("put fd count lock fd mtx fail\n");
         return;

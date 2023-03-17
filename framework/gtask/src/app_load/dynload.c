@@ -227,7 +227,7 @@ static bool is_ta_lib(const TEE_UUID *uuid)
 static struct dlist_node g_client_list;
 static uint32_t g_client_num = 0;
 static bool g_init = false;
-static pthread_mutex_t g_client_list_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_client_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 struct dyn_client_t {
     struct dlist_node list_head;
     bool is_64bit;

@@ -26,7 +26,7 @@
 #include "drv_dyn_conf_mgr.h"
 
 static struct dlist_node g_task_list = dlist_head_init(g_task_list);
-static pthread_mutex_t g_task_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_task_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 static int32_t init_drv_node(struct task_node *node)
 {
@@ -66,7 +66,7 @@ static int32_t init_task_node(struct task_node *node)
     node->tlv.drv_conf = NULL;
 
     dlist_init(&node->fd_head);
-    if (robust_mutex_init(&node->fd_mtx) != 0) {
+    if (drv_mutex_init(&node->fd_mtx) != 0) {
         tloge("fd mtx init fail\n");
         return -1;
     }
@@ -78,7 +78,7 @@ static int32_t init_task_node(struct task_node *node)
         return -1;
     }
 
-    if (robust_mutex_init(&node->state_mtx) != 0) {
+    if (drv_mutex_init(&node->state_mtx) != 0) {
         tloge("state mtx init fail\n");
         return -1;
     }
@@ -256,7 +256,7 @@ static int32_t inc_drv_node(struct task_node *node)
 static bool is_state_match(struct task_node *node, enum node_state except_state)
 {
     bool match_flag = true;
-    int32_t ret = drv_robust_mutex_lock(&node->state_mtx);
+    int32_t ret = drv_mutex_lock(&node->state_mtx);
     if (ret != 0) {
         tloge("get state mtx fail\n");
         return false;
@@ -355,7 +355,7 @@ struct task_node *get_drv_node_by_name_with_lock(const char *drv_name, uint32_t 
         return NULL;
     }
 
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return NULL;
     }
@@ -378,7 +378,7 @@ unlock_mtx:
 
 static int32_t set_task_exit_state(struct task_node *node)
 {
-    int32_t ret = drv_robust_mutex_lock(&node->state_mtx);
+    int32_t ret = drv_mutex_lock(&node->state_mtx);
     if (ret != 0) {
         tloge("get state mtx fail\n");
         return -1;
@@ -430,7 +430,7 @@ static struct task_node *get_node_by_uuid_handle(const struct tee_uuid *uuid, ui
         return NULL;
     }
 
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return NULL;
     }
@@ -474,7 +474,7 @@ int32_t get_drvcall_and_fd_node(int64_t fd, const struct tee_drv_param *params,
     struct fd_node *data = NULL;
     struct task_node *node = NULL;
 
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return -1;
     }
@@ -555,7 +555,7 @@ void put_node_with_lock(struct task_node *node, uint32_t dec_cnt)
         return;
     }
 
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return;
     }
@@ -848,7 +848,7 @@ int32_t receive_task_conf(struct task_node *node)
         return ret;
     }
 
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return ret;
     }
@@ -887,7 +887,7 @@ int32_t free_drv_conf_by_service_name(const char *drv_name, uint32_t len)
         return -1;
     }
 
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return -1;
     }
@@ -931,7 +931,7 @@ unlock_mtx:
 struct task_node *find_drv_node_by_taskid(uint32_t exit_pid)
 {
     struct task_node *node = NULL;
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return NULL;
     }
@@ -964,7 +964,7 @@ static void dump_task_state(struct task_node *node)
         "UNKNOWN",
     };
 
-    int32_t ret = drv_robust_mutex_lock(&node->state_mtx);
+    int32_t ret = drv_mutex_lock(&node->state_mtx);
     if (ret != 0) {
         tloge("get state mtx fail\n");
         return;
@@ -1016,7 +1016,7 @@ static void dump_drvcall_perm(const struct task_tlv *tlv)
 
 void dump_task_node(void)
 {
-    if (drv_robust_mutex_lock(&g_task_mtx) != 0) {
+    if (drv_mutex_lock(&g_task_mtx) != 0) {
         tloge("something wrong, get task mtx fail\n");
         return;
     }

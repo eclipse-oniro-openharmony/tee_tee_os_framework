@@ -16,11 +16,11 @@
 #include "drv_fd_ops.h"
 
 static uint8_t g_drv_index_bitmap[(DRV_INDEX_MAX) >> MOVE_BIT];
-static pthread_mutex_t g_drv_index_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_drv_index_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 int32_t alloc_drv_index(void)
 {
-    int32_t ret = drv_robust_mutex_lock(&g_drv_index_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_index_mtx);
     if (ret != 0) {
         tloge("get drv index mtx failed\n");
         return -1;
@@ -51,7 +51,7 @@ void clear_drv_index(int32_t drv_index)
         return;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&g_drv_index_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_index_mtx);
     if (ret != 0) {
         tloge("get drv index mtx failed\n");
         return;

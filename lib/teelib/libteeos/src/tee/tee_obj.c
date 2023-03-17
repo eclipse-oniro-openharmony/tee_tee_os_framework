@@ -99,18 +99,8 @@ TEE_Result tee_obj_free(TEE_ObjectHandle *object)
 
 TEE_Result tee_obj_init(void)
 {
-    pthread_mutexattr_t attr = { 0 };
-    (void)pthread_mutexattr_init(&attr);
-    if (pthread_mutexattr_setrobust(&attr, OBJ_ROBUST_MAX_VALUE) != 0) {
-        tloge("pthread mutexattr setrobust error\n");
-        (void)pthread_mutexattr_destroy(&attr);
-        return TEE_ERROR_GENERIC;
-    }
-    (void)pthread_mutexattr_setpshared(&attr, OBJ_ROBUST_MAX_VALUE);
-    (void)pthread_mutex_init(&g_object_mutex, &attr);
-    (void)pthread_mutexattr_destroy(&attr);
-
-    dlist_init(&g_object_head);
+    (void)pthread_mutex_init(&g_object_mutex, NULL);
+	dlist_init(&g_object_head);
     dlist_init(&g_enum_obj_info_list);
     return TEE_SUCCESS;
 }

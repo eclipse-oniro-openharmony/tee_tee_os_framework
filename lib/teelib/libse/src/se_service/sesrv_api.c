@@ -75,7 +75,7 @@ static void se_srv_init_msg(struct se_srv_msg_t *msg, struct se_srv_rsp_t *rsp)
     if (rsp != NULL)
         (void)memset_s(rsp, sizeof(*rsp), 0, sizeof(*rsp));
 }
-static pthread_mutex_t g_msg_call_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_msg_call_mutex = PTHREAD_MUTEX_INITIALIZER;
 static int se_srv_msg_call(struct se_srv_msg_t *msg, struct se_srv_rsp_t *rsp)
 {
     errno_t rc;

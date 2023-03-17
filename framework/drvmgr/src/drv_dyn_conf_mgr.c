@@ -279,7 +279,7 @@ int32_t check_drv_node_state(struct task_node *node)
         return DRV_FAIL;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&node->state_mtx);
+    int32_t ret = drv_mutex_lock(&node->state_mtx);
     if (ret != 0) {
         tloge("get state mtx fail\n");
         return DRV_FAIL;
@@ -328,7 +328,7 @@ void broadcast_drv_state(struct task_node *node, bool spawn_succ)
         return;
     }
 
-    int32_t ret = drv_robust_mutex_lock(&node->state_mtx);
+    int32_t ret = drv_mutex_lock(&node->state_mtx);
     if (ret != 0) {
         tloge("get state mtx fail\n");
         return;
