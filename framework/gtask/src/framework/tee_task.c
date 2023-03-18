@@ -70,13 +70,12 @@ static TEE_Result ta_name_to_path(const struct service_struct *service,
             break;
 
         if (strncmp(service->name, builtin_task_info->name, strlen(builtin_task_info->name) + 1) == 0) {
-            if (strncpy_s(path_name, len, builtin_task_info->path, strlen(builtin_task_info->path)) == 0) {
+            if (strncpy_s(path_name, len, builtin_task_info->path, strlen(builtin_task_info->path)) == EOK) {
                 /* set priority for buitlin task */
                 *p_priority = builtin_task_info->priority;
                 return TEE_SUCCESS;
-            } else {
-                return TEE_ERROR_GENERIC;
             }
+            return TEE_ERROR_GENERIC;
         }
     }
 
@@ -177,8 +176,10 @@ static int gt_create_thread(pid_t *pid)
         tloge("CALL_TA_CRTEATE_THREAD msg send failed:0x%" PRIx32 "\n", rc);
         return NORMAL_FAIL_RET;
     }
-    // wait at Q#1 for ACK message from "worker_thread" created by service thread,
-    // drop messages from other sources.
+    /*
+     * wait at Q#1 for ACK message from "worker_thread" created by service thread,
+     * drop messages from other sources.
+     */
     timer_event *event = start_timeout();
     do {
         if (ipc_msg_q_recv(&msg_id, &sender_pid, 1, TASK_TIMEOUT) != 0) {
@@ -245,7 +246,7 @@ static int gt_recycle_thread(uint32_t task_id, uint32_t session_id)
     } while (pid != get_cur_service()->service_thread);
     stop_timeout(event);
 
-    // "invalid tid" is the the only case for this
+    /* "invalid tid" is the the only case for this */
     if (msg_id != 0) {
         tloge("recycle failed, ret=%" PRIu32 "\n", msg_id);
         return NORMAL_FAIL_RET;
@@ -389,22 +390,23 @@ static int tee_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[]
 
 static int32_t get_elf_path(int32_t bin_type, char *loader_path, uint32_t loader_path_size)
 {
-    /* only tarunner.elf support 64bit TA
+    /*
+     * only tarunner.elf support 64bit TA
      * taloader.elf cannot suuport 64bit TA
      * because it cannot handle relocate code
      */
     if (get_cur_service()->ta_64bit == true) {
-        if (memcpy_s(loader_path, loader_path_size, "/tarunner.elf", sizeof("/tarunner.elf")) != 0) {
+        if (memcpy_s(loader_path, loader_path_size, "/tarunner.elf", sizeof("/tarunner.elf")) != EOK) {
             tloge("set loader tarunner fail\n");
             return -1;
         }
     } else if (bin_type == ELF_TARUNNER) {
-        if (memcpy_s(loader_path, loader_path_size, "/tarunner_a32.elf", sizeof("/tarunner_a32.elf")) != 0) {
+        if (memcpy_s(loader_path, loader_path_size, "/tarunner_a32.elf", sizeof("/tarunner_a32.elf")) != EOK) {
             tloge("set loader tarunner a32 fail\n");
             return -1;
         }
     } else {
-        if (memcpy_s(loader_path, loader_path_size, "/taloader.elf", sizeof("/taloader.elf")) != 0) {
+        if (memcpy_s(loader_path, loader_path_size, "/taloader.elf", sizeof("/taloader.elf")) != EOK) {
             tloge("set loader tarunner a32 fail\n");
             return -1;
         }
@@ -483,9 +485,9 @@ static int set_argv_for_tsk(struct argv_base_buffer *argv, char *loader_path, ui
 
         /* tasks load by  taloader and tarunner */
         if (strncpy_s(argv->task_name, sizeof(argv->task_name), get_cur_service()->name,
-                      sizeof(get_cur_service()->name) - 1) != 0)
+                      sizeof(get_cur_service()->name) - 1) != EOK)
             return -EINVAL;
-        if (strncpy_s(argv->task_path, sizeof(argv->task_path), path_name, path_name_size - 1) != 0)
+        if (strncpy_s(argv->task_path, sizeof(argv->task_path), path_name, path_name_size - 1) != EOK)
             return -EINVAL;
 
         /*
@@ -499,12 +501,12 @@ static int set_argv_for_tsk(struct argv_base_buffer *argv, char *loader_path, ui
             tlogd("no dyn client exists\n");
     } else {
         /* hm-native tasks, just hm_tee_test now! */
-        if (memcpy_s(loader_path, loader_path_size, path_name, path_name_size) != 0) {
+        if (memcpy_s(loader_path, loader_path_size, path_name, path_name_size) != EOK) {
             tloge("native set loader path fail\n");
             return -EINVAL;
         }
 
-        if (strncpy_s(argv->task_name, sizeof(argv->task_name), path_name, path_name_size) != 0)
+        if (strncpy_s(argv->task_name, sizeof(argv->task_name), path_name, path_name_size) != EOK)
             return -EINVAL;
     }
     return 0;
@@ -571,7 +573,7 @@ static int gt_create_proc(const struct tsk_init_param *init_param, uint32_t *tas
     if (init_spawn_argv_env(init_param, sbuffer, loader_path, sizeof(loader_path)) != 0)
         return -1;
 
-    if (memmove_s(&uuid.uuid, sizeof(uuid.uuid), &(init_param->uuid), sizeof(init_param->uuid)) != 0) {
+    if (memmove_s(&uuid.uuid, sizeof(uuid.uuid), &(init_param->uuid), sizeof(init_param->uuid)) != EOK) {
         tloge("memmove uuid failed\n");
         return -EINVAL;
     }

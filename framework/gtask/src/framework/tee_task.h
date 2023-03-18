@@ -11,6 +11,7 @@
  */
 #ifndef GTASK_TEE_TAK_H
 #define GTASK_TEE_TAK_H
+#include <stdint.h>
 #include "ta_framework.h"
 
 #define NORMAL_FAIL_RET  (-1)

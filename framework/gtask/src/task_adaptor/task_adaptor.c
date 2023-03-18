@@ -500,6 +500,10 @@ bool check_system_agent_permission(uint32_t task_id, uint32_t agent_id)
     return true;
 }
 
+/*
+ * gtask will send agent buffer to ssa when receive register ssa agent msg.
+ * so only ssa need this interface
+ */
 void task_adapt_register_agent(uint32_t agent_id)
 {
     struct dlist_node *pos               = NULL;

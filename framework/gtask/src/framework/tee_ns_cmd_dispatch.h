@@ -13,6 +13,7 @@
 #ifndef TEE_NS_CMD_DISPATCH_H
 #define TEE_NS_CMD_DISPATCH_H
 
+#include <stdint.h>
 #include "ta_framework.h"
 
 typedef TEE_Result (*sync_func)(const smc_cmd_t *cmd);

@@ -16,6 +16,7 @@
 #include <ipclib.h>
 
 #define INVALID_SERVICE_INDEX  (-1)
+#define SERVICE_INDEX_MAX 2048
 
 bool dynamic_service_exist(const TEE_UUID *uuid, bool build_in);
 TEE_Result register_service(const char *name, const TEE_UUID *uuid, bool dyn_conf_registed,

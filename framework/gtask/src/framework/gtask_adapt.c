@@ -69,11 +69,11 @@ static uint32_t ta_to_global_msg_len(bool ta_is_64)
 
 static int convert_ta2gtask_msg_handle(const uint8_t *msg_buf, bool ta_is_64, ta_to_global_msg *msg)
 {
-    struct ta_to_global_msg_32 *msg_32 = NULL;
+    const struct ta_to_global_msg_32 *msg_32 = NULL;
 
     if (!ta_is_64) {
         /* TA is 32 bit */
-        msg_32                 = (struct ta_to_global_msg_32 *)msg_buf;
+        msg_32                 = (const struct ta_to_global_msg_32 *)(uintptr_t)msg_buf;
         msg->ret               = msg_32->ret;
         msg->agent_id          = msg_32->agent_id;
         msg->session_context   = (uint64_t)(msg_32->session_context);

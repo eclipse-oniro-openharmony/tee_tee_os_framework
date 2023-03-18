@@ -19,6 +19,7 @@
 
 #define MAX_STACK_SIZE (8 * 1024 * 1024)
 
+#define MAX_TA2TA_LEVEL      1
 #define UINT32_BIT_NUM       32
 
 #define get_index_by_uint32(n) ((n) / (UINT32_BIT_NUM))

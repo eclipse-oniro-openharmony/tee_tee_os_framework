@@ -264,7 +264,7 @@ void release_pam_node(struct pam_node *node)
         case TEE_PARAM_TYPE_RESMEM_INPUT:
         case TEE_PARAM_TYPE_RESMEM_OUTPUT:
         case TEE_PARAM_TYPE_RESMEM_INOUT:
-            set_res_mem_prop(RESERVED_MEM_NONSECURE, node, i);
+            (void)set_res_mem_prop(RESERVED_MEM_NONSECURE, node, i);
             break;
         default:
             break;
@@ -432,7 +432,7 @@ void mem_manager_init(void)
 TEE_Result store_s_cmd(const smc_cmd_t *cmd)
 {
     if (g_cur_session != NULL && cmd != NULL) {
-        if (memcpy_s(&g_cur_session->cmd_in, sizeof(smc_cmd_t), cmd, sizeof(smc_cmd_t))) {
+        if (memcpy_s(&g_cur_session->cmd_in, sizeof(smc_cmd_t), cmd, sizeof(smc_cmd_t)) != EOK) {
             tloge("memcpy_s cmd_in failed\n");
             return TEE_ERROR_GENERIC;
         }
@@ -445,7 +445,8 @@ TEE_Result store_s_cmd(const smc_cmd_t *cmd)
     return TEE_SUCCESS;
 }
 
-/* task_id=0, params are copy to gtask -- 32 bit
+/*
+ * task_id=0, params are copy to gtask -- 32 bit
  * no need to change
  */
 TEE_Result cmd_global_ns_get_params(const smc_cmd_t *cmd, uint32_t *param_type, TEE_Param **params)
@@ -708,14 +709,14 @@ static TEE_Result operation_map_for_gt(uint32_t task_id, const smc_cmd_t *cmd, u
 
     /* copy the ns shared mem into tee */
     ret = copy_pam_from_src(operation, operation_size, &pam_node);
-    if (ret) {
+    if (ret != 0) {
         tloge("copy pam from ree failed.\n");
         return ret;
     }
 
     if (!ta2ta) {
         ret = check_operation_params_in_mailbox_range(&(pam_node->op));
-        if (ret) {
+        if (ret != 0) {
             tloge("operation buffer is not in mailbox\n");
             release_pam_node(pam_node);
             return ret;
@@ -723,7 +724,7 @@ static TEE_Result operation_map_for_gt(uint32_t task_id, const smc_cmd_t *cmd, u
     }
 
     ret = params_map_for_ta(task_id, cmd, pam_node, ta2ta);
-    if (ret) {
+    if (ret != 0) {
         tloge("operation map for ta failed:%x\n", ret);
         release_pam_node(pam_node);
         return ret;
@@ -765,7 +766,7 @@ TEE_Result cmd_ns_get_params(uint32_t task_id, const smc_cmd_t *cmd, uint32_t *p
     *param_type = 0;
     if (tmp_operation_addr != 0) {
         ret = operation_map_for_gt(task_id, cmd, param_type, params, false);
-        if (ret) {
+        if (ret != 0) {
             tloge("operation ns map for gt failed:%x\n", ret);
             return ret;
         }
@@ -790,7 +791,7 @@ TEE_Result cmd_secure_get_params(uint32_t task_id, const smc_cmd_t *cmd, uint32_
     *params            = 0;
     if (tmp_operation_addr != 0) {
         ret = operation_map_for_gt(task_id, cmd, param_type, params, true);
-        if (ret) {
+        if (ret != 0) {
             tloge("operation ns map for gt failed:%x\n", ret);
             return ret;
         }
@@ -868,7 +869,7 @@ TEE_Result map_secure_operation(uint64_t tacmd, smc_cmd_t *out_cmd, uint32_t tas
     cmd      = (smc_cmd_t *)(uintptr_t)tmp_cmd;
     cmd->uid = task_id;
 
-    if (memcpy_s(out_cmd, sizeof(*out_cmd), cmd, sizeof(*cmd))) {
+    if (memcpy_s(out_cmd, sizeof(*out_cmd), cmd, sizeof(*cmd)) != EOK) {
         tloge("copy ta2ta out cmd failed\n");
         ret = TEE_ERROR_GENERIC;
     }
@@ -940,7 +941,7 @@ TEE_Result unmap_ns_operation(smc_cmd_t *cmd)
     cmd->operation_phys   = 0x0;
     cmd->operation_h_phys = 0x0;
 
-    if (error_flag)
+    if (error_flag != 0)
         return TEE_ERROR_GENERIC;
 
     return TEE_SUCCESS;
@@ -1083,7 +1084,7 @@ static TEE_Result check_operation_params_in_mailbox_range(const tee_operation_gt
         case TEE_PARAM_TYPE_RESMEM_INOUT:
             buffer_addr = (paddr_t)((uint32_t)operation->p[i].memref.buffer |
                                     ((paddr_t)operation->p_h_addr[i] << SHIFT_OFFSET));
-            if (buffer_addr && !in_res_mem_range(buffer_addr, operation->p[i].memref.size))
+            if (buffer_addr != 0 && !in_res_mem_range(buffer_addr, operation->p[i].memref.size))
                 ret = TEE_ERROR_BAD_PARAMETERS;
             break;
         default:
@@ -1108,14 +1109,14 @@ TEE_Result check_cmd_in_mailbox_range(const smc_cmd_t *cmd)
         return TEE_SUCCESS;
 
     operation_addr = (paddr_t)(cmd->operation_phys | ((paddr_t)cmd->operation_h_phys << SHIFT_OFFSET));
-    if (operation_addr &&
+    if (operation_addr != 0 &&
         !in_mailbox_range(operation_addr, sizeof(uint32_t) * PARAM_CNT + TEE_PARAM_NUM * sizeof(TEE_Param))) {
         tloge("operation is not in mailbox\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
     login_data_addr = (paddr_t)(cmd->login_data_phy | ((paddr_t)cmd->login_data_h_phy << SHIFT_OFFSET));
-    if (login_data_addr && !in_mailbox_range(login_data_addr, cmd->login_data_len)) {
+    if (login_data_addr != 0 && !in_mailbox_range(login_data_addr, cmd->login_data_len)) {
         tloge("login data is not in mailbox\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
@@ -1169,7 +1170,7 @@ TEE_Result dump_statmeminfo(const smc_cmd_t *cmd)
         return ret;
     }
 
-    print_history = tee_param[1].value.b;
+    print_history = (int32_t)tee_param[1].value.b;
     if (tee_param[1].value.a == 0) {
         struct stat_mem_info *meminfo = (struct stat_mem_info *)tee_param[0].memref.buffer;
         dump_stat                     = dump_mem_info(meminfo, print_history);

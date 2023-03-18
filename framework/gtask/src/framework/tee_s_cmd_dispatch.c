@@ -34,10 +34,10 @@ static void s_cmd_response(smc_cmd_t *cmd, uint32_t ret_task_id)
     ret_msg.ret = cmd->ret_val;
 
     TEE_Result ret = copy_pam_to_src(cmd->cmd_id, true);
-    if (ret)
+    if (ret != TEE_SUCCESS)
         ret_msg.ret = ret;
 
-    if (memcpy_s(&ret_msg.cmd, sizeof(ret_msg.cmd), cmd, sizeof(*cmd))) {
+    if (memcpy_s(&ret_msg.cmd, sizeof(ret_msg.cmd), cmd, sizeof(*cmd)) != EOK) {
         tloge("memcpy ta2ta back cmd failed\n");
         ret_msg.ret = TEE_ERROR_GENERIC;
     }

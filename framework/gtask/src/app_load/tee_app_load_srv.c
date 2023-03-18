@@ -50,6 +50,10 @@ static elf_load_context_t g_load_context;
 TEE_Result rename_tmp_file(const char *new_name, uint32_t len)
 {
     elf_image_info *img_info_ptr = get_img_info_ptr();
+    if (img_info_ptr == NULL) {
+        tloge("the ptr is null\n");
+        return TEE_ERROR_GENERIC;
+    }
     if (len == 0 || len > MAX_TAFS_NAME_LEN || new_name == NULL) {
         tloge("new file name error\n");
         return TEE_ERROR_BAD_PARAMETERS;
@@ -70,6 +74,10 @@ TEE_Result rename_tmp_file(const char *new_name, uint32_t len)
 static void unlink_file(void)
 {
     elf_image_info *img_info_ptr = get_img_info_ptr();
+    if (img_info_ptr == NULL) {
+        tloge("the ptr is null\n");
+        return;
+    }
     if (img_info_ptr->tmp_file_exist == false)
         return;
 
@@ -82,6 +90,10 @@ static void unlink_file(void)
 static TEE_Result close_tmp_file(void)
 {
     elf_image_info *img_info_ptr = get_img_info_ptr();
+    if (img_info_ptr == NULL) {
+        tloge("the ptr is null\n");
+        return TEE_ERROR_GENERIC;
+    }
     if (img_info_ptr->img_fp < 0)
         return TEE_SUCCESS;
 
@@ -153,7 +165,7 @@ TEE_Result need_load_app(const smc_cmd_t *cmd)
 
     *(int32_t *)(params->memref.buffer) = need_load;
 
-    if (need_load)
+    if (need_load != 0)
         tlogd("need_load flag is %x ==================\n", need_load);
 
     return TEE_SUCCESS;
@@ -195,7 +207,7 @@ static TEE_Result tee_secure_img_get_version(const uint8_t *share_buf, uint32_t 
     teec_image_identity img_identity = {0};
     img_identity = *(teec_image_identity *)share_buf;
 
-    /* decide the TA verison */
+    /* decide the TA version */
     bool temp_check = (img_identity.magic_num1 == TA_HEAD_MAGIC1) && (img_identity.magic_num2 == TA_HEAD_MAGIC2) &&
                  (img_identity.version_num > 1);
     if (temp_check) {
@@ -218,6 +230,7 @@ static TEE_Result create_empty_file(elf_image_info *img_info_ptr)
         tloge("generate tmp file name failed\n");
         return TEE_ERROR_BAD_PARAMETERS;
     }
+    /* the value of file_tmp_number has no meaning, just change it to distinguish tmp file  */
     file_tmp_number++;
     img_info_ptr->img_fp = open(img_info_ptr->tmp_file_name, O_CREAT | O_RDWR, RWRIGHT, (uint64_t)0);
     if (img_info_ptr->img_fp < 0) {
@@ -239,9 +252,13 @@ static TEE_Result get_img_load_buf(uint32_t size)
     if (size == 0 || size > PAGE_ALIGN_UP(size + ADDITIONAL_BUF_SIZE)) {
         tloge("invalid img size %u\n", size);
         return TEE_ERROR_BAD_PARAMETERS;
-        }
+    }
 
     elf_image_info *img_info_ptr = get_img_info_ptr();
+    if (img_info_ptr == NULL) {
+        tloge("the ptr is null\n");
+        return TEE_ERROR_GENERIC;
+    }
     img_info_ptr->aligned_img_size = PAGE_ALIGN_UP(size + ADDITIONAL_BUF_SIZE); /* get a redundance */
 
     if (create_empty_file(img_info_ptr) != TEE_SUCCESS)
@@ -260,7 +277,7 @@ static TEE_Result get_img_load_buf(uint32_t size)
     return TEE_SUCCESS;
 }
 
-TEE_Result handle_img_alloc_img_buff(uint32_t img_version, uint8_t *share_buf, uint32_t buf_len)
+static TEE_Result handle_img_alloc_img_buff(uint32_t img_version, uint8_t *share_buf, uint32_t buf_len)
 {
     TEE_Result ret;
     uint32_t img_size = 0;
@@ -283,8 +300,12 @@ static TEE_Result tee_secure_image_recieve(uint8_t *share_buf, uint32_t buf_len)
 {
     uint32_t img_version = 0;
     errno_t eret;
-    elf_image_info *img_info_ptr = get_img_info_ptr();
 
+    elf_image_info *img_info_ptr = get_img_info_ptr();
+    if (img_info_ptr == NULL) {
+        tloge("the ptr is null\n");
+        return TEE_ERROR_GENERIC;
+    }
     /* The first time of TA image transfer, it may needs several time to complete */
     if (img_info_ptr->img_buf == NULL) {
         /* Get TA image version number */
@@ -318,10 +339,15 @@ static TEE_Result recv_img_info_from_tzdriver(const smc_cmd_t *cmd, TEE_Param **
     int32_t keep_loading;
     uint8_t *share_buf = NULL;
     uint32_t buf_len;
-    elf_image_info *img_info_ptr = get_img_info_ptr();
 
     if (cmd == NULL || params == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
+
+    elf_image_info *img_info_ptr = get_img_info_ptr();
+    if (img_info_ptr == NULL) {
+        tloge("the ptr is null\n");
+        return TEE_ERROR_GENERIC;
+    }
 
     /* Get params for cmd, and check the param_type */
     ret = tee_cmd_params_parse(cmd, params);

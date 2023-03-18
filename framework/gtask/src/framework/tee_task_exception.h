@@ -13,6 +13,7 @@
 #ifndef TEE_TASK_EXCEPTION_H
 #define TEE_TASK_EXCEPTION_H
 
+#include <stdint.h>
 #include <stddef.h>
 #include "tee_defines.h"
 #include "gtask_core.h"

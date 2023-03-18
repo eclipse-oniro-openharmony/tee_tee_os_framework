@@ -42,7 +42,7 @@ static void response_to_ta(const smc_cmd_t *cmd, uint32_t father_task_id)
     struct ta2ta_ret_msg ret_msg = { 0 };
 
     ret_msg.ret = cmd->ret_val;
-    if (memcpy_s(&ret_msg.cmd, sizeof(ret_msg.cmd), cmd, sizeof(*cmd))) {
+    if (memcpy_s(&ret_msg.cmd, sizeof(ret_msg.cmd), cmd, sizeof(*cmd)) != EOK) {
         tloge("memcpy ta2ta back cmd failed\n");
         ret_msg.ret = TEE_ERROR_GENERIC;
     }
@@ -254,14 +254,14 @@ void ta_exception_handle_buildin_agent_ack(uint32_t task_id)
 
 TEE_Result ta_exception_handle_agent_ack(const smc_cmd_t *cmd)
 {
-    TEE_UUID *uuid = NULL;
+    const TEE_UUID *uuid = NULL;
     struct service_struct *srv = NULL;
     struct session_struct *sess = NULL;
 
     if (cmd == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    uuid = (TEE_UUID *)cmd->uuid;
+    uuid = (const TEE_UUID *)(uintptr_t)cmd->uuid;
     srv = find_service_dead(uuid, service_index_of_context(cmd->context));
     if (srv == NULL) {
         tloge("dead service not found uuid = %x-%x\n", uuid->timeLow, uuid->timeMid);
@@ -349,14 +349,18 @@ static TEE_Result process_kill_task(struct service_struct *srv, const struct ses
 
 int32_t handle_kill_task(const smc_cmd_t *cmd)
 {
-    int32_t service_index;
     struct service_struct *srv = NULL;
     struct session_struct *sess = NULL;
 
+    if (cmd == NULL) {
+        tloge("handle kill task error, invalid param\n");
+        return GT_ERR_END_CMD;
+    }
+
     tlogi("receive kill task msg\n");
 
-    TEE_UUID *uuid = (TEE_UUID *)cmd->uuid;
-    if ((service_index = find_service(uuid, service_index_of_context(cmd->context), &srv)) == -1) {
+    const TEE_UUID *uuid = (const TEE_UUID *)(uintptr_t)cmd->uuid;
+    if (find_service(uuid, service_index_of_context(cmd->context), &srv) == -1) {
         tloge("find normal service failed, try to find dead service, uuid = %x-%x\n", uuid->timeLow, uuid->timeMid);
         /* in case of multi ta have exception at the same time */
         srv = find_service_dead(uuid, service_index_of_context(cmd->context));
@@ -394,7 +398,7 @@ int32_t process_task_crash(uint32_t cmd_id, uint32_t task_id, const uint8_t *msg
         return GT_ERR_END_CMD;
     }
 
-    crash_task_id = *(uint32_t *)msg_buf;
+    crash_task_id = *(const uint32_t *)(uintptr_t)msg_buf;
 
     /* check service exist & valid */
     struct service_struct *crash_srv = find_service_by_task_id(crash_task_id);
