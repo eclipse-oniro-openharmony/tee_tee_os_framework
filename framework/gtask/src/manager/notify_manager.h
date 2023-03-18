@@ -12,7 +12,7 @@
 #ifndef GTASK_NOTIFY_MANAGER_H
 #define GTASK_NOTIFY_MANAGER_H
 
-#include "sys_timer.h" // timer_private_data_kernel
+#include "sys_timer.h" /* timer_private_data_kernel */
 
 #define NOTIFY_MEM_SIZE   (4 * 1024)
 

@@ -37,7 +37,7 @@
 struct service_struct *g_cur_service = (struct service_struct *)NULL;
 struct session_struct *g_cur_session = (struct session_struct *)NULL;
 
-// static funs declare
+/* static funs declare */
 int32_t find_service(const TEE_UUID *uuid, uint32_t service_index, struct service_struct **entry);
 void set_session_context(smc_cmd_t *cmd, uint32_t service_index, uint32_t session_id);
 TEE_Result process_close_session_entry(struct service_struct **service, struct session_struct **session);
@@ -53,10 +53,11 @@ struct service_struct *get_cur_service(void)
     return g_cur_service;
 }
 
-
 static TEE_Result call_ta_invoke_close_session(const smc_cmd_t *cmd, uint32_t cmd_type, uint32_t cmd_id,
                                                global_to_ta_msg *entry_msg)
 {
+    TEE_Result ret;
+
     if (cmd->ret_val == TEE_PENDING2 || cmd->ret_val == TEE_PENDING)
         return TEE_SUCCESS;
 
@@ -71,21 +72,22 @@ static TEE_Result call_ta_invoke_close_session(const smc_cmd_t *cmd, uint32_t cm
             entry_msg->last_session = 1;
     }
     if (cmd_type == CMD_TYPE_NS_TO_SECURE) {
-        if (cmd_ns_get_params(g_cur_session->task_id, cmd, &entry_msg->param_type, &entry_msg->params) != TEE_SUCCESS) {
+        ret = cmd_ns_get_params(g_cur_session->task_id, cmd, &entry_msg->param_type, &entry_msg->params);
+        if (ret != TEE_SUCCESS) {
             tloge("map ns params error\n");
-            return TEE_ERROR_GENERIC;
+            return ret;
         }
         entry_msg->session_type = SESSION_FROM_CA;
     } else {
-        if (cmd_secure_get_params(g_cur_session->task_id, cmd, &entry_msg->param_type, &entry_msg->params) !=
-            TEE_SUCCESS) {
+        ret = cmd_secure_get_params(g_cur_session->task_id, cmd, &entry_msg->param_type, &entry_msg->params);
+        if (ret != TEE_SUCCESS) {
             tloge("map secure params error\n");
-            return TEE_ERROR_GENERIC;
+            return ret;
         }
         entry_msg->session_type = SESSION_FROM_TA;
     }
 
-    return TEE_SUCCESS;
+    return ret;
 }
 
 static void set_init_msg_prop(const struct ta_property *in, ta_property_t_64 *out)
@@ -234,10 +236,10 @@ void set_tee_return(smc_cmd_t *cmd, TEE_Result ret_val)
 
 static TEE_Result init_ta_service_session(const smc_cmd_t *cmd)
 {
-    TEE_UUID *uuid = NULL;
+    const TEE_UUID *uuid = NULL;
     int32_t service_index;
 
-    uuid = (TEE_UUID *)cmd->uuid;
+    uuid = (const TEE_UUID *)(uintptr_t)cmd->uuid;
 
     if ((service_index = find_service(uuid, service_index_of_context(cmd->context), &g_cur_service)) == -1) {
         tloge("service not found uuid = %x-%x\n", uuid->timeLow, uuid->timeMid);
@@ -259,7 +261,7 @@ TEE_Result init_ta_context(const smc_cmd_t *cmd)
         return TEE_ERROR_BAD_PARAMETERS;
 
     TEE_Result ret = init_ta_service_session(cmd);
-    if (ret) {
+    if (ret != 0) {
         tloge("init ta service session error:%x\n", ret);
         return ret;
     }
@@ -323,9 +325,9 @@ static TEE_Result check_ta2ta_context(uint32_t task_id)
 
 static TEE_Result init_ta2ta_service(const smc_cmd_t *cmd)
 {
-    TEE_UUID *uuid = NULL;
+    const TEE_UUID *uuid = NULL;
 
-    uuid = (TEE_UUID *)cmd->uuid;
+    uuid = (const TEE_UUID *)(uintptr_t)cmd->uuid;
     if (find_service(uuid, service_index_of_context(cmd->context), &g_cur_service) == -1) {
         tloge("find second service fail\n");
         return TEE_ERROR_SERVICE_NOT_EXIST;
@@ -469,12 +471,12 @@ void set_session_context(smc_cmd_t *cmd, uint32_t service_index, uint32_t sessio
 
 int32_t get_session_id(void)
 {
-    int32_t id = -1;
+    int32_t id = ERROR_SESSION_ID;
     uint32_t i;
 
     for (i = 0; i < MAX_SESSION_ID; i++) {
-        if (!(g_cur_service->session_bitmap[get_index_by_uint32(i)] & (uint32_t)(0x1 << get_bit_by_uint32(i)))) {
-            id = i + 1;
+        if ((g_cur_service->session_bitmap[get_index_by_uint32(i)] & (uint32_t)(0x1 << get_bit_by_uint32(i))) == 0) {
+            id = (int32_t)(i + 1);
             break;
         }
     }
@@ -552,7 +554,7 @@ static int get_ta2ta_level(uint32_t cmd_type, uint32_t task_id, uint32_t *level)
         return -1;
     }
 
-    if (sess->ta2ta_level >= 1) {
+    if (sess->ta2ta_level >= MAX_TA2TA_LEVEL) {
         tloge("get caller ta2ta_level:%u, cannot open other ta\n", sess->ta2ta_level);
         return -1;
     }
@@ -667,7 +669,7 @@ TEE_Result add_new_session_into_list(struct session_struct **session, uint32_t *
     (*session)->ta2ta_level   = ta2ta_level;
     (*session)->session_id    = *session_id;
 
-    if (join_session_task_name(g_cur_service->name, *session)) {
+    if (join_session_task_name(g_cur_service->name, *session) != 0) {
         tloge("join session task name failed\n");
         if (*session != NULL) {
             TEE_Free(*session);
@@ -774,7 +776,7 @@ static void check_and_release_ta_elf(void)
 
 static void do_resc_release_work(bool handle_ref_cnt)
 {
-    // after session is created, elf and ref_cnt can be released.
+    /* after session is created, elf and ref_cnt can be released. */
     if (handle_ref_cnt) {
         decr_ref_cnt(g_cur_service);
         tlogd("service: %s, session count is %d ref_cnt-- is %d\n", g_cur_service->name, g_cur_service->session_count,
@@ -854,7 +856,7 @@ int32_t release_session(struct service_struct *service, struct session_struct *s
     struct session_struct *backup_session = NULL;
 
     if (service == NULL || session == NULL)
-        return TEE_ERROR_BAD_PARAMETERS;
+        return (int32_t)TEE_ERROR_BAD_PARAMETERS;
 
     task_adapt_unregister_ta(&service->property.uuid, session->task_id);
     service->session_count--;
@@ -885,8 +887,10 @@ int32_t release_session(struct service_struct *service, struct session_struct *s
     if (session->waiting_agent.next != NULL)
         dlist_delete(&session->waiting_agent);
 
-    /* We are the last one to go, next
-     * open session will need to reinit */
+    /*
+     * We are the last one to go, next
+     * open session will need to reinit
+     */
     TEE_Free(session);
 
     return sre_ret;
@@ -962,7 +966,8 @@ static bool do_target_session_close(struct session_struct *sess_context, struct 
     if (sess->ta2ta_from_taskid == from_taskid) {
         tlogd("ta2ta targert call session : %u\n", sess->session_id);
 
-        if (level < 1) {
+        /* if level == MAX_TA2TA_LEVEL, it is the last level session */
+        if (level < MAX_TA2TA_LEVEL) {
             tlogi("close next TA session level:%u\n", level);
             process_close_ta2ta_target_sessions(sess->task_id, (level + 1));
         }
@@ -1114,9 +1119,9 @@ void process_open_session_error(void)
         return;
     }
 
-    // release dynamic loaded TA's resource
+    /* release dynamic loaded TA's resource */
     if (g_cur_service->session_count == 0 && g_cur_service->ref_cnt == 0) {
-        // for non-keepalive TA, we release service node and service thread;
+        /* for non-keepalive TA, we release service node and service thread; */
         if (!is_build_in_service(&(g_cur_service->property.uuid))) {
             bool need_release_service = (!g_cur_service->property.keep_alive ||
                                          (g_cur_service->property.keep_alive && g_cur_service->first_open));
@@ -1147,7 +1152,7 @@ bool process_init_session(void)
         tlogd("Have non-standard property!");
         uint32_t ret = ipc_msg_snd(CALL_TA_OPEN_SESSION_PROP, g_cur_session->task_id,
                                    g_cur_service->property.other_buff, (uint16_t)g_cur_service->property.other_len);
-        if (ret) {
+        if (ret != 0) {
             tloge("CALL_TA_OPEN_SESSION_PROP msg send to ta failed:0x%x\n", ret);
             return false;
         }
@@ -1160,9 +1165,8 @@ bool process_init_session(void)
 TEE_Result close_session(const smc_cmd_t *cmd, uint32_t cmd_type, bool *sync)
 {
     TEE_Result ret;
-    bool check_stat = (cmd == NULL || sync == NULL || g_cur_service == NULL);
 
-    if (check_stat)
+    if (cmd == NULL || sync == NULL || g_cur_service == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
     *sync = false;
@@ -1173,8 +1177,8 @@ TEE_Result close_session(const smc_cmd_t *cmd, uint32_t cmd_type, bool *sync)
         return TEE_SUCCESS;
     }
 
-    check_stat = (g_cur_session == NULL || g_cur_session->session_id == 0 ||
-                  g_cur_session->session_id > MAX_SESSION_ID);
+    bool check_stat = (g_cur_session == NULL || g_cur_session->session_id == 0 ||
+                       g_cur_session->session_id > MAX_SESSION_ID);
     if (check_stat) {
         tloge("close session not exist\n");
         return TEE_ERROR_SESSION_NOT_EXIST;

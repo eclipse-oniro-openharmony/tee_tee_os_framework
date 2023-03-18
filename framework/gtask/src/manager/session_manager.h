@@ -32,7 +32,7 @@ TEE_Result close_session(const smc_cmd_t *cmd, uint32_t cmd_type, bool *sync);
 TEE_Result async_call_ta_entry(const smc_cmd_t *cmd, uint32_t cmd_type, uint32_t cmd_id);
 TEE_Result process_open_session(const smc_cmd_t *cmd, uint32_t cmd_type);
 void process_open_session_error(void);
-TEE_Result process_close_session();
+TEE_Result process_close_session(void);
 void session_set_cancelable(bool cancelable);
 bool process_init_session(void);
 void set_session_context(smc_cmd_t *cmd, uint32_t service_index, uint32_t session_id);

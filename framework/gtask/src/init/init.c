@@ -57,7 +57,7 @@ static int32_t set_proc_mem_size(const struct proc_mem_info *info, posix_spawnat
 }
 
 static int run_init_task(char *name, char *envp[], const struct proc_mem_info *info,
-                         struct tee_uuid *uuid, uint32_t *pid_ptr)
+                         const struct tee_uuid *uuid, uint32_t *pid_ptr)
 {
     char *subargv[] = { name, NULL };
     pid_t pid       = 0;
@@ -190,7 +190,7 @@ int init_main(void)
         return ret;
 
     ret = run_drv_frame_tasks();
-    if (ret)
+    if (ret != 0)
         return ret;
 
     return 0;

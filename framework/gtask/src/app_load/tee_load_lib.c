@@ -277,7 +277,11 @@ int32_t handle_unlink_dynamic_drv(uint32_t cmd_id, uint32_t task_id, const uint8
      * from lib_list, to denied teecd was killed.
      */
     (void)memset_s(&msg, sizeof(msg), 0, sizeof(msg));
-    (void)memcpy_s(msg.lib_name, sizeof(msg.lib_name) - 1, msg_buf, sizeof(msg.lib_name) - 1);
+    errno_t rc = memcpy_s(msg.lib_name, sizeof(msg.lib_name) - 1, msg_buf, sizeof(msg.lib_name) - 1);
+    if (rc != EOK) {
+        tloge("[error]memcpy_s failed, rc=%d, line:%d.\n", rc, __LINE__);
+        return GT_ERR_END_CMD;
+    }
     msg.lib_name[LIB_NAME_MAX - 1] = '\0';
     msg.is_drvlib = true;
 

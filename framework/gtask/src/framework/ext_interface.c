@@ -80,7 +80,7 @@ TEE_Result map_rdr_mem(const smc_cmd_t *cmd)
     char chip_type[CHIP_TYPE_LEN_MAX] = {0};
     if (tee_get_chip_type(chip_type, CHIP_TYPE_LEN_MAX) != 0) {
         tee_push_rdr_update_addr(rdr_mem_addr, (uint32_t)rdr_mem_size,
-            is_cache_mem, "chip type not set", strlen("chip type not set") + 1);
+            is_cache_mem, "chip type not set", (uint32_t)strlen("chip type not set") + 1);
     } else {
         tee_push_rdr_update_addr(rdr_mem_addr, (uint32_t)rdr_mem_size, is_cache_mem, chip_type, CHIP_TYPE_LEN_MAX);
     }
@@ -106,7 +106,7 @@ static TEE_Result process_get_reeinfo(uint32_t task_id, struct session_struct *s
     buffer_msg.cmd_id = TEE_GET_REEINFO_SUCCESS;
 
     uint32_t ret = ipc_msg_snd(0x0, task_id, &buffer_msg, sizeof(buffer_msg));
-    if (ret) {
+    if (ret != 0) {
         tloge("get reeinof msg send to ta failed:0x%x\n", ret);
         return TEE_ERROR_GENERIC;
     }

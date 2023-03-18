@@ -65,7 +65,7 @@ static nwd_cmd_t *g_nwd_cmd = NULL;
  * in g_nwd_cmd is right. */
 static DECLEAR_BITMAP(cmd_doing_bitmap, MAX_SMC_CMD);
 
-static uint32_t g_systime_set_flag = 0;
+static bool g_systime_set_flag = false;
 
 static void acquire_smc_buf_lock(uint32_t *lock)
 {
@@ -262,7 +262,7 @@ int put_last_out_cmd(const smc_cmd_t *cmd)
     acquire_smc_buf_lock(&g_nwd_cmd->smc_lock);
 
     rc = memcpy_s(&g_nwd_cmd->out[cmd->event_nr], sizeof(smc_cmd_t), cmd, sizeof(smc_cmd_t));
-    if (rc) {
+    if (rc != EOK) {
         release_smc_buf_lock(&g_nwd_cmd->smc_lock);
         tloge("memcpy out cmd failed\n");
         return GT_ERR_END_CMD;
@@ -283,7 +283,7 @@ void ns_cmd_response(smc_cmd_t *cmd)
 
     if (cmd->ret_val != TEE_PENDING) {
         TEE_Result ret = copy_pam_to_src(cmd->cmd_id, false);
-        if (ret)
+        if (ret != TEE_SUCCESS)
             cmd->ret_val = ret;
 
         ret = unmap_ns_operation(cmd);
@@ -316,8 +316,11 @@ TEE_Result handle_time_adjust(const smc_cmd_t *cmd)
         return TEE_ERROR_BAD_PARAMETERS;
     }
 
-    time.seconds = params->value.a;
-    time.millis = params->value.b;
+    if (params == NULL)
+        return TEE_ERROR_BAD_PARAMETERS;
+
+    time.seconds = (int32_t)params->value.a;
+    time.millis = (int32_t)params->value.b;
     if ((uint32_t)time.seconds <= SYSTIME_SET_MAX) {
 #ifdef CONFIG_OFF_DRV_TIMER
         ret = teecall_cap_time_sync(time.seconds, time.millis);
@@ -327,7 +330,7 @@ TEE_Result handle_time_adjust(const smc_cmd_t *cmd)
         if (ret != TEE_SUCCESS)
             return ret;
 
-        g_systime_set_flag = 1;
+        g_systime_set_flag = true;
     } else {
         tloge("time adjust failed\n");
         ret = TEE_ERROR_GENERIC;
@@ -481,7 +484,7 @@ error:
     return GT_ERR_END_CMD;
 }
 
-static int handle_ns_cmd()
+static int handle_ns_cmd(void)
 {
     int gt_err_ret;
     smc_cmd_t cmd;

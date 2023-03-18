@@ -20,12 +20,12 @@ int get_ta_info(uint32_t task_id, bool *ta_64bit, TEE_UUID *uuid);
 int convert_ta2gtask_msg(const uint8_t *msg_buf, uint32_t msg_size, uint32_t taskid, ta_to_global_msg *msg);
 
 /* struct global_to_ta_msg */
-TEE_Result send_global2ta_msg(const global_to_ta_msg *msg, uint32_t cmd, uint32_t taskid, const bool *type);
+TEE_Result send_global2ta_msg(const global_to_ta_msg *msg, uint32_t cmd, uint32_t taskid, const bool *ta_64bit);
 
 uint32_t get_tee_param_len(bool ta_is_64);
 
 TEE_Result alloc_tee_param_for_ta(uint32_t taskid, struct pam_node *node);
 
-TEE_Result send_ta_init_msg(const ta_init_msg *msg, bool ta_type, uint32_t cmd, uint32_t taskid);
+TEE_Result send_ta_init_msg(const ta_init_msg *msg, bool ta_is_64, uint32_t cmd, uint32_t taskid);
 
 #endif

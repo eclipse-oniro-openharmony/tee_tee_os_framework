@@ -41,7 +41,8 @@ extern struct session_struct *g_cur_session;
 static struct dlist_node g_agent_head;
 static uint32_t g_agent_cnt;
 
-/* service thread is a kthread 'CA' in tzdriver, it can be used
+/*
+ * service thread is a kthread 'CA' in tzdriver, it can be used
  * to handle build-in agent(ssa) request while there's
  * no source CA for agent request.
  * cases as list:
@@ -226,7 +227,7 @@ struct agent_control *find_agent(uint32_t agent_id)
             break;
         }
     }
-    if (!find_flag) {
+    if (find_flag == 0) {
         tlogd("Failed to find the agent 0x%x\n", agent_id);
         return NULL;
     }
@@ -339,7 +340,7 @@ TEE_Result unregister_agent(const smc_cmd_t *cmd)
     uint32_t param_type = 0;
     TEE_Param *param    = NULL;
 
-    if (g_agent_cnt <= 0) {
+    if (g_agent_cnt == 0) {
         tloge("Failed to unregister agent, no more agent exists!\n");
         return TEE_ERROR_GENERIC;
     }
@@ -358,9 +359,8 @@ TEE_Result unregister_agent(const smc_cmd_t *cmd)
     control = find_agent(agent_id);
     if (control != NULL) {
         if (control->locked) {
-            tlogd("agent already had lock set!\n");
-            /* Remove agent from session locked agents */
-            dlist_delete(&control->session_list);
+            tloge("agent already had lock set, cannot be unregistered!\n");
+            return TEE_ERROR_GENERIC;
         }
         /* If we have waiting sessions then unlock them */
         while (!dlist_empty(&control->waiting_sessions)) {
@@ -540,7 +540,7 @@ TEE_Result agent_late_init(const smc_cmd_t *cmd)
     if (cmd == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    if (cmd_global_ns_get_params(cmd, &param_type, &param))
+    if (cmd_global_ns_get_params(cmd, &param_type, &param) != 0)
         return TEE_ERROR_GENERIC;
 
     /* check params types */
@@ -564,7 +564,7 @@ TEE_Result set_service_thread_cmd(const smc_cmd_t *cmd, bool *async)
     if (cmd == NULL || async == NULL)
         return TEE_ERROR_BAD_PARAMETERS;
 
-    if (memcpy_s(&g_svc_thread_ctrl.cmd, sizeof(smc_cmd_t), cmd, sizeof(smc_cmd_t))) {
+    if (memcpy_s(&g_svc_thread_ctrl.cmd, sizeof(smc_cmd_t), cmd, sizeof(smc_cmd_t)) != EOK) {
         tloge("memcpy cmd failed\n");
         return TEE_ERROR_GENERIC;
     }
@@ -617,7 +617,7 @@ bool service_thread_request_dequeue(const smc_cmd_t *in, smc_cmd_t *out)
         return false;
     }
 
-    if (memcpy_s(out, sizeof(smc_cmd_t), &g_svc_thread_ctrl.cmd, sizeof(smc_cmd_t))) {
+    if (memcpy_s(out, sizeof(smc_cmd_t), &g_svc_thread_ctrl.cmd, sizeof(smc_cmd_t)) != EOK) {
         tloge("memcpy_s failed\n");
         return false;
     }
@@ -738,7 +738,7 @@ int32_t handle_service_agent_back_cmd(const smc_cmd_t *cmd)
     }
 
     ret = ipc_msg_snd(TEE_TASK_AGENT_SMC_ACK, agent_task_id, NULL, 0);
-    if (ret)
+    if (ret != 0)
         tloge("send msg to agent:%u fail:%u\n", agent_task_id, ret);
 
     smc_cmd_t cmd_out;

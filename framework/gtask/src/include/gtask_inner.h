@@ -16,7 +16,7 @@
 #include <ipclib.h>
 #include "mem_page_ops.h" /* paddr_t */
 #include "ta_framework.h"
-#include "sys_timer.h" // timer_private_data_kernel
+#include "sys_timer.h"
 #include <drv.h>
 
 #define GT_ERR_OK             0

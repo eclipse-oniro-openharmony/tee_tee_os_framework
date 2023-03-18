@@ -43,11 +43,10 @@
 
 #define SERVICE_AGED_TIME_LIMIT  2000U /* unit: millis */
 
-// defined in trustedcore/TEE_ext/tee_config.c
+/* defined in trustedcore/TEE_ext/tee_config.c */
 extern struct service_struct *g_cur_service;
 extern struct session_struct *g_cur_session;
 
-#define SERVICE_INDEX_MAX 2048
 #define INDEX_MAP_LEN     (SERVICE_INDEX_MAX / 8)
 #define FIRST_INDEX       1
 static uint32_t g_cur_index = FIRST_INDEX;
@@ -55,7 +54,7 @@ static uint8_t g_service_index_map[INDEX_MAP_LEN] = {0};
 
 /* service list head */
 struct dlist_node g_service_head;
-bool find_task(uint32_t task_id, struct service_struct **entry, struct session_struct **session);
+bool find_task(uint32_t task_id, struct service_struct **service, struct session_struct **session);
 
 struct dlist_node *get_service_head_ptr(void)
 {
@@ -66,7 +65,7 @@ bool is_gtask_by_uuid(const TEE_UUID *task_uuid)
 {
     TEE_UUID uuid = TEE_SERVICE_GLOBAL;
 
-    if (!TEE_MemCompare(&uuid, task_uuid, sizeof(TEE_UUID)))
+    if (TEE_MemCompare(&uuid, task_uuid, sizeof(TEE_UUID)) == 0)
         return true;
 
     return false;
@@ -82,11 +81,11 @@ int32_t find_service(const TEE_UUID *uuid, uint32_t service_index, struct servic
 
     dlist_for_each_entry(service_entry, &g_service_head, struct service_struct, service_list) {
         tlogd("iterate service %s \n", service_entry->name);
-        if (!TEE_MemCompare(&service_entry->property.uuid, uuid, sizeof(TEE_UUID)) &&
+        if ((TEE_MemCompare(&service_entry->property.uuid, uuid, sizeof(TEE_UUID)) == 0) &&
             !service_entry->is_service_dead) {
             tlogd("call service : %s\n", service_entry->name);
             if (service_index == 0 || service_index == service_entry->index) {
-                index  = service_entry->index;
+                index  = (int32_t)service_entry->index;
                 *entry = service_entry;
                 break;
             } else {
@@ -146,7 +145,7 @@ bool dynamic_service_exist(const TEE_UUID *uuid, bool build_in)
     return false;
 }
 
-static int32_t get_service_index()
+static int32_t get_service_index(void)
 {
     int32_t cnt = 0;
 
@@ -164,7 +163,7 @@ static int32_t get_service_index()
         g_cur_index++;
         cnt++;
     }
-    return g_cur_index++;
+    return (int32_t)(g_cur_index++);
 }
 
 static TEE_Result add_to_service_list(struct service_struct *service, const char *name, const TEE_UUID *uuid)
@@ -177,12 +176,13 @@ static TEE_Result add_to_service_list(struct service_struct *service, const char
     service->index      = (uint32_t)index;
     service->init_build = 0;
     if (strlen(name) < SERVICE_NAME_MAX) {
-        if (memmove_s(service->name, sizeof(service->name), (void *)name, strlen(name)) != TEE_SUCCESS) {
+        if (memmove_s(service->name, sizeof(service->name), (const void *)name, strlen(name)) != TEE_SUCCESS) {
             tloge("memmove service name failed\n");
             return TEE_ERROR_GENERIC;
         }
     } else {
-        if (memmove_s(service->name, sizeof(service->name), (void *)name, sizeof(service->name) - 1) != TEE_SUCCESS) {
+        if (memmove_s(service->name, sizeof(service->name),
+            (const void *)name, sizeof(service->name) - 1) != TEE_SUCCESS) {
             tloge("memmove service name failed\n");
             return TEE_ERROR_GENERIC;
         }
@@ -206,11 +206,11 @@ TEE_Result register_service(const char *name, const TEE_UUID *uuid, bool dyn_con
         return TEE_ERROR_BAD_PARAMETERS;
 
     tlogd("register_service : %s\n", name);
-    // build in service can't be register after boot
+    /* build in service can't be register after boot */
     if (!service_attr->build_in && is_build_in_service(uuid))
         return TEE_ERROR_REGISTER_EXIST_SERVICE;
 
-    // have registered service but elf have been deleted, only need load elf
+    /* have registered service but elf have been deleted, only need load elf */
     if (find_service(uuid, 0, &tmp_service) != INVALID_SERVICE_INDEX) {
         tmp_service->elf_state = ELF_EXIST;
         return TEE_SUCCESS;
@@ -265,7 +265,7 @@ TEE_Result ta_framework_init(void)
 {
     TEE_Result ret;
     ret = service_manager_init();
-    if (ret) {
+    if (ret != 0) {
         tloge("service manager init failed:%u\n", ret);
         return ret;
     }
@@ -383,7 +383,7 @@ static void incr_ref_cnt(struct service_struct *service)
     if (service == NULL)
         return;
 
-    // in case of overflow
+    /* in case of overflow */
     if ((service->ref_cnt + 1) < 0) {
         tloge("invalid ref cnt when incr\n");
         return;
@@ -397,7 +397,7 @@ void decr_ref_cnt(struct service_struct *service)
     if (service == NULL)
         return;
 
-    // in case of overflow
+    /* in case of overflow */
     if (service->ref_cnt <= 0) {
         tloge("invalid ref cnt when decr\n");
         return;
@@ -616,7 +616,7 @@ TEE_Result start_internal_task(const TEE_UUID *uuid, uint16_t task_prio, const c
     task_param.task_name  = task_name;
     task_param.que_num    = DEFAULT_MSG_QUEUE_NUM;
 
-    if (memcpy_s(&task_param.uuid, sizeof(task_param.uuid), &(g_cur_service->property.uuid), sizeof(TEE_UUID)) != 0) {
+    if (memcpy_s(&task_param.uuid, sizeof(task_param.uuid), &(g_cur_service->property.uuid), sizeof(TEE_UUID)) != EOK) {
         tloge("copy uuid failed\n");
         ret = TEE_ERROR_GENERIC;
         goto create_task_fail;

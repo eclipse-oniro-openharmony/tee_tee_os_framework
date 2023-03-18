@@ -16,6 +16,6 @@
 #include "gtask_core.h"
 
 int uuid_to_fname(const TEE_UUID *uuid, char *name, int namelen);
-int uuid_to_libname(const TEE_UUID *uuid, char *name, int namelen, char *lib_name, tee_img_type_t type);
+int uuid_to_libname(const TEE_UUID *uuid, char *name, int namelen, const char *lib_name, tee_img_type_t type);
 
 #endif
