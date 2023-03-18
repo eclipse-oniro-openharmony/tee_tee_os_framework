@@ -117,10 +117,6 @@ static TEE_Result check_and_process_init_build(ta_init_msg *init_msg,
          */
         g_cur_service->init_build = 1;
 
-        /*
-         * Orignial RTOSck code do agent_init() at every opensession, which seems unnecessary.
-         * send tee lib init data
-         */
         set_init_msg_prop(&g_cur_service->property, &(init_msg->prop));
         init_msg->login_method = g_cur_session->login_method;
 
@@ -863,9 +859,6 @@ int32_t release_session(struct service_struct *service, struct session_struct *s
     task_adapt_unregister_ta(&service->property.uuid, session->task_id);
     service->session_count--;
 
-    /*
-     * Hongmeng: A very workaround, To keep RTOSck API defination
-     */
     backup_service = g_cur_service;
     backup_session = g_cur_session;
     g_cur_service  = service;

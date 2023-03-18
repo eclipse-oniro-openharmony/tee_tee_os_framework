@@ -70,9 +70,7 @@ CPPFLAGS += -I$(K_SYSLIB)/libccmgr_hm/include
 CPPFLAGS += -I$(K_SYSLIB)/libfileio/include
 CPPFLAGS += -I$(TEELIB)/libdrv/include
 CPPFLAGS += -I$(K_SYSLIB)/libhmlog/include
-CPPFLAGS += -I$(K_SYSLIB)/libhongmeng/include
 CPPFLAGS += -I$(K_SYSLIB)/libutils/include # dlist.h
-CPPFLAGS += -I$(K_SYSLIB)/libmmgr/include # mmgrapi_common.h
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), mbedtls)
 CPPFLAGS += -I$(K_TEELIB)/libmbedtls/mbedtls/include

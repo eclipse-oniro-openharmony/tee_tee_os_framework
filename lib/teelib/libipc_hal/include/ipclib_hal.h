@@ -18,10 +18,9 @@
 #define MSG_TYPE_NOTIF           1
 #define MSG_TYPE_CALL            2
 
-/* Create a IPC channel and register it to the TAMgr with path "$PID" */
+/* Create a IPC channel and register it to the mgr with path "$PID" */
 int32_t ipc_create_single_channel(const char *name, cref_t *pch, bool reg_pid, bool reg_name, bool reg_tamgr);
 
-/* For channels who doesn't need RTOSck-compatible */
 int32_t ipc_create_channel_native(const char *name, cref_t *pch);
 
 uint32_t ipc_send_msg_sync(uint32_t msg_id, uint32_t dest_pid, const void *msgp, uint32_t size);

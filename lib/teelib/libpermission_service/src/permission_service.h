@@ -31,10 +31,10 @@
 #define MAX_PUB_KEY_SIZE 2056
 #define MAX_PERM_SRV_BUFF_SIZE (70 * 1024)
 
-#define PERMSRV_FILE_OPT    ".rtosck.permsrv_file_operation"
-#define PERMSRV_SAVE_FILE   ".rtosck.permsrv_save_file"
-#define PERMSRV_ASYNC_OPT        ".rtosck.permsrv_async_operation"
-#define PERMSRV_ASYNC_OPT_FILE   ".rtosck.permsrv_async_operation_file"
+#define PERMSRV_FILE_OPT    "permsrv_file_operation"
+#define PERMSRV_SAVE_FILE   "permsrv_save_file"
+#define PERMSRV_ASYNC_OPT        "permsrv_async_operation"
+#define PERMSRV_ASYNC_OPT_FILE   "permsrv_async_operation_file"
 
 enum PERM_COMMANDS_ID {
     PERMSRV_QUERY_TA_PERMS          = 0x102,
