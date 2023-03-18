@@ -66,7 +66,6 @@ inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libswcrypto_engine/include
 inc-flags += -I$(TEELIB)/libcrypto_hal/include
 inc-flags += -I$(TEELIB)/libipc_hal/include
-inc-flags += -I$(K_SYSLIB)/libhongmeng/include
 inc-flags += -I$(K_SYSLIB)/libhmlog/include
 inc-flags += -I$(K_SYSLIB)/libmmgr_sysmgr/include
 inc-flags += -I$(K_SYSLIB)/libmmgr_sysmgr/src
@@ -92,6 +91,7 @@ inc-flags += -I$(SERVICES_PATH)/permission_service/src/file_op/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/anti_rollback
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/auth/tee_auth_sign_rsa.h
 inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
+inc-flags += -I$(PREBUILD_HEADER)/ddk/hmapi
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(TEELIB)/libopenssl/openssl/include

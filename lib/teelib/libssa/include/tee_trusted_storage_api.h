@@ -79,12 +79,14 @@ enum Data_Flag_Constants {
     TEE_DATA_FLAG_CREATE = 0x00000200,
     /*
      * Protect an existing file with the same name. If the file with the same name does not exist,
-     * create a new data file; if the file with the same name exists, an error will be reported
+     * create a new data file; if the file with the same name exists, an error will be reported.
+     * Used in GP v1.1, deprecated in GP v1.2
      */
     TEE_DATA_FLAG_EXCLUSIVE = 0x00000400,
     /*
      * Protect an existing file with the same name. If the file with the same name does not exist,
-     * create a new data file; if the file with the same name exists, an error will be reported
+     * create a new data file; if the file with the same name exists, an error will be reported.
+     * Used in GP v1.2
      */
     TEE_DATA_FLAG_OVERWRITE = 0x00000400,
     /*

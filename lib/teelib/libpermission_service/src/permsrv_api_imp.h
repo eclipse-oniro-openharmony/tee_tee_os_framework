@@ -15,7 +15,7 @@
 #include "permission_service.h"
 
 #define HASH_FILE_MAX_SIZE (64 * 1024)
-#define PERMSRV_FILE_OPT ".rtosck.permsrv_file_operation"
+#define PERMSRV_FILE_OPT "permsrv_file_operation"
 
 int perm_srv_msg_call(const char *path, perm_srv_req_msg_t *msg, perm_srv_reply_msg_t *rsp);
 

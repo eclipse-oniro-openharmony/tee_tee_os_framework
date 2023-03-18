@@ -24,5 +24,5 @@ void register_uuid(uint32_t sender, TEE_UUID uuid, uint32_t user_id, bool ssa_en
 char pre_unregister_uuid(const union ssa_agent_msg *msg, uint32_t sender);
 void ssa_register_uuid(union ssa_agent_msg *msg, uint32_t sndr, struct ssa_agent_rsp *rsp);
 TEE_Result set_caller_info_proc(uint32_t task_id, uint32_t cmd);
-#define PERMSRV_SAVE_FILE ".rtosck.permsrv_save_file"
+#define PERMSRV_SAVE_FILE "permsrv_save_file"
 #endif

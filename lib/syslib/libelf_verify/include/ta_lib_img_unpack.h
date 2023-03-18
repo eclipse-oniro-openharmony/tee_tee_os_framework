@@ -19,8 +19,8 @@
 #define SEC_IMG_TA_KEY_VERSION  2U
 /* ta's sec file only signature not encrypt */
 #define KEY_VER_NOT_ENCRYPT     0
-#define PERMSRV_FILE_OPT  ".rtosck.permsrv_file_operation"
-#define PERMSRV_SAVE_FILE ".rtosck.permsrv_save_file"
+#define PERMSRV_FILE_OPT  "permsrv_file_operation"
+#define PERMSRV_SAVE_FILE "permsrv_save_file"
 #define INVALID_OFFSET (-1)
 #define MAX_TAFS_NAME_LEN 64
 #define RWRIGHT 0600
@@ -191,7 +191,7 @@ typedef struct {
 typedef struct {
     manifest_t manifest;  /* save manifest info */
     int8_t *manifest_buf; /* use malloc, save manifest extension */
-    int8_t *img_buf;      /* use rtosck mem, save image */
+    int8_t *img_buf;      /* save image */
     uint32_t img_offset;
     uint32_t img_size;
     uint32_t img_version;

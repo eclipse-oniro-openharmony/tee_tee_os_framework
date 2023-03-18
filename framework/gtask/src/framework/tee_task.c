@@ -274,7 +274,7 @@ static int32_t decide_executer(const char *ehdr, uint32_t ehdr_size, int32_t fd)
 
 #define EH_SIZE sizeof(Elf64_Ehdr)
 
-static int __is_rtosck_binary(const char *name)
+static int check_binary_type(const char *name)
 {
     int ldr = ELF_NOT_SUPPORT;
     char ehdr[EH_SIZE];
@@ -465,7 +465,7 @@ static int32_t create_service_thread(const char *elf_path, char **argv, char **e
 static int set_argv_for_tsk(struct argv_base_buffer *argv, char *loader_path, uint32_t loader_path_size,
     const char *path_name, uint32_t path_name_size)
 {
-    int bin_type = __is_rtosck_binary(path_name);
+    int bin_type = check_binary_type(path_name);
     if (bin_type < ELF_NATIVE)
         return -EINVAL;
 

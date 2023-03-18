@@ -248,7 +248,6 @@ void *perm_thread_init_file(void *data)
             continue;
         }
 
-        /* get sender taskid for rtosck */
         if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
@@ -363,7 +362,6 @@ void *perm_thread_init_async_file(void *data)
             continue;
         }
 
-        /* get sender taskid for rtosck */
         if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
@@ -573,7 +571,6 @@ __attribute__((visibility("default"))) void tee_task_entry(int32_t init_build)
             continue;
         }
 
-        /* get sender taskid for rtosck */
         if (info.src_pid == 0)
             sender_taskid = GLOBAL_HANDLE;
         else
