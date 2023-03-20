@@ -65,25 +65,9 @@ static TEE_Result get_cert_subjects(const uint8_t *cert, uint32_t cert_len, stru
     return TEE_SUCCESS;
 }
 
-static TEE_Result tee_secure_img_conf_cert_cn_check(const uint8_t *cn, size_t cn_size)
+static TEE_Result conf_cert_cn_check(const uint8_t *cn, size_t cn_size)
 {
     const char *config_cn = get_config_cert_cn();
-    bool check = (cn == NULL || cn_size > SN_MAX_SIZE);
-
-    if (check)
-        return TEE_ERROR_BAD_PARAMETERS;
-
-    check = (config_cn != NULL && (strlen(config_cn) == cn_size && TEE_MemCompare(cn, config_cn, cn_size) == 0));
-    if (check)
-        return TEE_SUCCESS;
-
-    tloge("size 0x%x, %s\n", cn_size, cn);
-    return TEE_ERROR_GENERIC;
-}
-
-static TEE_Result oh_conf_cert_cn_check(const uint8_t *cn, size_t cn_size)
-{
-    const char *config_cn = get_oh_config_cert_cn();
     bool check = (cn == NULL || cn_size > SN_MAX_SIZE);
 
     if (check)
@@ -96,28 +80,10 @@ static TEE_Result oh_conf_cert_cn_check(const uint8_t *cn, size_t cn_size)
     return TEE_ERROR_GENERIC;
 }
 
-static TEE_Result tee_secure_img_conf_cert_ou_check(const uint8_t *ou, size_t ou_size)
+static TEE_Result conf_cert_ou_check(const uint8_t *ou, size_t ou_size, conf_cert_t *cert_type)
 {
     const char *config_ou_prod = get_config_cert_ou_prod();
-    bool check = (ou == NULL || ou_size > SN_MAX_SIZE);
-    if (check)
-        return TEE_ERROR_BAD_PARAMETERS;
-
-    check = (config_ou_prod != NULL &&
-             (ou_size == strlen(config_ou_prod) && TEE_MemCompare(ou, config_ou_prod, ou_size) == 0));
-    if (check) {
-        tlogd("TA certificate type: %s\n", "Production");
-        return TEE_SUCCESS;
-    }
-
-    tloge("size: 0x%x, %s\n", ou_size, ou);
-    return TEE_ERROR_GENERIC;
-}
-
-static TEE_Result oh_conf_cert_ou_check(const uint8_t *ou, size_t ou_size, conf_cert_t *cert_type)
-{
-    const char *config_ou_prod = get_oh_config_ou_prod();
-    const char *config_ou_dev = get_oh_config_ou_dev();
+    const char *config_ou_dev = get_config_cert_ou_dev();
 
     bool is_invalid = (ou == NULL || cert_type == NULL || ou_size > SN_MAX_SIZE);
     if (is_invalid)
@@ -141,39 +107,10 @@ static TEE_Result oh_conf_cert_ou_check(const uint8_t *ou, size_t ou_size, conf_
     return TEE_ERROR_GENERIC;
 }
 
-static TEE_Result tee_secure_img_ta_cert_ou_check(const uint8_t *ou, size_t ou_size, ta_cert_t *cert_type)
+static TEE_Result ta_cert_ou_check(const uint8_t *ou, size_t ou_size, ta_cert_t *cert_type)
 {
     const char *config_ou_prod = get_config_cert_ou_prod();
     const char *config_ou_dev = get_config_cert_ou_dev();
-
-    bool is_invalid = (ou == NULL || cert_type == NULL || ou_size > SN_MAX_SIZE);
-    if (is_invalid)
-        return TEE_ERROR_BAD_PARAMETERS;
-
-    is_invalid = (config_ou_prod != NULL &&
-                  (ou_size == strlen(config_ou_prod) && TEE_MemCompare(ou, config_ou_prod, ou_size) == 0));
-    if (is_invalid) {
-        tlogd("TA certificate type: %s\n", "Production");
-        *cert_type = TA_RELEASE_CERT;
-        return TEE_SUCCESS;
-    }
-
-    is_invalid = (config_ou_dev != NULL &&
-                  (ou_size == strlen(config_ou_dev) && TEE_MemCompare(ou, config_ou_dev, ou_size) == 0));
-    if (is_invalid) {
-        tlogd("TA certificate type: %s\n", "Development");
-        *cert_type = TA_DEBUG_CERT;
-        return TEE_SUCCESS;
-    }
-
-    tloge("size: 0x%x, %s\n", ou_size, ou);
-    return TEE_ERROR_GENERIC;
-}
-
-static TEE_Result oh_ta_cert_ou_check(const uint8_t *ou, size_t ou_size, ta_cert_t *cert_type)
-{
-    const char *config_ou_prod = get_oh_config_ou_prod();
-    const char *config_ou_dev = get_oh_config_ou_dev();
 
     bool is_invalid = (ou == NULL || cert_type == NULL || ou_size > SN_MAX_SIZE);
     if (is_invalid)
@@ -233,15 +170,11 @@ static TEE_Result tee_secure_img_ta_cn_check(const uint8_t *cn_buff, uint32_t cn
     return TEE_SUCCESS;
 }
 
-static TEE_Result config_cert_cn_ou_check(const struct cert_subjects *subjects,
-                                          bool is_oh, bool is_sys_ta)
+static TEE_Result config_cert_cn_ou_check(const struct cert_subjects *subjects, bool is_sys_ta)
 {
     TEE_Result ret;
 
-    if (is_oh)
-        ret = oh_conf_cert_cn_check(subjects->cn, subjects->cn_size);
-    else
-        ret = tee_secure_img_conf_cert_cn_check(subjects->cn, subjects->cn_size);
+    ret = conf_cert_cn_check(subjects->cn, subjects->cn_size);
     if (ret != TEE_SUCCESS) {
         tloge("Failed to pass ta developer alliance certificate CN check\n");
         return TEE_ERROR_GENERIC;
@@ -254,10 +187,7 @@ static TEE_Result config_cert_cn_ou_check(const struct cert_subjects *subjects,
     (void)is_sys_ta;
 #endif
 
-    if (is_oh)
-        ret = oh_conf_cert_ou_check(subjects->ou, subjects->ou_size, &g_conf_cert_type);
-    else
-        ret = tee_secure_img_conf_cert_ou_check(subjects->ou, subjects->ou_size);
+    ret = conf_cert_ou_check(subjects->ou, subjects->ou_size, &g_conf_cert_type);
     if (ret != TEE_SUCCESS) {
         tloge("Failed to pass ta developer alliance certificate OU check\n");
         return TEE_ERROR_GENERIC;
@@ -317,7 +247,7 @@ static TEE_Result check_and_get_off_val(uint32_t *offset, uint32_t off_len, uint
 }
 
 static TEE_Result ta_cert_cn_ou_check(const struct cert_subjects *subjects, const struct ta_identity *identity,
-    cert_param_t *cert_param, bool is_oh)
+    cert_param_t *cert_param)
 {
     TEE_Result ret;
 
@@ -329,10 +259,7 @@ static TEE_Result ta_cert_cn_ou_check(const struct cert_subjects *subjects, cons
     if (!cert_param->sys_verify_ta)
         return TEE_SUCCESS;
 #endif
-    if (is_oh)
-        ret = oh_ta_cert_ou_check(subjects->ou, subjects->ou_size, &cert_param->cert_type);
-    else
-        ret = tee_secure_img_ta_cert_ou_check(subjects->ou, subjects->ou_size, &cert_param->cert_type);
+    ret = ta_cert_ou_check(subjects->ou, subjects->ou_size, &cert_param->cert_type);
     if (ret != TEE_SUCCESS)
         return ret;
 
@@ -360,10 +287,7 @@ static TEE_Result check_ta_cert_subjects(struct ta_config_info *config,
     perm_config->cn_size = subjects.cn_size;
     g_ta_cert = config->ta_cert.cert;
 
-    bool is_oh = false;
-    if (config->header.version == CONFIG_HEADER_V1)
-        is_oh = ((config->header.header.v1.policy_version & PRODUCT_BIT_MAP) == CONFIG_POLICY_OH) ? true : false;
-    ret = ta_cert_cn_ou_check(&subjects, identity, cert_param, is_oh);
+    ret = ta_cert_cn_ou_check(&subjects, identity, cert_param);
     if (ret != TEE_SUCCESS)
         return ret;
 
@@ -721,7 +645,7 @@ static TEE_Result get_config_info(const struct ta_package *package, struct ta_co
 }
 
 static TEE_Result check_config_cert_subjects(const uint8_t *cert, uint32_t cert_len,
-                                             bool is_oh, const cert_param_t *cert_param)
+                                             const cert_param_t *cert_param)
 {
     TEE_Result ret;
     struct cert_subjects subjects = { { 0 }, 0, { 0 }, 0 };
@@ -732,7 +656,7 @@ static TEE_Result check_config_cert_subjects(const uint8_t *cert, uint32_t cert_
     if (ret != TEE_SUCCESS)
         return ret;
 
-    return config_cert_cn_ou_check(&subjects, is_oh, cert_param->sys_verify_ta);
+    return config_cert_cn_ou_check(&subjects, cert_param->sys_verify_ta);
 }
 
 uint32_t get_ca_type(void)
@@ -818,7 +742,7 @@ static TEE_Result check_config_cert_validation(const struct ta_config_info *conf
     }
 
     /* 2.check cn and ou subjects */
-    ret = check_config_cert_subjects(cert, cert_len, is_oh, cert_param);
+    ret = check_config_cert_subjects(cert, cert_len, cert_param);
     if (ret != TEE_SUCCESS)
         return ret;
 
