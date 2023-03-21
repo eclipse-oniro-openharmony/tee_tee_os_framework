@@ -12,21 +12,13 @@
 #include <string.h>
 #include <stdint.h>
 
-const char *g_config_product_ou     = "Huawei iTrustee Production";
-const char *g_config_development_ou = "Huawei iTrustee Development";
-const char *g_config_cn             = "iTrustee_Config";
-const char *g_oh_config_cn             = "Config";
-const char *g_oh_config_product_ou     = "Production";
-const char *g_oh_config_development_ou = "Development";
+const char *g_config_product_ou     = "Production";
+const char *g_config_development_ou = "Development";
+const char *g_config_cn             = "Config";
 
 const char *get_config_cert_cn(void)
 {
     return g_config_cn;
-}
-
-const char *get_oh_config_cert_cn(void)
-{
-    return g_oh_config_cn;
 }
 
 const char *get_config_cert_ou_prod(void)
@@ -37,14 +29,4 @@ const char *get_config_cert_ou_prod(void)
 const char *get_config_cert_ou_dev(void)
 {
     return g_config_development_ou;
-}
-
-const char *get_oh_config_ou_prod(void)
-{
-    return g_oh_config_product_ou;
-}
-
-const char *get_oh_config_ou_dev(void)
-{
-    return g_oh_config_development_ou;
 }
