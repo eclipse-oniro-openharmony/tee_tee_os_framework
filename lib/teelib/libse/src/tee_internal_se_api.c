@@ -85,8 +85,8 @@ static bool g_is_se_inited = false;
 static struct scp_gp_challenge g_scp_challenge;
 uint8_t g_mac_chaining[SCP_CMAC_TOTAL_LENGTH];
 static struct tee_scp03_state_t g_tee_scp03_state;
-static pthread_mutex_t g_service_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
-static pthread_mutex_t g_se_init_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_service_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t g_se_init_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int mutex_lock_service(pthread_mutex_t *mutex)
 {

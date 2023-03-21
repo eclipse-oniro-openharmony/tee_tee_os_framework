@@ -21,7 +21,7 @@
 #define DRIVER_TAG_MAX_LEN      25
 #define DRIVER_TAGS_NUM         40
 
-static pthread_mutex_t g_driver_tag_lock = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_driver_tag_lock = PTHREAD_MUTEX_INITIALIZER;
 
 static uint8_t g_source_num = 0;
 

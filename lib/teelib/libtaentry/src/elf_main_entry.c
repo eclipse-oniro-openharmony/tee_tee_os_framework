@@ -45,7 +45,7 @@
 static bool g_state_create_entry = false;
 
 /* Force these 2 variable locate in data section */
-static __attribute__((section(".data"))) pthread_mutex_t g_init_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static __attribute__((section(".data"))) pthread_mutex_t g_init_mutex = PTHREAD_MUTEX_INITIALIZER;
 static __attribute__((section(".data"))) pthread_cond_t g_init_cond   = PTHREAD_COND_INITIALIZER;
 static __attribute__((section(".data"))) char g_init_done             = INIT_NOT_DONE;
 

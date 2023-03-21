@@ -72,7 +72,7 @@ int32_t create_spawn_sync_msg_info(void)
 static char g_spawn_buffer[sizeof(struct spawn_drv_buffer) * 2];
 static char *g_argv[ARGV_MAX] = { 0 };
 static char *g_env[ENV_MAX] = { 0 };
-static pthread_mutex_t g_drv_spawn_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_drv_spawn_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 static int32_t spawn_driver(const struct drv_spawn_param *param, int32_t loader_type,
     char *argv[], char *env[], uint32_t *taskid)
@@ -305,7 +305,7 @@ void drv_kill_task(uint32_t taskid)
 static int32_t prepare_spawn_params(const struct drv_spawn_param *drv_param, uint32_t *taskid)
 {
     int32_t func_ret = -1;
-    int32_t ret = drv_robust_mutex_lock(&g_drv_spawn_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_spawn_mtx);
     if (ret != 0) {
         tloge("get drv spawn mtx failed\n");
         return -1;

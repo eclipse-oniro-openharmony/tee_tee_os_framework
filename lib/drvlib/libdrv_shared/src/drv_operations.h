@@ -46,6 +46,6 @@ int64_t driver_ioctl(uint64_t fd, struct tee_drv_param *params,
 int64_t driver_close(uint64_t fd, const struct tee_drv_param *params);
 int32_t driver_close_by_pid(uint32_t pid);
 void driver_dump(void);
-int32_t drv_robust_mutex_lock(pthread_mutex_t *mtx);
+int32_t drv_mutex_lock(pthread_mutex_t *mtx);
 int32_t driver_register_cmd_perm(const struct tee_drv_param *params, int64_t *ret_val);
 #endif

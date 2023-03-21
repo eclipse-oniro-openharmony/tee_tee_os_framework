@@ -22,7 +22,7 @@
 
 #define PERM_PATH        "permservice"
 static uint32_t g_init_state = INIT_STATE_NOT_READY;
-static pthread_mutex_t g_msg_call_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_msg_call_mutex = PTHREAD_MUTEX_INITIALIZER;
 static TEE_UUID g_permsrv_uuid = TEE_SERVICE_PERM;
 
 int perm_srv_msg_call(const char *path, perm_srv_req_msg_t *msg, perm_srv_reply_msg_t *rsp)

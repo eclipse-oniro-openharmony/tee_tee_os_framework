@@ -17,7 +17,7 @@
 #include <tee_ext_api.h>
 #include "huk_service_msg_call.h"
 
-static pthread_mutex_t g_msg_call_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_msg_call_mutex = PTHREAD_MUTEX_INITIALIZER;
 int32_t huk_srv_msg_call(struct huk_srv_msg *msg, struct huk_srv_rsp *rsp)
 {
     errno_t rc;

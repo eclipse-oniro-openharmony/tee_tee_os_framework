@@ -70,7 +70,7 @@ struct ret_vaild_handle {
 };
 
 static dlist_head(g_session_cancel_state);
-static pthread_mutex_t g_global_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_global_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int32_t mutex_lock_ops(pthread_mutex_t *mtx)
 {

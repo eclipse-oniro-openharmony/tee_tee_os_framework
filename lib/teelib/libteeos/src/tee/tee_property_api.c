@@ -113,7 +113,7 @@ static dlist_head(g_enum_head);
 #define TEE_PROPERTY_HANDLE_MAX 1024
 #define PROPERTY_MAP_SIZE       (TEE_PROPERTY_HANDLE_MAX / 8)
 static uint8_t g_handle_bitmap[PROPERTY_MAP_SIZE];
-static pthread_mutex_t g_bitmap_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_bitmap_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 #define UUID_FORMAT_STRLEN    37
 #define MAX_PROPERTY_NAME_LEN 255

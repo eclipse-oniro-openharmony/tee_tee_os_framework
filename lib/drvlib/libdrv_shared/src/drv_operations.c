@@ -33,10 +33,10 @@ static struct drv_cmd_perm g_cmd_perm = {
     .cmd_num = 0,
 };
 static struct dlist_node g_drv_node = dlist_head_init(g_drv_node);
-static pthread_mutex_t g_drv_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_drv_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 static uint8_t g_fd_bitmap[(FD_COUNT_MAX) >> MOVE_BIT];
-static pthread_mutex_t g_fd_mtx = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_fd_mtx = PTHREAD_MUTEX_INITIALIZER;
 static void task_dump_fd(const struct drv_task *task);
 
 /*
@@ -45,51 +45,31 @@ static void task_dump_fd(const struct drv_task *task);
  */
 #define DRV_TASK_OPEN_REF_CNT_STEP 2U
 
-int32_t drv_robust_mutex_lock(pthread_mutex_t *mtx)
+int32_t drv_mutex_lock(pthread_mutex_t *mtx)
 {
     if (mtx == NULL)
         return -1;
 
     int32_t ret = pthread_mutex_lock(mtx);
-    if (ret == EOWNERDEAD) /* owner died, use consistent to recover and lock the mutex */
-        return pthread_mutex_consistent(mtx);
 
     return ret;
 }
 
-static int32_t robust_mutex_init(pthread_mutex_t *mtx)
+static int32_t drv_mutex_init(pthread_mutex_t *mtx)
 {
     int32_t ret;
-    pthread_mutexattr_t attr;
 
     if (mtx == NULL) {
         tloge("invalid mtx\n");
         return -1;
     }
 
-    (void)pthread_mutexattr_init(&attr);
-    if (pthread_mutexattr_setrobust(&attr, 1) != 0) {
-        tloge("set robust failed\n");
-        goto err;
-    }
-
-    if (pthread_mutexattr_setpshared(&attr, 1) != 0) {
-        tloge("set pshared failed\n");
-        goto err;
-    }
-
-    ret = pthread_mutex_init(mtx, &attr);
+    ret = pthread_mutex_init(mtx, NULL);
     if (ret != 0) {
         tloge("pthread mutex init failed with ret:%d\n", ret);
-        goto err;
     }
 
-    (void)pthread_mutexattr_destroy(&attr);
-    return 0;
-
-err:
-    (void)pthread_mutexattr_destroy(&attr);
-    return -1;
+    return ret;
 }
 
 /*
@@ -112,7 +92,7 @@ static struct drv_task *alloc_and_add_drv_task(uint32_t pid)
     new_task->ref_cnt = DRV_TASK_OPEN_REF_CNT_STEP;
     dlist_init(&new_task->data_head);
 
-    int32_t ret = robust_mutex_init(&new_task->task_mtx);
+    int32_t ret = drv_mutex_init(&new_task->task_mtx);
     if (ret != 0) {
         free(new_task);
         tloge("init task_mtx failed\n");
@@ -151,7 +131,7 @@ static struct drv_task *find_and_get_drv_task_locked(uint32_t pid, bool open)
     struct drv_task *task = NULL;
     bool find_flag = false;
 
-    int32_t ret = drv_robust_mutex_lock(&g_drv_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_mtx);
     if (ret != 0) {
         tloge("lock drv mtx failed\n");
         return task;
@@ -201,7 +181,7 @@ static void put_drv_task_locked(struct drv_task *task, uint32_t put_cnt)
 {
     bool free_flag = false;
 
-    int32_t ret = drv_robust_mutex_lock(&g_drv_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_mtx);
     if (ret != 0) {
         tloge("lock drv mtx failed\n");
         return;
@@ -229,7 +209,7 @@ static void put_drv_task_locked(struct drv_task *task, uint32_t put_cnt)
 static int32_t inc_fd_ref_locked(struct fd_data *data)
 {
     int32_t func_ret = -1;
-    int32_t ret = drv_robust_mutex_lock(&data->ref_mtx);
+    int32_t ret = drv_mutex_lock(&data->ref_mtx);
     if (ret != 0) {
         tloge("get ref mtx fail\n");
         return -1;
@@ -251,7 +231,7 @@ static int32_t inc_fd_ref_locked(struct fd_data *data)
 
 static void dec_fd_ref_locked(struct fd_data *data)
 {
-    int32_t ret = drv_robust_mutex_lock(&data->ref_mtx);
+    int32_t ret = drv_mutex_lock(&data->ref_mtx);
     if (ret != 0) {
         tloge("dec fd ref get mtx fail\n");
         return;
@@ -320,7 +300,7 @@ static struct fd_data *find_and_get_fd_data_locked(int32_t fd,
 {
     struct fd_data *data = NULL;
 
-    int32_t ret = drv_robust_mutex_lock(&task->task_mtx);
+    int32_t ret = drv_mutex_lock(&task->task_mtx);
     if (ret != 0) {
         tloge("lock task mtx failed\n");
         return NULL;
@@ -358,7 +338,7 @@ static struct fd_data *find_and_del_fd_data_locked(int32_t fd,
 {
     struct fd_data *data = NULL;
 
-    int32_t ret = drv_robust_mutex_lock(&task->task_mtx);
+    int32_t ret = drv_mutex_lock(&task->task_mtx);
     if (ret != 0) {
         tloge("del lock task mtx failed\n");
         return NULL;
@@ -388,7 +368,7 @@ static void free_fd_data(struct fd_data *data)
     free(data);
     data = NULL;
 
-    int32_t ret = drv_robust_mutex_lock(&g_fd_mtx);
+    int32_t ret = drv_mutex_lock(&g_fd_mtx);
     if (ret != 0) {
         tloge("lock fd mtx failed, cannot clear fd:%d\n", fd);
         return;
@@ -425,7 +405,7 @@ static void close_and_free_fd_data(struct fd_data *data)
 static void close_fd_data_locked(struct fd_data *data)
 {
     bool free_flag = true;
-    int32_t ret = drv_robust_mutex_lock(&data->ref_mtx);
+    int32_t ret = drv_mutex_lock(&data->ref_mtx);
     if (ret != 0) {
         tloge("something wrong, close fd get ref mtx fail\n");
         return;
@@ -457,7 +437,7 @@ unlock_ref_mtx:
 
 static int32_t alloc_fd(void)
 {
-    int32_t ret = drv_robust_mutex_lock(&g_fd_mtx);
+    int32_t ret = drv_mutex_lock(&g_fd_mtx);
     if (ret != 0) {
         tloge("get mtx failed\n");
         return -1;
@@ -528,7 +508,7 @@ static struct fd_data *alloc_fd_data(uint32_t caller_taskid, const struct tee_dr
         goto free_data;
     }
 
-    if (robust_mutex_init(&data->ref_mtx) != 0) {
+    if (drv_mutex_init(&data->ref_mtx) != 0) {
         tloge("ref mtx init fail\n");
         goto free_data;
     }
@@ -556,7 +536,7 @@ free_data:
 
 static int64_t add_fd_data_locked(struct fd_data *data, struct drv_task *task)
 {
-    int32_t ret = drv_robust_mutex_lock(&task->task_mtx);
+    int32_t ret = drv_mutex_lock(&task->task_mtx);
     if (ret != 0) {
         tloge("get task mtx failed\n");
         return -1;
@@ -575,7 +555,7 @@ static int32_t get_task_count(struct drv_task *task)
 {
     int32_t func_ret = -1;
 
-    int32_t ret = drv_robust_mutex_lock(&task->task_mtx);
+    int32_t ret = drv_mutex_lock(&task->task_mtx);
     if (ret != 0) {
         tloge("check task count get drv mtx failed\n");
         return -1;
@@ -604,7 +584,7 @@ static int32_t get_task_count(struct drv_task *task)
 
 static void put_task_count(struct drv_task *task)
 {
-    int32_t ret = drv_robust_mutex_lock(&task->task_mtx);
+    int32_t ret = drv_mutex_lock(&task->task_mtx);
     if (ret != 0) {
         tloge("check task count get drv mtx failed\n");
         return;
@@ -1010,7 +990,7 @@ static void task_dump_fd(const struct drv_task *task)
 
 static void task_dump_fd_locked(struct drv_task *task)
 {
-    int32_t ret = drv_robust_mutex_lock(&task->task_mtx);
+    int32_t ret = drv_mutex_lock(&task->task_mtx);
     if (ret != 0) {
         tloge("lock task mtx failed\n");
         return;
@@ -1030,7 +1010,7 @@ void driver_dump(void)
     struct drv_task *temp = NULL;
 
     tloge("***** driver dump fd begin *****\n");
-    int32_t ret = drv_robust_mutex_lock(&g_drv_mtx);
+    int32_t ret = drv_mutex_lock(&g_drv_mtx);
     if (ret != 0) {
         tloge("lock drv mtx failed\n");
         return;

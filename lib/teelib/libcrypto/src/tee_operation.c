@@ -18,7 +18,7 @@
 
 #define LOCK_UNLOCK_OK 0
 static dlist_head(g_operation_list);
-static pthread_mutex_t g_operation_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_operation_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
     struct dlist_node list_node;

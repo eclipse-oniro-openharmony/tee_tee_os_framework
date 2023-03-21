@@ -19,8 +19,8 @@
 
 #define TASK_FD_COUNT_MAX 32U
 
-int32_t drv_robust_mutex_lock(pthread_mutex_t *mtx);
-int32_t robust_mutex_init(pthread_mutex_t *mtx);
+int32_t drv_mutex_lock(pthread_mutex_t *mtx);
+int32_t drv_mutex_init(pthread_mutex_t *mtx);
 struct fd_node *alloc_and_init_fd_node(void);
 int32_t add_fd_to_drvcall_node(struct fd_node *data, struct task_node *node);
 int32_t get_fd_count(struct task_node *node);

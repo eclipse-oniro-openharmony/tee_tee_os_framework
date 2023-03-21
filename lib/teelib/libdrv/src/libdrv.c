@@ -34,7 +34,7 @@ struct drv_op_info {
 
 static struct drv_op_info g_drv_op_info[DRIVER_FRAME_NR];
 static uint32_t g_drv_frame_count;
-static pthread_mutex_t g_framp_op_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_framp_op_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int32_t mutex_lock_ops(pthread_mutex_t *mtx)
 {

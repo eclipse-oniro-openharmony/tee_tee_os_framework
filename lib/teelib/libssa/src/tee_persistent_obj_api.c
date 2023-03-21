@@ -575,7 +575,7 @@ TEE_Result TEE_RenamePersistentObject(
     return ss_agent_rename_object(object, newObjectID, newObjectIDLen);
 }
 
-static pthread_mutex_t g_enum_mutex = PTHREAD_ROBUST_MUTEX_INITIALIZER;
+static pthread_mutex_t g_enum_mutex = PTHREAD_MUTEX_INITIALIZER;
 TEE_Result TEE_AllocatePersistentObjectEnumerator(TEE_ObjectEnumHandle *obj_enumerator)
 {
     TEE_Result ret;
