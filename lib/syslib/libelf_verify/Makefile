@@ -43,11 +43,8 @@ endif
 LDFLAGS += -z noexecstack
 
 CPPFLAGS += -I$(SYSLIB)/libelf_verify/include
-CPPFLAGS += -I$(K_SYSLIB)/libc/include/hm
 CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libteeos/include
-CPPFLAGS += -I$(K_SYSLIB)/libelf/include
-CPPFLAGS += -I$(K_SYSLIB)/libirqmgr/include
 CPPFLAGS += -I$(TEELIB)/libpermission_service/src
 CPPFLAGS += -I$(SERVICES_PATH)/permission_service/src
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee # ta_framework.h
@@ -57,24 +54,13 @@ CPPFLAGS += -I$(TEELIB)/libcrypto_hal/include
 CPPFLAGS += -I$(SYSLIB)/libelf_verify_key/include/
 CPPFLAGS += -I$(SYSLIB)/libelf_verify_key/src/
 CPPFLAGS += -I$(TEELIB)/libteemem/include
-CPPFLAGS += -I$(K_SYSLIB)/libipc/include # msg_ops.h
 CPPFLAGS += -I$(SYSLIB)/libdynconfmgr/include
 CPPFLAGS += -I$(SYSLIB)/libdynconfbuilder/include
 CPPFLAGS += -I$(FRAMEWORK_PATH)/drvmgr/src
 CPPFLAGS += -I$(DRIVERS_PATH)/include
 CPPFLAGS += -I$(TEELIB)/libtimer/include/
 CPPFLAGS += -I$(SYSLIB)/libspawn_common/include/
-CPPFLAGS += -I$(K_SYSLIB)/libsyscalls/include # usrsyscall.h
-CPPFLAGS += -I$(K_SYSLIB)/libac/include
-CPPFLAGS += -I$(K_SYSLIB)/libccmgr_hm/include
-CPPFLAGS += -I$(K_SYSLIB)/libfileio/include
 CPPFLAGS += -I$(TEELIB)/libdrv/include
-CPPFLAGS += -I$(K_SYSLIB)/libhmlog/include
-CPPFLAGS += -I$(K_SYSLIB)/libutils/include # dlist.h
-
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), mbedtls)
-CPPFLAGS += -I$(K_TEELIB)/libmbedtls/mbedtls/include
-endif
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/include
