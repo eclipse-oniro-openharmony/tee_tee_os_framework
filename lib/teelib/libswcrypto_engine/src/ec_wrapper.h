@@ -20,23 +20,6 @@ struct ecc_derive_public_key_t {
     BN_CTX *ctx;
 };
 
-struct sign_pkcs10_t {
-    EVP_PKEY *signing_key;
-    EVP_PKEY *subject_pk;
-    X509 *x;
-    X509_NAME *subject_name;
-    X509_NAME *issuer_name;
-    BIGNUM *serial;
-};
-
-struct recover_root_cert_t {
-    EVP_PKEY *pk;
-    X509 *x;
-    BIGNUM *serial;
-    X509_NAME *name;
-    uint8_t *orig;
-};
-
 struct derive_ecc_private_key_from_huk_t {
     BIGNUM *x;
     BIGNUM *ord;

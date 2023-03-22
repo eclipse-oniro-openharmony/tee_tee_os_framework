@@ -41,30 +41,4 @@ int32_t get_subject_CN(uint8_t *name, uint32_t name_size, const uint8_t *cert, u
  */
 int32_t get_subject_OU(uint8_t *name, uint32_t name_size, const uint8_t *cert, uint32_t cert_len);
 
-/*
- * verify Cert in tee
- *
- * @param cert           [IN]           data for salt
- * @param cert_len       [IN]           salt length
- * @param parent_key     [IN]           size of generated key, fix-size 32 bytes
- * @param parent_key_len [IN]           pointer where key is saved
- *
- * @return TEE_SUCCESS                 OK
- * @return TEE_ERROR_BAD_PARAMETERS    illegal parameters
- * @return TEE_ERROR_GENERIC           internal error
- */
-TEE_Result TEE_EXT_verify_dev_cert(uint8_t *cert, uint32_t cert_len, uint8_t *parent_key, uint32_t parent_key_len);
-
-/*
- * create cert request in TEE
- *
- * @param buf          [OUT]            cert request output buffer
- * @param len          [OUT]            output buffer size
- * @param key_type      [IN]            key_type RSA 0; ECC 1
- * @param file_name     [IN]            pointer where key is saved
- *
- * @return TEE_SUCCESS                  operation success
- * @return TEE_ERROR_BAD_PARAMETERS     illegal parameters
- */
-TEE_Result TEE_EXT_create_cert_req(uint8_t *buf, size_t len, uint32_t key_type, uint8_t *file_name);
 #endif

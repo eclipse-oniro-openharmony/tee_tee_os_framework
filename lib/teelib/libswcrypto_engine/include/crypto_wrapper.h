@@ -16,9 +16,7 @@
 #include <tee_defines.h>
 #include <chinadrm.h>
 #include "crypto_aes_wrapper.h"
-#include "crypto_cert_wrapper.h"
 #include "crypto_ec_wrapper.h"
-#include "crypto_ec_x509_wrapper.h"
 #include "crypto_rsa_wrapper.h"
 #include "crypto_x509_wrapper.h"
 #include "crypto_inner_wrapper.h"
@@ -73,12 +71,5 @@ typedef struct {
     uint32_t src;
     uint32_t dest;
 } crypto_u2u;
-
-typedef struct {
-    unsigned char *ou;
-    unsigned char *o;
-    unsigned char *c;
-    unsigned char *cn;
-} dn_name_t;
 
 #endif
