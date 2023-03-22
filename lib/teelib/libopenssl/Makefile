@@ -31,7 +31,7 @@ CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/crypto/modes
 CPPFLAGS += -I$(TEELIB)/libopenssl/openssl/crypto/siphash
 CPPFLAGS += -I$(TEELIB)/libcrypto/include
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee
-CPPFLAGS += -I$(K_SYSLIB)/libc/musl/include
+CPPFLAGS += -I$(PREBUILD_DIR)/headers/libc
 
 OPENSSL_CRYPTO_PATH := $(TEELIB)/libopenssl/openssl/crypto
 
