@@ -101,7 +101,6 @@ $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
 package: check_sym
-	cp -a $(PLAT_AUTOCONF_FILE) $(TOPDIR)/../tee_os_kernel/include/generated/.
 	@mkdir $(FILEMGR_BOOT_ELF)
 	@mkdir $(FILEMGR_BOOT_ELF)/apps
 	cp -a $(product_apps) $(FILEMGR_BOOT_ELF)/apps
