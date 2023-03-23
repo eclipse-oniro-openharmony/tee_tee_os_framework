@@ -39,7 +39,7 @@ static int verify_protocol(pthread_mutexattr_t *attr, int protocoltype)
     return 0;
 }
 
-int pthread_mutexattr_getprotocol_1_1()
+int pthread_mutexattr_getprotocol_1_1(void)
 {
     int rc = 0;
     pthread_mutexattr_t attr;

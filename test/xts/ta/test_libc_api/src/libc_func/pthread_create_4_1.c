@@ -15,13 +15,13 @@
 
 #include "test_libc_func.h"
 
-static void *a_thread_func();
+static void *a_thread_func(void *args);
 
 pthread_t self_th;     /* Save the value of the function call pthread_self()
                within the thread.  Keeping it global so 'main' can
                see it too. */
 
-int pthread_create_4_1()
+int pthread_create_4_1(void)
 {
     pthread_t new_th;
 
@@ -50,7 +50,7 @@ int pthread_create_4_1()
 }
 
 /* The thread function that calls pthread_self() to obtain its thread ID */
-static void *a_thread_func()
+static void *a_thread_func(void *args)
 {
     self_th = pthread_self();
     pthread_exit(0);

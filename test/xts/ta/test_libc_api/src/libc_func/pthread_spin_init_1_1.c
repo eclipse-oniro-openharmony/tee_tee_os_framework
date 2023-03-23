@@ -22,7 +22,7 @@
 
 static pthread_spinlock_t spinlock;
 
-int pthread_spin_init_1_1()
+int pthread_spin_init_1_1(void)
 {
     int rc = 0;
     int pshared;

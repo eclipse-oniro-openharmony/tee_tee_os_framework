@@ -93,7 +93,7 @@ static void *t2_func(void *arg)
     return NULL;
 }
 
-int pthread_cond_wait_0_1()
+int pthread_cond_wait_0_1(void)
 {
     if (pthread_mutex_init(&td.mutex, NULL) != 0) {
         fprintf(stderr, "Fail to initialize mutex\n");

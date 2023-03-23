@@ -72,11 +72,8 @@ int do_test_mbrtowc(void)
     setlocale(LC_ALL, "C");
     result |= check_ascii_mbrtowc(setlocale(LC_ALL, NULL));
 
-    //setlocale (LC_ALL, "de_DE.UTF-8");
     result |= check_ascii_mbrtowc(setlocale(LC_ALL, NULL));
-    //result |= utf8_test ();
 
-    //setlocale (LC_ALL, "ja_JP.EUC-JP");
     result |= check_ascii_mbrtowc(setlocale(LC_ALL, NULL));
 
     return result;

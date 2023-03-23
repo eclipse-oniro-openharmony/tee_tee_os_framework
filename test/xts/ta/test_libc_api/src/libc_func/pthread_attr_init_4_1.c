@@ -16,7 +16,7 @@
 
 #include "test_libc_func.h"
 
-int pthread_attr_init_4_1()
+int pthread_attr_init_4_1(void)
 {
     pthread_attr_t new_attr;
     int ret;

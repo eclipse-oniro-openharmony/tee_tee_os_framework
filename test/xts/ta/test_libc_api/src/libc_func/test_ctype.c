@@ -116,7 +116,7 @@ int do_test_wctype(void)
     return result;
 }
 
-int do_test_towfun()
+int do_test_towfun(void)
 {
     int result = 0;
     wint_t ch;

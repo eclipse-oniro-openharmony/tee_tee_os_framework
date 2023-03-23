@@ -27,7 +27,7 @@
 
 static size_t stack_size;
 
-static void *thread_func()
+static void *thread_func(void *args)
 {
     pthread_attr_t attr;
     size_t ssize;
@@ -42,7 +42,7 @@ static void *thread_func()
     return NULL;
 }
 
-int pthread_attr_setstacksize_2_1()
+int pthread_attr_setstacksize_2_1(void)
 {
     pthread_t new_th;
     pthread_attr_t attr;

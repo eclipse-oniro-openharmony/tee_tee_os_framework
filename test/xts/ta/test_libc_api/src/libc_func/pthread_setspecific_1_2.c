@@ -24,7 +24,7 @@ static pthread_key_t key;
 void *rc1;
 void *rc2;
 
-static void *a_thread_func()
+static void *a_thread_func(void *args)
 {
     /* Bind a value to key for this thread (this will be different from the value
      * that we bind for the main thread) */
@@ -43,7 +43,7 @@ static void *a_thread_func()
 
 }
 
-int pthread_setspecific_1_2()
+int pthread_setspecific_1_2(void)
 {
     pthread_t new_th;
 

@@ -40,7 +40,7 @@ static void *fn_chld(void *arg)
     pthread_exit(PTS_PASS);
 }
 
-int pthread_spin_destroy_3_1()
+int pthread_spin_destroy_3_1(void)
 {
     pthread_t child_thread;
 

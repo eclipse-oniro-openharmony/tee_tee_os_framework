@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include "test_libc_func.h"
 
-int pthread_mutex_init_1_1()
+int pthread_mutex_init_1_1(void)
 {
     pthread_mutexattr_t mta;
     pthread_mutex_t  mutex1, mutex2;

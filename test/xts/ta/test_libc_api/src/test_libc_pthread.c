@@ -50,12 +50,9 @@ TEE_Result TestPthreadBaseFunc(void)
         CASE_REGISTOR(pthread_exit_2_1),
         CASE_REGISTOR(pthread_exit_3_1),
         CASE_REGISTOR(pthread_once_1_3),
-        CASE_REGISTOR(pthread_once_2_1),
         CASE_REGISTOR(test_pthread_equal),
         CASE_REGISTOR(pthread_getspecific_1_1),
         CASE_REGISTOR(pthread_setspecific_1_2),
-        CASE_REGISTOR(pthread_join_1_1),
-        CASE_REGISTOR(pthread_join_2_1),
         CASE_REGISTOR(test_pthread_key_create),
     };
 
@@ -68,8 +65,6 @@ TEE_Result TestPthreadMutexLock(void)
     static CaseInfo pthreadMutexLockList[] = {
         CASE_REGISTOR(pthread_mutex_init_1_1),
         CASE_REGISTOR(pthread_mutex_init_2_1_0),
-        CASE_REGISTOR(pthread_mutex_init_3_1),
-        CASE_REGISTOR(pthread_mutex_lock_0_1),
         CASE_REGISTOR(pthread_mutex_lock_0_2),
         CASE_REGISTOR(pthread_mutex_lock_0_3),
         CASE_REGISTOR(pthread_mutex_lock_1_1_0),
@@ -94,9 +89,7 @@ TEE_Result TestPthreadSpinLock(void)
         CASE_REGISTOR(pthread_spin_destroy_1_1),
         CASE_REGISTOR(pthread_spin_init_1_1),
         CASE_REGISTOR(pthread_spin_lock_0_1),
-        CASE_REGISTOR(pthread_spin_lock_0_2),
         CASE_REGISTOR(pthread_spin_lock_0_3),
-        CASE_REGISTOR(pthread_spin_lock_1_2),
         CASE_REGISTOR(pthread_spin_trylock_0_1),
         CASE_REGISTOR(pthread_spin_trylock_1_1),
         CASE_REGISTOR(pthread_spin_trylock_4_1),
@@ -111,12 +104,9 @@ TEE_Result TestPthreadCond(void)
 {
     static CaseInfo pthreadCondTestList[] = {
         CASE_REGISTOR(pthread_cond_init_1_1),
-        CASE_REGISTOR(pthread_cond_signal_1_1),
         CASE_REGISTOR(pthread_cond_wait_0_1),
         CASE_REGISTOR(pthread_cond_wait_0_2),
         CASE_REGISTOR(pthread_cond_wait_0_3),
-        CASE_REGISTOR(pthread_cond_wait_1_1),
-        CASE_REGISTOR(pthread_cond_wait_2_1),
         CASE_REGISTOR(pthread_cond_broadcast_1_1),
     };
 

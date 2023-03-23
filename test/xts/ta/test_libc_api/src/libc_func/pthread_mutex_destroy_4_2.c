@@ -21,7 +21,7 @@
 #define FUNCTION "pthread_mutex_destroy"
 #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
 
-int pthread_mutex_destroy_4_2()
+int pthread_mutex_destroy_4_2(void)
 {
     pthread_mutex_t     mutex = PTHREAD_MUTEX_INITIALIZER;
     int                 rc = 0;

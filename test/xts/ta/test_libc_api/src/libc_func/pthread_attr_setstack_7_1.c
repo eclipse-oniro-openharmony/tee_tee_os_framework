@@ -30,14 +30,7 @@
 static void *stack_addr;
 static size_t stack_size;
 
-/*
-static void *thread_func()
-{
-    pthread_exit(0);
-    return NULL;
-}
-*/
-int pthread_attr_setstack_7_1()
+int pthread_attr_setstack_7_1(void)
 {
     pthread_attr_t attr;
     int rc;
@@ -59,14 +52,6 @@ int pthread_attr_setstack_7_1()
 
     stack_size = PTHREAD_STACK_MIN;
 
-    //    if (posix_memalign (&stack_addr, sysconf(_SC_PAGE_SIZE),
-    //            stack_size) != 0)
-    //        {
-    //              printf (ERROR_PREFIX "out of memory while "
-    //                        "allocating the stack memory");
-    //              return PTS_UNRESOLVED;
-    //        }
-
     stack_addr = stack_addr + OFFSET;
     /* printf("stack_addr = %p, stack_size = %u\n", stack_addr, stack_size); */
     rc = pthread_attr_setstack(&attr, stack_addr, stack_size);
@@ -77,7 +62,6 @@ int pthread_attr_setstack_7_1()
 
     stack_addr = stack_addr + OFFSET;
     stack_size = PTHREAD_STACK_MIN + OFFSET;
-    /* printf("stack_addr = %p, stack_size = %u\n", stack_addr, stack_size); */
     rc = pthread_attr_setstack(&attr, stack_addr, stack_size);
     if (rc != EINVAL) {
         printf("The function didn't fail when (stackaddr + stacksize) "

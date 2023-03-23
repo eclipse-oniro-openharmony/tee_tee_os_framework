@@ -31,13 +31,13 @@ static void *stack_addr;
 static size_t stack_size;
 
 /*
-static void *thread_func()
+static void *thread_func(void *args)
 {
     pthread_exit(0);
     return NULL;
 }
 */
-int pthread_attr_setstack_6_1()
+int pthread_attr_setstack_6_1(void)
 {
     pthread_attr_t attr;
     int rc;

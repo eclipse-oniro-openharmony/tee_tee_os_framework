@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include "test_libc_func.h"
 
-int pthread_mutex_destroy_2_1()
+int pthread_mutex_destroy_2_1(void)
 {
     pthread_mutex_t mutex;
 

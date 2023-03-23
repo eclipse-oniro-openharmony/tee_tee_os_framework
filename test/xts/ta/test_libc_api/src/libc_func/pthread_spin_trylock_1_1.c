@@ -33,9 +33,7 @@ static void *fn_chld(void *arg)
 {
     rc = 0;
 
-    struct sigaction act;
     thread_state = ENTERED_THREAD;
-
 
     printf("thread: attempt trylock\n");
     rc = pthread_spin_trylock(&spinlock);
@@ -44,7 +42,7 @@ static void *fn_chld(void *arg)
     return NULL;
 }
 
-int pthread_spin_trylock_1_1()
+int pthread_spin_trylock_1_1(void)
 {
     pthread_t child_thread;
 

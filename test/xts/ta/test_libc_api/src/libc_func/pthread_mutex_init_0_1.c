@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include "test_libc_func.h"
 
-int pthread_mutex_init_0_1()
+int pthread_mutex_init_0_1(void)
 {
     pthread_mutex_t  mutex;
     int rc;

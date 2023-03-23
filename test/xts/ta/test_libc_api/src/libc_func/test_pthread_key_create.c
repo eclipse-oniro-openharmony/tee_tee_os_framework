@@ -21,7 +21,7 @@
 
 static pthread_key_t keys[NUM_OF_KEYS];
 
-int test_pthread_key_create()
+int test_pthread_key_create(void)
 {
     int i;
     void *rc;

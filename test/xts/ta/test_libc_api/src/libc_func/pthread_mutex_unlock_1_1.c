@@ -18,7 +18,7 @@
 
 static pthread_mutex_t    mutex = PTHREAD_MUTEX_INITIALIZER;
 
-int pthread_mutex_unlock_1_1()
+int pthread_mutex_unlock_1_1(void)
 {
     int  rc;
 

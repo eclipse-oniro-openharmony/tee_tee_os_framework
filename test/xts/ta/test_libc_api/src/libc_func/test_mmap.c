@@ -29,7 +29,7 @@ static int do_zero_test(void *buf, size_t sz)
 }
 
 #define TEST_MMAP_ITER 10
-int test_mmap()
+int test_mmap(void)
 {
     int ret = 0;
     int i;

@@ -14,7 +14,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <semaphore.h>
-#include <stdbool.h> 
+#include <stdbool.h>
+#include <unistd.h> 
 
 #define N_THREAD 5
 #define N_MUTEX 5
@@ -38,13 +39,13 @@ static void *func_one(void *arg)
         (void)sched_yield();
     }
 
-    printf("func_one thread tid: %d\n", gettid());
+    printf("func_one thread print\n");
     // after we got the lock, just unlock it.
     pthread_spin_unlock(&sync_spinlock);
     pthread_exit(NULL);
 }
 
-int test_pthread_equal()
+int test_pthread_equal(void)
 {
     int ret;
     pthread_t thread_one;
@@ -64,7 +65,7 @@ int test_pthread_equal()
     // let other thread to run.
     (void)sched_yield();
     // this print must output before thread print.
-    printf("main thread tid: %d\n", gettid());
+    printf("main thread print\n");
     pthread_setschedprio(thread_one, 200);
     pthread_spin_unlock(&sync_spinlock);
 

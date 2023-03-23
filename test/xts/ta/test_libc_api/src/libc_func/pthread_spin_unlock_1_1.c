@@ -51,7 +51,7 @@ static void *fn_chld(void *arg)
     return NULL;
 }
 
-int pthread_spin_unlock_1_1()
+int pthread_spin_unlock_1_1(void)
 {
     int rc;
 

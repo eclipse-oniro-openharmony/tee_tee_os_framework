@@ -39,12 +39,9 @@ list(APPEND ta_src
     src/libc_func/pthread_attr_setstacksize_4_1.c
     src/libc_func/pthread_cond_broadcast_1_1.c
     src/libc_func/pthread_cond_init_1_1.c
-    src/libc_func/pthread_cond_signal_1_1.c
     src/libc_func/pthread_cond_wait_0_1.c
     src/libc_func/pthread_cond_wait_0_2.c
     src/libc_func/pthread_cond_wait_0_3.c
-    src/libc_func/pthread_cond_wait_1_1.c
-    src/libc_func/pthread_cond_wait_2_1.c
     src/libc_func/pthread_create_12_1.c
     src/libc_func/pthread_create_1_1.c
     src/libc_func/pthread_create_2_1.c
@@ -57,22 +54,16 @@ list(APPEND ta_src
     src/libc_func/pthread_getspecific_1_1.c
     src/libc_func/pthread_getspecific_1_1.c
     src/libc_func/pthread_getspecific_1_1.c
-    src/libc_func/pthread_join_1_1.c
-    src/libc_func/pthread_join_2_1.c
     src/libc_func/pthread_mutex_destroy_1_1.c
     src/libc_func/pthread_mutex_destroy_1_1_0.c
     src/libc_func/pthread_mutex_destroy_2_1.c
     src/libc_func/pthread_mutex_destroy_4_2.c
     src/libc_func/pthread_mutex_init_0_1.c
-    src/libc_func/pthread_mutex_init_0_2.c
     src/libc_func/pthread_mutex_init_1_1.c
-    src/libc_func/pthread_mutex_init_2_1.c
     src/libc_func/pthread_mutex_init_2_1_0.c
     src/libc_func/pthread_mutex_init_3_1.c
-    src/libc_func/pthread_mutex_lock_0_1.c
     src/libc_func/pthread_mutex_lock_0_2.c
     src/libc_func/pthread_mutex_lock_0_3.c
-    src/libc_func/pthread_mutex_lock_1_1.c
     src/libc_func/pthread_mutex_lock_1_1_0.c
     src/libc_func/pthread_mutex_trylock_0_1.c
     src/libc_func/pthread_mutex_trylock_1_1.c
@@ -81,9 +72,7 @@ list(APPEND ta_src
     src/libc_func/pthread_mutexattr_getprotocol_1_1.c
     src/libc_func/pthread_mutexattr_gettype_1_1.c
     src/libc_func/pthread_mutexattr_gettype_1_1.c
-    src/libc_func/pthread_once_1_1.c
     src/libc_func/pthread_once_1_3.c
-    src/libc_func/pthread_once_2_1.c
     src/libc_func/pthread_setspecific_1_2.c
     src/libc_func/pthread_spin_destroy_0_1.c
     src/libc_func/pthread_spin_destroy_1_1.c
@@ -93,7 +82,6 @@ list(APPEND ta_src
     src/libc_func/pthread_spin_lock_0_1.c
     src/libc_func/pthread_spin_lock_0_2.c
     src/libc_func/pthread_spin_lock_0_3.c
-    src/libc_func/pthread_spin_lock_1_2.c
     src/libc_func/pthread_spin_lock_3_1.c
     src/libc_func/pthread_spin_trylock_0_1.c
     src/libc_func/pthread_spin_trylock_1_1.c
@@ -119,6 +107,15 @@ list(APPEND ta_src
     src/libc_func/tst_free.c
 )
 
+list(APPEND cflags
+    -mfloat-abi=softfp
+    -Wno-bitwise-op-parentheses
+    -Wno-shift-op-parentheses
+    -Wno-implicit-function-declaration
+    -Wno-int-conversion
+    -Wno-unused-parameter
+)
+
 ta_compile_pub(
     ELF_NAME
     ${TARGET_NAME}
@@ -129,6 +126,7 @@ ta_compile_pub(
     INCLUDE_DIRS
 
     COMPILE_OPTS
+    ${cflags}
 
     COMPILE_DEFS
     API_LEVEL=3
