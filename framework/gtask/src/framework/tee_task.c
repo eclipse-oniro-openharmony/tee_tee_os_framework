@@ -390,11 +390,6 @@ static int tee_spawn_with_attr(int *ptask_id, const char *elf_path, char *argv[]
 
 static int32_t get_elf_path(int32_t bin_type, char *loader_path, uint32_t loader_path_size)
 {
-    /*
-     * only tarunner.elf support 64bit TA
-     * taloader.elf cannot suuport 64bit TA
-     * because it cannot handle relocate code
-     */
     if (get_cur_service()->ta_64bit == true) {
         if (memcpy_s(loader_path, loader_path_size, "/tarunner.elf", sizeof("/tarunner.elf")) != EOK) {
             tloge("set loader tarunner fail\n");
@@ -406,10 +401,8 @@ static int32_t get_elf_path(int32_t bin_type, char *loader_path, uint32_t loader
             return -1;
         }
     } else {
-        if (memcpy_s(loader_path, loader_path_size, "/taloader.elf", sizeof("/taloader.elf")) != EOK) {
-            tloge("set loader tarunner a32 fail\n");
-            return -1;
-        }
+        tloge("unsupported elf type\n");
+        return -1;
     }
 
     return 0;
