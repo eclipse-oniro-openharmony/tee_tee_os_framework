@@ -14,7 +14,6 @@
 #include "global_task.h"
 #include "gtask_inner.h"
 #include "agent_manager.h"
-#include "notify_manager.h"
 #include "session_manager.h"
 #include "service_manager.h"
 #include "ext_interface.h"
@@ -52,8 +51,8 @@ static TEE_Result process_cmd_with_audit_event(const smc_cmd_t *cmd)
 
     switch (cmd_id) {
     case GLOBAL_CMD_ID_REGISTER_NOTIFY_MEMORY:
-        ret = register_notify_memery(cmd);
-        break;
+        /* not support spi, but tzdriver needs to return success */
+        return TEE_SUCCESS;
     case GLOBAL_CMD_ID_REGISTER_LOG_MEM:
         ret = map_rdr_mem(cmd);
         break;
