@@ -36,7 +36,6 @@ static void wait_for_kill(void)
 static void gtask_init(void)
 {
     int32_t ret;
-    extern cref_t __sysmgrch;
     struct reg_items_st reg_items = { true, true, true };
 
     ret = ipc_create_channel("TEEGlobalTask", GT_CHANNEL_NUM, NULL, reg_items);

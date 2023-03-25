@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -193,25 +192,6 @@ static int32_t init2(void *libtee, const char *task_name, uint32_t target_type)
     return 0;
 }
 
-static int32_t init3(const struct env_param *param)
-{
-    int32_t ret;
-    (void)param;
-
-    /* Reject taldr cap, and grant TA cap */
-    if (delete_rref_and_grant() != 0) {
-        tloge("delete rref grant failed\n");
-        return -1;
-    }
-
-    ret = mprotect(&__tcb_cref, PAGE_SIZE, PROT_READ);
-    if (ret != 0) {
-        tloge("protect tcb cref failed: %d\n", ret);
-        return -1;
-    }
-    return 0;
-}
-
 static int32_t library_init(const char *task_name, const struct env_param *param, void **libtee)
 {
     /* Load TEE library */
@@ -223,9 +203,11 @@ static int32_t library_init(const char *task_name, const struct env_param *param
     if (init2(*libtee, task_name, param->target_type) != 0)
         return -1;
 
-    if (init3(param) != 0)
+    /* Reject taldr cap, and grant TA cap */
+    if (delete_rref_and_grant() != 0) {
+        tloge("delete rref grant failed\n");
         return -1;
-
+    }
     return 0;
 }
 
