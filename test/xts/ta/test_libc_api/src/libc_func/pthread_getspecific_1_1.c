@@ -20,7 +20,7 @@
 #define NUM_OF_KEYS 10
 #define KEY_VALUE 0
 
-int pthread_getspecific_1_1()
+int pthread_getspecific_1_1(void)
 {
     pthread_key_t keys[NUM_OF_KEYS];
     int i;

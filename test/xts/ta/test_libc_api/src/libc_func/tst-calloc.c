@@ -104,6 +104,7 @@ int do_test_calloc(void)
     random_test();
 
     null_test();
-
+    
+    printf("test calloc pass\n");
     return 0;
 }

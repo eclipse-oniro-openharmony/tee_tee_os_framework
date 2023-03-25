@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#define _XOPEN_SOURCE 600
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,19 +20,13 @@
 #include "test_libc_func.h"
 
 static pthread_spinlock_t spinlock;
-volatile static int thread_state;
-static int rc;
 
 #define NOT_CREATED_THREAD 1
 #define ENTERED_THREAD 2
 #define EXITING_THREAD 3
 
-
-
-int pthread_spin_trylock_0_1()
+int pthread_spin_trylock_0_1(void)
 {
-    pthread_t child_thread;
-
     if (pthread_spin_init(&spinlock, PTHREAD_PROCESS_PRIVATE) != 0) {
         printf("main: Error at pthread_spin_init()\n");
         return PTS_UNRESOLVED;
@@ -57,5 +50,4 @@ int pthread_spin_trylock_0_1()
     printf("thread: correctly returned EBUSY on trylock\n");
     printf("Test PASSED\n");
     return PTS_PASS;
-
 }

@@ -22,22 +22,16 @@ static pthread_mutex_t    mutex = PTHREAD_MUTEX_INITIALIZER;
 static int     t1_start = 0;
 static int    t1_pause = 1;
 
-int pthread_mutex_trylock_1_1()
+int pthread_mutex_trylock_1_1(void)
 {
     int               i, rc;
     pthread_t       t1;
-    //    struct timespec time1;
-    //    time1.tv_sec = 1;
-    //    time1.tv_nsec = 0;
 
     /* Create a secondary thread and wait until it has locked the mutex */
     pthread_create(&t1, NULL, func, NULL);
     while (!t1_start) {
         printf("i2222Test PASSED\n");
-        (void)(void)sched_yield();
-        //                 if (nanosleep(&time1, NULL) == -1) {
-        //                  printf("Failed to nanosleep");
-        //                 }
+        (void)sched_yield();
     }
 
 
@@ -61,10 +55,7 @@ int pthread_mutex_trylock_1_1()
             pthread_mutex_unlock(&mutex);
             break;
         } else if (rc == EBUSY) {
-            (void)(void)sched_yield();
-            //                 if (nanosleep(&time1, NULL) == -1) {
-            //                  printf("Failed to nanosleep");
-            //                 }
+            (void)sched_yield();
             continue;
         } else {
             fprintf(stderr, "Unexpected error code(%d) for pthread_mutex_lock()\n", rc);

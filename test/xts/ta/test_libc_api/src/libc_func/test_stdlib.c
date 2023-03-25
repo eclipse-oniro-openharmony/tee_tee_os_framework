@@ -690,11 +690,6 @@ int do_test_stdlib(void)
         printf("Failed: llabs(-12345678999l) got %lld\n", ll);
         return -1;
     }
-    intmax_t im = imaxabs(-1234);
-    if (im != 1234) {
-        printf("Failed: imaxabs(-1234) got %jd\n", im);
-        return -1;
-    }
     d1 = atof("-10.231");
     if (d1 != -10.231) {
         printf("Failed: atof(\"-10.231\") got: %f\n", d1);

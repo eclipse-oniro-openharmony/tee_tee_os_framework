@@ -21,7 +21,7 @@
 
 #include "test_libc_func.h"
 
-int pthread_spin_destroy_0_1()
+int pthread_spin_destroy_0_1(void)
 {
     static pthread_spinlock_t spinlock;
 

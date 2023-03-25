@@ -22,7 +22,7 @@
 #include "test_libc_func.h"
 
 
-int pthread_spin_trylock_4_1()
+int pthread_spin_trylock_4_1(void)
 {
 
     pthread_spinlock_t spinlock;

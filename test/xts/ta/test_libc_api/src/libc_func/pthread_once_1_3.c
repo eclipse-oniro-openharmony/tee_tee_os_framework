@@ -68,14 +68,13 @@ static void *threaded(void *arg)
 }
 
 /* The main test function. */
-int pthread_once_1_3(int argc, char *argv[])
+int pthread_once_1_3(void)
 {
     int ret, i;
 
     pthread_once_t myctl = PTHREAD_ONCE_INIT;
 
     pthread_t th[ NTHREADS ];
-
 
     control = 0;
 
@@ -123,5 +122,3 @@ int pthread_once_1_3(int argc, char *argv[])
 
     return PTS_PASS;
 }
-
-

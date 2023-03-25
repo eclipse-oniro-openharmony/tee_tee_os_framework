@@ -18,7 +18,7 @@
 
 int do_test_free(void)
 {
-    void *p;
+	void *p;
 
     p = malloc(1);
     free(p);

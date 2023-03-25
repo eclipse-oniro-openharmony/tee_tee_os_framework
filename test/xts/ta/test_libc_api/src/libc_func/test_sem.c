@@ -31,7 +31,7 @@ static void *thread_run(void *arg)
     return NULL;
 }
 
-int test_sem()
+int test_sem(void)
 {
     int value;
     pthread_t thread;

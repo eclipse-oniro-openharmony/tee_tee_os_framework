@@ -56,7 +56,7 @@ static void *t1_func(void *arg)
 }
 
 
-int pthread_cond_wait_0_2()
+int pthread_cond_wait_0_2(void)
 {
     int i, j;
 

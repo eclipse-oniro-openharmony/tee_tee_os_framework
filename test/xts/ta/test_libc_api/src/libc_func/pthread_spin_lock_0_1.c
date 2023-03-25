@@ -28,12 +28,11 @@ static void *f1(void *parm);
 static pthread_spinlock_t spinlock;
 static int                value;    /* value protected by mutex */
 
-int pthread_spin_lock_0_1()
+int pthread_spin_lock_0_1(void)
 {
     int                   i, rc;
     pthread_attr_t        pta;
     pthread_t             threads[THREAD_NUM];
-    //pthread_t            self = pthread_self();
 
     pthread_attr_init(&pta);
     pthread_attr_setdetachstate(&pta, PTHREAD_CREATE_JOINABLE);
@@ -71,7 +70,6 @@ void *f1(void *parm)
     int   i, tmp;
     int   rc = 0;
     int  step = (int)parm;
-    //pthread_t  self = pthread_self();
 
     /* Loopd M times to acquire the mutex, increase the value,
        and then release the mutex. */

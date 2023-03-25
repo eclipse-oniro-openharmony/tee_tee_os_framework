@@ -15,13 +15,13 @@
 
 #include "test_libc_func.h"
 
-static void *a_thread_func()
+static void *a_thread_func(void *args)
 {
     pthread_exit(0);
     return NULL;
 }
 
-int pthread_create_1_1()
+int pthread_create_1_1(void)
 {
     pthread_t main_th, new_th;
 

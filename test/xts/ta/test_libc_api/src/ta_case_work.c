@@ -13,7 +13,7 @@
 #include "ta_case_work.h"
 #include <tee_log.h>
 
-void CaseRunner(CaseInfo caseList[], const uint32_t caseNum)
+void CaseRunner(CaseInfo *caseList, const uint32_t caseNum)
 {
     for (uint32_t idx = 0; idx < caseNum; idx++) {
         CaseInfo *info = caseList + idx;
@@ -27,7 +27,7 @@ void CaseRunner(CaseInfo caseList[], const uint32_t caseNum)
     }
 }
 
-uint32_t CaseReporter(CaseInfo caseList[], const uint32_t caseNum)
+uint32_t CaseReporter(CaseInfo *caseList, const uint32_t caseNum)
 {
     uint32_t failCount = 0;
 

@@ -17,7 +17,7 @@
 
 #define number_of(x) (sizeof(x) / sizeof(x[0]))
 
-typedef int (*CaseEntry)();
+typedef int (*CaseEntry)(void);
 
 typedef struct {
     CaseEntry pfunc;
@@ -27,8 +27,8 @@ typedef struct {
 
 #define CASE_REGISTOR(func) {func, #func, 0}
 
-void CaseRunner(CaseInfo caseList[], const uint32_t caseNum);
-uint32_t CaseReporter(CaseInfo caseList[], const uint32_t caseNum);
+void CaseRunner(CaseInfo *caseList, const uint32_t caseNum);
+uint32_t CaseReporter(CaseInfo *caseList, const uint32_t caseNum);
 
 #endif
 

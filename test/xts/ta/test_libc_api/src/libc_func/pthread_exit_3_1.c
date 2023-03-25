@@ -52,7 +52,7 @@ static void *a_thread_func(void *tmp)
     return NULL;
 }
 
-int pthread_exit_3_1()
+int pthread_exit_3_1(void)
 {
     pthread_t new_th;
     int       rc = 0;

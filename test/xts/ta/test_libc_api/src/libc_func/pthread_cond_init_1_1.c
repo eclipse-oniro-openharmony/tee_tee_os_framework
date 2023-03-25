@@ -15,7 +15,7 @@
 
 #include "test_libc_func.h"
 
-int pthread_cond_init_1_1()
+int pthread_cond_init_1_1(void)
 {
     /*pthread_condattr_t condattr;*/
     pthread_cond_t cond;

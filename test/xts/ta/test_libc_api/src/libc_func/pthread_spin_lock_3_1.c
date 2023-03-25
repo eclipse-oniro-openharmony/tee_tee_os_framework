@@ -21,7 +21,7 @@
 
 #include "test_libc_func.h"
 
-int pthread_spin_lock_3_1()
+int pthread_spin_lock_3_1(void)
 {
     int rc = 0;
     pthread_spinlock_t spinlock;

@@ -28,7 +28,7 @@ static void *f1(void *parm);
 static pthread_mutex_t    mutex = PTHREAD_MUTEX_INITIALIZER;
 static int                value;    /* value protected by mutex */
 
-int pthread_mutex_lock_1_1_0()
+int pthread_mutex_lock_1_1_0(void)
 {
     int                   i, rc;
     //pthread_attr_t        pta;

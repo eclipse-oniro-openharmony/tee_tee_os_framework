@@ -20,7 +20,7 @@
 
 static pthread_spinlock_t spinlock;
 
-int pthread_spin_destroy_1_1()
+int pthread_spin_destroy_1_1(void)
 {
     int rc = 0;
 

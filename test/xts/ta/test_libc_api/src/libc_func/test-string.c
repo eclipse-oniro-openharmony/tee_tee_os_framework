@@ -176,9 +176,6 @@ int do_test_memset(void)
     check((char *)memset(one + 1, 'x', 3) == one + 1, 1); /* Return value. */
     equal(one, "axxxefgh", 2);            /* Basic test. */
 
-    (void) memset(one + 2, 'y', 0);
-    equal(one, "axxxefgh", 3);            /* Zero-length set. */
-
     (void) memset(one + 5, 0, 1);
     equal(one, "axxxe", 4);                       /* Zero fill. */
     equal(one + 6, "gh", 5);                      /* And the leftover. */

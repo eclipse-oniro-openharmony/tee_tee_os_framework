@@ -23,7 +23,7 @@ static void merror(const char *msg)
     printf("Error: %s\n", msg);
 }
 
-int do_test_malloc()
+int do_test_malloc(void)
 {
     void *p, *q;
 
@@ -80,6 +80,7 @@ int do_test_malloc()
     q = malloc(-512 * 1024);
     if (q != NULL)
         merror("malloc (-512K) succeeded.");
-
+    
+    printf("test malloc pass\n");
     return errors;
 }

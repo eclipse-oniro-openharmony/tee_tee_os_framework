@@ -29,7 +29,7 @@ static pthread_mutex_t    mutex2 = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t    mutex3 = PTHREAD_MUTEX_INITIALIZER;
 static int                value;    /* value protected by mutex */
 
-int pthread_mutex_lock_0_3()
+int pthread_mutex_lock_0_3(void)
 {
     int                   i, rc;
     pthread_attr_t        pta;

@@ -25,7 +25,7 @@
 #define FUNCTION "pthread_attr_getstacksize"
 #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
 
-int pthread_attr_getstacksize_1_1()
+int pthread_attr_getstacksize_1_1(void)
 {
     pthread_attr_t attr;
     size_t stack_size;

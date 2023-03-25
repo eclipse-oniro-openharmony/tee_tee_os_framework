@@ -18,13 +18,13 @@
 
 #define NUM_THREADS    5
 
-static void *a_thread_func()
+static void *a_thread_func(void *args)
 {
     pthread_exit(NULL);
     return NULL;
 }
 
-int pthread_attr_init_3_1()
+int pthread_attr_init_3_1(void)
 {
     pthread_t new_threads[NUM_THREADS];
     pthread_attr_t new_attr;

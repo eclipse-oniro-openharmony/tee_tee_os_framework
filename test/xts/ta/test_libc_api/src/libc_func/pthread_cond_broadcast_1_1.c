@@ -10,8 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#define _XOPEN_SOURCE 600
-
 #include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -60,7 +58,7 @@ static void *thr_func(void *arg)
     return NULL;
 }
 
-int pthread_cond_broadcast_1_1()
+int pthread_cond_broadcast_1_1(void)
 {
     int i, rc;
     pthread_t  thread[THREAD_NUM];

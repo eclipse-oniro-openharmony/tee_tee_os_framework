@@ -27,12 +27,12 @@
 
 #define STACKADDROFFSET 0x8000000
 
-static void *thread_func()
+static void *thread_func(void *args)
 {
     pthread_exit(0);
     return NULL;
 }
-int pthread_attr_setstacksize_1_1()
+int pthread_attr_setstacksize_1_1(void)
 {
     pthread_t new_th;
     pthread_attr_t attr;

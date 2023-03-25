@@ -33,7 +33,7 @@ static void *func(void *parm)
     pthread_exit(0);
 }
 
-int pthread_mutex_trylock_0_1()
+int pthread_mutex_trylock_0_1(void)
 {
     int               rc;
     pthread_t       t1;

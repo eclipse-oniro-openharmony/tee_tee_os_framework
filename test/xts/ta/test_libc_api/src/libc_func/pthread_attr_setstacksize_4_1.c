@@ -25,7 +25,7 @@
 #define FUNCTION "pthread_attr_setstacksize"
 #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
 
-int pthread_attr_setstacksize_4_1()
+int pthread_attr_setstacksize_4_1(void)
 {
     pthread_attr_t attr;
     //    void *saddr;

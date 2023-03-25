@@ -31,7 +31,7 @@
 static void *stack_addr;
 static size_t stack_size;
 
-static void *thread_func()
+static void *thread_func(void *args)
 {
     //    pthread_attr_t attr;
     //    void *saddr;

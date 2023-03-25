@@ -30,11 +30,11 @@
 static void *stack_addr;
 static size_t stack_size;
 
-static int teststack()
+static int teststack(void)
 {
     return 0;
 }
-static void *thread_func()
+static void *thread_func(void *args)
 {
     /* execute a function to test the read/right of the stack*/
     if (teststack() != 0) {
@@ -44,7 +44,7 @@ static void *thread_func()
     pthread_exit(0);
     return NULL;
 }
-int pthread_attr_setstack_4_1()
+int pthread_attr_setstack_4_1(void)
 {
     pthread_t new_th;
     pthread_attr_t attr;

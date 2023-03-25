@@ -42,7 +42,7 @@ static int verify_type(pthread_mutexattr_t *attr, int typetype)
     return 0;
 }
 
-int pthread_mutexattr_gettype_1_1()
+int pthread_mutexattr_gettype_1_1(void)
 {
     int rc = 0;
     pthread_mutexattr_t attr;

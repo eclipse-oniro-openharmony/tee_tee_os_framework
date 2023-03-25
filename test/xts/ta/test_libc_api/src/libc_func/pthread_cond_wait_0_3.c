@@ -60,7 +60,7 @@ static void *t1_func(void *arg)
 }
 
 
-int pthread_cond_wait_0_3()
+int pthread_cond_wait_0_3(void)
 {
     int i, j, k;
 

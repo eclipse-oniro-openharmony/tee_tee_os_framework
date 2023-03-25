@@ -40,7 +40,7 @@ static void *fn_chld(void *arg)
     pthread_exit(PTS_PASS);
 }
 
-int pthread_spin_init_4_1()
+int pthread_spin_init_4_1(void)
 {
     int rc = 0;
     pthread_t child_thread;
@@ -78,7 +78,7 @@ int pthread_spin_init_4_1()
     /* Wait for thread to end execution */
     pthread_join(child_thread, NULL);
 
-    if (ret_value = 1)
+    if (ret_value == 1)
         return PTS_FAIL;
 
     return PTS_PASS;
