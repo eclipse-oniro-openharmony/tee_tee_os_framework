@@ -22,9 +22,6 @@
 
 
 #define THREAD_NUM 8
-//#define COND_NUM 5
-//#define LOOP 50
-//CPE memory is not enough
 #define COND_NUM 2
 #define LOOP 10
 
