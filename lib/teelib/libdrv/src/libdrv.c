@@ -275,7 +275,7 @@ static int64_t drv_call_ex_new(const char *name, uint16_t id, struct drv_call_pa
     ret = ipc_msg_call(g_drv_op_info[idex].channel, msg, msg->header.send.msg_size, rmsg,
                       sizeof(struct drv_req_msg_t) + params->rdata_len, -1);
     if (ret != 0) {
-        tloge("drv_call: hm msg call 0x%llx failed: %d\n", (unsigned long long)g_drv_op_info[idex].channel, ret);
+        tloge("drv_call: ipc msg call 0x%llx failed: %d\n", (unsigned long long)g_drv_op_info[idex].channel, ret);
         goto err_msg_call;
     }
 

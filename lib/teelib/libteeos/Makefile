@@ -26,7 +26,6 @@ CPPFLAGS += -I$(TEELIB)/libtee_shared/include # oemkey.h
 CPPFLAGS += -I$(DRIVERS_PATH)/include
 CPPFLAGS += -I$(TEELIB)/libteeagentcommon_client/include
 CPPFLAGS += -I$(TOPDIR)/prebuild/tee-kernel-local-release/headers/sys/mmgr
-CPPFLAGS += -I$(TOPDIR)/prebuild/tee-kernel-local-release/headers/libc/hm
 CPPFLAGS += -I$(TOPDIR)/prebuild/tee-kernel-local-release/headers/sys/mmgr_sysmgr
 CPPFLAGS += -I$(TEELIB)/libteeos/include
 CPPFLAGS += -I$(TEELIB)/libteeos/include/tee

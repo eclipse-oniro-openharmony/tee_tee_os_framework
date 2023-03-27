@@ -47,7 +47,7 @@ static int32_t ipc_init(const char *name, cref_t *ch)
 #ifndef CONFIG_TIMER_DISABLE
     ret = tee_timer_init();
     if (ret != 0) {
-        tloge("%s :failed to init hm timer: %d\n", name, ret);
+        tloge("%s :failed to init timer: %d\n", name, ret);
         return -1;
     }
 #endif
