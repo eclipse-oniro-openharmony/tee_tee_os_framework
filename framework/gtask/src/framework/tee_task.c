@@ -493,7 +493,6 @@ static int set_argv_for_tsk(struct argv_base_buffer *argv, char *loader_path, ui
             sizeof(argv->client_name)) != 0)
             tlogd("no dyn client exists\n");
     } else {
-        /* hm-native tasks, just hm_tee_test now! */
         if (memcpy_s(loader_path, loader_path_size, path_name, path_name_size) != EOK) {
             tloge("native set loader path fail\n");
             return -EINVAL;
