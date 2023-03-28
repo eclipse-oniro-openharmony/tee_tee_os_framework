@@ -14,7 +14,6 @@
 #include "spawn_ext.h"
 #include <sys/wait.h>
 #include <signal.h>
-#include <autoconf.h>
 #include <inttypes.h>
 
 #include <stdio.h>

@@ -13,12 +13,16 @@ else
 VER := @
 endif
 
-## hm-sdk directories:
+ifneq ($(TOPDIR),)
+export TOPDIR := $(TOPDIR)
+else
 export TOPDIR := $(CURDIR)/../
-export OPENSSL_DIR := $(CURDIR)/../../../../third_party/openssl_1.1.1n
+endif
+
+export OPENSSL_DIR := $(TOPDIR)/../../../third_party/openssl_1.1.1n
 export OLD_TOPDIR := $(TOPDIR)/config
 export TOOLS      := $(TOPDIR)/build/tools
-export TOOLS_ROOT := $(TOPDIR)/prebuild/$(HM_SDK_VER)/tools
+export TOOLS_ROOT := $(TOPDIR)/prebuild/$(SDK_VER)/tools
 export VER
 export PLATFORM_DIR := $(OLD_TOPDIR)/platform
 export TEELIB := $(TOPDIR)/lib/teelib
@@ -39,6 +43,8 @@ export BUILD_FRAMEWORK := $(TOPDIR)/build/mk/framework_common
 export BUILD_CFI := $(TOPDIR)/build/mk/common/cfi
 export BUILD_CONFIG := $(TOPDIR)/build/mk/common/config
 export BUILD_OPERATION := $(TOPDIR)/build/mk/common/operation
+export TEE_COMPILER_DIR := $(TOPDIR)/../../../prebuilts/clang/ohos/linux-x86_64/llvm/lib/clang/10.0.1
+export TEE_CLANG_DIR := $(TOPDIR)/../../../prebuilts/clang/ohos/linux-x86_64/llvm/bin
 
 ## if O=xxx, using outsize output directory.
 ifneq ($(O),)
@@ -47,8 +53,7 @@ else
 export OUTPUTDIR := $(TOPDIR)/output
 endif
 
-HM_BOOTFS_SIZE ?= "8000K"
-export HM_SDK_VER := tee-kernel-release
+export SDK_VER := tee-kernel-local-release
 
 PHONY += default
 default: all
@@ -101,9 +106,9 @@ $(drivers): setup_links libs link_libs
 $(frameworks): setup_links libs link_libs
 $(service): setup_links libs link_libs
 package: check_sym
-	@mkdir $(FILEMGR_BOOT_ELF)
-	@mkdir $(FILEMGR_BOOT_ELF)/apps
-	cp -a $(product_apps) $(FILEMGR_BOOT_ELF)/apps
+	@mkdir $(FRAMEWORK_ELF_PATH)
+	@mkdir $(FRAMEWORK_ELF_PATH)/apps
+	cp -a $(product_apps) $(FRAMEWORK_ELF_PATH)/apps
 
 PHONY += link_libs link_arm_libs link_aarch64_libs $(product_apps)
 link_libs: link_arm_libs link_aarch64_libs

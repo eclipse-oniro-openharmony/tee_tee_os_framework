@@ -12,7 +12,6 @@
 
 #include "init.h"
 #include "teesmcmgr.h"
-#include <autoconf.h>
 #include <securec.h>
 
 #include <spawn_ext.h>
