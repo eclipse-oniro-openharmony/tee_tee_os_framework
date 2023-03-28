@@ -15,8 +15,8 @@
 #include <securec.h>
 #include <string.h>
 #include <malloc.h>
-#include <sys/usrsyscall_smc.h>
-#include <sys/usrsyscall_irq.h>
+#include <usrsyscall_smc.h>
+#include <usrsyscall_irq.h>
 #include "teesmcmgr.h"
 #include <ipclib.h>
 

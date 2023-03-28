@@ -8,9 +8,6 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 
-# llvm c++ libs and headers
-PREBUILD_TOOLCHAIN := $(TOPDIR)/prebuild/toolchains/llvm_sysroot
-LLVM_INC := $(PREBUILD_TOOLCHAIN)/$(ARCH)/include
 # setup toolchain
 TARGET_IS_SYS := y
 include $(BUILD_CONFIG)/var.mk

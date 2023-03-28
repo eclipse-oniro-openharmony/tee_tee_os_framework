@@ -15,7 +15,7 @@
 #include <string.h>
 #include <openssl/obj_mac.h>
 #include <mem_ops.h>
-#include <sys/fileio.h>
+#include <fileio.h>
 #include <sys/mman.h>
 #include <dyn_conf_dispatch_inf.h>
 #include <spawn_ext.h>

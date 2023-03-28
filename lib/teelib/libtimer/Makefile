@@ -18,7 +18,7 @@ inc-flags += -I$(TEELIB)/libagent/include
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libssa/include
-inc-flags += -I$(PREBUILD_HEADER)/ddk/hmapi/
+inc-flags += -I$(PREBUILD_HEADER)/sys
 ifeq (${TARG}, _a32)
 inc-flags += -I$(TEELIB)/libtimer/include/arm
 else

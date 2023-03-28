@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <tee_log.h>
-#include <sys/fileio.h>
+#include <fileio.h>
 #include <securec.h>
 #include "gtask_core.h"
 

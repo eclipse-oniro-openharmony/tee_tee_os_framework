@@ -11,7 +11,7 @@
  */
 #include "tee_load_lib.h"
 #include <stdlib.h>
-#include <sys/fileio.h>
+#include <fileio.h>
 #include "securec.h"
 #include "tee_inner_uuid.h"
 #include "gtask_core.h" /* for find_service */

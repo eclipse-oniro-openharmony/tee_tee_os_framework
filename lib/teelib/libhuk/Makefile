@@ -25,6 +25,6 @@ CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libteeos/src/tee
 CPPFLAGS += -I$(TEELIB)/libcrypto/include
 CPPFLAGS += -I$(TEELIB)/libssa/include
-CPPFLAGS += -I$(PREBUILD_HEADER)/ddk/hmapi/
+CPPFLAGS += -I$(PREBUILD_HEADER)/sys
 
 include $(BUILD_LIB)/lib-common.mk

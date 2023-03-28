@@ -11,8 +11,8 @@
  */
 #include <stdio.h>
 #include <inttypes.h>
-#include <sys/priorities.h>
-#include <sys/fileio.h>
+#include <priorities.h>
+#include <fileio.h>
 #include "tee_driver_module.h"
 #include "crypto_mgr_syscall.h"
 #include <tee_log.h>

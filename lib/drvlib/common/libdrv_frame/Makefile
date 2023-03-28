@@ -23,7 +23,7 @@ flags += -I$(TEELIB)/libipc_hal/include
 
 flags += -I$(DRIVERS_PATH)/include
 flags += -I$(TEELIB)/libteeconfig/include/
-flags += -I$(PREBUILD_HEADER)/sys/hmapi
+flags += -I$(PREBUILD_HEADER)/sys
 
 # Source files required to build the target
 libdrv_frame_c_files := $(wildcard src/*.c)

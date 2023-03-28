@@ -21,12 +21,7 @@ inc-flags += -I$(TEELIB)/libteeconfig/include
 inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(TEELIB)/libhuk/include
 inc-flags += -I$(TEELIB)/libtee_shared/include
-inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
-inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi
-
-ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), mbedtls)
-inc-flags += -I$(PREBUILD_HEADER)/mbedtls
-endif
+inc-flags += -I$(PREBUILD_HEADER)/sys
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(TEELIB)/libopenssl/openssl/include

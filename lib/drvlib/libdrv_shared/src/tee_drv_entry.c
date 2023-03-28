@@ -12,7 +12,7 @@
 #include "tee_drv_entry.h"
 #include <stdio.h>
 #include <inttypes.h>
-#include <sys/priorities.h>
+#include <priorities.h>
 #include <ipclib.h>
 #include <irqmgr.h>
 #include <spawn_init.h>

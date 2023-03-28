@@ -82,8 +82,7 @@ inc-flags += -I$(SERVICES_PATH)/permission_service/src/perm_srv_cms_crl/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/file_op/
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/anti_rollback
 inc-flags += -I$(SERVICES_PATH)/permission_service/src/auth/tee_auth_sign_rsa.h
-inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
-inc-flags += -I$(PREBUILD_HEADER)/ddk/hmapi
+inc-flags += -I$(PREBUILD_HEADER)/sys
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(TEELIB)/libopenssl/openssl/include

@@ -23,7 +23,7 @@ INCLUDE_PATH += $(TOPDIR)/tools/
 
 ifeq ($(TARGET_IS_HOST),)
 # use musl lib c headers.
-inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH) -I$(PREBUILD_HEADER)/gen/arch/$(ARCH) -I$(PREBUILD_LIBC_INC)/hm
+inc-flags += -I$(PREBUILD_LIBC_INC) -I$(PREBUILD_LIBC_INC)/arch/generic -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)
 ## for some header file include "alltypes.h" directly.
 inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
 flags += -nodefaultlibs -nostdinc -std=gnu11
