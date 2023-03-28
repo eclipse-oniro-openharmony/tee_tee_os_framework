@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "dynload.h"
-#include <autoconf.h>
 #include <inttypes.h>
 #include <string.h>
 #include <securec.h>

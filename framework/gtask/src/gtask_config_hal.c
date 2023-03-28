@@ -11,7 +11,6 @@
  */
 #include "gtask_config_hal.h"
 #include "gtask_config.h"
-#include <autoconf.h>
 #include <tee_mem_mgmt_api.h>
 #include <tee_log.h>
 #include <string.h>

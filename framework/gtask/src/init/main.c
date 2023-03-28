@@ -10,7 +10,6 @@
  * See the Mulan PSL v2 for more details.
  */
 
-#include <autoconf.h>
 #include <stdio.h>
 #include <ipclib.h>
 #include <drv.h>

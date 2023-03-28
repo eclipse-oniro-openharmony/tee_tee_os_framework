@@ -33,7 +33,7 @@ override PREBUILD_ROOT := $(TOPDIR)/prebuild
 endif
 
 ### prebuild directory:
-PREBUILD_DIR    := $(PREBUILD_ROOT)/$(HM_SDK_VER)
+PREBUILD_DIR    := $(PREBUILD_ROOT)/$(SDK_VER)
 PREBUILD_HEADER := $(PREBUILD_DIR)/headers
 PREBUILD_LIBS   := $(PREBUILD_DIR)/libs
 
