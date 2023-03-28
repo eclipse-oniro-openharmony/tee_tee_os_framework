@@ -10,7 +10,7 @@
  * See the Mulan PSL v2 for more details.
  */
 #include "tee_elf_verify.h"
-#include <sys/fileio.h>
+#include <fileio.h>
 #include "tee_elf_verify.h"
 #include "tee_mem_mgmt_api.h"
 #include "tee_inner_uuid.h"

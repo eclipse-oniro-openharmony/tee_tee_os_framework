@@ -18,8 +18,7 @@ include $(BUILD_CONFIG)/var.mk
 PWD := $(shell pwd)
 
 flags += -I$(PWD)/include
-flags += -I$(PREBUILD_SYS)/mmgr_sysmgr
-flags += -I$(PREBUILD_SYS)/irqmgr
+flags += -I$(PREBUILD_HEADER)/sys
 flags += -I$(TEELIB)/libteeos/include/tee
 
 LDFLAGS += -u _hm_start -z noexecstack

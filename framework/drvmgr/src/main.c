@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdlib.h>
-#include <sys/priorities.h>
-#include <sys/fileio.h>
+#include <priorities.h>
+#include <fileio.h>
 #include <ipclib.h>
 #include <libdrv_frame.h>
 #include "drv_thread.h"

@@ -18,8 +18,8 @@
 #include <spawn_ext.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <sys/fileio.h>
-#include <sys/priorities.h>
+#include <fileio.h>
+#include <priorities.h>
 #include <tee_log.h>
 #include <drv_thread.h>
 #include <spawn_init.h>

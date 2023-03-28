@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <securec.h>
 #include "teesmcmgr.h"
-#include <sys/usrsyscall_smc.h>
+#include <usrsyscall_smc.h>
 #include <ipclib.h>
 #include <sched.h>
 

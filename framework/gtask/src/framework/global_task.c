@@ -24,7 +24,7 @@
 #include "tee_app_load_srv.h"
 #include "tee_property_api.h"
 #include "timer_export.h"
-#include <sys/teecall.h>
+#include <teecall.h>
 #include "tee_init.h"
 #include <string.h>
 #include <ipclib.h>
@@ -43,7 +43,7 @@
 #include "tee_compat_check.h"
 #include "tee_load_lib.h"
 #include <ipclib_hal.h>
-#include <sys/usrsyscall_irq.h>
+#include <usrsyscall_irq.h>
 #include <sched.h>
 
 #define GT_MSG_REV_SIZE 512

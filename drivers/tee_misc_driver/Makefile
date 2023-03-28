@@ -12,16 +12,12 @@ DRIVER := tee_misc_driver.elf
 
 include $(BUILD_CONFIG)/feature-macro.mk
 include $(BUILD_CONFIG)/var.mk
--include $(PREBUILD_HM_INC)/.config
 
 tee_misc_driver_c_files := $(wildcard src/*.c)
 
 c-flags += -Wno-implicit-fallthrough
 c-flags += -DTA_LOG_LEVEL=2
-inc-flags += -I$(PREBUILD_DIR)/headers/ddk
-inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
-inc-flags += -I$(PREBUILD_DIR)/headers/sys/hmapi
-inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
+inc-flags += -I$(PREBUILD_HEADER)/sys
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(DRIVERS_PATH)/tee_misc_driver/src
 inc-flags += -I$(DRIVERS_PATH)/crypto_mgr/src/crypto_ioctl

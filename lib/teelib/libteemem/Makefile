@@ -14,8 +14,7 @@ CPPFLAGS += -I$(TEELIB)/libteeos/include/legacy
 CPPFLAGS += -I$(TEELIB)/libdrv/include
 CPPFLAGS += -I$(TEELIB)/libteeconfig/include
 CPPFLAGS += -I$(TEELIB)/libteemem/include
-CPPFLAGS += -I$(PREBUILD_HEADER)/sys/mmgr_sysmgr
-CPPFLAGS += -I$(PREBUILD_HEADER)/sys/mmgr
+CPPFLAGS += -I$(PREBUILD_HEADER)/sys
 
 # Source files required to build the target
 CFILES := $(wildcard src/*.c)

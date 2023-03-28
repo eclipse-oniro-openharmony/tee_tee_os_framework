@@ -18,7 +18,7 @@ inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libtimer/include
 inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(TEELIB)/libipc_hal/include
-inc-flags += -I$(TOPDIR)/prebuild/tee-kernel-local-release/headers/ddk/hmapi/
+inc-flags += -I$(PREBUILD_HEADER)/sys
 # Libraries
 include $(BUILD_CONFIG)/feature-macro.mk
 include $(BUILD_LIB)/lib-common.mk

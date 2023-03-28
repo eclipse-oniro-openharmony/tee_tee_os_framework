@@ -13,8 +13,8 @@
 #include <inttypes.h>
 #include <securec.h>
 #include <ipclib.h>
-#include <sys/usrsyscall_smc.h>
-#include <sys/usrsyscall_irq.h>
+#include <usrsyscall_smc.h>
+#include <usrsyscall_irq.h>
 #include "teesmcmgr.h"
 #include <sched.h>
 

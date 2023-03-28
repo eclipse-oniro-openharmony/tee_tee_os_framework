@@ -22,7 +22,6 @@ endif
 export OPENSSL_DIR := $(TOPDIR)/../../../third_party/openssl_1.1.1n
 export OLD_TOPDIR := $(TOPDIR)/config
 export TOOLS      := $(TOPDIR)/build/tools
-export TOOLS_ROOT := $(TOPDIR)/prebuild/$(SDK_VER)/tools
 export VER
 export PLATFORM_DIR := $(OLD_TOPDIR)/platform
 export TEELIB := $(TOPDIR)/lib/teelib
@@ -81,7 +80,6 @@ GEN_CONF_FILE:
 
 PATCH_OPENSSL:=$(shell $(TOPDIR)/lib/teelib/libopenssl/build_openssl.sh $(TOPDIR))
 
--include $(PREBUILD_HM_INC)/.config
 export PLAT_CFG_DIR := $(PLATFORM_DIR)/$(PLATFORM_NAME)/$(PRODUCT_NAME)/$(CHIP_NAME)/plat_cfg
 export PLAT_COMMON_DIR := $(PLATFORM_DIR)/common
 ifneq ($(strip $(TARGET_BOARD_PLATFORM)), )
@@ -185,33 +183,5 @@ clean: clean_links
 	@rm -rf sec_trustedcore.img
 	@rm -rf tools/linker.lds_pp
 	@rm -rf $(TOPDIR)/prebuild
-clober: clean
-	@rm -rf prebuild/toolchains
-
-help:
-	@echo " "
-	@echo "hm-sdk project Makefile:"
-	@echo " Variables: "
-	@echo "   V=1      : 'V' is not set by default, Makefile will print less information."
-	@echo "              input \"make V=1\" will print more compile information"
-	@echo " "
-	@echo " Targets:"
-	@echo "   all      : default compile target, will compile all the libs, apps, and package the Image"
-	@echo "              will generate libs & apps & object files to output folder"
-	@echo " "
-	@echo "   prebuild : download the toolchain from linaro website(later maybe compile the toolchain ourselves)."
-	@echo "              and then compile llvm c++ libraries."
-	@echo "              all the packages are under \"prebuild/toolchains\" folder, TA or Kernel could use it directly."
-	@echo " "
-	@echo "              NOTE: now we have used 3 toolchains:"
-	@echo "              1. arm-eabi : to compile 32 bit ARM TA, and most of the libs apps without C++ supported"
-	@echo "              2. arm-linux-gnueabi: to compile 32 bit ARM TA with llvm c++ supported."
-	@echo "                 as llvm must be compiled with gnueabi target.(maybe fix it later)"
-	@echo "              3. aarch64-linux-gnu: to compile 64 bit ARM apps, kernel"
-	@echo " "
-	@echo "   clean    : only clean the output folder"
-	@echo " "
-	@echo "   clober   : clean output & prebuild toolchain folders"
-	@echo " "
 
 .PHONY: $(PHONY)

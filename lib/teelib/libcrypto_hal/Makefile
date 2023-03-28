@@ -32,8 +32,7 @@ inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libswcrypto_engine/include
 inc-flags += -I$(TEELIB)/libteemem/include
 inc-flags += -I$(TEELIB)/libssa/include
-inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/gpapi
-inc-flags += -I$(PREBUILD_HEADER)/inner_sdk/teeapi/common # tee_property_inner.h
+inc-flags += -I$(PREBUILD_HEADER)/sys
 
 ifeq ($(CONFIG_CRYPTO_SOFT_ENGINE), openssl)
 inc-flags += -I$(TEELIB)/libopenssl/openssl/include

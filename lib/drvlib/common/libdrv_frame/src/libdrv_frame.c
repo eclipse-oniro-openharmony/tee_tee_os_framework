@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include <ipclib.h>
 #include <sys/kuapi.h>
-#include <sys/fileio.h>
+#include <fileio.h>
 #include <timer.h>
 #include <irqmgr.h>
 #include <tamgr_ext.h>

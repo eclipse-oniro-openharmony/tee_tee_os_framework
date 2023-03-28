@@ -36,10 +36,7 @@ inc-flags += -I$(TEELIB)/libteeagentcommon_client/include
 
 inc-flags += -I$(TEELIB)/libopenssl/openssl/include
 inc-flags += -I$(TEELIB)/libopenssl/openssl/crypto
-inc-flags += -I$(PREBUILD_SYS)/irqmgr
-inc-flags += -I$(PREBUILD_SYS)/se_service
-inc-flags += -I$(PREBUILD_SYS)/mmgr
-inc-flags += -I$(PREBUILD_SYS)/mmgr_sysmgr
+inc-flags += -I$(PREBUILD_HEADER)/sys
 inc-flags += -I$(SYSLIB)/libelf_verify/include
 inc-flags += -I$(PWD)/../teesmcmgr/src
 inc-flags += -I$(PWD)/src/init

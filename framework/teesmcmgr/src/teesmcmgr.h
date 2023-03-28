@@ -16,7 +16,7 @@
 #include <tee_log.h>
 #include <stdbool.h>
 #include <ipclib.h>
-#include <sys/priorities.h>
+#include <priorities.h>
 #define SMCMGR_STACK_SIZE  0x2000
 
 #define PAY_LOAD_SIZE 24

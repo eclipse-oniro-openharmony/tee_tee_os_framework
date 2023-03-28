@@ -11,8 +11,8 @@
  */
 #include "drv_random.h"
 #include <rnd_seed.h>
-#include <sys/priorities.h>
-#include <sys/fileio.h>
+#include <priorities.h>
+#include <fileio.h>
 #include "tee_log.h"
 
 static crypto_drv_init g_rand = 0;

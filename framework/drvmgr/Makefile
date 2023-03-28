@@ -14,7 +14,6 @@ override SOURCE_DIR:=$(FRAMEWORK_PATH)/drvmgr
 
 include $(BUILD_CONFIG)/feature-macro.mk
 include $(BUILD_CONFIG)/var.mk
--include $(PREBUILD_HM_INC)/.config
 
 # it depends on compile order
 NO_OBJFILE_SORT = y
@@ -60,9 +59,7 @@ LIBS :=
 
 c-flags += -Wno-implicit-fallthrough
 c-flags += -DTA_LOG_LEVEL=2
-inc-flags += -I$(PREBUILD_DIR)/headers/ddk/hmapi
-inc-flags += -I$(PREBUILD_DIR)/headers/sys/hmapi
-inc-flags += -I$(PREBUILD_DIR)/headers/ddk/legacy
+inc-flags += -I$(PREBUILD_HEADER)/sys
 inc-flags += -I$(DRIVERS_PATH)/include
 inc-flags += -I$(FRAMEWORK_PATH)/drvmgr/src
 inc-flags += -I$(DRVLIB)/common/libdrv_frame/include/

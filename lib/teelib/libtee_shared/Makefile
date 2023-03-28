@@ -18,8 +18,7 @@ inc-flags += -I$(TEELIB)/libdrv/include
 inc-flags += -I$(TEELIB)/libteeos/include/tee
 inc-flags += -I$(TEELIB)/libteeos/include/legacy
 inc-flags += -I$(TEELIB)/libteeconfig/include
-inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr
-inc-flags += -I$(PREBUILD_HEADER)/sys/mmgr_sysmgr
+inc-flags += -I$(PREBUILD_HEADER)/sys
 
 include $(BUILD_LIB)/lib-common.mk
 include $(BUILD_CONFIG)/feature-macro.mk

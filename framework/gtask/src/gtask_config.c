@@ -11,7 +11,7 @@
  */
 #include "gtask_config.h"
 #include "tee_config.h"
-#include <sys/priorities.h> /* for HM_PRIO_TEE_* */
+#include <priorities.h> /* for HM_PRIO_TEE_* */
 
 const struct task_info_st g_teeos_builtin_task_infos[] = {
 #ifdef TEE_SUPPORT_SSA_64BIT

@@ -35,7 +35,7 @@ endif
 
 include $(BUILD_LIB)/lib-common.mk
 inc-flags += -I$(DRIVERS_PATH)/include
-inc-flags += -I$(PREBUILD_LIBC_INC)/arch/$(ARCH)/bits
+inc-flags += -I$(PREBUILD_HEADER)/libc/arch/$(ARCH)/bits
 inc-flags += -I$(DRVLIB)/common/libdrv_frame/include
 inc-flags += -I$(DRVLIB)/libdrv_shared/include
 inc-flags += -I$(TEELIB)/libdrv/include

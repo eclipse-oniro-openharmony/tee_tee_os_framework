@@ -13,11 +13,11 @@
 #include <stdio.h>
 #include <ipclib.h>
 #include <drv.h>
-#include <sys/fileio.h>
+#include <fileio.h>
 #include <timer.h>
 #include <inttypes.h>
 #include <tee_log.h>
-#include <sys/usrsyscall_irq.h>
+#include <usrsyscall_irq.h>
 #include "teesmcmgr.h"
 #include "tee_crypto_api.h"
 #include "global_task.h"

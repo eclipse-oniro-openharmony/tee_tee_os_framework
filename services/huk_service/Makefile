@@ -30,9 +30,8 @@ inc-flags += -I$(TEELIB)/libcrypto/include
 inc-flags += -I$(TEELIB)/libhuk/include
 inc-flags += -I$(TEELIB)/libssa/include
 inc-flags += -I$(TEELIB)/libssa/src
-inc-flags += -I$(PREBUILD_HEADER)/sys/hmapi
-inc-flags += -I$(PREBUILD_HEADER)/ddk/hmapi
 inc-flags += -I$(TEELIB)/libipc_hal/include
+inc-flags += -I$(PREBUILD_HEADER)/sys
 
 LDFLAGS += -z noexecstack
 
