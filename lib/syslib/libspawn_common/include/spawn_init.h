@@ -28,7 +28,7 @@ enum env_index {
     ENV_DRV_INDEX_INDEX,
     ENV_THREAD_LIMIT_INDEX,
     ENV_STACK_SIZE_INDEX,
-    ENV_TERMINATE_INDEX, /* must reserve one since sysmgr will use it as terminate signal */
+    ENV_TERMINATE_INDEX,
     ENV_MAX,
 };
 
@@ -37,7 +37,7 @@ enum argv_index {
     ARGV_TASK_PATH_INDEX,
     ARGV_UNCOMMIT_INDEX,
     ARGV_CLIENT_NAME_INDEX,
-    ARGV_TERMINATE_INDEX, /* must reserve one since sysmgr will use it as terminate signal */
+    ARGV_TERMINATE_INDEX,
     ARGV_MAX,
 };
 

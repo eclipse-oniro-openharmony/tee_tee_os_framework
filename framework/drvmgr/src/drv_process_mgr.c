@@ -63,7 +63,7 @@ int32_t create_spawn_sync_msg_info(void)
 }
 
 /*
- * process argv and env which will be passed to driver loader by sysmgr,
+ * process argv and env which will be passed to driver loader by kernel,
  * all this buffer should be in drvmgr map pages, otherwise will cannot
  * find map_page in find_map_page called by vspace_stream_sync.
  * Now, only the stack of main thread or the  global value added to map pages,
