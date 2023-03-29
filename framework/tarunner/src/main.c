@@ -20,7 +20,6 @@
 #include <unistd.h>
 #include <ipclib.h>
 #include <securec.h>
-#include <teecall_cap.h>
 #include <tee_log.h>
 #include <ta_framework.h>
 #include <tee_task.h>
@@ -203,11 +202,6 @@ static int32_t library_init(const char *task_name, const struct env_param *param
     if (init2(*libtee, task_name, param->target_type) != 0)
         return -1;
 
-    /* Reject taldr cap, and grant TA cap */
-    if (delete_rref_and_grant() != 0) {
-        tloge("delete rref grant failed\n");
-        return -1;
-    }
     return 0;
 }
 
