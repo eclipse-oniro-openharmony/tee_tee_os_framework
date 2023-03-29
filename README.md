@@ -7,7 +7,7 @@ tee_os_framework mainly contains the framework codes of tee, which is responsibl
 <th>Name of module</th>
 <th>Functions</th>
 <tr>
-<td> tamgr </td><td>TA lifetime control, create TA process by sysmgr, commication manager, session manager and agent manager of CA2TA, process error information for TA</td>
+<td> gtask </td><td>TA lifetime control, create and destroy TA process, commication manager, session manager and agent manager of CA2TA, process error information for TA</td>
 </tr><tr>
 <td> teesmcmgr</td><td>dispatch smc command, including CA commands, system suspend and resume command, idle state management</td>
 </tr><tr>
@@ -46,9 +46,8 @@ base/tee/tee_os_framework
 │   └── tarunner
 ├── lib
 │   ├── drvlib                    # libs for drvmgr and drivers
-│   ├── syslib                    # libs for TA, services, tamgr
-│   ├── teelib                    # libs for TEE internal services
-│   └── thirdparty
+│   ├── syslib                    # libs for TEE internal services
+│   └── teelib                    # libs for TA and services
 ├── drivers
 │   ├── tee_misc_drv
 │   ├── include
@@ -59,7 +58,6 @@ base/tee/tee_os_framework
 │   └── ssa
 ├── config
 │   ├── release_config            # release config macros
-│   ├── platform
 │   └── debug_config              # debug config macros
 ├── build
 ├── test

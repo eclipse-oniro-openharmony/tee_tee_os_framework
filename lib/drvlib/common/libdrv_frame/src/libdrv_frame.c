@@ -71,12 +71,6 @@ static int32_t system_init(const char *name)
 
     set_log_use_tid_flag();
 
-    ret = ac_init(hmapi_cnode_cref(), __sysmgrch, name);
-    if (ret != 0) {
-        tloge("%s: libac initialization failed\n", name);
-        return -1;
-    }
-
     ret = hm_tamgr_register(name);
     if (ret != 0) {
         tloge("%s: tamgr registration for platdrv failed\n", name);
