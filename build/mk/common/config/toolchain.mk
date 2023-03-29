@@ -10,8 +10,6 @@
 #
 #toolchain.mk
 #
-export LLVM_TOOLCHAIN_BASEVER=8.0.1
-
 export TOOLCHAIN_ROOT=$(TEE_CLANG_DIR)
 
 export CLANG_TOOLCHAIN   := $(TOOLCHAIN_ROOT)

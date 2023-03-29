@@ -75,8 +75,8 @@ GEN_CONF_FILE:
 	sed -i -r '/(.*)=n/d' $(PLAT_AUTOCONF_FILE)
 	sed -i -r 's/(.*)=(.*)/#define \1\t\2/g' $(PLAT_AUTOCONF_FILE)
 	sed -i '$$a\#endif /* AUTO_CONFIG_H */'  $(PLAT_AUTOCONF_FILE)
-	echo -e >> $(PREBUILD_DIR)/headers/.config
-	cat $(CONFIG_FILE) | tee -a $(PREBUILD_DIR)/headers/.config
+	rm -rf $(PREBUILD_DIR)/headers/.config
+	cat $(CONFIG_FILE) | tee $(PREBUILD_DIR)/headers/.config
 
 PATCH_OPENSSL:=$(shell $(TOPDIR)/lib/teelib/libopenssl/build_openssl.sh $(TOPDIR))
 
