@@ -1,0 +1,28 @@
+#ifndef SYS_PRIORITIES_H
+#define SYS_PRIORITIES_H
+
+#include <stdint.h>
+
+/* TODO: defined by chcore */
+#define PRIO_TEE_MAX 56
+#define PRIO_TEE_MIN 9
+
+enum TEE_PRIO_offset {
+	TEE_PRIO_SMCMGR_OFFSET,
+    TEE_PRIO_GT_OFFSET,
+    TEE_PRIO_DRV_OFFSET,
+    TEE_PRIO_AGENT_OFFSET,
+    TEE_PRIO_TA_OFFSET,
+};
+
+#define PRIO_TEE_SMCMGR  (PRIO_TEE_MAX - TEE_PRIO_SMCMGR_OFFSET)
+#define PRIO_TEE_GT      (PRIO_TEE_MAX - TEE_PRIO_GT_OFFSET)
+#define PRIO_TEE_DRV     (PRIO_TEE_MAX - TEE_PRIO_DRV_OFFSET)
+#define PRIO_TEE_AGENT   (PRIO_TEE_MAX - TEE_PRIO_AGENT_OFFSET)
+#define PRIO_TEE_TA      (PRIO_TEE_MAX - TEE_PRIO_TA_OFFSET)
+
+#define PRIO_TEE_SMCMGR_IDLE 1
+
+int32_t set_priority(unsigned int prio);
+
+#endif
